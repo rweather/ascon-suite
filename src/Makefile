@@ -11,10 +11,10 @@ CFLAGS += -I$(INCLUDE_DIR) -I.
 LIBRARY = obj/libascon.a
 
 C_SOURCES = \
-	ascon-permutation-armv7-api.c \
 	ascon-permutation-avr-api.c \
 	ascon-permutation-c32.c \
-	ascon-permutation-c64.c
+	ascon-permutation-c64.c \
+	ascon-permutation-sliced32.c
 ASM_SOURCES = \
 	ascon-permutation-armv7-asm.S \
 	ascon-permutation-avr-asm.S

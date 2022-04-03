@@ -142,17 +142,6 @@ void ascon_extract_and_add_bytes
     }
 }
 
-void ascon_add_and_extract_bytes
-    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
-     unsigned offset, unsigned size)
-{
-    while (offset < 40 && size > 0) {
-        *output++ = (ASCON_C64_BYTE_FOR_OFFSET(state, offset) ^= *input++);
-        ++offset;
-        --size;
-    }
-}
-
 void ascon_permute(ascon_state_t *state, uint8_t first_round)
 {
     uint64_t t0, t1, t2, t3, t4;

@@ -25,75 +25,37 @@
 
 #include <ascon/permutation.h>
 #include "ascon-permutation-select.h"
+#include "ascon-permutation-sliced32.h"
 #include "ascon-internal-util.h"
 
 #if defined(ASCON_BACKEND_C32)
 
-void ascon_init(ascon_state_t *state)
-{
-    state->S[0] = 0;
-    state->S[1] = 0;
-    state->S[2] = 0;
-    state->S[3] = 0;
-    state->S[4] = 0;
-}
-
 void ascon_to_regular(ascon_state_t *state)
 {
-    // TODO
+    int index;
+    uint32_t high, low;
+    for (index = 0; index < 10; index += 2) {
+        high = (state->W[index] >> 16) | (state->W[index + 1] & 0xFFFF0000U);
+        low  = (state->W[index] & 0x0000FFFFU) | (state->W[index + 1] << 16);
+        ascon_combine(high);
+        ascon_combine(low);
+        be_store_word32(state->B + index * 4,     high);
+        be_store_word32(state->B + index * 4 + 4, low);
+    }
 }
 
 void ascon_from_regular(ascon_state_t *state)
 {
-    // TODO
-}
-
-void ascon_set_iv_64(ascon_state_t *state, uint64_t iv)
-{
-    // TODO
-}
-
-void ascon_set_iv_32(ascon_state_t *state, uint32_t iv)
-{
-    // TODO
-}
-
-void ascon_add_bytes
-    (ascon_state_t *state, const uint8_t *data, unsigned offset, unsigned size)
-{
-    // TODO
-}
-
-void ascon_overwrite_bytes
-    (ascon_state_t *state, const uint8_t *data, unsigned offset, unsigned size)
-{
-    // TODO
-}
-
-void ascon_overwrite_with_zeroes
-    (ascon_state_t *state, unsigned offset, unsigned size)
-{
-    // TODO
-}
-
-void ascon_extract_bytes
-    (const ascon_state_t *state, uint8_t *data, unsigned offset, unsigned size)
-{
-    // TODO
-}
-
-void ascon_extract_and_add_bytes
-    (const ascon_state_t *state, const uint8_t *input, uint8_t *output,
-     unsigned offset, unsigned size)
-{
-    // TODO
-}
-
-void ascon_add_and_extract_bytes
-    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
-     unsigned offset, unsigned size)
-{
-    // TODO
+    int index;
+    uint32_t high, low;
+    for (index = 0; index < 10; index += 2) {
+        high = be_load_word32(state->B + index * 4);
+        low  = be_load_word32(state->B + index * 4 + 4);
+        ascon_separate(high);
+        ascon_separate(low);
+        state->W[index] = (high << 16) | (low & 0x0000FFFFU);
+        state->W[index + 1] = (high & 0xFFFF0000U) | (low >> 16);
+    }
 }
 
 void ascon_permute(ascon_state_t *state, uint8_t first_round)

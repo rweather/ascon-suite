@@ -110,15 +110,4 @@ void ascon_extract_and_add_bytes
     }
 }
 
-void ascon_add_and_extract_bytes
-    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
-     unsigned offset, unsigned size)
-{
-    while (offset < 40 && size > 0) {
-        *output++ = (state->B[offset] ^= *input++);
-        ++offset;
-        --size;
-    }
-}
-
 #endif /* ASCON_BACKEND_AVR */

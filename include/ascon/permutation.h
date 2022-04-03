@@ -171,20 +171,6 @@ void ascon_extract_and_add_bytes
      unsigned offset, unsigned size);
 
 /**
- * \brief Adds bytes to the ASCON state by XOR'ing them with existing bytes,
- * and then extracts the final values.
- *
- * \param state The ASCON state in "operational" form.
- * \param input Points to the input buffer.
- * \param output Points to the output buffer.
- * \param offset Offset into the state between 0 and 40 - size.
- * \param size Number of bytes to extract from the state between 0 and 40.
- */
-void ascon_add_and_extract_bytes
-    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
-     unsigned offset, unsigned size);
-
-/**
  * \brief Permutes the ASCON state with a specified number of rounds.
  *
  * \param state The ASCON state in "operational" form.
