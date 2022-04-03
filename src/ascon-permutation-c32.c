@@ -90,7 +90,7 @@ void ascon_extract_and_add_bytes
 }
 
 void ascon_add_and_extract_bytes
-    (const ascon_state_t *state, const uint8_t *input, uint8_t *output,
+    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
      unsigned offset, unsigned size)
 {
     // TODO

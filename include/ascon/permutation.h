@@ -181,7 +181,7 @@ void ascon_extract_and_add_bytes
  * \param size Number of bytes to extract from the state between 0 and 40.
  */
 void ascon_add_and_extract_bytes
-    (const ascon_state_t *state, const uint8_t *input, uint8_t *output,
+    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
      unsigned offset, unsigned size);
 
 /**
