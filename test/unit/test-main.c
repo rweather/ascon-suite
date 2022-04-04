@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2020 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,25 +20,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_PERMUTATION_SELECT_H
-#define ASCON_PERMUTATION_SELECT_H
+#include "test-cipher.h"
+#include <stdio.h>
 
-/* Select the default back end to use for the ASCON permutation,
- * and any properties we can use to optimize use of the permutation. */
+void test_ascon_permutation(void);
 
-#if defined(__AVR__)
-#define ASCON_BACKEND_AVR 1
-#define ASCON_BACKEND_DIRECT_XOR 1
-#elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 7
-#define ASCON_BACKEND_ARMV7 1
-#define ASCON_BACKEND_SLICED32 1
-#elif defined(__x86_64) || defined(__x86_64__) || \
-      defined(__aarch64__) || defined(__ARM_ARCH_ISA_A64) || \
-      defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64)
-#define ASCON_BACKEND_C64 1
-#else
-#define ASCON_BACKEND_C32 1
-#define ASCON_BACKEND_SLICED32 1
-#endif
-
-#endif
+int main(int argc, char *argv[])
+{
+    (void)argc;
+    (void)argv;
+    printf("\n");
+    test_ascon_permutation();
+    return test_exit_result;
+}

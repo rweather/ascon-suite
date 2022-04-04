@@ -49,16 +49,6 @@ void ascon_from_regular(ascon_state_t *state)
     (void)state;
 }
 
-void ascon_set_iv_64(ascon_state_t *state, uint64_t iv)
-{
-    be_store_word64(state->B, iv);
-}
-
-void ascon_set_iv_32(ascon_state_t *state, uint32_t iv)
-{
-    be_store_word32(state->B, iv);
-}
-
 void ascon_add_bytes
     (ascon_state_t *state, const uint8_t *data, unsigned offset, unsigned size)
 {

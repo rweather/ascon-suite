@@ -98,22 +98,6 @@ void ascon_to_regular(ascon_state_t *state);
 void ascon_from_regular(ascon_state_t *state);
 
 /**
- * \brief Sets the first 64-bit word of the state to an initialization vector.
- *
- * \param state The ASCON state in "operational" form.
- * \param iv The initialization vector value.
- */
-void ascon_set_iv_64(ascon_state_t *state, uint64_t iv);
-
-/**
- * \brief Sets the first 32-bit word of the state to an initialization vector.
- *
- * \param state The ASCON state in "operational" form.
- * \param iv The initialization vector value.
- */
-void ascon_set_iv_32(ascon_state_t *state, uint32_t iv);
-
-/**
  * \brief Adds bytes to the ASCON state by XOR'ing them with existing bytes.
  *
  * \param state The ASCON state in "operational" form.

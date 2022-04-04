@@ -29,13 +29,20 @@
 
 #if defined(ASCON_BACKEND_C64)
 
-/** @cond ascon_c64_byte_for_offset */
-#if defined(LW_UTIL_LITTLE_ENDIAN)
+/** @cond ascon_c64 */
+
+/* Define to 1 to emulate a big-endian CPU on a little-endian host.
+ * Intended for testing purposes only. */
+#define ASCON_BACKEND_C64_EMUL_BIG 0
+
+#if defined(LW_UTIL_LITTLE_ENDIAN) && !ASCON_BACKEND_C64_EMUL_BIG
 #define ASCON_C64_BYTE_FOR_OFFSET(state, offset) \
     (state->B[((offset) & 0x38) + (7 - (offset & 0x07))])
+#define ASCON_BACKEND_C64_LE 1
 #else
 #define ASCON_C64_BYTE_FOR_OFFSET(state, offset) (state->B[(offset)])
 #endif
+
 /** @endcond */
 
 void ascon_init(ascon_state_t *state)
@@ -49,7 +56,7 @@ void ascon_init(ascon_state_t *state)
 
 void ascon_to_regular(ascon_state_t *state)
 {
-#if defined(LW_UTIL_LITTLE_ENDIAN)
+#if defined(ASCON_BACKEND_C64_LE)
     /* Convert from little-endian to big-endian */
     be_store_word64(state->B,      state->S[0]);
     be_store_word64(state->B +  8, state->S[1]);
@@ -64,7 +71,7 @@ void ascon_to_regular(ascon_state_t *state)
 
 void ascon_from_regular(ascon_state_t *state)
 {
-#if defined(LW_UTIL_LITTLE_ENDIAN)
+#if defined(ASCON_BACKEND_C64_LE)
     /* Convert from big-endian to little-endian */
     state->S[0] = be_load_word64(state->B);
     state->S[1] = be_load_word64(state->B + 8);
@@ -74,20 +81,6 @@ void ascon_from_regular(ascon_state_t *state)
 #else
     /* Already in big-endian byte order, so nothing to do */
     (void)state;
-#endif
-}
-
-void ascon_set_iv_64(ascon_state_t *state, uint64_t iv)
-{
-    state->S[0] = iv;
-}
-
-void ascon_set_iv_32(ascon_state_t *state, uint32_t iv)
-{
-#if defined(LW_UTIL_LITTLE_ENDIAN)
-    state->W[1] = iv;
-#else
-    state->W[0] = iv;
 #endif
 }
 
@@ -145,11 +138,19 @@ void ascon_extract_and_add_bytes
 void ascon_permute(ascon_state_t *state, uint8_t first_round)
 {
     uint64_t t0, t1, t2, t3, t4;
+#if ASCON_BACKEND_C64_EMUL_BIG
+    uint64_t x0 = be_load_word64(state->B);
+    uint64_t x1 = be_load_word64(state->B + 8);
+    uint64_t x2 = be_load_word64(state->B + 16);
+    uint64_t x3 = be_load_word64(state->B + 24);
+    uint64_t x4 = be_load_word64(state->B + 32);
+#else
     uint64_t x0 = state->S[0];
     uint64_t x1 = state->S[1];
     uint64_t x2 = state->S[2];
     uint64_t x3 = state->S[3];
     uint64_t x4 = state->S[4];
+#endif
     while (first_round < 12) {
         /* Add the round constant to the state */
         x2 ^= ((0x0F - first_round) << 4) | first_round;
@@ -172,11 +173,19 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round)
         /* Move onto the next round */
         ++first_round;
     }
+#if ASCON_BACKEND_C64_EMUL_BIG
+    be_store_word64(state->B,      x0);
+    be_store_word64(state->B +  8, x1);
+    be_store_word64(state->B + 16, x2);
+    be_store_word64(state->B + 24, x3);
+    be_store_word64(state->B + 32, x4);
+#else
     state->S[0] = x0;
     state->S[1] = x1;
     state->S[2] = x2;
     state->S[3] = x3;
     state->S[4] = x4;
+#endif
 }
 
 #endif /* ASCON_BACKEND_C64 */

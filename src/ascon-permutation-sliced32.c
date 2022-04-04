@@ -36,33 +36,17 @@ void ascon_init(ascon_state_t *state)
     state->S[4] = 0;
 }
 
-void ascon_set_iv_64(ascon_state_t *state, uint64_t iv)
-{
-    uint32_t high = (uint32_t)(iv >> 32);
-    uint32_t low  = (uint32_t)iv;
-    ascon_separate(high);
-    ascon_separate(low);
-    state->W[0] = (high << 16) | (low & 0x0000FFFFU);
-    state->W[1] = (high & 0xFFFF0000U) | (low >> 16);
-}
-
-void ascon_set_iv_32(ascon_state_t *state, uint32_t iv)
-{
-    ascon_separate(iv);
-    state->W[0] = (state->W[0] & 0xFFFF0000U) | (iv & 0x0000FFFFU);
-    state->W[1] = (state->W[1] & 0xFFFF0000U) | (iv >> 16);
-}
-
 void ascon_add_bytes
     (ascon_state_t *state, const uint8_t *data, unsigned offset, unsigned size)
 {
     uint64_t value;
-    unsigned posn, shift;
-    if ((offset & 7U) != 0U) {
-        shift = (7U - (offset & 7U)) * 8U;
+    unsigned posn, shift, ofs, len;
+    ofs = offset & 7U;
+    if (ofs != 0U) {
+        shift = (7U - ofs) * 8U;
+        len = 8U - ofs;
         value = 0;
-        for (posn = (offset & 7U); posn < 8U && posn < size;
-                    ++posn, shift -= 8U) {
+        for (posn = 0; posn < len && posn < size; ++posn, shift -= 8U) {
             value |= ((uint64_t)(data[posn])) << shift;
         }
         ascon_absorb_word64(state, value, offset / 8U);
@@ -90,12 +74,14 @@ void ascon_overwrite_bytes
     (ascon_state_t *state, const uint8_t *data, unsigned offset, unsigned size)
 {
     uint64_t value;
-    unsigned posn, shift;
-    if ((offset & 7U) != 0U) {
-        ascon_squeeze_word64(state, value, offset);
-        shift = (7U - (offset & 7U)) * 8U;
-        for (posn = (offset & 7U); posn < 8U && posn < size;
-                    ++posn, shift -= 8U) {
+    unsigned posn, shift, ofs, len;
+    ofs = offset & 7U;
+    if (ofs != 0U) {
+        ascon_squeeze_word64(state, value, offset / 8U);
+        ofs = offset & 7U;
+        shift = (7U - ofs) * 8U;
+        len = 8U - ofs;
+        for (posn = 0; posn < len && posn < size; ++posn, shift -= 8U) {
             value &= ~(((uint64_t)0xFFU) << shift);
             value |= ((uint64_t)(data[posn])) << shift;
         }
@@ -111,7 +97,7 @@ void ascon_overwrite_bytes
         size -= 8;
     }
     if (size > 0U) {
-        ascon_squeeze_word64(state, value, offset);
+        ascon_squeeze_word64(state, value, offset / 8U);
         shift = 56U;
         for (posn = 0; posn < size; ++posn, shift -= 8U) {
             value &= ~(((uint64_t)0xFFU) << shift);
@@ -126,13 +112,13 @@ void ascon_overwrite_with_zeroes
 {
     uint64_t value;
     unsigned posn, ofs;
-    if ((offset & 7U) != 0U) {
-        ascon_squeeze_word64(state, value, offset);
-        ofs = offset & 7U;
+    ofs = offset & 7U;
+    if (ofs != 0U) {
+        ascon_squeeze_word64(state, value, offset / 8U);
         posn = 8U - ofs;
         if (posn > size)
             posn = size;
-        value = (value & (~((uint64_t)0)) >> (ofs * 8)) |
+        value = (value & (~((uint64_t)0)) << ((8U - ofs) * 8)) |
                 (value & ((((uint64_t)1) << ((8U - ofs - posn) * 8)) - 1U));
         ascon_set_word64(state, value, offset / 8U);
         offset += posn;
@@ -144,7 +130,7 @@ void ascon_overwrite_with_zeroes
         size -= 8;
     }
     if (size > 0U) {
-        ascon_squeeze_word64(state, value, offset);
+        ascon_squeeze_word64(state, value, offset / 8U);
         value &= (~((uint64_t)0)) >> (size * 8);
         ascon_set_word64(state, value, offset / 8U);
     }
@@ -154,12 +140,13 @@ void ascon_extract_bytes
     (const ascon_state_t *state, uint8_t *data, unsigned offset, unsigned size)
 {
     uint64_t value;
-    unsigned posn, shift;
-    if ((offset & 7U) != 0U) {
-        ascon_squeeze_word64(state, value, offset);
-        shift = (7U - (offset & 7U)) * 8U;
-        for (posn = (offset & 7U); posn < 8U && posn < size;
-                    ++posn, shift -= 8U) {
+    unsigned posn, shift, ofs, len;
+    ofs = offset & 7U;
+    if (ofs != 0U) {
+        ascon_squeeze_word64(state, value, offset / 8U);
+        shift = (7U - ofs) * 8U;
+        len = 8U - ofs;
+        for (posn = 0; posn < len && posn < size; ++posn, shift -= 8U) {
             data[posn] = (uint8_t)(value >> shift);
         }
         data += posn;
@@ -173,7 +160,7 @@ void ascon_extract_bytes
         size -= 8;
     }
     if (size > 0U) {
-        ascon_squeeze_word64(state, value, offset);
+        ascon_squeeze_word64(state, value, offset / 8U);
         shift = 56U;
         for (posn = 0; posn < size; ++posn, shift -= 8U) {
             data[posn] = (uint8_t)(value >> shift);
@@ -186,12 +173,13 @@ void ascon_extract_and_add_bytes
      unsigned offset, unsigned size)
 {
     uint64_t value;
-    unsigned posn, shift;
-    if ((offset & 7U) != 0U) {
-        ascon_squeeze_word64(state, value, offset);
-        shift = (7U - (offset & 7U)) * 8U;
-        for (posn = (offset & 7U); posn < 8U && posn < size;
-                    ++posn, shift -= 8U) {
+    unsigned posn, shift, ofs, len;
+    ofs = offset & 7U;
+    if (ofs != 0U) {
+        ascon_squeeze_word64(state, value, offset / 8U);
+        shift = (7U - ofs) * 8U;
+        len = 8U - ofs;
+        for (posn = 0; posn < len && posn < size; ++posn, shift -= 8U) {
             output[posn] = input[posn] ^ (uint8_t)(value >> shift);
         }
         output += posn;
@@ -207,7 +195,7 @@ void ascon_extract_and_add_bytes
         size -= 8;
     }
     if (size > 0U) {
-        ascon_squeeze_word64(state, value, offset);
+        ascon_squeeze_word64(state, value, offset / 8U);
         shift = 56U;
         for (posn = 0; posn < size; ++posn, shift -= 8U) {
             output[posn] = input[posn] ^ (uint8_t)(value >> shift);
