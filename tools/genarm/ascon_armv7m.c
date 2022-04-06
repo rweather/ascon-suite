@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
 
     /* Output the file header */
     printf("#include \"ascon-permutation-select.h\"\n");
-    printf("#if defined(ASCON_BACKEND_ARMV7)\n");
+    printf("#if defined(ASCON_BACKEND_ARMV7M)\n");
     fputs(copyright_message, stdout);
     printf("\t.syntax unified\n");
     printf("\t.thumb\n");

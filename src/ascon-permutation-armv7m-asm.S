@@ -1,5 +1,5 @@
 #include "ascon-permutation-select.h"
-#if defined(ASCON_BACKEND_ARMV7)
+#if defined(ASCON_BACKEND_ARMV7M)
 /*
  * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *

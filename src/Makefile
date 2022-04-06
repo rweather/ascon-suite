@@ -16,7 +16,8 @@ C_SOURCES = \
 	ascon-permutation-c64.c \
 	ascon-permutation-sliced32.c
 ASM_SOURCES = \
-	ascon-permutation-armv7-asm.S \
+	ascon-permutation-armv6m-asm.S \
+	ascon-permutation-armv7m-asm.S \
 	ascon-permutation-avr-asm.S
 
 OBJECTS  = $(patsubst %.c,obj/%.o,$(C_SOURCES))
