@@ -23,6 +23,9 @@
 /*
  * This program is used to generate the assembly code version of the
  * ASCON permutation for ARM v7m microprocessors.
+ *
+ * This program can also be used to generate ARMv6 code when the
+ * define FORCE_ARM_MODE is supplied on the compiler command-line.
  */
 
 #include <stdio.h>
@@ -34,8 +37,13 @@ static void function_header(const char *name)
 {
     printf("\n\t.align\t2\n");
     printf("\t.global\t%s\n", name);
+#if defined(FORCE_ARM_MODE)
+    printf("\t.arch\tarmv6\n");
+    printf("\t.arm\n");
+#else
     printf("\t.thumb\n");
     printf("\t.thumb_func\n");
+#endif
     printf("\t.type\t%s, %%function\n", name);
     printf("%s:\n", name);
 }
@@ -71,27 +79,39 @@ typedef struct
 
 } reg_names;
 
+#if !defined(FORCE_ARM_MODE)
+
 static int is_low_reg(const char *reg)
 {
     return reg[0] == 'r' && atoi(reg + 1) < 8;
 }
 
+#endif
+
 /* Generates a binary operator, preferring thumb instructions if possible */
 static void binop(const char *name, const char *reg1, const char *reg2)
 {
+#if defined(FORCE_ARM_MODE)
+    printf("\t%s\t%s, %s\n", name, reg1, reg2);
+#else
     if (is_low_reg(reg1) && is_low_reg(reg2))
         printf("\t%ss\t%s, %s\n", name, reg1, reg2);
     else
         printf("\t%s\t%s, %s\n", name, reg1, reg2);
+#endif
 }
 
 /* Generates a "bic" instruction: dest = src1 & ~src2 */
 static void bic(const char *dest, const char *src1, const char *src2)
 {
+#if defined(FORCE_ARM_MODE)
+    printf("\tbic\t%s, %s, %s\n", dest, src1, src2);
+#else
     if (!strcmp(dest, src1) && is_low_reg(src1) && is_low_reg(src2))
         printf("\tbics\t%s, %s\n", src1, src2);
     else
         printf("\tbic\t%s, %s, %s\n", dest, src1, src2);
+#endif
 }
 
 /* Applies the S-box to five 64-bit words of the state */
@@ -398,11 +418,25 @@ static void bit_permute_step_two
 {
     /* t = ((y >> (shift)) ^ y) & (mask);
      * y = (y ^ t) ^ (t << (shift)); */
-    if (t3)
+    int loaded;
+#if defined(FORCE_ARM_MODE)
+    if (mask >= 0x0100U) {
+        printf("\tldr\t%s, =%lu\n", t3, mask);
+        loaded = 1;
+    } else {
+        loaded = 0;
+    }
+#else
+    if (mask >= 0x0100U && mask <= 0x10000U && t3) {
         printf("\tmovw\t%s, #%lu\n", t3, mask);
+        loaded = 1;
+    } else {
+	loaded = 0;
+    }
+#endif
     printf("\teor\t%s, %s, %s, lsr #%d\n", t1, y1, y1, shift);
     printf("\teor\t%s, %s, %s, lsr #%d\n", t2, y2, y2, shift);
-    if (t3) {
+    if (loaded) {
         binop("and", t1, t3);
         binop("and", t2, t3);
     } else {
@@ -413,6 +447,17 @@ static void bit_permute_step_two
     binop("eor", y2, t2);
     printf("\teor\t%s, %s, %s, lsl #%d\n", y1, y1, t1, shift);
     printf("\teor\t%s, %s, %s, lsl #%d\n", y2, y2, t2, shift);
+}
+
+/* Generate a shift operation */
+static void shiftop
+    (const char *name, const char *dest, const char *src, int shift)
+{
+#if defined(FORCE_ARM_MODE)
+    printf("\t%s\t%s, %s, #%d\n", name, dest, src, shift);
+#else
+    printf("\t%ss\t%s, %s, #%d\n", name, dest, src, shift);
+#endif
 }
 
 /* Output the function to convert to sliced form */
@@ -427,27 +472,36 @@ static void gen_to_sliced(void)
     const char *low = "r2";
     const char *temp1 = "r3";
     const char *temp2 = "ip";
+#if defined(FORCE_ARM_MODE)
+    const char *temp3 = "r4";
+#else
+    const char *temp3 = 0;
+#endif
     int index;
+    if (temp3)
+        printf("\tpush\t{%s}\n", temp3);
     for (index = 0; index < 40; index += 8) {
         /* load high and low from the state */
         printf("\tldr\t%s, [%s, #%d]\n", high, state, index);
         printf("\tldr\t%s, [%s, #%d]\n", low, state, index + 4);
 
         /* ascon_separate(high) and ascon_separate(low) */
-        bit_permute_step_two(high, low, temp1, temp2, 0, 0x22222222, 1);
-        bit_permute_step_two(high, low, temp1, temp2, 0, 0x0c0c0c0c, 2);
-        bit_permute_step_two(high, low, temp1, temp2, 0, 0x000f000f, 12);
-        bit_permute_step_two(high, low, temp1, temp2, 0, 0x000000ff, 24);
+        bit_permute_step_two(high, low, temp1, temp2, temp3, 0x22222222, 1);
+        bit_permute_step_two(high, low, temp1, temp2, temp3, 0x0c0c0c0c, 2);
+        bit_permute_step_two(high, low, temp1, temp2, temp3, 0x000f000f, 12);
+        bit_permute_step_two(high, low, temp1, temp2, temp3, 0x000000ff, 24);
 
         /* rearrange and store back */
         printf("\tuxth\t%s, %s\n", temp1, low);
         printf("\torr\t%s, %s, %s, lsl #16\n", temp1, temp1, high);
-        printf("\tlsrs\t%s, %s, #16\n", high, high);
+        shiftop("lsr", high, high, 16);
         printf("\tstr\t%s, [%s, #%d]\n", temp1, state, index);
-        printf("\tlsls\t%s, %s, #16\n", temp2, high);
+        shiftop("lsl", temp2, high, 16);
         printf("\torr\t%s, %s, %s, lsr #%d\n", temp2, temp2, low, 16);
         printf("\tstr\t%s, [%s, #%d]\n", temp2, state, index + 4);
     }
+    if (temp3)
+        printf("\tpop\t{%s}\n", temp3);
 }
 
 /* Output the function to convert from sliced form */
@@ -471,8 +525,8 @@ static void gen_from_sliced(void)
         printf("\tldr\t%s, [%s, #%d]\n", low, state, index + 4);
 
         /* rearrange the half words */
-        printf("\tlsrs\t%s, %s, #16\n", temp1, low);
-        printf("\tlsls\t%s, %s, #16\n", temp1, temp1);
+        shiftop("lsr", temp1, low, 16);
+        shiftop("lsl", temp1, temp1, 16);
         printf("\tuxth\t%s, %s\n", temp2, high);
         printf("\torr\t%s, %s, %s, lsr #16\n", high, temp1, high);
         printf("\torr\t%s, %s, %s, lsl #16\n", low, temp2, low);
@@ -481,7 +535,7 @@ static void gen_from_sliced(void)
         bit_permute_step_two(high, low, temp1, temp2, temp3, 0x0000aaaa, 15);
         bit_permute_step_two(high, low, temp1, temp2, temp3, 0x0000cccc, 14);
         bit_permute_step_two(high, low, temp1, temp2, temp3, 0x0000f0f0, 12);
-        bit_permute_step_two(high, low, temp1, temp2, 0,     0x000000ff, 24);
+        bit_permute_step_two(high, low, temp1, temp2, temp3, 0x000000ff, 24);
         printf("\tstr\t%s, [%s, #%d]\n", high, state, index);
         printf("\tstr\t%s, [%s, #%d]\n", low, state, index + 4);
     }
@@ -495,10 +549,18 @@ int main(int argc, char *argv[])
 
     /* Output the file header */
     printf("#include \"ascon-permutation-select.h\"\n");
+#if defined(FORCE_ARM_MODE)
+    printf("#if defined(ASCON_BACKEND_ARMV6)\n");
+#else
     printf("#if defined(ASCON_BACKEND_ARMV7M)\n");
+#endif
     fputs(copyright_message, stdout);
     printf("\t.syntax unified\n");
+#if defined(FORCE_ARM_MODE)
+    printf("\t.arch\tarmv6\n");
+#else
     printf("\t.thumb\n");
+#endif
     printf("\t.text\n");
 
     /* Output the sliced version of the permutation function */

@@ -41,14 +41,14 @@
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 6 && defined(__ARM_ARCH_6M__)
 
 /* The armv6m assembly code backend can also be used with armv6/thumb
- * systems but it is not as efficient as a custom armv6 backend. */
+ * systems but it is not as efficient as the armv6 backend below. */
 #define ASCON_BACKEND_ARMV6M 1
 #define ASCON_BACKEND_SLICED32 1
 
-#elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 6
+#elif defined(__ARM_ARCH) && __ARM_ARCH == 6
 
-/* The armv6 backend is a variant on armv7m with some instruction differences */
-#define ASCON_BACKEND_ARMV6M 1
+/* Assembly backend for armv6 systems, should work with thumb and non-thumb */
+#define ASCON_BACKEND_ARMV6 1
 #define ASCON_BACKEND_SLICED32 1
 
 #elif defined(__x86_64) || defined(__x86_64__) || \
