@@ -191,9 +191,9 @@ static void gen_round_sliced(const reg_names *regs, int round)
     printf("\tldr\t%s, [sp, #%d]\n", regs->t2, X0_E);
     rotate(regs->t0, regs->x0, immreg, 4);
     binop("eor", regs->t0, regs->t2);
-    rotate(regs->t1, regs->x2, immreg, 5);
-    binop("eor", regs->t1, regs->t0);
-    rotate(regs->t0, regs->x0, immreg, 10);
+    rotate(regs->t1, regs->t2, immreg, 5);
+    binop("eor", regs->t1, regs->x0);
+    rotate(regs->t0, regs->t0, immreg, 10);
     binop("eor", regs->t0, regs->x0);
     printf("\tstr\t%s, [sp, #%d]\n", regs->t0, X0_O);
     rotate(regs->x0, regs->t1, immreg, 9);
@@ -330,7 +330,7 @@ static void gen_permute(void)
     printf("\tlsls\tr1, r1, #2\n");
     printf("\tadr\tr2, .L90\n");
     printf("\tldr\tr1, [r2, r1]\n");
-    printf("\tbx\tr1\n");
+    printf("\tmov\tpc, r1\n");
     printf("\t.align\t2\n");
     printf(".L90:\n");
     for (round = 0; round < 12; ++round) {
@@ -379,7 +379,7 @@ static void bit_permute_step_two
     if ((mask & 0xFFFFFF00U) == 0U)
         printf("\tmovs\t%s, #%lu\n", t3, mask);
     else
-        printf("\tldr\t%s, =const_%08lx\n", t3, mask);
+        printf("\tldr\t%s, =0x%08lx\n", t3, mask);
     printf("\tlsrs\t%s, %s, #%d\n", t1, y1, shift);
     printf("\tlsrs\t%s, %s, #%d\n", t2, y2, shift);
     printf("\teors\t%s, %s\n", t1, y1);
@@ -392,13 +392,6 @@ static void bit_permute_step_two
     printf("\tlsls\t%s, %s, #%d\n", t2, t2, shift);
     printf("\teors\t%s, %s\n", y1, t1);
     printf("\teors\t%s, %s\n", y2, t2);
-}
-
-/* Generate a constant into the text segment */
-static void gen_const(unsigned long mask)
-{
-    printf("const_%08lx:\n", mask);
-    printf("\t.word\t0x%08lx\n", mask);
 }
 
 /* Output the function to convert to sliced form */
@@ -447,10 +440,6 @@ static void gen_to_sliced(void)
     printf("\tsubs\t%s, %s, #1\n", loop, loop);
     printf("\tbne\t.L100\n");
     printf("\tpop\t{%s, %s, %s, pc}\n", temp2, temp3, loop);
-    printf("\t.align\t2\n");
-    gen_const(0x22222222);
-    gen_const(0x0c0c0c0c);
-    gen_const(0x000f000f);
 }
 
 /* Output the function to convert from sliced form */
@@ -499,10 +488,6 @@ static void gen_from_sliced(void)
     printf("\tsubs\t%s, %s, #1\n", loop, loop);
     printf("\tbne\t.L101\n");
     printf("\tpop\t{%s, %s, %s, pc}\n", temp2, temp3, loop);
-    printf("\t.align\t2\n");
-    gen_const(0x0000aaaa);
-    gen_const(0x0000cccc);
-    gen_const(0x0000f0f0);
 }
 
 int main(int argc, char *argv[])

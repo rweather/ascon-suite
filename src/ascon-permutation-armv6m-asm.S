@@ -55,7 +55,7 @@ ascon_permute:
 	lsls	r1, r1, #2
 	adr	r2, .L90
 	ldr	r1, [r2, r1]
-	bx	r1
+	mov	pc, r1
 	.align	2
 .L90:
 	.word	.L0
@@ -140,11 +140,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -286,11 +285,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -432,11 +430,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -578,11 +575,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -724,11 +720,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -870,11 +865,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -1016,11 +1010,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -1162,11 +1155,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -1308,11 +1300,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -1454,11 +1445,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -1600,11 +1590,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -1746,11 +1735,10 @@ ascon_permute:
 	rors	r0, r0, r7
 	eors	r0, r2
 	movs	r7, #5
-	movs	r1, r5
+	movs	r1, r2
 	rors	r1, r1, r7
-	eors	r1, r0
+	eors	r1, r3
 	movs	r7, #10
-	movs	r0, r3
 	rors	r0, r0, r7
 	eors	r0, r3
 	str	r0, [sp, #4]
@@ -1856,7 +1844,7 @@ ascon_from_regular:
 .L100:
 	ldr	r1, [r0]
 	ldr	r2, [r0, #4]
-	ldr	r5, =const_22222222
+	ldr	r5, =0x22222222
 	lsrs	r3, r1, #1
 	lsrs	r4, r2, #1
 	eors	r3, r1
@@ -1869,7 +1857,7 @@ ascon_from_regular:
 	lsls	r4, r4, #1
 	eors	r1, r3
 	eors	r2, r4
-	ldr	r5, =const_0c0c0c0c
+	ldr	r5, =0x0c0c0c0c
 	lsrs	r3, r1, #2
 	lsrs	r4, r2, #2
 	eors	r3, r1
@@ -1882,7 +1870,7 @@ ascon_from_regular:
 	lsls	r4, r4, #2
 	eors	r1, r3
 	eors	r2, r4
-	ldr	r5, =const_000f000f
+	ldr	r5, =0x000f000f
 	lsrs	r3, r1, #12
 	lsrs	r4, r2, #12
 	eors	r3, r1
@@ -1921,13 +1909,6 @@ ascon_from_regular:
 	subs	r6, r6, #1
 	bne	.L100
 	pop	{r4, r5, r6, pc}
-	.align	2
-const_22222222:
-	.word	0x22222222
-const_0c0c0c0c:
-	.word	0x0c0c0c0c
-const_000f000f:
-	.word	0x000f000f
 	.size	ascon_from_regular, .-ascon_from_regular
 
 	.align	2
@@ -1948,7 +1929,7 @@ ascon_to_regular:
 	orrs	r1, r3
 	lsls	r2, r2, #16
 	orrs	r2, r4
-	ldr	r5, =const_0000aaaa
+	ldr	r5, =0x0000aaaa
 	lsrs	r3, r1, #15
 	lsrs	r4, r2, #15
 	eors	r3, r1
@@ -1961,7 +1942,7 @@ ascon_to_regular:
 	lsls	r4, r4, #15
 	eors	r1, r3
 	eors	r2, r4
-	ldr	r5, =const_0000cccc
+	ldr	r5, =0x0000cccc
 	lsrs	r3, r1, #14
 	lsrs	r4, r2, #14
 	eors	r3, r1
@@ -1974,7 +1955,7 @@ ascon_to_regular:
 	lsls	r4, r4, #14
 	eors	r1, r3
 	eors	r2, r4
-	ldr	r5, =const_0000f0f0
+	ldr	r5, =0x0000f0f0
 	lsrs	r3, r1, #12
 	lsrs	r4, r2, #12
 	eors	r3, r1
@@ -2006,13 +1987,6 @@ ascon_to_regular:
 	subs	r6, r6, #1
 	bne	.L101
 	pop	{r4, r5, r6, pc}
-	.align	2
-const_0000aaaa:
-	.word	0x0000aaaa
-const_0000cccc:
-	.word	0x0000cccc
-const_0000f0f0:
-	.word	0x0000f0f0
 	.size	ascon_to_regular, .-ascon_to_regular
 
 #endif
