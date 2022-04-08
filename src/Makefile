@@ -16,7 +16,11 @@ C_SOURCES = \
 	core/ascon-direct-xor.c \
 	core/ascon-sliced32.c \
 	core/ascon-sliced64.c \
-	core/ascon-util.c
+	core/ascon-util.c \
+	hash/ascon-hasha.c \
+	hash/ascon-hash.c \
+	hash/ascon-xofa.c \
+	hash/ascon-xof.c
 ASM_SOURCES = \
 	core/ascon-asm-armv6.S \
 	core/ascon-asm-armv6m.S \

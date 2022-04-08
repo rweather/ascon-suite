@@ -24,9 +24,10 @@
 #define ASCON_PERMUTATION_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 /**
- * \file ascon-permutation.h
+ * \file permutation.h
  * \brief Direct access to the ASCON permutation primitive.
  *
  * Normally applications do not need to use the definitions in this
