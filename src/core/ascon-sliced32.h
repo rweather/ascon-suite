@@ -20,13 +20,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_PERMUTATION_SLICED32_H
-#define ASCON_PERMUTATION_SLICED32_H
+#ifndef ASCON_SLICED32_H
+#define ASCON_SLICED32_H
 
 /* Utilities for the 32-bit sliced implementation of the ASCON permutation */
 
 #include <ascon/permutation.h>
-#include "ascon-permutation-select.h"
+#include "ascon-select-backend.h"
 
 #if defined(ASCON_BACKEND_SLICED32)
 
@@ -309,4 +309,4 @@
 
 #endif /* ASCON_BACKEND_SLICED32 */
 
-#endif /* ASCON_PERMUTATION_SLICED32_H */
+#endif /* ASCON_SLICED32_H */

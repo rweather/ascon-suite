@@ -33,7 +33,7 @@ enum Mode
 
 static void header(std::ostream &ostream)
 {
-    ostream << "#include \"ascon-permutation-select.h\"" << std::endl;
+    ostream << "#include \"ascon-select-backend.h\"" << std::endl;
     ostream << "#if defined(ASCON_BACKEND_AVR)" << std::endl;
     ostream << copyright_message;
     ostream << "#include <avr/io.h>" << std::endl;

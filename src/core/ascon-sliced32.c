@@ -20,10 +20,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/* Shared utility functions for 32-bit sliced versions of ASCON */
+/* SnP helper functions for backends that use the "sliced32" method */
 
-#include "ascon-permutation-sliced32.h"
-#include "ascon-internal-util.h"
+#include "ascon-sliced32.h"
+#include "ascon-util.h"
 
 #if defined(ASCON_BACKEND_SLICED32)
 

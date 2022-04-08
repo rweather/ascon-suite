@@ -31,6 +31,6 @@ clean:
 check:
 
 generate: all
-	bin/ascon_armv6  >../../src/ascon-permutation-armv6-asm.S
-	bin/ascon_armv6m >../../src/ascon-permutation-armv6m-asm.S
-	bin/ascon_armv7m >../../src/ascon-permutation-armv7m-asm.S
+	bin/ascon_armv6  >../../src/core/ascon-asm-armv6.S
+	bin/ascon_armv6m >../../src/core/ascon-asm-armv6m.S
+	bin/ascon_armv7m >../../src/core/ascon-asm-armv7m.S

@@ -6,20 +6,22 @@ include ../rules/options.mak
 INCLUDE_DIR = ../include
 
 CFLAGS += $(VECTOR_CFLAGS) $(COMMON_CFLAGS) $(STDC_CFLAGS)
-CFLAGS += -I$(INCLUDE_DIR) -I.
+CFLAGS += -I$(INCLUDE_DIR) -Icore
 
 LIBRARY = obj/libascon.a
 
 C_SOURCES = \
-	ascon-permutation-avr-api.c \
-	ascon-permutation-c32.c \
-	ascon-permutation-c64.c \
-	ascon-permutation-sliced32.c
+	core/ascon-c32.c \
+	core/ascon-c64.c \
+	core/ascon-direct-xor.c \
+	core/ascon-sliced32.c \
+	core/ascon-sliced64.c \
+	core/ascon-util.c
 ASM_SOURCES = \
-	ascon-permutation-armv6-asm.S \
-	ascon-permutation-armv6m-asm.S \
-	ascon-permutation-armv7m-asm.S \
-	ascon-permutation-avr-asm.S
+	core/ascon-asm-armv6.S \
+	core/ascon-asm-armv6m.S \
+	core/ascon-asm-armv7m.S \
+	core/ascon-asm-avr.S
 
 OBJECTS  = $(patsubst %.c,obj/%.o,$(C_SOURCES))
 OBJECTS += $(patsubst %.S,obj/%.o,$(ASM_SOURCES))

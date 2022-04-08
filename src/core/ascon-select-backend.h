@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_PERMUTATION_SELECT_H
-#define ASCON_PERMUTATION_SELECT_H
+#ifndef ASCON_SELECT_BACKEND_H
+#define ASCON_SELECT_BACKEND_H
 
 /* Select the default back end to use for the ASCON permutation,
  * and any properties we can use to optimize use of the permutation. */
@@ -57,6 +57,7 @@
 
 /* C backend for 64-bit systems with words in host byte order */
 #define ASCON_BACKEND_C64 1
+#define ASCON_BACKEND_SLICED64 1
 
 #else
 

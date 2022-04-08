@@ -24,9 +24,9 @@
  * 32-bit native word size. */
 
 #include <ascon/permutation.h>
-#include "ascon-permutation-select.h"
-#include "ascon-permutation-sliced32.h"
-#include "ascon-internal-util.h"
+#include "ascon-select-backend.h"
+#include "ascon-sliced32.h"
+#include "ascon-util.h"
 
 #if defined(ASCON_BACKEND_C32)
 

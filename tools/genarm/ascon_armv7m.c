@@ -548,7 +548,7 @@ int main(int argc, char *argv[])
     (void)argv;
 
     /* Output the file header */
-    printf("#include \"ascon-permutation-select.h\"\n");
+    printf("#include \"ascon-select-backend.h\"\n");
 #if defined(FORCE_ARM_MODE)
     printf("#if defined(ASCON_BACKEND_ARMV6)\n");
 #else

@@ -20,25 +20,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/* Plain C implementation of the ASCON permutation for systems with a
- * 64-bit or better native word size. */
+/* SnP helper functions for backends that use the "sliced64" method */
 
 #include <ascon/permutation.h>
-#include "ascon-permutation-select.h"
-#include "ascon-internal-util.h"
+#include "ascon-select-backend.h"
+#include "ascon-util.h"
 
-#if defined(ASCON_BACKEND_C64)
+#if defined(ASCON_BACKEND_SLICED64)
 
 /** @cond ascon_c64 */
 
-/* Define to 1 to emulate a big-endian CPU on a little-endian host.
- * Intended for testing purposes only. */
-#define ASCON_BACKEND_C64_EMUL_BIG 0
-
-#if defined(LW_UTIL_LITTLE_ENDIAN) && !ASCON_BACKEND_C64_EMUL_BIG
+#if defined(LW_UTIL_LITTLE_ENDIAN)
 #define ASCON_C64_BYTE_FOR_OFFSET(state, offset) \
     (state->B[((offset) & 0x38) + (7 - (offset & 0x07))])
-#define ASCON_BACKEND_C64_LE 1
 #else
 #define ASCON_C64_BYTE_FOR_OFFSET(state, offset) (state->B[(offset)])
 #endif
@@ -56,7 +50,7 @@ void ascon_init(ascon_state_t *state)
 
 void ascon_to_regular(ascon_state_t *state)
 {
-#if defined(ASCON_BACKEND_C64_LE)
+#if defined(LW_UTIL_LITTLE_ENDIAN)
     /* Convert from little-endian to big-endian */
     be_store_word64(state->B,      state->S[0]);
     be_store_word64(state->B +  8, state->S[1]);
@@ -71,7 +65,7 @@ void ascon_to_regular(ascon_state_t *state)
 
 void ascon_from_regular(ascon_state_t *state)
 {
-#if defined(ASCON_BACKEND_C64_LE)
+#if defined(LW_UTIL_LITTLE_ENDIAN)
     /* Convert from big-endian to little-endian */
     state->S[0] = be_load_word64(state->B);
     state->S[1] = be_load_word64(state->B + 8);
@@ -135,57 +129,4 @@ void ascon_extract_and_add_bytes
     }
 }
 
-void ascon_permute(ascon_state_t *state, uint8_t first_round)
-{
-    uint64_t t0, t1, t2, t3, t4;
-#if ASCON_BACKEND_C64_EMUL_BIG
-    uint64_t x0 = be_load_word64(state->B);
-    uint64_t x1 = be_load_word64(state->B + 8);
-    uint64_t x2 = be_load_word64(state->B + 16);
-    uint64_t x3 = be_load_word64(state->B + 24);
-    uint64_t x4 = be_load_word64(state->B + 32);
-#else
-    uint64_t x0 = state->S[0];
-    uint64_t x1 = state->S[1];
-    uint64_t x2 = state->S[2];
-    uint64_t x3 = state->S[3];
-    uint64_t x4 = state->S[4];
-#endif
-    while (first_round < 12) {
-        /* Add the round constant to the state */
-        x2 ^= ((0x0F - first_round) << 4) | first_round;
-
-        /* Substitution layer - apply the s-box using bit-slicing
-         * according to the algorithm recommended in the specification */
-        x0 ^= x4;   x4 ^= x3;   x2 ^= x1;
-        t0 = ~x0;   t1 = ~x1;   t2 = ~x2;   t3 = ~x3;   t4 = ~x4;
-        t0 &= x1;   t1 &= x2;   t2 &= x3;   t3 &= x4;   t4 &= x0;
-        x0 ^= t1;   x1 ^= t2;   x2 ^= t3;   x3 ^= t4;   x4 ^= t0;
-        x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   x2 = ~x2;
-
-        /* Linear diffusion layer */
-        x0 ^= rightRotate19_64(x0) ^ rightRotate28_64(x0);
-        x1 ^= rightRotate61_64(x1) ^ rightRotate39_64(x1);
-        x2 ^= rightRotate1_64(x2)  ^ rightRotate6_64(x2);
-        x3 ^= rightRotate10_64(x3) ^ rightRotate17_64(x3);
-        x4 ^= rightRotate7_64(x4)  ^ rightRotate41_64(x4);
-
-        /* Move onto the next round */
-        ++first_round;
-    }
-#if ASCON_BACKEND_C64_EMUL_BIG
-    be_store_word64(state->B,      x0);
-    be_store_word64(state->B +  8, x1);
-    be_store_word64(state->B + 16, x2);
-    be_store_word64(state->B + 24, x3);
-    be_store_word64(state->B + 32, x4);
-#else
-    state->S[0] = x0;
-    state->S[1] = x1;
-    state->S[2] = x2;
-    state->S[3] = x3;
-    state->S[4] = x4;
-#endif
-}
-
-#endif /* ASCON_BACKEND_C64 */
+#endif /* ASCON_BACKEND_SLICED64 */

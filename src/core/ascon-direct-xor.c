@@ -20,13 +20,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/* Non-assembly part of the AVR implementation of the ASCON permutation */
+/* SnP helper functions for backends that use the Direct-XOR method */
 
 #include <ascon/permutation.h>
-#include "ascon-permutation-select.h"
-#include "ascon-internal-util.h"
+#include "ascon-select-backend.h"
+#include "ascon-util.h"
 
-#if defined(ASCON_BACKEND_AVR)
+#if defined(ASCON_BACKEND_DIRECT_XOR)
 
 void ascon_init(ascon_state_t *state)
 {
@@ -100,4 +100,4 @@ void ascon_extract_and_add_bytes
     }
 }
 
-#endif /* ASCON_BACKEND_AVR */
+#endif /* ASCON_BACKEND_DIRECT_XOR */

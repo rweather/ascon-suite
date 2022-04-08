@@ -1,4 +1,4 @@
-#include "ascon-permutation-select.h"
+#include "ascon-select-backend.h"
 #if defined(ASCON_BACKEND_ARMV6M)
 /*
  * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
