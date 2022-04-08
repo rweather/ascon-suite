@@ -713,25 +713,6 @@
 #define rightRotate7_8(a)  (rightRotate_8((a), 7))
 
 /**
- * \brief Check an authentication tag in constant time.
- *
- * \param plaintext Points to the plaintext data.
- * \param plaintext_len Length of the plaintext in bytes.
- * \param tag1 First tag to compare.
- * \param tag2 Second tag to compare.
- * \param size Length of the tags in bytes.
- *
- * \return Returns -1 if the tag check failed or 0 if the check succeeded.
- *
- * If the tag check fails, then the \a plaintext will also be zeroed to
- * prevent it from being used accidentally by the application when the
- * ciphertext was invalid.
- */
-int ascon_aead_check_tag
-    (unsigned char *plaintext, size_t plaintext_len,
-     const unsigned char *tag1, const unsigned char *tag2, size_t size);
-
-/**
  * \brief Attempts to cleans a buffer that contains sensitive material.
  *
  * \param buf Points to the buffer to clear.

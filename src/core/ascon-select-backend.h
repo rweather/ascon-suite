@@ -26,7 +26,25 @@
 /* Select the default back end to use for the ASCON permutation,
  * and any properties we can use to optimize use of the permutation. */
 
-#if defined(__AVR__)
+#if defined(ASCON_FORCE_C32)
+
+/* Force the use of the "c32" backend for testing purposes */
+#define ASCON_BACKEND_C32 1
+#define ASCON_BACKEND_SLICED32 1
+
+#elif defined(ASCON_FORCE_C64)
+
+/* Force the use of the "c64" backend for testing purposes */
+#define ASCON_BACKEND_C64 1
+#define ASCON_BACKEND_SLICED64 1
+
+#elif defined(ASCON_FORCE_DIRECT_XOR) || defined(ASCON_FORCE_GENERIC)
+
+/* Force the use of the "direct xor" backend for testing purposes */
+#define ASCON_BACKEND_C64_DIRECT_XOR 1
+#define ASCON_BACKEND_DIRECT_XOR 1
+
+#elif defined(__AVR__)
 
 /* AVR assembly code backend */
 #define ASCON_BACKEND_AVR 1

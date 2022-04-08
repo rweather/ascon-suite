@@ -27,16 +27,24 @@
 #include "ascon-select-backend.h"
 #include "ascon-util.h"
 
-#if defined(ASCON_BACKEND_C64)
+#if defined(ASCON_BACKEND_C64) || defined(ASCON_BACKEND_C64_DIRECT_XOR)
 
 void ascon_permute(ascon_state_t *state, uint8_t first_round)
 {
     uint64_t t0, t1, t2, t3, t4;
+#if defined(ASCON_BACKEND_C64_DIRECT_XOR)
+    uint64_t x0 = be_load_word64(state->B);
+    uint64_t x1 = be_load_word64(state->B + 8);
+    uint64_t x2 = be_load_word64(state->B + 16);
+    uint64_t x3 = be_load_word64(state->B + 24);
+    uint64_t x4 = be_load_word64(state->B + 32);
+#else
     uint64_t x0 = state->S[0];
     uint64_t x1 = state->S[1];
     uint64_t x2 = state->S[2];
     uint64_t x3 = state->S[3];
     uint64_t x4 = state->S[4];
+#endif
     while (first_round < 12) {
         /* Add the round constant to the state */
         x2 ^= ((0x0F - first_round) << 4) | first_round;
@@ -59,11 +67,19 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round)
         /* Move onto the next round */
         ++first_round;
     }
+#if defined(ASCON_BACKEND_C64_DIRECT_XOR)
+    be_store_word64(state->B,      x0);
+    be_store_word64(state->B +  8, x1);
+    be_store_word64(state->B + 16, x2);
+    be_store_word64(state->B + 24, x3);
+    be_store_word64(state->B + 32, x4);
+#else
     state->S[0] = x0;
     state->S[1] = x1;
     state->S[2] = x2;
     state->S[3] = x3;
     state->S[4] = x4;
+#endif
 }
 
 #endif /* ASCON_BACKEND_C64 */

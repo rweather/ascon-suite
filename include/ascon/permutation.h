@@ -150,6 +150,27 @@ void ascon_extract_and_add_bytes
      unsigned offset, unsigned size);
 
 /**
+ * \brief Extracts bytes from the ASCON state and XOR's them with
+ * input bytes to produce output bytes.  Also write the original
+ * input bytes into the ASCON state.
+ *
+ * \param state The ASCON state in "operational" form.
+ * \param input Points to the input buffer.
+ * \param output Points to the output buffer.
+ * \param offset Offset into the state between 0 and 40 - size.
+ * \param size Number of bytes to extract from the state between 0 and 40.
+ *
+ * This function has the effect of calling ascon_extract_and_add_bytes()
+ * and then ascon_overwrite_bytes(), but it also works for the case where
+ * \a input and \a output are the same buffer.  This combination is
+ * typically used for AEAD decryption where the input ciphertext
+ * needs to be incorporated into the state to authenticate it.
+ */
+void ascon_extract_and_overwrite_bytes
+    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
+     unsigned offset, unsigned size);
+
+/**
  * \brief Permutes the ASCON state with a specified number of rounds.
  *
  * \param state The ASCON state in "operational" form.

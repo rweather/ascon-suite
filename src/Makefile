@@ -11,6 +11,10 @@ CFLAGS += -I$(INCLUDE_DIR) -Icore
 LIBRARY = obj/libascon.a
 
 C_SOURCES = \
+	aead/ascon-aead-128.c \
+	aead/ascon-aead-128a.c \
+	aead/ascon-aead-80pq.c \
+	aead/ascon-aead-common.c \
 	core/ascon-c32.c \
 	core/ascon-c64.c \
 	core/ascon-direct-xor.c \

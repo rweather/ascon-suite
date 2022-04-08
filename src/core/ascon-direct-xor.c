@@ -100,4 +100,17 @@ void ascon_extract_and_add_bytes
     }
 }
 
+void ascon_extract_and_overwrite_bytes
+    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
+     unsigned offset, unsigned size)
+{
+    while (offset < 40 && size > 0) {
+        unsigned char in = *input++;
+        *output++ = in ^ state->B[offset];
+        state->B[offset] = in;
+        ++offset;
+        --size;
+    }
+}
+
 #endif /* ASCON_BACKEND_DIRECT_XOR */

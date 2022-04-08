@@ -113,7 +113,7 @@ void ascon_xofa_absorb
 
     /* Process full blocks that are aligned at state->s.count == 0 */
     while (inlen >= ASCON_XOF_RATE) {
-        ascon_absorb_8(&(state->state), in);
+        ascon_absorb_8(&(state->state), in, 0);
         in += ASCON_XOF_RATE;
         inlen -= ASCON_XOF_RATE;
         ascon_permute(&(state->state), 4);
@@ -157,7 +157,7 @@ void ascon_xofa_squeeze
 
     /* Handle full blocks */
     while (outlen >= ASCON_XOF_RATE) {
-        ascon_squeeze_8(&(state->state), out);
+        ascon_squeeze_8(&(state->state), out, 0);
         ascon_permute(&(state->state), 4);
         out += ASCON_XOF_RATE;
         outlen -= ASCON_XOF_RATE;

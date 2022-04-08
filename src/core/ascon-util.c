@@ -22,28 +22,6 @@
 
 #include "ascon-util.h"
 
-int ascon_aead_check_tag
-    (unsigned char *plaintext, size_t plaintext_len,
-     const unsigned char *tag1, const unsigned char *tag2, size_t size)
-{
-    /* Set "accum" to -1 if the tags match, or 0 if they don't match */
-    int accum = 0;
-    while (size > 0) {
-        accum |= (*tag1++ ^ *tag2++);
-        --size;
-    }
-    accum = (accum - 1) >> 8;
-
-    /* Destroy the plaintext if the tag match failed */
-    while (plaintext_len > 0) {
-        *plaintext++ &= accum;
-        --plaintext_len;
-    }
-
-    /* If "accum" is 0, return -1, otherwise return 0 */
-    return ~accum;
-}
-
 void ascon_clean(void *buf, unsigned size)
 {
     /* Force the use of volatile so that we actually clear the memory.

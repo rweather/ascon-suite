@@ -129,4 +129,17 @@ void ascon_extract_and_add_bytes
     }
 }
 
+void ascon_extract_and_overwrite_bytes
+    (ascon_state_t *state, const uint8_t *input, uint8_t *output,
+     unsigned offset, unsigned size)
+{
+    while (offset < 40 && size > 0) {
+        unsigned char in = *input++;
+        *output++ = in ^ ASCON_C64_BYTE_FOR_OFFSET(state, offset);
+        ASCON_C64_BYTE_FOR_OFFSET(state, offset) = in;
+        ++offset;
+        --size;
+    }
+}
+
 #endif /* ASCON_BACKEND_SLICED64 */

@@ -236,5 +236,38 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
+    printf("    Extract And Overwrite Bytes ... ");
+    fflush(stdout);
+    ok = 1;
+    for (offset = 0; offset < 40; ++offset) {
+        for (size = 0; size < (40 - offset); ++size) {
+            memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
+            memset(buffer, 0xAA, sizeof(buffer));
+            ascon_from_regular(&state);
+            ascon_extract_and_overwrite_bytes
+                (&state, ascon_input, buffer, offset, size);
+            ascon_to_regular(&state);
+            for (posn = 0; posn < size; ++posn) {
+                uint8_t value = ascon_output_12[posn + offset];
+                value ^= ascon_input[posn];
+                if (value != buffer[posn])
+                    ok = 0;
+            }
+            for (posn = 0; posn < 40; ++posn) {
+                uint8_t value = state.B[posn];
+                if (posn >= offset && posn < (offset + size))
+                    value = ascon_input[posn - offset];
+                if (value != state.B[posn])
+                    ok = 0;
+            }
+        }
+    }
+    if (!ok) {
+        printf("failed\n");
+        test_exit_result = 1;
+    } else {
+        printf("ok\n");
+    }
+
     printf("\n");
 }
