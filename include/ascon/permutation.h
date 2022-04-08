@@ -35,12 +35,6 @@
  * AEAD and hashing modes.  However, if the application needs to
  * implement its own mode, then these definitions can help with that.
  *
- * \note This API may not use the most efficient platform-specific
- * implementation of the permuation in the library due to alignment
- * constraints and function call overheads.  The high-level AEAD
- * and hashing modes have access to internal inlined API's with
- * better performance.
- *
  * References: https://ascon.iaik.tugraz.at/
  */
 
