@@ -58,13 +58,26 @@ void ascon_from_regular(ascon_state_t *state)
     }
 }
 
+#define ROUND_CONSTANT_PAIR(rc1, rc2) \
+    (~((uint32_t)(rc1))), (~((uint32_t)(rc2)))
+
 void ascon_permute(ascon_state_t *state, uint8_t first_round)
 {
-    static const unsigned char RC[12 * 2] = {
-        12, 12, 9, 12, 12, 9, 9, 9, 6, 12, 3, 12,
-        6, 9, 3, 9, 12, 6, 9, 6, 12, 3, 9, 3
+    static const uint32_t RC[12 * 2] = {
+        ROUND_CONSTANT_PAIR(12, 12),
+        ROUND_CONSTANT_PAIR( 9, 12),
+        ROUND_CONSTANT_PAIR(12,  9),
+        ROUND_CONSTANT_PAIR( 9,  9),
+        ROUND_CONSTANT_PAIR( 6, 12),
+        ROUND_CONSTANT_PAIR( 3, 12),
+        ROUND_CONSTANT_PAIR( 6,  9),
+        ROUND_CONSTANT_PAIR( 3,  9),
+        ROUND_CONSTANT_PAIR(12,  6),
+        ROUND_CONSTANT_PAIR( 9,  6),
+        ROUND_CONSTANT_PAIR(12,  3),
+        ROUND_CONSTANT_PAIR( 9,  3)
     };
-    const unsigned char *rc = RC + first_round * 2;
+    const uint32_t *rc = RC + first_round * 2;
     uint32_t t0, t1, t2, t3, t4;
 
     /* Load the state into local variables */
@@ -78,6 +91,13 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round)
     uint32_t x3_o = state->W[7];
     uint32_t x4_e = state->W[8];
     uint32_t x4_o = state->W[9];
+
+    /* We move the "x2 = ~x2" term of the substitution layer outside
+     * the loop.  The round constants are modified to "NOT value" to
+     * apply "x2 = ~x2" automatically each round.  Then we only
+     * need to invert x2 for real before and after the loop. */
+    x2_e = ~x2_e;
+    x2_o = ~x2_o;
 
     /* Perform all permutation rounds */
     while (first_round < 12) {
@@ -93,7 +113,7 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round)
                 t0 = ~x0;   t1 = ~x1;   t2 = ~x2;   t3 = ~x3;   t4 = ~x4; \
                 t0 &= x1;   t1 &= x2;   t2 &= x3;   t3 &= x4;   t4 &= x0; \
                 x0 ^= t1;   x1 ^= t2;   x2 ^= t3;   x3 ^= t4;   x4 ^= t0; \
-                x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   x2 = ~x2; \
+                x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   /* x2 = ~x2; */ \
             } while (0)
         ascon_sbox(x0_e, x1_e, x2_e, x3_e, x4_e);
         ascon_sbox(x0_o, x1_o, x2_o, x3_o, x4_o);
@@ -128,6 +148,10 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round)
         /* Move onto the next round */
         ++first_round;
     }
+
+    /* Apply the final NOT to x2 */
+    x2_e = ~x2_e;
+    x2_o = ~x2_o;
 
     /* Write the local variables back to the state */
     state->W[0] = x0_e;
