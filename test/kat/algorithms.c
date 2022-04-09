@@ -22,7 +22,7 @@
 
 #include "algorithms.h"
 #include <ascon/aead.h>
-//#include <ascon/siv.h>
+#include <ascon/siv.h>
 #include <ascon/hash.h>
 #include <ascon/xof.h>
 #include <string.h>
@@ -113,7 +113,6 @@ aead_hash_algorithm_t const ascon_xofa_algorithm = {
     (aead_xof_squeeze_t)ascon_xofa_squeeze
 };
 
-#if 0
 aead_cipher_t const ascon128_siv_cipher = {
     "ASCON-128-SIV",
     ASCON128_KEY_SIZE,
@@ -146,18 +145,15 @@ aead_cipher_t const ascon80pq_siv_cipher = {
     ascon80pq_siv_decrypt,
     0, 0
 };
-#endif
 
 /* List of all AEAD ciphers that we can run KAT tests for */
 static const aead_cipher_t *const ciphers[] = {
     &ascon128_cipher,
     &ascon128a_cipher,
     &ascon80pq_cipher,
-#if 0
     &ascon128_siv_cipher,
     &ascon128a_siv_cipher,
     &ascon80pq_siv_cipher,
-#endif
     0
 };
 

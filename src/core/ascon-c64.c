@@ -27,7 +27,7 @@
 #include "ascon-select-backend.h"
 #include "ascon-util.h"
 
-#if defined(ASCON_BACKEND_C64) || defined(ASCON_BACKEND_C64_DIRECT_XOR)
+#if defined(ASCON_BACKEND_C64) && !defined(ASCON_BACKEND_C64_DIRECT_XOR)
 
 void ascon_to_regular(ascon_state_t *state)
 {
@@ -58,6 +58,10 @@ void ascon_from_regular(ascon_state_t *state)
     (void)state;
 #endif
 }
+
+#endif /* !ASCON_BACKEND_C64_DIRECT_XOR */
+
+#if defined(ASCON_BACKEND_C64) || defined(ASCON_BACKEND_C64_DIRECT_XOR)
 
 #define ROUND_CONSTANT(round)   \
         (~(uint64_t)(((0x0F - (round)) << 4) | (round)))

@@ -9,6 +9,6 @@ clean:
 	(cd src; $(MAKE) clean)
 	(cd test; $(MAKE) clean)
 
-check:
+check: all
 	(cd src; $(MAKE) check)
 	(cd test; $(MAKE) check)

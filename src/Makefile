@@ -6,7 +6,7 @@ include ../rules/options.mak
 INCLUDE_DIR = ../include
 
 CFLAGS += $(VECTOR_CFLAGS) $(COMMON_CFLAGS) $(STDC_CFLAGS)
-CFLAGS += -I$(INCLUDE_DIR) -Icore
+CFLAGS += -I$(INCLUDE_DIR) -Icore -Iaead
 
 LIBRARY = obj/libascon.a
 
@@ -24,7 +24,10 @@ C_SOURCES = \
 	hash/ascon-hasha.c \
 	hash/ascon-hash.c \
 	hash/ascon-xofa.c \
-	hash/ascon-xof.c
+	hash/ascon-xof.c \
+	siv/ascon-siv-128.c \
+	siv/ascon-siv-128a.c \
+	siv/ascon-siv-80pq.c
 ASM_SOURCES = \
 	core/ascon-asm-armv6.S \
 	core/ascon-asm-armv6m.S \

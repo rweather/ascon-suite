@@ -109,8 +109,8 @@
     be_store_word64((data), (state)->S[(offset) / 8])
 #define ascon_squeeze_16(state, data, offset) \
     do { \
-        (be_store_word64((data), (state)->S[(offset) / 8])); \
-        (be_store_word64((data) + 8, (state)->S[(offset) / 8 + 1])); \
+        be_store_word64((data), (state)->S[(offset) / 8]); \
+        be_store_word64((data) + 8, (state)->S[(offset) / 8 + 1]); \
     } while (0)
 #define ascon_squeeze_partial(state, data, offset, count) \
     ascon_extract_bytes((state), (data), (offset), (count))
