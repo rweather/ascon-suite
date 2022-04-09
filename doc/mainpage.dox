@@ -1,0 +1,87 @@
+/*
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file mainpage.dox
+\mainpage
+\tableofcontents
+
+This <a href="https://github.com/rweather/ascon-suite">repository</a>
+builds a number of useful crytographic primitives around the ASCON
+permutation:
+
+\li Regular AEAD and SIV encryption modes
+\li Hashing in regular, XOF, HMAC, and KMAC modes
+\li PRNG to expand a seed to an arbitrary amount of random data
+\li Password hashing using PBKDF2
+
+The idea is that if you want to use ASCON in an embedded application,
+that you copy the suite and the back end of choice to your platform
+and you'll get pretty much everything you need for symmetric encryption
+using ASCON.
+
+One of the key goals for this suite is to keep the code size relatively
+small on embedded platforms while also providing good performance.
+
+The suite has a number of permutation back ends for different CPU
+configurations, which are detailed on the \ref porting "Porting" page.
+
+\section mainpage_standards Standards
+
+The core ASCON implementation is based on version 1.2 from the final round
+submission to the <a href="https://csrc.nist.gov/projects/lightweight-cryptography">NIST lightweight cryptography competition</a>.
+The following ASCON primitives are provided:
+
+\li ASCON-128 authenticated encryption algorithm with a 128-bit key.
+\li ASCON-128a authenticated encryption algorithm with a 128-bit key.
+\li ASCON-80pq authenticated encryption algorithm with a 160-bit key.
+\li ASCON-HASH and ASCON-HASHA hash algorithms with a 256-bit output.
+\li ASCON-XOF and ASCON-XOFA extendable output functions (XOF) with an
+arbitrary-length output.
+\li Raw access to the ASCON permutation itself to build other application modes.
+
+\section mainpage_extensions Extensions
+
+The following higher-level extensions are provided:
+
+\li ASCON-128-SIV, ASCON-128a-SIV, and ASCON-80pq-SIV variants that
+provide Synthetic Initialization Vector (SIV) encryption modes.
+See the \ref siv "SIV page" for more information.
+\li HMAC and KMAC modes for keyed hashing built around ASCON-HASH and
+ASCON-XOF.  See the \ref kmac "KMAC page" for more information on ASCON-KMAC.
+\li ASCON-PRNG for generating an arbitary sequence of random data from
+system-supplied and application-supplied seed material.  This is based on a
+slightly modified version of ASCON-128.  See the \ref prng "PRNG page"
+for more information.
+\li PBKDF2 mode built around the ASCON HMAC mode.
+
+These extensions have not yet been standardised by a public standards body,
+but I did try to follow general practice when creating such modes.
+See the individual pages for the design choices that I made.  Feedback welcome.
+
+\section mainpage_contact Contact
+
+For more information on these libraries, to report bugs, or to suggest
+improvements, please contact the author Rhys Weatherley via
+<a href="mailto:rhys.weatherley@gmail.com">email</a>.
+
+*/

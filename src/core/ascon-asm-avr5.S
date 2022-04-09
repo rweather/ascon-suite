@@ -1,5 +1,5 @@
 #include "ascon-select-backend.h"
-#if defined(ASCON_BACKEND_AVR)
+#if defined(ASCON_BACKEND_AVR5)
 /*
  * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *

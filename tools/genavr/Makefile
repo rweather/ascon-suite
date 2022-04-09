@@ -31,4 +31,4 @@ algorithm_ascon.o: code.h gen.h
 interpret.o: code.h
 
 generate: $(TARGET)
-	./$(TARGET) ASCON >../../src/core/ascon-asm-avr.S
+	./$(TARGET) ASCON >../../src/core/ascon-asm-avr5.S

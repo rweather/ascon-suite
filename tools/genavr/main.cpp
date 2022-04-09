@@ -34,7 +34,7 @@ enum Mode
 static void header(std::ostream &ostream)
 {
     ostream << "#include \"ascon-select-backend.h\"" << std::endl;
-    ostream << "#if defined(ASCON_BACKEND_AVR)" << std::endl;
+    ostream << "#if defined(ASCON_BACKEND_AVR5)" << std::endl;
     ostream << copyright_message;
     ostream << "#include <avr/io.h>" << std::endl;
     ostream << "/* Automatically generated - do not edit */" << std::endl;

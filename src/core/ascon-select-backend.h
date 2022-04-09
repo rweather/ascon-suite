@@ -44,10 +44,10 @@
 #define ASCON_BACKEND_C64_DIRECT_XOR 1
 #define ASCON_BACKEND_DIRECT_XOR 1
 
-#elif defined(__AVR__)
+#elif defined(__AVR__) && __AVR_ARCH__ >= 5
 
-/* AVR assembly code backend */
-#define ASCON_BACKEND_AVR 1
+/* AVR5 assembly code backend */
+#define ASCON_BACKEND_AVR5 1
 #define ASCON_BACKEND_DIRECT_XOR 1
 
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 7

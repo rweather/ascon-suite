@@ -1,0 +1,97 @@
+/*
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file kmac.dox
+\page kmac Keyed Message Authentication Code (KMAC) mode for ASCON
+\tableofcontents
+
+\section kmac_intro Introduction
+
+The KMAC mode provides a method to authenticate a sequence of bytes
+under a key using ASCON in hashing mode.  The output is essentially
+equivalent to hashing the key followed by the data.
+
+Note: Other hash algorithms like SHA-256 use HMAC instead of KMAC.
+The HMAC construction is not necessary for sponge-based hash algorithms
+like ASCON, so the simpler KMAC is preferable.
+
+\section kmac_nist Standard NIST KMAC
+
+<a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf">NIST SP 800-185</a> is an extension of the XOF modes SHAKE128 and SHAKE256.
+The nearest equivalent for us is ASCON-XOF.  We use a similar encoding
+to NIST SP 800-185 to provide domain separation between the key and data.
+
+One deviation from NIST is the encoding of the output length.
+NIST appends the length to the data being hashed.  ASCON-HASH and
+ASCON-XOF already have a standard mechanism for encoding the output
+length into the initialization vector.  We use the ASCON approach.
+
+\section kmac_technical Technical details of ASCON-KMAC
+
+ASCON-KMAC uses ASCON-XOF as the underlying hashing primitive, with the
+desired length of the output encoded into the bottom 32 bits of the
+initialization vector:
+
+\code
+IV = 0x00400c0000000000 + output_length_in_bits
+\endcode
+
+If the output length is 256 bits / 32 bytes, then the behaviour is identical
+to ASCON-HASH.  If the output length is arbitrary, encoded as 0, then the
+behaviour is identical to ASCON-XOF.  Output lengths of 2<sup>32</sup> bits
+or greater are encoded as 0 for arbitrary-length.
+
+As in NIST SP 800-185, we form the data to be hashed as a concatenation of
+the following:
+
+\li Declaration of the rate block size, which for this algorithm is the
+two byte sequence 0x01 0x08.
+\li Length-prefixed function name, which is "KMAC" for this algorithm.
+\li Length-prefixed application-supplied customization string.
+\li Zero padding to a multiple of the 8-byte rate block size.
+\li Another copy of the rate declaration, this time for the key.
+\li Length-prefixed key
+\li Zero padding to a multiple of the 8-byte rate block size.
+\li Data, padded in the normal ASCON-XOF fashion (add a 1 bit and enough
+zeroes to fill the last rate block).
+
+NIST SP 800-185 defines a method to encode a string that is prefixed by
+its length in bits.  The length in bits is reduced to the minimum-size
+string that can be represented in big endian as 8-bit bytes.  This is
+in turn prefixed by the number of bytes in the length encoding.
+Some examples:
+
+\li 0 is encoded as 0x01 0x00
+\li 1 is encoded as 0x01 0x01
+\li 32 is encoded as 0x01 0x20
+\li 256 is encoded as 0x02 0x01 0x00
+\li 65535 is encoded as 0x02 0xFF 0xFF
+\li 65536 is encoded as 0x03 0x01 0x00 0x00
+
+\section kmac_other_modes Other NIST modes
+
+NIST SP 800-185 also defines modes called cSHAKE, TupleHash, and ParallelHash,
+using the same definition style as KMAC.  We could define similar modes for
+ASCON as well but haven't done so yet.
+
+*/

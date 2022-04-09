@@ -1,0 +1,176 @@
+/*
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file siv.dox
+\page siv Synthetic Initialization Vector (SIV) mode for ASCON
+\tableofcontents
+
+\section siv_why Why SIV?
+
+This library provides support for SIV mode (Synthetic Initialization
+Vector).  SIV mode authenticates the associated data and the plaintext
+before encrypting the plaintext.
+
+The SIV construction makes the result resistant against reuse of the
+nonce as long as the combination of the associated data and plaintext
+is unique.  If the combination is not unique, then the algorithm leaks
+that the same plaintext has been encrypted again but does not reveal
+the plaintext itself.
+
+SIV mode can be useful when encrypting data in memory, such as
+encrypting a key pair for storage in non-volatile memory.  The nonce or
+the associated data is set to the address in memory of the encrypted data,
+so that encrypting the same data in different locations will give
+different results.
+
+SIV mode increases the size of the plaintext by 16 bytes, which provides
+the authentication tag.  This tag must not be discarded because the
+data cannot be successfully decrypted without it.
+
+Regular AEAD algorithms like ASCON-128 could be used for this purpose
+but they have a flaw.  If the same key and nonce is reused, it is trivial
+to decrypt a new plaintext message if a previous plaintext/ciphertext
+pair is known or guessed.  SIV mode does not have this flaw.  Previously
+encrypted data at a memory location does not help in the recovery of
+new data at the same location (unless it is exactly the same data).
+
+\section siv_overview SIV mode overview
+
+The SIV mode here is inspired by some of the non-ASCON candidates to the
+second round of the NIST lightweight cryptography competition; notably
+ESTATE, Romulus-M, and SUNDAE-GIFT.
+
+In each case, the algorithm first authenticates the associated data and
+plaintext with the key and nonce.  The resulting authentication tag is
+used as a new nonce with the original key to encrypt the plaintext.
+This requires two passes over the plaintext, compared with only one
+pass for the regular ASCON AEAD modes like ASCON-128.
+
+On the decryption side, the authentication tag is used as a nonce to
+decrypt the ciphertext.  Then the authentication tag is recomputed over
+the associated data and plaintext to verify authenticity.
+
+\section siv_technical Technical details for ASCON-128-SIV
+
+This section describes the authenticated encryption mode ASCON-128-SIV.
+ASCON-128a-SIV and ASCON-80pq-SIV are constructed in a similar manner.
+
+\subsection siv_technical_auth Authentication
+
+The 320-bit ASCON permutation state is initialized with a concatenation
+of the following:
+
+\li 64-bit initialization vector (IV) 0x80400c0600000001
+\li 128-bit key
+\li 128-bit nonce
+
+Note that the IV is the ASCON-128 value 0x80400c0600000000 plus 1,
+where 1 is used to indicate the authentication phase.  This provides
+domain separation with the regular ASCON-128 AEAD mode.
+
+Apply the ASCON permutation with 12 rounds and then XOR the key
+with the trailing 128 bits of the state.
+
+If the associated data is non-zero in length, then add a 1 bit and enough
+zero bits to make the result a mulitple of 8 bytes in length.  Absorb
+this into the ASCON permutation state in the same way as ASCON-128;
+for each 8 byte block:
+
+\li XOR the 8 bytes of input with the first 8 bytes of the permutation state.
+\li Apply the ASCON permutation with 6 rounds.
+
+Next, XOR a 1 with the last bit of the ASCON permutation state to provide
+separation between the associated data and plaintext.
+
+Add 1 bit to the plaintext and enough zero bits to make the result a
+multiple of 8 bytes in length.  Absorb the padded plaintext data in the
+same way as the associated data.
+
+Finally, generate the 128-bit authentication tag as follows:
+
+\li XOR the 128 bits of the key into the ASCON permutation state
+starting at byte offset 8.
+\li Apply the ASCON permutation with 12 rounds.
+\li XOR the 128 bits of the key with the ASCON permutation state starting
+at byte offset 24 to generate the 128 bits of the authentication tag.
+
+\subsection siv_technical_encrypt Encryption
+
+To encrypt the plaintext, the 320-bit ASCON permutation state is
+re-initialized with a concatenation of the following:
+
+\li 64-bit initialization vector (IV) 0x80400c0600000002
+\li 128-bit key
+\li 128-bit authentication tag from the previous step
+
+Note that the IV is the ASCON-128 value 0x80400c0600000000 plus 2,
+where 2 is used to indicate the encryption phase.
+
+Apply the ASCON permutation with 12 rounds and then XOR the key
+with the trailing 128 bits of the state.
+
+Encryption uses the ASCON permutation in Output Feedback (OFB) mode to
+generate a keystream to XOR against the plaintext to produce the
+ciphertext.  The same code can also be used for decryption.
+
+For each 8-byte block of plaintext:
+
+\li XOR the next 8 bytes of plaintext with the first 8 bytes of the
+permutation state to produce the next 8 bytes of ciphertext.
+\li Apply the ASCON permutation with 6 rounds (note that we do not
+XOR the plaintext into the permutation state this time).
+
+If the final block does not have a full 8 bytes, then it is XOR'ed with
+the first N bytes of the state where N is the size of the partial block.
+Unlike in the authentication phase, no 1-bit padding is performed.
+
+\subsection siv_technical_variants Variants
+
+ASCON-128a-SIV and ASCON-80pq-SIV are defined in a similar way using
+the same offsets and round counts as the corresponding regular mode.
+The complete list of initialization vectors is:
+
+\li ASCON-128 regular IV: 0x80400c0600000000
+\li ASCON-128-SIV authentication phase IV: 0x80400c0600000001
+\li ASCON-128-SIV encryption phase IV: 0x80400c0600000002
+
+\li ASCON-128a regular IV: 0x80800c0800000000
+\li ASCON-128a-SIV authentication phase IV: 0x80800c0800000001
+\li ASCON-128a-SIV encryption phase IV: 0x80800c0800000002
+
+\li ASCON-80pq regular IV: 0xa0400c06
+\li ASCON-80pq-SIV authentication phase: 0xa0400c16
+\li ASCON-80pq-SIV encryption phase: 0xa0400c26
+
+In the case of ASCON-80pq, we add 0x10 and 0x20 to the IV rather
+than 1 or 2 to avoid conflicts with hypothetical future regular
+ASCON-80pq variants with 7 or 8 rounds.
+
+\subsection siv_test_vectors Test vectors
+
+The repository contains Known Answer Test (KAT) vectors for ASCON-128-SIV,
+ASCON-128a-SIV, and ASCON-80pq-SIV in the "test/kat" directory.  The vectors
+were generated with a slightly modified version of the ASCON reference code
+which can be provided upon request.
+
+*/
