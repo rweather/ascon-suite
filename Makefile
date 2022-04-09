@@ -1,5 +1,5 @@
 
-.PHONY: all clean check
+.PHONY: all clean check arduino
 
 all:
 	(cd src; $(MAKE) all)
@@ -12,3 +12,6 @@ clean:
 check: all
 	(cd src; $(MAKE) check)
 	(cd test; $(MAKE) check)
+
+arduino:
+	(cd src; $(MAKE) arduino)

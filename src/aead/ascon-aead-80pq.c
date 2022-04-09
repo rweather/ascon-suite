@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "ascon-aead-common.h"
-#include "ascon-util-snp.h"
+#include "aead/ascon-aead-common.h"
+#include "core/ascon-util-snp.h"
 #include <string.h>
 
 /**

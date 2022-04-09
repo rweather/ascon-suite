@@ -21,7 +21,7 @@
  */
 
 #include <ascon/xof.h>
-#include "ascon-util-snp.h"
+#include "core/ascon-util-snp.h"
 
 int ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen)
 {
