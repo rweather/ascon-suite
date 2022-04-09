@@ -48,36 +48,6 @@ void ascon_init(ascon_state_t *state)
     state->S[4] = 0;
 }
 
-void ascon_to_regular(ascon_state_t *state)
-{
-#if defined(LW_UTIL_LITTLE_ENDIAN)
-    /* Convert from little-endian to big-endian */
-    be_store_word64(state->B,      state->S[0]);
-    be_store_word64(state->B +  8, state->S[1]);
-    be_store_word64(state->B + 16, state->S[2]);
-    be_store_word64(state->B + 24, state->S[3]);
-    be_store_word64(state->B + 32, state->S[4]);
-#else
-    /* Already in big-endian byte order, so nothing to do */
-    (void)state;
-#endif
-}
-
-void ascon_from_regular(ascon_state_t *state)
-{
-#if defined(LW_UTIL_LITTLE_ENDIAN)
-    /* Convert from big-endian to little-endian */
-    state->S[0] = be_load_word64(state->B);
-    state->S[1] = be_load_word64(state->B + 8);
-    state->S[2] = be_load_word64(state->B + 16);
-    state->S[3] = be_load_word64(state->B + 24);
-    state->S[4] = be_load_word64(state->B + 32);
-#else
-    /* Already in big-endian byte order, so nothing to do */
-    (void)state;
-#endif
-}
-
 void ascon_add_bytes
     (ascon_state_t *state, const uint8_t *data, unsigned offset, unsigned size)
 {

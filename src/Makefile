@@ -29,6 +29,7 @@ ASM_SOURCES = \
 	core/ascon-asm-armv6.S \
 	core/ascon-asm-armv6m.S \
 	core/ascon-asm-armv7m.S \
+	core/ascon-asm-armv8a.S \
 	core/ascon-asm-avr.S
 
 OBJECTS  = $(patsubst %.c,obj/%.o,$(C_SOURCES))
