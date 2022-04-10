@@ -10,7 +10,7 @@ TARGETS = \
 	bin/ascon_armv6 \
 	bin/ascon_armv6m \
 	bin/ascon_armv7m \
-	bin/ascon_armv8a
+	bin/ascon_armv8a_64
 
 all: $(TARGETS)
 
@@ -26,7 +26,7 @@ bin/ascon_armv7m: ascon_armv7m.c ../copyright.h
 	@mkdir -p bin
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
-bin/ascon_armv8a: ascon_armv8a.c ../copyright.h
+bin/ascon_armv8a_64: ascon_armv8a_64.c ../copyright.h
 	@mkdir -p bin
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
@@ -39,4 +39,4 @@ generate: all
 	bin/ascon_armv6  >../../src/core/ascon-asm-armv6.S
 	bin/ascon_armv6m >../../src/core/ascon-asm-armv6m.S
 	bin/ascon_armv7m >../../src/core/ascon-asm-armv7m.S
-	bin/ascon_armv8a >../../src/core/ascon-asm-armv8a.S
+	bin/ascon_armv8a_64 >../../src/core/ascon-asm-armv8a-64.S
