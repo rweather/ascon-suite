@@ -75,6 +75,12 @@
 #define ASCON_BACKEND_ARMV8A 1
 #define ASCON_BACKEND_SLICED64 1
 
+#elif defined(__XTENSA__)
+
+/* Assembly backend for Xtensa-based systems */
+#define ASCON_BACKEND_XTENSA 1
+#define ASCON_BACKEND_SLICED32 1
+
 #elif defined(__x86_64) || defined(__x86_64__) || \
       defined(__aarch64__) || defined(__ARM_ARCH_ISA_A64) || \
       defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64)

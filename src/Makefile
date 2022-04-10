@@ -34,7 +34,8 @@ UTIL_ASM_SOURCES = \
 	core/ascon-asm-armv6m.S \
 	core/ascon-asm-armv7m.S \
 	core/ascon-asm-armv8a.S \
-	core/ascon-asm-avr5.S
+	core/ascon-asm-avr5.S \
+	core/ascon-asm-xtensa.S
 UTIL_INCLUDES = \
 	core/ascon-select-backend.h \
 	core/ascon-sliced32.h \
