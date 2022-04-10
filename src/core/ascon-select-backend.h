@@ -50,30 +50,30 @@
 #define ASCON_BACKEND_AVR5 1
 #define ASCON_BACKEND_DIRECT_XOR 1
 
+#elif defined(__ARM_ARCH_8A) && defined(__ARM_ARCH_ISA_A64)
+
+/* Assembly backend for 64-bit ARMv8-A systems */
+#define ASCON_BACKEND_ARMV8A 1
+#define ASCON_BACKEND_SLICED64 1
+
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 7
 
-/* The armv7m backend can also be used with armv7/thumb systems */
+/* Assembly backend for ARMv7-M systems; e.g. ARM Cortex M3, M4, ... */
+/* This backend has also been tested to work on ARMv7-A systems */
 #define ASCON_BACKEND_ARMV7M 1
 #define ASCON_BACKEND_SLICED32 1
 
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 6 && defined(__ARM_ARCH_6M__)
 
-/* The armv6m assembly code backend can also be used with armv6/thumb
- * systems but it is not as efficient as the armv6 backend below. */
+/* Assembly backend for ARMv6-M systems; e.g. ARM Cortex M0+ */
 #define ASCON_BACKEND_ARMV6M 1
 #define ASCON_BACKEND_SLICED32 1
 
 #elif defined(__ARM_ARCH) && __ARM_ARCH == 6
 
-/* Assembly backend for armv6 systems, should work with thumb and non-thumb */
+/* Assembly backend for ARMv6 systems, should work with thumb and non-thumb */
 #define ASCON_BACKEND_ARMV6 1
 #define ASCON_BACKEND_SLICED32 1
-
-#elif defined(__ARM_ARCH_8A)
-
-/* Assembly backend for armv8a systems (64-bit ARM) */
-#define ASCON_BACKEND_ARMV8A 1
-#define ASCON_BACKEND_SLICED64 1
 
 #elif defined(__XTENSA__)
 

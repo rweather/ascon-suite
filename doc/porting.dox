@@ -42,7 +42,7 @@ SnP API directly in your own code.
 <tr><td>c64</td><td>C</td><td>Host 64-bit</td><td>Default implementation for 64-bit systems</td></tr>
 <tr><td>armv6</td><td>ASM</td><td>Sliced 32-bit</td><td>ARMv6, e.g. Raspberry Pi 3 running the 32-bit Raspberry Pi OS</td></tr>
 <tr><td>armv6m</td><td>ASM</td><td>Sliced 32-bit</td><td>ARM Cortex M0 and M0+</td></tr>
-<tr><td>armv7m</td><td>ASM</td><td>Sliced 32-bit</td><td>ARM Cortex M3, M4, and M7</td></tr>
+<tr><td>armv7m</td><td>ASM</td><td>Sliced 32-bit</td><td>ARM Cortex M3, M4, and M7.  Also works unmodified on ARMv7-A systems like ARM Cortex A7.</td></tr>
 <tr><td>armv8a</td><td>ASM</td><td>Host 64-bit</td><td>64-bit ARMv8-A; e.g. Raspberry Pi 4 running the 64-bit Raspberry Pi OS</td></tr>
 <tr><td>avr5</td><td>ASM</td><td>8-bit</td><td>AVR5 and higher; e.g. ATmega328P (Arduino Uno), ATmega2560 (Arduino Mega 2560), ...</td></tr>
 <tr><td>xtensa</td><td>ASM</td><td>Sliced 32-bit</td><td>Xtensa, as used on ESP32 and ESP8266 modules</td></tr>

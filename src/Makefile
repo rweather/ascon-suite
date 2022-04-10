@@ -29,22 +29,25 @@ UTIL_C_SOURCES = \
 	core/ascon-sliced64.c \
 	core/ascon-util.c \
 	aead/ascon-aead-common.c
-UTIL_ASM_SOURCES = \
-	core/ascon-asm-armv6.S \
+UTIL_ASM_EMBEDDED_SOURCES = \
 	core/ascon-asm-armv6m.S \
 	core/ascon-asm-armv7m.S \
-	core/ascon-asm-armv8a.S \
 	core/ascon-asm-avr5.S \
 	core/ascon-asm-xtensa.S
+UTIL_ASM_DESKTOP_SOURCES = \
+	core/ascon-asm-armv6.S \
+	core/ascon-asm-armv8a.S
 UTIL_INCLUDES = \
-	core/ascon-select-backend.h \
 	core/ascon-sliced32.h \
 	core/ascon-util.h \
 	core/ascon-util-snp.h \
 	aead/ascon-aead-common.h
+ALL_INCLUDES = \
+	core/ascon-select-backend.h \
+	$(UTIL_INCLUDES)
 
 C_SOURCES = $(MAIN_C_SOURCES) $(UTIL_C_SOURCES)
-ASM_SOURCES = $(UTIL_ASM_SOURCES)
+ASM_SOURCES = $(UTIL_ASM_EMBEDDED_SOURCES) $(UTIL_ASM_DESKTOP_SOURCES)
 
 OBJECTS  = $(patsubst %.c,obj/%.o,$(C_SOURCES))
 OBJECTS += $(patsubst %.S,obj/%.o,$(ASM_SOURCES))
@@ -92,7 +95,7 @@ ARDUINO_COPY_SOURCES = ../tools/arduino/copy-sources.sh
 ARDUINO_COPY_INCLUDES = ../tools/arduino/copy-includes.sh
 ARDUINO_COPY_UTILS = ../tools/arduino/copy-utils.sh
 
-UTIL_SOURCES = $(UTIL_C_SOURCES) $(UTIL_ASM_SOURCES)
+UTIL_SOURCES = $(UTIL_C_SOURCES) $(UTIL_ASM_EMBEDDED_SOURCES)
 MAIN_SOURCES = $(MAIN_C_SOURCES)
 
 arduino:

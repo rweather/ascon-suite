@@ -25,7 +25,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS) $(ASCONLIB)
 	@mkdir -p `dirname $@`
-	$(CXX) -o $(TARGET) $(OBJECTS) $(LDFLAGS)
+	$(CC) -o $(TARGET) $(OBJECTS) $(LDFLAGS)
 
 clean:
 	rm -f $(OBJECTS) $(DEPS) $(TARGET)
