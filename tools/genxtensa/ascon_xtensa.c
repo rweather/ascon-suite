@@ -33,7 +33,15 @@
 
 static void function_header(const char *name)
 {
+    /* The default linker scripts for Arduino ESP8266 platforms seem to put
+     * assembly code .text sections into iram1 by default instead irom0.
+     * This can cause a linker error due to insufficient RAM.  Move the
+     * text segment back to irom0 where it belongs. */
+    printf("#ifdef ESP8266\n");
+    printf("\t.section .irom0.text,\"ax\",@progbits\n");
+    printf("#else\n");
     printf("\t.section .text.%s,\"ax\",@progbits\n", name);
+    printf("#endif\n");
     printf("\t.align\t4\n");
     printf("\t.literal_position\n");
     printf("\t.global\t%s\n", name);

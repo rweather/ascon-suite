@@ -22,7 +22,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef ESP8266
+	.section .irom0.text,"ax",@progbits
+#else
 	.section .text.ascon_permute,"ax",@progbits
+#endif
 	.align	4
 	.literal_position
 	.global	ascon_permute
@@ -1341,7 +1345,11 @@ ascon_permute:
 #endif
 	.size	ascon_permute, .-ascon_permute
 
+#ifdef ESP8266
+	.section .irom0.text,"ax",@progbits
+#else
 	.section .text.ascon_from_regular,"ax",@progbits
+#endif
 	.align	4
 	.literal_position
 	.global	ascon_from_regular
@@ -1488,7 +1496,11 @@ ascon_from_regular:
 #endif
 	.size	ascon_from_regular, .-ascon_from_regular
 
+#ifdef ESP8266
+	.section .irom0.text,"ax",@progbits
+#else
 	.section .text.ascon_to_regular,"ax",@progbits
+#endif
 	.align	4
 	.literal_position
 	.global	ascon_to_regular
