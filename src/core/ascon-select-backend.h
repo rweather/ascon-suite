@@ -56,9 +56,16 @@
 #define ASCON_BACKEND_ARMV8A 1
 #define ASCON_BACKEND_SLICED64 1
 
+#elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 8 && defined(__ARM_ARCH_8M__)
+
+/* Assembly backend for ARMv8-M systems; e.g. ARM Cortex M33 */
+/* This can actually use the same backend as ARMv7-M systems */
+#define ASCON_BACKEND_ARMV7M 1
+#define ASCON_BACKEND_SLICED32 1
+
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 7
 
-/* Assembly backend for ARMv7-M systems; e.g. ARM Cortex M3, M4, ... */
+/* Assembly backend for ARMv7-M systems; e.g. ARM Cortex M3, M4, and M7 */
 /* This backend has also been tested to work on ARMv7-A systems */
 #define ASCON_BACKEND_ARMV7M 1
 #define ASCON_BACKEND_SLICED32 1
