@@ -18,16 +18,20 @@ MAIN_C_SOURCES = \
 	hash/ascon-hash.c \
 	hash/ascon-xofa.c \
 	hash/ascon-xof.c \
+	mac/ascon-hmac.c \
+	mac/ascon-hmaca.c \
+	mac/ascon-kmac.c \
+	mac/ascon-kmaca.c \
 	siv/ascon-siv-128.c \
 	siv/ascon-siv-128a.c \
 	siv/ascon-siv-80pq.c
 UTIL_C_SOURCES = \
 	core/ascon-c32.c \
 	core/ascon-c64.c \
+	core/ascon-clean.c \
 	core/ascon-direct-xor.c \
 	core/ascon-sliced32.c \
 	core/ascon-sliced64.c \
-	core/ascon-util.c \
 	aead/ascon-aead-common.c
 UTIL_ASM_EMBEDDED_SOURCES = \
 	core/ascon-asm-armv6m.S \
@@ -41,7 +45,9 @@ UTIL_INCLUDES = \
 	core/ascon-sliced32.h \
 	core/ascon-util.h \
 	core/ascon-util-snp.h \
-	aead/ascon-aead-common.h
+	aead/ascon-aead-common.h \
+	mac/ascon-hmac-common.h \
+	mac/ascon-kmac-common.h
 ALL_INCLUDES = \
 	core/ascon-select-backend.h \
 	$(UTIL_INCLUDES)

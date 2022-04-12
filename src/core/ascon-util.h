@@ -712,12 +712,4 @@
 #define rightRotate6_8(a)  (rightRotate_8((a), 6))
 #define rightRotate7_8(a)  (rightRotate_8((a), 7))
 
-/**
- * \brief Attempts to cleans a buffer that contains sensitive material.
- *
- * \param buf Points to the buffer to clear.
- * \param size Size of the buffer to clear in bytes.
- */
-void ascon_clean(void *buf, unsigned size);
-
 #endif

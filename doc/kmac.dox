@@ -28,8 +28,9 @@
 \section kmac_intro Introduction
 
 The KMAC mode provides a method to authenticate a sequence of bytes
-under a key using ASCON in hashing mode.  The output is essentially
-equivalent to hashing the key followed by the data.
+under a key using ASCON in hashing mode.  The input is essentially
+equivalent to hashing the key followed by the data without the
+double layers of hashing that are needed for HMAC.
 
 Note: Other hash algorithms like SHA-256 use HMAC instead of KMAC.
 The HMAC construction is not necessary for sponge-based hash algorithms
@@ -37,32 +38,14 @@ like ASCON, so the simpler KMAC is preferable.
 
 \section kmac_nist Standard NIST KMAC
 
-<a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf">NIST SP 800-185</a> is an extension of the XOF modes SHAKE128 and SHAKE256.
-The nearest equivalent for us is ASCON-XOF.  We use a similar encoding
-to NIST SP 800-185 to provide domain separation between the key and data.
-
-One deviation from NIST is the encoding of the output length.
-NIST appends the length to the data being hashed.  ASCON-HASH and
-ASCON-XOF already have a standard mechanism for encoding the output
-length into the initialization vector.  We use the ASCON approach.
+<a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf">NIST SP 800-185</a> is an extension of the extensible-output function (XOF)
+modes SHAKE128 and SHAKE256.
 
 \section kmac_technical Technical details of ASCON-KMAC
 
-ASCON-KMAC uses ASCON-XOF as the underlying hashing primitive, with the
-desired length of the output encoded into the bottom 32 bits of the
-initialization vector:
-
-\code
-IV = 0x00400c0000000000 + output_length_in_bits
-\endcode
-
-If the output length is 256 bits / 32 bytes, then the behaviour is identical
-to ASCON-HASH.  If the output length is arbitrary, encoded as 0, then the
-behaviour is identical to ASCON-XOF.  Output lengths of 2<sup>32</sup> bits
-or greater are encoded as 0 for arbitrary-length.
-
-As in NIST SP 800-185, we form the data to be hashed as a concatenation of
-the following:
+The nearest equivalent to SHAKE is ASCON-XOF.  We use a similar encoding to
+NIST SP 800-185 to provide domain separation between the key and data.
+We form the data to be hashed as a concatenation of the following:
 
 \li Declaration of the rate block size, which for this algorithm is the
 two byte sequence 0x01 0x08.
@@ -70,28 +53,72 @@ two byte sequence 0x01 0x08.
 \li Length-prefixed application-supplied customization string.
 \li Zero padding to a multiple of the 8-byte rate block size.
 \li Another copy of the rate declaration, this time for the key.
-\li Length-prefixed key
+\li Length-prefixed key.
 \li Zero padding to a multiple of the 8-byte rate block size.
-\li Data, padded in the normal ASCON-XOF fashion (add a 1 bit and enough
-zeroes to fill the last rate block).
+\li The actual data to be authenticated.
+\li Length-suffixed size of the desired output, 0 for arbitrary output.
 
-NIST SP 800-185 defines a method to encode a string that is prefixed by
-its length in bits.  The length in bits is reduced to the minimum-size
-string that can be represented in big endian as 8-bit bytes.  This is
-in turn prefixed by the number of bytes in the length encoding.
-Some examples:
+We use the same encoding for length prefixes and suffixes as
+NIST SP 800-185.
 
-\li 0 is encoded as 0x01 0x00
-\li 1 is encoded as 0x01 0x01
-\li 32 is encoded as 0x01 0x20
-\li 256 is encoded as 0x02 0x01 0x00
-\li 65535 is encoded as 0x02 0xFF 0xFF
-\li 65536 is encoded as 0x03 0x01 0x00 0x00
+\section kmac_using Using ASCON-KMAC
+
+Given a key and an input buffer containing data to authenticate, the output
+KMAC value can be computed as follows:
+
+\code
+#include <ascon/kmac.h>
+
+unsigned char out[ASCON_KMAC_SIZE];
+ascon_kmac(key, key_len, input, input_len, 0, 0, out, sizeof(out));
+\endcode
+
+This uses the default output length of ASCON\_KMAC\_SIZE (32) and a
+zero-length customization string.  Customization strings can provide
+domain separation between two different uses of the same input.
+
+As an example of customization, say we wanted to derive two different
+session keys from the same input; one for encrypting data from party A
+to party B and the other for encrypting data from party B back to party A.
+We can use KMAC as a key derivation function (KDF) with different
+customization strings in each direction:
+
+\code
+unsigned char atob_key[ASCON128_KEY_SIZE];
+unsigned char btoa_key[ASCON128_KEY_SIZE];
+ascon_kmac(key, key_len, salt, salt_len, "A2B", 3, atob_key, sizeof(atob_key));
+ascon_kmac(key, key_len, salt, salt_len, "B2A", 3, btoa_key, sizeof(btoa_key));
+\endcode
+
+The two outputs are related to each other but will be completely different
+due to the different customization strings (<tt>A2B</tt> and <tt>B2A</tt>).
+
+ASCON-KMAC can process arbitrary amounts of input and generate arbitrary
+amounts of output using the incremental API:
+
+\code
+ascon_kmac_state_t kmac;
+ascon_kmac_init(&kmac, key, key_len, "A2B", 3);
+ascon_kmac_absorb(&kmac, input1, sizeof(input1));
+ascon_kmac_absorb(&kmac, input2, sizeof(input2));
+...;
+ascon_kmac_absorb(&kmac, inputN, sizeof(inputN));
+ascon_kmac_set_output_length(&kmac, sizeof(out1) + sizeof(out2));
+ascon_kmac_squeeze(&kmac, out1, sizeof(out1));
+ascon_kmac_squeeze(&kmac, out2, sizeof(out2));
+\endcode
+
+If the output length is not set with ascon_kmac_set_output_length(),
+then it is assumed that the output is open-ended.  Open-ended output
+can also be specified with an output length of 0.
+
+ASCON-KMACA has a similar API, but uses ASCON-XOFA internally instead
+of ASCON-XOF.
 
 \section kmac_other_modes Other NIST modes
 
 NIST SP 800-185 also defines modes called cSHAKE, TupleHash, and ParallelHash,
 using the same definition style as KMAC.  We could define similar modes for
-ASCON as well but haven't done so yet.
+ASCON as well but haven't done so yet.  They aren't as widely used as KMAC.
 
 */

@@ -14,6 +14,7 @@ for i in $* ; do
 1,$s/<ascon\/\(.*\)>/"ascon-\1"/g
 1,$s/"core\//"utility\//g
 1,$s/"aead\//"utility\//g
+1,$s/"mac\//"utility\//g
 ' $i >$DEST_DIR/$BASENAME
 done
 

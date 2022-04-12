@@ -6,7 +6,7 @@ include ../../rules/options.mak
 ASCONLIB = ../../src/obj/libascon.a
 
 CFLAGS += $(VECTOR_CFLAGS) $(COMMON_CFLAGS) $(STDC_CFLAGS)
-CFLAGS += -I../../include
+CFLAGS += -I../../include -I../../src
 
 LDFLAGS += $(COMMON_LDFLAGS)
 LDFLAGS += -L../../src/obj -lascon
@@ -14,6 +14,10 @@ LDFLAGS += -L../../src/obj -lascon
 TARGET = obj/unit-tests
 
 SOURCES = \
+	sha256.c \
+	sha3.c \
+	test-hmac.c \
+	test-kmac.c \
 	test-permutation.c \
 	test-cipher.c \
 	test-main.c

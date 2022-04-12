@@ -20,19 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "ascon-util.h"
+#include <ascon/hmac.h>
+#include <ascon/utility.h>
+#include <string.h>
 
-void ascon_clean(void *buf, unsigned size)
-{
-    /* Force the use of volatile so that we actually clear the memory.
-     * Otherwise the compiler might optimise the entire contents of this
-     * function away, which will not be secure.
-     *
-     * Even this may not work.  Some platforms have bzero_explicit() or
-     * memset_s() that could be used in place of this implementation. */
-    volatile uint8_t *d = (volatile uint8_t *)buf;
-    while (size > 0) {
-        *d++ = 0;
-        --size;
-    }
-}
+/* The actual implementation is in the "ascon-hmac-common.h" file */
+
+/* ASCON-HMAC */
+#define HMAC_ALG_NAME ascon_hmac
+#define HMAC_HASH_SIZE ASCON_HASH_SIZE
+#define HMAC_BLOCK_SIZE 64
+#define HMAC_STATE ascon_hmac_state_t
+#define HMAC_HASH_INIT ascon_hash_init
+#define HMAC_HASH_UPDATE ascon_xof_absorb
+#define HMAC_HASH_FINALIZE ascon_hash_finalize
+#include "mac/ascon-hmac-common.h"

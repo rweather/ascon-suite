@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,20 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "test-cipher.h"
-#include <stdio.h>
+#include <ascon/hmac.h>
+#include <ascon/utility.h>
+#include <string.h>
 
-void test_ascon_permutation(void);
-void test_hmac(void);
-void test_kmac(void);
+/* The actual implementation is in the "ascon-hmac-common.h" file */
 
-int main(int argc, char *argv[])
-{
-    (void)argc;
-    (void)argv;
-    printf("\n");
-    test_ascon_permutation();
-    test_hmac();
-    test_kmac();
-    return test_exit_result;
-}
+/* ASCON-HMACA */
+#define HMAC_ALG_NAME ascon_hmaca
+#define HMAC_HASH_SIZE ASCON_HASH_SIZE
+#define HMAC_BLOCK_SIZE 64
+#define HMAC_STATE ascon_hmac_state_t
+#define HMAC_HASH_INIT ascon_hasha_init
+#define HMAC_HASH_UPDATE ascon_xofa_absorb
+#define HMAC_HASH_FINALIZE ascon_hasha_finalize
+#include "mac/ascon-hmac-common.h"

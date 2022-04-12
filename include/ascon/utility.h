@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,20 +20,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "test-cipher.h"
-#include <stdio.h>
+#ifndef ASCON_UTILITY_H
+#define ASCON_UTILITY_H
 
-void test_ascon_permutation(void);
-void test_hmac(void);
-void test_kmac(void);
+/**
+ * \file utility.h
+ * \brief System utilities of use to applications that use ASCON.
+ */
 
-int main(int argc, char *argv[])
-{
-    (void)argc;
-    (void)argv;
-    printf("\n");
-    test_ascon_permutation();
-    test_hmac();
-    test_kmac();
-    return test_exit_result;
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * \brief Cleans a buffer that contains sensitive material.
+ *
+ * \param buf Points to the buffer to clear.
+ * \param size Size of the buffer to clear in bytes.
+ */
+void ascon_clean(void *buf, unsigned size);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif
