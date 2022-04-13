@@ -50,6 +50,7 @@ assembly code but some of the SnP utility functions may still be in C.
 <tr><td>armv8m</td><td>ASM</td><td>Sliced 32-bit</td><td>ARM Cortex M33 (uses armv7m backend)</td></tr>
 <tr><td>armv8a-64</td><td>ASM</td><td>Host 64-bit</td><td>64-bit ARMv8-A; e.g. Raspberry Pi 4 running the 64-bit Raspberry Pi OS</td></tr>
 <tr><td>avr5</td><td>ASM</td><td>8-bit</td><td>AVR5 and higher; e.g. ATmega328P (Arduino Uno), ATmega2560 (Arduino Mega 2560), ...</td></tr>
+<tr><td>x86-64</td><td>ASM</td><td>Host 64-bit</td><td>64-bit x86-64 systems</td></tr>
 <tr><td>xtensa</td><td>ASM</td><td>Sliced 32-bit</td><td>Xtensa, as used on ESP32 and ESP8266 modules</td></tr>
 </table>
 
