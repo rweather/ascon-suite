@@ -316,12 +316,13 @@ static void gen_permute(void)
     printf(INSNQ(cmp) "%s, 12\n", first_round);
     printf("\tjge\t.L13\n");
     printf(INSNQ(mov) "%s, [%s * 8 + .L14]\n", regs.t0, first_round);
+    printf("\tjmp\t%s\n", regs.t0);
 #else
     printf(INSNQ(cmp) "$12, %s\n", first_round);
     printf("\tjge\t.L13\n");
     printf(INSNQ(mov) ".L14(,%s,8), %s\n", first_round, regs.t0);
+    printf("\tjmp\t*%s\n", regs.t0);
 #endif
-    printf("\tjmp\t%s\n", regs.t0);
     printf(".L13:\n");
     printf("\tjmp\t.L12\n");
     printf("\t.section\t.rodata\n");

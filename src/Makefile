@@ -41,6 +41,7 @@ UTIL_ASM_EMBEDDED_SOURCES = \
 UTIL_ASM_DESKTOP_SOURCES = \
 	core/ascon-asm-armv6.S \
 	core/ascon-asm-armv8a-64.S \
+	core/ascon-asm-i386.S \
 	core/ascon-asm-x86-64.S
 UTIL_INCLUDES = \
 	core/ascon-sliced32.h \
