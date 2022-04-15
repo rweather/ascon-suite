@@ -100,6 +100,12 @@
 #define ASCON_BACKEND_I386 1
 #define ASCON_BACKEND_SLICED32 1
 
+#elif defined(__m68k) || defined(__m68k__)
+
+/* Assembly backend for m68k based systems */
+#define ASCON_BACKEND_M68K 1
+#define ASCON_BACKEND_SLICED32 1
+
 #elif defined(__x86_64) || defined(__x86_64__) || \
       defined(__aarch64__) || defined(__ARM_ARCH_ISA_A64) || \
       defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64)

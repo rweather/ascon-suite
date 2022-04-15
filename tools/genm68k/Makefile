@@ -7,11 +7,11 @@ CFLAGS += $(COMMON_CFLAGS) -Wno-unused-parameter -I..
 LDFLAGS += $(COMMON_LDFLAGS)
 
 TARGETS = \
-	bin/ascon_xtensa
+	bin/ascon_m68k
 
 all: $(TARGETS)
 
-bin/ascon_xtensa: ascon_xtensa.c ../copyright.h
+bin/ascon_m68k: ascon_m68k.c ../copyright.h
 	@mkdir -p bin
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
@@ -21,4 +21,4 @@ clean:
 check:
 
 generate: all
-	bin/ascon_xtensa >../../src/core/ascon-asm-xtensa.S
+	bin/ascon_m68k >../../src/core/ascon-asm-m68k.S

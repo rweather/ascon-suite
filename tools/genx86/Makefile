@@ -14,11 +14,11 @@ all: $(TARGETS)
 
 bin/ascon_i386: ascon_i386.c ../copyright.h
 	@mkdir -p bin
-	$(CC) -DFORCE_ARM_MODE $(CFLAGS) -o $@ $< $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 bin/ascon_x86_64: ascon_x86_64.c ../copyright.h
 	@mkdir -p bin
-	$(CC) -DFORCE_ARM_MODE $(CFLAGS) -o $@ $< $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 
 clean:
 	rm -rf $(TARGETS) bin
