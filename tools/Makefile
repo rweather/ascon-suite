@@ -1,5 +1,5 @@
 
-.PHONY: all clean generate check
+.PHONY: all clean generate check arduino
 
 SUBDIRS = \
 	genarm \
@@ -18,3 +18,6 @@ generate:
 	for dir in $(SUBDIRS) ; do (cd $$dir ; $(MAKE) generate) ; done
 
 check:
+
+arduino:
+	(cd arduino; $(MAKE) arduino)

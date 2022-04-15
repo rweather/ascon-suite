@@ -1,7 +1,7 @@
 
 include ../rules/options.mak
 
-.PHONY: all clean check arduino
+.PHONY: all clean check
 
 INCLUDE_DIR = ../include
 
@@ -10,10 +10,17 @@ CFLAGS += -I$(INCLUDE_DIR) -I. -Icore
 
 LIBRARY = obj/libascon.a
 
-MAIN_C_SOURCES = \
+C_SOURCES = \
 	aead/ascon-aead-128.c \
 	aead/ascon-aead-128a.c \
 	aead/ascon-aead-80pq.c \
+	aead/ascon-aead-common.c \
+	core/ascon-c32.c \
+	core/ascon-c64.c \
+	core/ascon-clean.c \
+	core/ascon-direct-xor.c \
+	core/ascon-sliced32.c \
+	core/ascon-sliced64.c \
 	hash/ascon-hasha.c \
 	hash/ascon-hash.c \
 	hash/ascon-xofa.c \
@@ -25,38 +32,16 @@ MAIN_C_SOURCES = \
 	siv/ascon-siv-128.c \
 	siv/ascon-siv-128a.c \
 	siv/ascon-siv-80pq.c
-UTIL_C_SOURCES = \
-	core/ascon-c32.c \
-	core/ascon-c64.c \
-	core/ascon-clean.c \
-	core/ascon-direct-xor.c \
-	core/ascon-sliced32.c \
-	core/ascon-sliced64.c \
-	aead/ascon-aead-common.c
-UTIL_ASM_EMBEDDED_SOURCES = \
+ASM_SOURCES = \
 	core/ascon-asm-armv6m.S \
 	core/ascon-asm-armv7m.S \
-	core/ascon-asm-avr5.S \
-	core/ascon-asm-xtensa.S
-UTIL_ASM_DESKTOP_SOURCES = \
 	core/ascon-asm-armv6.S \
 	core/ascon-asm-armv8a-64.S \
+	core/ascon-asm-avr5.S \
 	core/ascon-asm-i386.S \
 	core/ascon-asm-m68k.S \
-	core/ascon-asm-x86-64.S
-UTIL_INCLUDES = \
-	core/ascon-sliced32.h \
-	core/ascon-util.h \
-	core/ascon-util-snp.h \
-	aead/ascon-aead-common.h \
-	mac/ascon-hmac-common.h \
-	mac/ascon-kmac-common.h
-ALL_INCLUDES = \
-	core/ascon-select-backend.h \
-	$(UTIL_INCLUDES)
-
-C_SOURCES = $(MAIN_C_SOURCES) $(UTIL_C_SOURCES)
-ASM_SOURCES = $(UTIL_ASM_EMBEDDED_SOURCES) $(UTIL_ASM_DESKTOP_SOURCES)
+	core/ascon-asm-x86-64.S \
+	core/ascon-asm-xtensa.S
 
 OBJECTS  = $(patsubst %.c,obj/%.o,$(C_SOURCES))
 OBJECTS += $(patsubst %.S,obj/%.o,$(ASM_SOURCES))
@@ -94,22 +79,3 @@ obj/%.o: %.S
 	@rm -f $@.d.tmp
 
 check:
-
-# The 'arduino' rule create the Arduino version of the source code
-# under the directory "../ASCON" from the top-level.  The code is
-# modified to comply with Arduino IDE conventions for libraries.
-
-ARDUINO_SRCDIR = ../../ASCON/src
-ARDUINO_COPY_SOURCES = ../tools/arduino/copy-sources.sh
-ARDUINO_COPY_INCLUDES = ../tools/arduino/copy-includes.sh
-ARDUINO_COPY_UTILS = ../tools/arduino/copy-utils.sh
-
-UTIL_SOURCES = $(UTIL_C_SOURCES) $(UTIL_ASM_EMBEDDED_SOURCES)
-MAIN_SOURCES = $(MAIN_C_SOURCES)
-
-arduino:
-	$(SHELL) $(ARDUINO_COPY_SOURCES) $(ARDUINO_SRCDIR) $(MAIN_SOURCES)
-	$(SHELL) $(ARDUINO_COPY_INCLUDES) $(ARDUINO_SRCDIR) ../include/ascon/*.h
-	$(SHELL) $(ARDUINO_COPY_UTILS) $(ARDUINO_SRCDIR)/utility $(UTIL_SOURCES) $(UTIL_INCLUDES)
-
--include $(DEPS)

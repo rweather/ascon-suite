@@ -1,0 +1,68 @@
+
+.PHONY: all clean check arduino generate
+
+INCLUDE_DIR = ../../include
+SOURCE_DIR = ../../src
+ARDUINO_SRCDIR = ../../../ASCON/src
+
+# Source files to copy to the main Arduino src directory.
+MAIN_SOURCES = \
+	$(SOURCE_DIR)/aead/ascon-aead-128.c \
+	$(SOURCE_DIR)/aead/ascon-aead-128a.c \
+	$(SOURCE_DIR)/aead/ascon-aead-80pq.c \
+	$(SOURCE_DIR)/hash/ascon-hasha.c \
+	$(SOURCE_DIR)/hash/ascon-hash.c \
+	$(SOURCE_DIR)/hash/ascon-xofa.c \
+	$(SOURCE_DIR)/hash/ascon-xof.c \
+	$(SOURCE_DIR)/mac/ascon-hmac.c \
+	$(SOURCE_DIR)/mac/ascon-hmaca.c \
+	$(SOURCE_DIR)/mac/ascon-kmac.c \
+	$(SOURCE_DIR)/mac/ascon-kmaca.c \
+	$(SOURCE_DIR)/siv/ascon-siv-128.c \
+	$(SOURCE_DIR)/siv/ascon-siv-128a.c \
+	$(SOURCE_DIR)/siv/ascon-siv-80pq.c
+
+# Source files to copy to the Arduino src/utility directory.
+# We copy a subset of the backends, as it is unlikely that an
+# Arduino will be running on an x86-64 system any time soon!
+UTIL_SOURCES = \
+	$(SOURCE_DIR)/core/ascon-asm-armv6m.S \
+	$(SOURCE_DIR)/core/ascon-asm-armv7m.S \
+	$(SOURCE_DIR)/core/ascon-asm-avr5.S \
+	$(SOURCE_DIR)/core/ascon-asm-xtensa.S \
+	$(SOURCE_DIR)/core/ascon-c32.c \
+	$(SOURCE_DIR)/core/ascon-c64.c \
+	$(SOURCE_DIR)/core/ascon-clean.c \
+	$(SOURCE_DIR)/core/ascon-direct-xor.c \
+	$(SOURCE_DIR)/core/ascon-sliced32.c \
+	$(SOURCE_DIR)/core/ascon-sliced64.c \
+	$(SOURCE_DIR)/aead/ascon-aead-common.c
+
+UTIL_INCLUDES = \
+	$(SOURCE_DIR)/core/ascon-sliced32.h \
+	$(SOURCE_DIR)/core/ascon-util.h \
+	$(SOURCE_DIR)/core/ascon-util-snp.h \
+	$(SOURCE_DIR)/aead/ascon-aead-common.h \
+	$(SOURCE_DIR)/mac/ascon-hmac-common.h \
+	$(SOURCE_DIR)/mac/ascon-kmac-common.h
+
+all:
+
+# The 'arduino' rule creates the Arduino version of the source code
+# under the directory "../ASCON" from the top-level.  The code is
+# modified to comply with Arduino IDE conventions for libraries.
+
+ARDUINO_COPY_SOURCES = ./copy-sources.sh
+ARDUINO_COPY_INCLUDES = ./copy-includes.sh
+ARDUINO_COPY_UTILS = ./copy-utils.sh
+
+arduino:
+	$(SHELL) $(ARDUINO_COPY_SOURCES) $(ARDUINO_SRCDIR) $(MAIN_SOURCES)
+	$(SHELL) $(ARDUINO_COPY_INCLUDES) $(ARDUINO_SRCDIR) $(INCLUDE_DIR)/ascon/*.h
+	$(SHELL) $(ARDUINO_COPY_UTILS) $(ARDUINO_SRCDIR)/utility $(UTIL_SOURCES) $(UTIL_INCLUDES)
+
+generate: arduino
+
+clean:
+
+check:

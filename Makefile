@@ -8,10 +8,11 @@ all:
 clean:
 	(cd src; $(MAKE) clean)
 	(cd test; $(MAKE) clean)
+	(cd tools; $(MAKE) clean)
 
 check: all
 	(cd src; $(MAKE) check)
 	(cd test; $(MAKE) check)
 
 arduino:
-	(cd src; $(MAKE) arduino)
+	(cd tools; $(MAKE) arduino)
