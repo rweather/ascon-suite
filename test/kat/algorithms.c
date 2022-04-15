@@ -68,6 +68,7 @@ aead_hash_algorithm_t const ascon_hash_algorithm = {
     AEAD_FLAG_NONE,
     ascon_hash,
     (aead_hash_init_t)ascon_hash_init,
+    0, /* init_fixed */
     (aead_hash_update_t)ascon_hash_update,
     (aead_hash_finalize_t)ascon_hash_finalize,
     0, /* absorb */
@@ -81,6 +82,7 @@ aead_hash_algorithm_t const ascon_hasha_algorithm = {
     AEAD_FLAG_NONE,
     ascon_hasha,
     (aead_hash_init_t)ascon_hasha_init,
+    0, /* init_fixed */
     (aead_hash_update_t)ascon_hasha_update,
     (aead_hash_finalize_t)ascon_hasha_finalize,
     0, /* absorb */
@@ -94,6 +96,7 @@ aead_hash_algorithm_t const ascon_xof_algorithm = {
     AEAD_FLAG_NONE,
     ascon_xof,
     (aead_hash_init_t)ascon_xof_init,
+    0, /* init_fixed */
     0, /* update */
     0, /* finalize */
     (aead_xof_absorb_t)ascon_xof_absorb,
@@ -107,6 +110,35 @@ aead_hash_algorithm_t const ascon_xofa_algorithm = {
     AEAD_FLAG_NONE,
     ascon_xofa,
     (aead_hash_init_t)ascon_xofa_init,
+    0, /* init_fixed */
+    0, /* update */
+    0, /* finalize */
+    (aead_xof_absorb_t)ascon_xofa_absorb,
+    (aead_xof_squeeze_t)ascon_xofa_squeeze
+};
+
+aead_hash_algorithm_t const ascon_xof_fixed_length_algorithm = {
+    "ASCON-XOF-fixed-length",
+    sizeof(ascon_xof_state_t),
+    ASCON_HASH_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_xof,
+    (aead_hash_init_t)ascon_xof_init,
+    (aead_hash_init_fixed_t)ascon_xof_init_fixed,
+    0, /* update */
+    0, /* finalize */
+    (aead_xof_absorb_t)ascon_xof_absorb,
+    (aead_xof_squeeze_t)ascon_xof_squeeze
+};
+
+aead_hash_algorithm_t const ascon_xofa_fixed_length_algorithm = {
+    "ASCON-XOFA-fixed-length",
+    sizeof(ascon_xof_state_t),
+    ASCON_HASH_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_xofa,
+    (aead_hash_init_t)ascon_xofa_init,
+    (aead_hash_init_fixed_t)ascon_xofa_init_fixed,
     0, /* update */
     0, /* finalize */
     (aead_xof_absorb_t)ascon_xofa_absorb,
@@ -163,6 +195,8 @@ static const aead_hash_algorithm_t *const hashes[] = {
     &ascon_hasha_algorithm,
     &ascon_xof_algorithm,
     &ascon_xofa_algorithm,
+    &ascon_xof_fixed_length_algorithm,
+    &ascon_xofa_fixed_length_algorithm,
     0
 };
 

@@ -31,6 +31,7 @@ aead_hash_algorithm_t const internal_blake2s_hash_algorithm = {
     AEAD_FLAG_LITTLE_ENDIAN,
     internal_blake2s_hash,
     (aead_hash_init_t)0,
+    (aead_hash_init_fixed_t)0,
     (aead_hash_update_t)0,
     (aead_hash_finalize_t)0,
     (aead_xof_absorb_t)0,

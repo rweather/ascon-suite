@@ -35,15 +35,33 @@ int ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen)
 void ascon_xof_init(ascon_xof_state_t *state)
 {
     /* IV for ASCON-XOF after processing it with the permutation */
-    static unsigned char const xof_iv[40] = {
+#if defined(ASCON_BACKEND_SLICED64)
+    static uint64_t const iv[5] = {
+        0xb57e273b814cd416ULL, 0x2b51042562ae2420ULL,
+        0x66a3a7768ddf2218ULL, 0x5aad0a7a8153650cULL,
+        0x4f3e0e32539493b6ULL
+    };
+    memcpy(state->state.S, iv, sizeof(iv));
+#elif defined(ASCON_BACKEND_SLICED32)
+    static uint32_t const iv[10] = {
+        0x7e351ae6, 0xc7578281, 0x1d238220, 0x70045f44,
+        0xa13e3f04, 0x5dd5ab52, 0xc30c1db2, 0x3e378142,
+        0xb624d656, 0x3735189d
+    };
+    memcpy(state->state.W, iv, sizeof(iv));
+#else
+    static uint8_t const iv[40] = {
         0xb5, 0x7e, 0x27, 0x3b, 0x81, 0x4c, 0xd4, 0x16,
         0x2b, 0x51, 0x04, 0x25, 0x62, 0xae, 0x24, 0x20,
         0x66, 0xa3, 0xa7, 0x76, 0x8d, 0xdf, 0x22, 0x18,
         0x5a, 0xad, 0x0a, 0x7a, 0x81, 0x53, 0x65, 0x0c,
         0x4f, 0x3e, 0x0e, 0x32, 0x53, 0x94, 0x93, 0xb6
     };
-    memcpy(state->state.B, xof_iv, sizeof(xof_iv));
+    memcpy(state->state.B, iv, sizeof(iv));
+#if !defined(ASCON_BACKEND_DIRECT_XOR)
     ascon_from_regular(&(state->state));
+#endif
+#endif
     state->count = 0;
     state->mode = 0;
 }
@@ -59,16 +77,33 @@ void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen)
         ascon_xof_init(state);
     } else if (outlen == 32U) {
         /* Output length of 32 is equivalent to ASCON-HASH */
-        static unsigned char const hash_iv[40] = {
-            /* IV for ASCON-HASH after processing it with the permutation */
+#if defined(ASCON_BACKEND_SLICED64)
+        static uint64_t const iv[5] = {
+            0xee9398aadb67f03dULL, 0x8bb21831c60f1002ULL,
+            0xb48a92db98d5da62ULL, 0x43189921b8f8e3e8ULL,
+            0x348fa5c9d525e140ULL
+        };
+        memcpy(state->state.S, iv, sizeof(iv));
+#elif defined(ASCON_BACKEND_SLICED32)
+        static uint32_t const iv[10] = {
+            0xa540dbc7, 0xf9afb5c6, 0x1445a340, 0xbd249301,
+            0x604d4fc8, 0xcb9ba8b5, 0x94514c98, 0x12a4eede,
+            0x6339f398, 0x4bca84c0
+        };
+        memcpy(state->state.W, iv, sizeof(iv));
+#else
+        static uint8_t const iv[40] = {
             0xee, 0x93, 0x98, 0xaa, 0xdb, 0x67, 0xf0, 0x3d,
             0x8b, 0xb2, 0x18, 0x31, 0xc6, 0x0f, 0x10, 0x02,
             0xb4, 0x8a, 0x92, 0xdb, 0x98, 0xd5, 0xda, 0x62,
             0x43, 0x18, 0x99, 0x21, 0xb8, 0xf8, 0xe3, 0xe8,
             0x34, 0x8f, 0xa5, 0xc9, 0xd5, 0x25, 0xe1, 0x40
         };
-        memcpy(state->state.B, hash_iv, sizeof(hash_iv));
+        memcpy(state->state.B, iv, sizeof(iv));
+#if !defined(ASCON_BACKEND_DIRECT_XOR)
         ascon_from_regular(&(state->state));
+#endif
+#endif
         state->count = 0;
         state->mode = 0;
     } else {

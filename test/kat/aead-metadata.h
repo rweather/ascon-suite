@@ -120,6 +120,14 @@ typedef int (*aead_hash_t)
 typedef void (*aead_hash_init_t)(void *state);
 
 /**
+ * \brief Initializes the state for an XOF algorithm with a fixed output length.
+ *
+ * \param state Hash state to be initialized.
+ * \param length Desired output length.
+ */
+typedef void (*aead_hash_init_fixed_t)(void *state, size_t length);
+
+/**
  * \brief Updates a hash state with more input data.
  *
  * \param state Hash state to be updated.
@@ -230,6 +238,7 @@ typedef struct
     unsigned flags;             /**< Flags for extra features */
     aead_hash_t hash;           /**< All in one hashing function */
     aead_hash_init_t init;      /**< Incremental hash/XOF init function */
+    aead_hash_init_fixed_t init_fixed; /**< XOF with fixed output length */
     aead_hash_update_t update;  /**< Incremental hash update function */
     aead_hash_finalize_t finalize; /**< Incremental hash finalize function */
     aead_xof_absorb_t absorb;   /**< Incremental XOF absorb function */

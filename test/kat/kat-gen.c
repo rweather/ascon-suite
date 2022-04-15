@@ -337,7 +337,14 @@ static void generate_kats_for_hash(const aead_hash_algorithm_t *alg, FILE *file)
         rng_generate(msg, msg_len);
 
         /* Produce the hash output */
-        (*(alg->hash))(hash, msg, msg_len);
+        if (alg->init_fixed) {
+            /* XOF with an explicitly-specified fixed length */
+            (*(alg->init_fixed))(state, alg->hash_len);
+            (*(alg->absorb))(state, msg, msg_len);
+            (*(alg->squeeze))(state, hash, alg->hash_len);
+        } else {
+            (*(alg->hash))(hash, msg, msg_len);
+        }
 
         /* Write out the results */
         fprintf(file, "Count = %d\n", count++);

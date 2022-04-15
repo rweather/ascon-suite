@@ -615,15 +615,17 @@ static int test_hash_inner
     }
 
     /* Hash the input message with the all-in-one function */
-    memset(out, 0xAA, alg->hash_len);
-    result = (*(alg->hash))(out, msg->data, msg->size);
-    if (result != 0) {
-        test_print_error(alg->name, vec, "all-in-one hash returned %d", result);
-        return 0;
-    }
-    if (!test_compare(out, md->data, md->size)) {
-        test_print_error(alg->name, vec, "all-in-one hash failed");
-        return 0;
+    if (!alg->init_fixed) {
+        memset(out, 0xAA, alg->hash_len);
+        result = (*(alg->hash))(out, msg->data, msg->size);
+        if (result != 0) {
+            test_print_error(alg->name, vec, "all-in-one hash returned %d", result);
+            return 0;
+        }
+        if (!test_compare(out, md->data, md->size)) {
+            test_print_error(alg->name, vec, "all-in-one hash failed");
+            return 0;
+        }
     }
 
     /*#define ADVANCE_INC(inc)    (++(inc))*/
@@ -655,7 +657,10 @@ static int test_hash_inner
     if (alg->init && alg->absorb && alg->squeeze) {
         /* Incremental absorb with all-in-one squeeze output */
         for (inc = 1; inc <= msg->size; ADVANCE_INC(inc)) {
-            (*(alg->init))(state);
+            if (alg->init_fixed)
+                (*(alg->init_fixed))(state, alg->hash_len);
+            else
+                (*(alg->init))(state);
             for (index = 0; index < msg->size; index += inc) {
                 size_t temp = msg->size - index;
                 if (temp > inc)
@@ -673,7 +678,10 @@ static int test_hash_inner
 
         /* All-in-one absorb with incremental squeeze output */
         for (inc = 1; inc <= md->size; ADVANCE_INC(inc)) {
-            (*(alg->init))(state);
+            if (alg->init_fixed)
+                (*(alg->init_fixed))(state, alg->hash_len);
+            else
+                (*(alg->init))(state);
             (*(alg->absorb))(state, msg->data, msg->size);
             memset(out, 0xAA, alg->hash_len);
             for (index = 0; index < md->size; index += inc) {

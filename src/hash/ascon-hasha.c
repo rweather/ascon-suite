@@ -21,6 +21,7 @@
  */
 
 #include <ascon/hash.h>
+#include "core/ascon-util-snp.h"
 #include <string.h>
 
 int ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen)
@@ -35,15 +36,33 @@ int ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen)
 void ascon_hasha_init(ascon_hash_state_t *state)
 {
     /* IV for ASCON-HASHA after processing it with the permutation */
-    static unsigned char const hash_iv[40] = {
+#if defined(ASCON_BACKEND_SLICED64)
+    static uint64_t const iv[5] = {
+        0x01470194fc6528a6ULL, 0x738ec38ac0adffa7ULL,
+        0x2ec8e3296c76384cULL, 0xd6f6a54d7f52377dULL,
+        0xa13c42a223be8d87ULL
+    };
+    memcpy(state->state.S, iv, sizeof(iv));
+#elif defined(ASCON_BACKEND_SLICED32)
+    static uint32_t const iv[10] = {
+        0x1b16eb02, 0x0108e46d, 0xd29083f3, 0x5b9b8efd,
+        0x2891ae4a, 0x7ad66562, 0xee3bfc7f, 0x9dc27156,
+        0x16801633, 0xc61d5fa9
+    };
+    memcpy(state->state.W, iv, sizeof(iv));
+#else
+    static uint8_t const iv[40] = {
         0x01, 0x47, 0x01, 0x94, 0xfc, 0x65, 0x28, 0xa6,
         0x73, 0x8e, 0xc3, 0x8a, 0xc0, 0xad, 0xff, 0xa7,
         0x2e, 0xc8, 0xe3, 0x29, 0x6c, 0x76, 0x38, 0x4c,
         0xd6, 0xf6, 0xa5, 0x4d, 0x7f, 0x52, 0x37, 0x7d,
         0xa1, 0x3c, 0x42, 0xa2, 0x23, 0xbe, 0x8d, 0x87
     };
-    memcpy(state->state.B, hash_iv, sizeof(hash_iv));
+    memcpy(state->state.B, iv, sizeof(iv));
+#if !defined(ASCON_BACKEND_DIRECT_XOR)
     ascon_from_regular(&(state->state));
+#endif
+#endif
     state->count = 0;
     state->mode = 0;
 }
