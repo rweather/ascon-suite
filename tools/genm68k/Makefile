@@ -1,9 +1,9 @@
 
-include ../../rules/options.mak
+include ../common/options.mak
 
 .PHONY: all clean check generate
 
-CFLAGS += $(COMMON_CFLAGS) -Wno-unused-parameter -I..
+CFLAGS += $(COMMON_CFLAGS) -Wno-unused-parameter -I../common
 LDFLAGS += $(COMMON_LDFLAGS)
 
 TARGETS = \
@@ -11,7 +11,7 @@ TARGETS = \
 
 all: $(TARGETS)
 
-bin/ascon_m68k: ascon_m68k.c ../copyright.h
+bin/ascon_m68k: ascon_m68k.c ../common/copyright.h
 	@mkdir -p bin
 	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
 

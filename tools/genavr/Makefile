@@ -1,9 +1,9 @@
 
-include ../../rules/options.mak
+include ../common/options.mak
 
 .PHONY: all clean check generate
 
-CXXFLAGS += -g $(COMMON_CFLAGS) $(STDC_CXXFLAGS) -I..
+CXXFLAGS += -g $(COMMON_CFLAGS) $(STDC_CXXFLAGS) -I../common
 
 TARGET = genavr
 
