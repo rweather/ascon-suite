@@ -23,8 +23,10 @@
 /* SnP helper functions for backends that use the "sliced64" method */
 
 #include <ascon/permutation.h>
+#include <ascon/utility.h>
 #include "ascon-select-backend.h"
 #include "ascon-util.h"
+#include "ascon-util-snp.h"
 
 #if defined(ASCON_BACKEND_SLICED64)
 
@@ -46,6 +48,15 @@ void ascon_init(ascon_state_t *state)
     state->S[2] = 0;
     state->S[3] = 0;
     state->S[4] = 0;
+    ascon_backend_init(state);
+}
+
+void ascon_free(ascon_state_t *state)
+{
+    if (state) {
+        ascon_backend_free(state);
+        ascon_clean(state, sizeof(ascon_state_t));
+    }
 }
 
 void ascon_add_bytes

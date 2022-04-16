@@ -102,6 +102,13 @@ void ascon_xof_init(ascon_xof_state_t *state);
 void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen);
 
 /**
+ * \brief Frees the ASCON-XOF state and destroys any sensitive material.
+ *
+ * \param state XOF state to be freed.
+ */
+void ascon_xof_free(ascon_xof_state_t *state);
+
+/**
  * \brief Aborbs more input data into an ASCON-XOF state.
  *
  * \param state XOF state to be updated.
@@ -178,6 +185,13 @@ void ascon_xofa_init(ascon_xof_state_t *state);
  * \sa ascon_xofa_init()
  */
 void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen);
+
+/**
+ * \brief Frees the ASCON-XOFA state and destroys any sensitive material.
+ *
+ * \param state XOF state to be freed.
+ */
+void ascon_xofa_free(ascon_xof_state_t *state);
 
 /**
  * \brief Aborbs more input data into an ASCON-XOFA state.

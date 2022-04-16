@@ -29,6 +29,7 @@ int ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen)
     ascon_xof_init(&state);
     ascon_xof_absorb(&state, in, inlen);
     ascon_xof_squeeze(&state, out, ASCON_HASH_SIZE);
+    ascon_free(&(state.state));
     return 0;
 }
 
@@ -113,6 +114,15 @@ void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen)
         memset(state->state.B + 8, 0, sizeof(state->state.B) - 8);
         ascon_from_regular(&(state->state));
         ascon_permute(&(state->state), 0);
+        state->count = 0;
+        state->mode = 0;
+    }
+}
+
+void ascon_xof_free(ascon_xof_state_t *state)
+{
+    if (state) {
+        ascon_free(&(state->state));
         state->count = 0;
         state->mode = 0;
     }

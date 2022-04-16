@@ -1213,4 +1213,17 @@ ascon_to_regular:
 	bx	lr
 	.size	ascon_to_regular, .-ascon_to_regular
 
+	.align	2
+	.global	ascon_backend_free
+	.thumb
+	.thumb_func
+	.type	ascon_backend_free, %function
+ascon_backend_free:
+	movs	r1, #0
+	movs	r2, #0
+	movs	r3, #0
+	mov	ip, r1
+	bx	lr
+	.size	ascon_backend_free, .-ascon_backend_free
+
 #endif

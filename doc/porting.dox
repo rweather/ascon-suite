@@ -89,6 +89,12 @@ different words.  This representation usually works best on 32-bit systems.
 they are stored in host byte order instead of the canonical big-endian
 byte order of the ASCON specification.  This representation usually works
 best on 64-bit systems.
+\li <tt>ASCON\_BACKEND\_INIT</tt> - The backend has a ascon_backend_init()
+function that must be called to initialize the permutation as the
+initialization is more complex than simply clearing the state to zeroes.
+\li <tt>ASCON\_BACKEND\_FREE</tt> - The backend has a ascon_backend_free()
+function that must be called to free the permutation and destroy
+sensitive information in registers and on the stack.
 
 The encryption, hashing, and other modes that are implemented in the
 library have direct knowledge of the underlying word representation of

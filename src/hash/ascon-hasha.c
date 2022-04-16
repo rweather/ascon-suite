@@ -30,6 +30,7 @@ int ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen)
     ascon_hasha_init(&state);
     ascon_xofa_absorb(&state, in, inlen);
     ascon_xofa_squeeze(&state, out, ASCON_HASH_SIZE);
+    ascon_free(&(state.state));
     return 0;
 }
 
@@ -65,6 +66,15 @@ void ascon_hasha_init(ascon_hash_state_t *state)
 #endif
     state->count = 0;
     state->mode = 0;
+}
+
+void ascon_hasha_free(ascon_hash_state_t *state)
+{
+    if (state) {
+        ascon_free(&(state->state));
+        state->count = 0;
+        state->mode = 0;
+    }
 }
 
 void ascon_hasha_update

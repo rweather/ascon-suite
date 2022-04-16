@@ -819,5 +819,20 @@ ascon_to_regular:
 	ret
 	.cfi_endproc
 	.size	ascon_to_regular, .-ascon_to_regular
+	.p2align 4,,15
+	.globl	ascon_backend_free
+	.type	ascon_backend_free, @function
+ascon_backend_free:
+	.cfi_startproc
+	mov	rax, 0
+	mov	rcx, 0
+	mov	rsi, 0
+	mov	r8, 0
+	mov	r9, 0
+	mov	r10, 0
+	mov	r11, 0
+	ret
+	.cfi_endproc
+	.size	ascon_backend_free, .-ascon_backend_free
 
 #endif

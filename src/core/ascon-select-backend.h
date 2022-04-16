@@ -55,6 +55,7 @@
 /* Assembly backend for 64-bit ARMv8-A systems */
 #define ASCON_BACKEND_ARMV8A 1
 #define ASCON_BACKEND_SLICED64 1
+#define ASCON_BACKEND_FREE 1
 
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 8 && defined(__ARM_ARCH_8M__)
 
@@ -62,6 +63,7 @@
 /* This can actually use the same backend as ARMv7-M systems */
 #define ASCON_BACKEND_ARMV7M 1
 #define ASCON_BACKEND_SLICED32 1
+#define ASCON_BACKEND_FREE 1
 
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 7
 
@@ -69,6 +71,7 @@
 /* This backend has also been tested to work on ARMv7-A systems */
 #define ASCON_BACKEND_ARMV7M 1
 #define ASCON_BACKEND_SLICED32 1
+#define ASCON_BACKEND_FREE 1
 
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 6 && defined(__ARM_ARCH_6M__)
 
@@ -81,18 +84,21 @@
 /* Assembly backend for ARMv6 systems, should work with thumb and non-thumb */
 #define ASCON_BACKEND_ARMV6 1
 #define ASCON_BACKEND_SLICED32 1
+#define ASCON_BACKEND_FREE 1
 
 #elif defined(__XTENSA__)
 
 /* Assembly backend for Xtensa-based systems */
 #define ASCON_BACKEND_XTENSA 1
 #define ASCON_BACKEND_SLICED32 1
+#define ASCON_BACKEND_FREE 1
 
 #elif defined(__x86_64) || defined(__x86_64__)
 
 /* Assembly backend for x86-64 based systems */
 #define ASCON_BACKEND_X86_64 1
 #define ASCON_BACKEND_SLICED64 1
+#define ASCON_BACKEND_FREE 1
 
 #elif defined(__i386) || defined(__i386__)
 

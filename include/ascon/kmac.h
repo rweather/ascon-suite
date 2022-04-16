@@ -95,6 +95,13 @@ void ascon_kmac_init
      const unsigned char *custom, size_t customlen);
 
 /**
+ * \brief Frees the ASCON-KMAC state and destroys any sensitive material.
+ *
+ * \param state KMAC state to be freed.
+ */
+void ascon_kmac_free(ascon_kmac_state_t *state);
+
+/**
  * \brief Absorbs more input data into an incremental ASCON-KMAC state.
  *
  * \param state KMAC state to be updated.
@@ -185,6 +192,13 @@ void ascon_kmaca
 void ascon_kmaca_init
     (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
      const unsigned char *custom, size_t customlen);
+
+/**
+ * \brief Frees the ASCON-KMACA state and destroys any sensitive material.
+ *
+ * \param state KMAC state to be freed.
+ */
+void ascon_kmaca_free(ascon_kmac_state_t *state);
 
 /**
  * \brief Absorbs more input data into an incremental ASCON-KMACA state.

@@ -89,6 +89,13 @@ void ascon_hmac_init
     (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen);
 
 /**
+ * \brief Frees the ASCON-HMAC state and destroys any sensitive material.
+ *
+ * \param state HMAC state to be freed.
+ */
+void ascon_hmac_free(ascon_hmac_state_t *state);
+
+/**
  * \brief Updates an incremental ASCON-HMAC state with more input data.
  *
  * \param state HMAC state to be updated.
@@ -144,6 +151,13 @@ void ascon_hmaca
  */
 void ascon_hmaca_init
     (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen);
+
+/**
+ * \brief Frees the ASCON-HMACA state and destroys any sensitive material.
+ *
+ * \param state HMAC state to be freed.
+ */
+void ascon_hmaca_free(ascon_hmac_state_t *state);
 
 /**
  * \brief Updates an incremental ASCON-HMACA state with more input data.

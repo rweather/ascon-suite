@@ -230,6 +230,34 @@ static void gen_to_or_from_sliced(void)
     printf("\tstr\t%s, [x0, 32]\n", x4);
 }
 
+/* Output the function to free sensitive material in registers */
+static void gen_backend_free(void)
+{
+    /*
+     * The ascon_permute() function stores the state and temporaries
+     * in x2-x7 and x9-x12 so technically only those registers need
+     * to be destroyed.
+     *
+     * However, functions that call ascon_permute() could have staged
+     * sensitive material in other registers prior to passing them in.
+     * We destroy all of the scratch registers as a precaution.
+     */
+    printf("\tmov\tx1, #0\n");
+    printf("\tmov\tx2, #0\n");
+    printf("\tmov\tx3, #0\n");
+    printf("\tmov\tx4, #0\n");
+    printf("\tmov\tx5, #0\n");
+    printf("\tmov\tx6, #0\n");
+    printf("\tmov\tx7, #0\n");
+    printf("\tmov\tx9, #0\n");
+    printf("\tmov\tx10, #0\n");
+    printf("\tmov\tx11, #0\n");
+    printf("\tmov\tx12, #0\n");
+    printf("\tmov\tx13, #0\n");
+    printf("\tmov\tx14, #0\n");
+    printf("\tmov\tx15, #0\n");
+}
+
 int main(int argc, char *argv[])
 {
     (void)argc;
@@ -256,6 +284,11 @@ int main(int argc, char *argv[])
     function_header("ascon_to_regular");
     gen_to_or_from_sliced();
     function_footer("ascon_to_regular");
+
+    /* Output the function to free sensitive material in registers */
+    function_header("ascon_backend_free");
+    gen_backend_free();
+    function_footer("ascon_backend_free");
 
     /* Output the file footer */
     printf("\n");

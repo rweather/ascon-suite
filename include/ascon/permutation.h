@@ -56,12 +56,18 @@ extern "C" {
  * This structure should be treated as opaque by calling applications
  * when it is in operational form.  It is declared publicly only to ensure
  * correct alignment for efficient 64-bit word access by the back end.
+ *
+ * If the back end requires more than 40 bytes for the permutation state,
+ * then ascon_init() will allocate a structure and place a pointer to
+ * that structure into P.  The application should call ascon_free() to
+ * properly free the permutation state when it is no longer required.
  */
 typedef union
 {
-    uint64_t S[5];      /**< 64-bit words of the state */
-    uint32_t W[10];     /**< 32-bit words of the state */
-    uint8_t B[40];      /**< Bytes of the state */
+    uint64_t S[5];                  /**< 64-bit words of the state */
+    uint32_t W[10];                 /**< 32-bit words of the state */
+    uint8_t B[40];                  /**< Bytes of the state */
+    void *P[40 / sizeof(void *)];   /**< Private backend state */
 
 } ascon_state_t;
 
@@ -69,8 +75,37 @@ typedef union
  * \brief Initializes the words of the ASCON permutation state to zero.
  *
  * \param state The ASCON state to initialize.
+ *
+ * This function might allocate internal state to hold more information
+ * than will fit in the ascon_state_t structure to interface with a
+ * platform-specific acceleration module.
+ *
+ * It is always a good idea to call this before using the permutation state.
+ * Also make sure to call ascon_free() when the permutation state is no
+ * longer required to deallocate the internal state.
+ *
+ * \sa ascon_free()
  */
 void ascon_init(ascon_state_t *state);
+
+/**
+ * \brief Frees an ASCON permutation state and attempts to destroy
+ * any sensitive material.
+ *
+ * \param state The ASCON state to be freed.
+ *
+ * If ascon_init() had to allocate internal structures to interface with a
+ * platform-specific acceleration module, then this function will deallocate
+ * those structures.
+ *
+ * There is no guarantee that all traces of the sensitive material will
+ * be gone.  Fragments may be left on the stack or in registers from
+ * previous permutation calls.  This function will make a best effort
+ * given the constraints of the platform.
+ *
+ * \sa ascon_init()
+ */
+void ascon_free(ascon_state_t *state);
 
 /**
  * \brief Converts the ASCON state from the internal "operational" form

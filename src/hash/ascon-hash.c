@@ -30,6 +30,7 @@ int ascon_hash(unsigned char *out, const unsigned char *in, size_t inlen)
     ascon_hash_init(&state);
     ascon_xof_absorb(&state, in, inlen);
     ascon_xof_squeeze(&state, out, ASCON_HASH_SIZE);
+    ascon_free(&(state.state));
     return 0;
 }
 
@@ -65,6 +66,15 @@ void ascon_hash_init(ascon_hash_state_t *state)
 #endif
     state->count = 0;
     state->mode = 0;
+}
+
+void ascon_hash_free(ascon_hash_state_t *state)
+{
+    if (state) {
+        ascon_free(&(state->state));
+        state->count = 0;
+        state->mode = 0;
+    }
 }
 
 void ascon_hash_update

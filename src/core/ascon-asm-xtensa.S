@@ -1647,4 +1647,36 @@ ascon_to_regular:
 #endif
 	.size	ascon_to_regular, .-ascon_to_regular
 
+#ifdef ESP8266
+	.section .irom0.text,"ax",@progbits
+#else
+	.section .text.ascon_backend_free,"ax",@progbits
+#endif
+	.align	4
+	.literal_position
+	.global	ascon_backend_free
+	.type	ascon_backend_free, @function
+ascon_backend_free:
+	movi.n	a3, 0
+	movi.n	a4, 0
+	movi.n	a5, 0
+	movi.n	a6, 0
+	movi.n	a7, 0
+	movi.n	a8, 0
+	movi.n	a9, 0
+	movi.n	a10, 0
+	movi.n	a11, 0
+#ifdef __XTENSA_WINDOWED_ABI__
+	movi.n	a12, 0
+	movi.n	a13, 0
+	movi.n	a14, 0
+	movi.n	a15, 0
+#endif
+#ifdef __XTENSA_WINDOWED_ABI__
+	retw.n
+#else
+	ret.n
+#endif
+	.size	ascon_backend_free, .-ascon_backend_free
+
 #endif

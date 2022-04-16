@@ -236,4 +236,28 @@
 
 #endif /* ASCON_BACKEND_GENERIC */
 
+#if defined(ASCON_BACKEND_INIT)
+/**
+ * \fn void ascon_backend_init(ascon_state_t *state)
+ * \brief Custom initialization code for the permutation backend.
+ *
+ * \param state Points to the ASCON permutation state.
+ */
+void ascon_backend_init(ascon_state_t *state);
+#else
+#define ascon_backend_init(state) do { ; } while (0)
+#endif
+
+#if defined(ASCON_BACKEND_FREE)
+/**
+ * \fn void ascon_backend_init(ascon_state_t *state)
+ * \brief Custom free code for the permutation backend.
+ *
+ * \param state Points to the ASCON permutation state.
+ */
+void ascon_backend_free(ascon_state_t *state);
+#else
+#define ascon_backend_free(state) do { ; } while (0)
+#endif
+
 #endif

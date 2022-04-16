@@ -1230,4 +1230,17 @@ ascon_to_regular:
 	bx	lr
 	.size	ascon_to_regular, .-ascon_to_regular
 
+	.align	2
+	.global	ascon_backend_free
+	.arch	armv6
+	.arm
+	.type	ascon_backend_free, %function
+ascon_backend_free:
+	mov	r1, #0
+	mov	r2, #0
+	mov	r3, #0
+	mov	ip, #0
+	bx	lr
+	.size	ascon_backend_free, .-ascon_backend_free
+
 #endif

@@ -47,6 +47,9 @@ static void ascon80pq_siv_init
     (ascon_state_t *state, const unsigned char *npub,
      const unsigned char *k, uint32_t iv)
 {
+#if defined(ASCON_BACKEND_INIT)
+    ascon_init(state);
+#endif
     be_store_word32(state->B, iv);
     memcpy(state->B + 4, k, ASCON80PQ_KEY_SIZE);
     memcpy(state->B + 24, npub, ASCON80PQ_NONCE_SIZE);
@@ -123,6 +126,7 @@ int ascon80pq_siv_encrypt
 
     /* Encrypt the plaintext to create the ciphertext */
     ascon_siv_encrypt_8_80pq(&state, c, m, mlen, 6);
+    ascon_free(&state);
     return 0;
 }
 
@@ -134,6 +138,7 @@ int ascon80pq_siv_decrypt
      const unsigned char *k)
 {
     ascon_state_t state;
+    int result;
 
     /* Set the length of the returned plaintext */
     if (clen < ASCON80PQ_TAG_SIZE)
@@ -165,6 +170,8 @@ int ascon80pq_siv_decrypt
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k + 4, 24);
     ascon_to_regular(&state);
-    return ascon_aead_check_tag
+    result = ascon_aead_check_tag
         (m, clen, state.B + 24, c + clen, ASCON80PQ_TAG_SIZE);
+    ascon_free(&state);
+    return result;
 }

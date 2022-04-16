@@ -385,6 +385,42 @@ static void gen_to_or_from_sliced(void)
     store(x4, state, 32);
 }
 
+/* Output the function to free sensitive material in registers */
+static void gen_backend_free(void)
+{
+    /*
+     * %rdi holds the pointer to the ASCON state on entry and exit.
+     *
+     * %rax, %rcx, %rdx, %rdi, %rsi, %r8, %r9, %r10, %r11 can be used
+     * as scratch registers without saving.  These are the registers
+     * that we need to destroy.
+     *
+     * %rbx, %rbp, %r12, %r13, %r14, %r15 must be callee-saved, so their
+     * contents were already destroyed when ascon_permute() returned.
+     */
+#if INTEL_SYNTAX
+    printf(INSNQ(mov) "rax, 0\n");
+    printf(INSNQ(mov) "rcx, 0\n");
+    /* %rdi contains the pointer to the state so it is already destroyed */
+    /*printf(INSNQ(mov) "rdi, 0\n");*/
+    printf(INSNQ(mov) "rsi, 0\n");
+    printf(INSNQ(mov) "r8, 0\n");
+    printf(INSNQ(mov) "r9, 0\n");
+    printf(INSNQ(mov) "r10, 0\n");
+    printf(INSNQ(mov) "r11, 0\n");
+#else
+    printf(INSNQ(mov) "$0, %%rax\n");
+    printf(INSNQ(mov) "$0, %%rcx\n");
+    /* %rdi contains the pointer to the state so it is already destroyed */
+    /*printf(INSNQ(mov) "$0, %%rdi\n");*/
+    printf(INSNQ(mov) "$0, %%rsi\n");
+    printf(INSNQ(mov) "$0, %%r8\n");
+    printf(INSNQ(mov) "$0, %%r9\n");
+    printf(INSNQ(mov) "$0, %%r10\n");
+    printf(INSNQ(mov) "$0, %%r11\n");
+#endif
+}
+
 int main(int argc, char *argv[])
 {
     (void)argc;
@@ -413,6 +449,11 @@ int main(int argc, char *argv[])
     function_header("ascon_to_regular");
     gen_to_or_from_sliced();
     function_footer("ascon_to_regular");
+
+    /* Output the function to free sensitive material in registers */
+    function_header("ascon_backend_free");
+    gen_backend_free();
+    function_footer("ascon_backend_free");
 
     /* Output the file footer */
     printf("\n");

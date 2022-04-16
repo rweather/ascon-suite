@@ -128,6 +128,12 @@ void KMAC_CONCAT(KMAC_ALG_NAME,_init)
     KMAC_XOF_PAD(state);
 }
 
+void KMAC_CONCAT(KMAC_ALG_NAME,_free)(KMAC_STATE *state)
+{
+    if (state)
+        ascon_clean(state, sizeof(KMAC_STATE));
+}
+
 void KMAC_CONCAT(KMAC_ALG_NAME,_absorb)
     (KMAC_STATE *state, const unsigned char *in, size_t inlen)
 {

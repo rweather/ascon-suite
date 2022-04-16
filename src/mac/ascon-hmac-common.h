@@ -134,6 +134,12 @@ void HMAC_CONCAT(HMAC_ALG_NAME,_init)
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(state, key, keylen, HMAC_IPAD);
 }
 
+void HMAC_CONCAT(HMAC_ALG_NAME,_free)(HMAC_STATE *state)
+{
+    if (state)
+        ascon_clean(state, sizeof(HMAC_STATE));
+}
+
 void HMAC_CONCAT(HMAC_ALG_NAME,_update)
     (HMAC_STATE *state, const unsigned char *in, size_t inlen)
 {

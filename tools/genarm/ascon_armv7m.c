@@ -542,6 +542,25 @@ static void gen_from_sliced(void)
     printf("\tpop\t{%s}\n", temp3);
 }
 
+/* Output the function to free sensitive material in registers */
+static void gen_backend_free(void)
+{
+    /* Destroy the scratch registers: x0-x3 and ip.  We don't need to
+     * destroy x0 as the caller already put the state pointer into it.
+     * That will destroy any previous contents of x0. */
+#if defined(FORCE_ARM_MODE)
+    printf("\tmov\tr1, #0\n");
+    printf("\tmov\tr2, #0\n");
+    printf("\tmov\tr3, #0\n");
+    printf("\tmov\tip, #0\n");
+#else
+    printf("\tmovs\tr1, #0\n");
+    printf("\tmovs\tr2, #0\n");
+    printf("\tmovs\tr3, #0\n");
+    printf("\tmov\tip, r1\n");
+#endif
+}
+
 int main(int argc, char *argv[])
 {
     (void)argc;
@@ -577,6 +596,11 @@ int main(int argc, char *argv[])
     function_header("ascon_to_regular");
     gen_from_sliced();
     function_footer("ascon_to_regular");
+
+    /* Output the function to free sensitive material in registers */
+    function_header("ascon_backend_free");
+    gen_backend_free();
+    function_footer("ascon_backend_free");
 
     /* Output the file footer */
     printf("\n");

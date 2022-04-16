@@ -554,6 +554,32 @@ static void gen_from_sliced(void)
     printf("\tbnez\t%s, .L101\n", loop);
 }
 
+/* Output the function to free sensitive material in registers */
+static void gen_backend_free(void)
+{
+    /*
+     * If the Xtensa uses register windows, then it may be pointless to
+     * destroy the register contents.  The registers that we see now may
+     * not be the same as the registers when ascon_permute() was called.
+     * But do the best we can anyway.
+     */
+    loadimm("a3", 0);
+    loadimm("a4", 0);
+    loadimm("a5", 0);
+    loadimm("a6", 0);
+    loadimm("a7", 0);
+    loadimm("a8", 0);
+    loadimm("a9", 0);
+    loadimm("a10", 0);
+    loadimm("a11", 0);
+    printf("#ifdef __XTENSA_WINDOWED_ABI__\n");
+    loadimm("a12", 0);
+    loadimm("a13", 0);
+    loadimm("a14", 0);
+    loadimm("a15", 0);
+    printf("#endif\n");
+}
+
 int main(int argc, char *argv[])
 {
     (void)argc;
@@ -582,6 +608,13 @@ int main(int argc, char *argv[])
     gen_from_sliced();
     function_return();
     function_footer("ascon_to_regular");
+    printf("\n");
+
+    /* Output the function to free sensitive material in registers */
+    function_header("ascon_backend_free");
+    gen_backend_free();
+    function_return();
+    function_footer("ascon_backend_free");
     printf("\n");
 
     /* Output the file footer */

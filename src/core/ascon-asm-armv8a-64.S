@@ -532,4 +532,28 @@ ascon_to_regular:
 	.cfi_endproc
 	.size	ascon_to_regular, .-ascon_to_regular
 
+	.align	2
+	.p2align 4,,11
+	.global	ascon_backend_free
+	.type	ascon_backend_free, %function
+ascon_backend_free:
+	.cfi_startproc
+	mov	x1, #0
+	mov	x2, #0
+	mov	x3, #0
+	mov	x4, #0
+	mov	x5, #0
+	mov	x6, #0
+	mov	x7, #0
+	mov	x9, #0
+	mov	x10, #0
+	mov	x11, #0
+	mov	x12, #0
+	mov	x13, #0
+	mov	x14, #0
+	mov	x15, #0
+	ret
+	.cfi_endproc
+	.size	ascon_backend_free, .-ascon_backend_free
+
 #endif

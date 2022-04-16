@@ -42,6 +42,9 @@ int ascon128_aead_encrypt
     *clen = mlen + ASCON128_TAG_SIZE;
 
     /* Initialize the ASCON state */
+#if defined(ASCON_BACKEND_INIT)
+    ascon_init(&state);
+#endif
     be_store_word64(state.B, ASCON128_IV);
     memcpy(state.B + 8, k, ASCON128_KEY_SIZE);
     memcpy(state.B + 24, npub, ASCON128_NONCE_SIZE);
@@ -64,6 +67,7 @@ int ascon128_aead_encrypt
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k, 24);
     ascon_squeeze_partial(&state, c + mlen, 24, ASCON128_TAG_SIZE);
+    ascon_free(&state);
     return 0;
 }
 
@@ -75,6 +79,7 @@ int ascon128_aead_decrypt
      const unsigned char *k)
 {
     ascon_state_t state;
+    int result;
 
     /* Set the length of the returned plaintext */
     if (clen < ASCON128_TAG_SIZE)
@@ -82,6 +87,9 @@ int ascon128_aead_decrypt
     *mlen = clen - ASCON128_TAG_SIZE;
 
     /* Initialize the ASCON state */
+#if defined(ASCON_BACKEND_INIT)
+    ascon_init(&state);
+#endif
     be_store_word64(state.B, ASCON128_IV);
     memcpy(state.B + 8, k, ASCON128_KEY_SIZE);
     memcpy(state.B + 24, npub, ASCON128_NONCE_SIZE);
@@ -104,6 +112,8 @@ int ascon128_aead_decrypt
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k, 24);
     ascon_to_regular(&state);
-    return ascon_aead_check_tag
+    result = ascon_aead_check_tag
         (m, *mlen, state.B + 24, c + *mlen, ASCON128_TAG_SIZE);
+    ascon_free(&state);
+    return result;
 }
