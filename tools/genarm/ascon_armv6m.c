@@ -330,11 +330,12 @@ static void gen_permute(void)
     printf("\tlsls\tr1, r1, #2\n");
     printf("\tadr\tr2, .L90\n");
     printf("\tldr\tr1, [r2, r1]\n");
+    printf("\tadd\tr1, r2\n");
     printf("\tmov\tpc, r1\n");
     printf("\t.align\t2\n");
     printf(".L90:\n");
     for (round = 0; round < 12; ++round) {
-        printf("\t.word\t.L%d\n", round);
+        printf("\t.word\t.L%d-.L90\n", round);
     }
     printf(".L91:\n");
     /* This is not really a subroutine call as we immediately discard LR.

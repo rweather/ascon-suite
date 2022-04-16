@@ -55,21 +55,22 @@ ascon_permute:
 	lsls	r1, r1, #2
 	adr	r2, .L90
 	ldr	r1, [r2, r1]
+	add	r1, r2
 	mov	pc, r1
 	.align	2
 .L90:
-	.word	.L0
-	.word	.L1
-	.word	.L2
-	.word	.L3
-	.word	.L4
-	.word	.L5
-	.word	.L6
-	.word	.L7
-	.word	.L8
-	.word	.L9
-	.word	.L10
-	.word	.L11
+	.word	.L0-.L90
+	.word	.L1-.L90
+	.word	.L2-.L90
+	.word	.L3-.L90
+	.word	.L4-.L90
+	.word	.L5-.L90
+	.word	.L6-.L90
+	.word	.L7-.L90
+	.word	.L8-.L90
+	.word	.L9-.L90
+	.word	.L10-.L90
+	.word	.L11-.L90
 .L91:
 	bl	.L12
 .L0:
