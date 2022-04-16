@@ -315,24 +315,29 @@ static void gen_permute(void)
 #if INTEL_SYNTAX
     printf(INSNQ(cmp) "%s, 12\n", first_round);
     printf("\tjge\t.L13\n");
-    printf(INSNQ(mov) "%s, [%s * 8 + .L14]\n", regs.t0, first_round);
-    printf("\tjmp\t%s\n", regs.t0);
+    printf(INSNQ(lea) "%s, [rip + .L14]\n", regs.t0);
+    printf(INSNQ(movsxd) "%s, [%s + %s*4]\n", regs.t1, regs.t0, first_round);
+    printf(INSNQ(add) "%s, %s\n", regs.t1, regs.t0);
+    printf("\tjmp\t%s\n", regs.t1);
 #else
     printf(INSNQ(cmp) "$12, %s\n", first_round);
     printf("\tjge\t.L13\n");
-    printf(INSNQ(mov) ".L14(,%s,8), %s\n", first_round, regs.t0);
-    printf("\tjmp\t*%s\n", regs.t0);
+    printf(INSNQ(lea) ".L14(%%rip), %s\n", regs.t0);
+    printf(INSNQ(movsl) "(%s,%s,4), %s\n", regs.t0, first_round, regs.t1);
+    printf(INSNQ(add) "%s, %s\n", regs.t0, regs.t1);
+    printf("\tjmp\t*%s\n", regs.t1);
 #endif
     printf(".L13:\n");
     printf("\tjmp\t.L12\n");
     printf("\t.section\t.rodata\n");
-    printf("\t.align\t8\n");
     printf("\t.align\t4\n");
     printf("\t.L14:\n");
     for (round = 0; round < 12; ++round) {
-        printf("\t.quad\t.L%d\n", round);
+        printf("\t.long\t.L%d-.L14\n", round);
     }
     printf("\t.text\n");
+    printf("\t.p2align\t4,,10\n");
+    printf("\t.p2align\t3\n");
 
     /* Unroll the rounds */
     for (round = 0; round < 12; ++round) {

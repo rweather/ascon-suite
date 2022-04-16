@@ -40,27 +40,30 @@ ascon_permute:
 	not	rdx
 	cmp	rsi, 12
 	jge	.L13
-	mov	rbx, [rsi * 8 + .L14]
-	jmp	rbx
+	lea	rbx, [rip + .L14]
+	movsxd	rsi, [rbx + rsi*4]
+	add	rsi, rbx
+	jmp	rsi
 .L13:
 	jmp	.L12
 	.section	.rodata
-	.align	8
 	.align	4
 	.L14:
-	.quad	.L0
-	.quad	.L1
-	.quad	.L2
-	.quad	.L3
-	.quad	.L4
-	.quad	.L5
-	.quad	.L6
-	.quad	.L7
-	.quad	.L8
-	.quad	.L9
-	.quad	.L10
-	.quad	.L11
+	.long	.L0-.L14
+	.long	.L1-.L14
+	.long	.L2-.L14
+	.long	.L3-.L14
+	.long	.L4-.L14
+	.long	.L5-.L14
+	.long	.L6-.L14
+	.long	.L7-.L14
+	.long	.L8-.L14
+	.long	.L9-.L14
+	.long	.L10-.L14
+	.long	.L11-.L14
 	.text
+	.p2align	4,,10
+	.p2align	3
 .L0:
 	xor	rdx, -241
 	xor	rax, r9

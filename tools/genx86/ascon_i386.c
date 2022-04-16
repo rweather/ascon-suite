@@ -492,39 +492,39 @@ static void gen_permute(void)
     load(regs.x4, state, X4_E);
     unop(INSNL(not), regs.x2); /* Invert x2_e before the first round */
 
-    /* Switch on the "first round" parameter and jump ahead */
+    /* Determine which round is first and jump ahead.  Most of the time,
+     * we will be seeing "first round" set to 6, 0, or 4 so we handle
+     * those cases first.  But we can do any number of rounds.   If the
+     * "first round" value is 12 or higher, then we will do nothing. */
 #if INTEL_SYNTAX
-    printf(INSNL(cmp) "%s, 12\n", first_round);
-    printf("\tjge\t.L13\n");
-#if X86_64_PLATFORM
-    printf(INSNQ(mov) "%s, [%s * 8 + .L14]\n", REG_RAX, REG_RBP);
-#else
-    printf(INSNL(mov) "%s, [%s * 4 + .L14]\n", regs.t0, first_round);
-#endif
-    printf("\tjmp\t%s\n", state);
-#else /* !INTEL_SYNTAX */
-    printf(INSNL(cmp) "$12, %s\n", first_round);
-    printf("\tjge\t.L13\n");
-#if X86_64_PLATFORM
-    printf(INSNQ(mov) ".L14(,%s,8), %s\n", REG_RBP, REG_RAX);
-#else
-    printf(INSNL(mov) ".L14(,%s,4), %s\n", first_round, regs.t0);
-#endif
-    printf("\tjmp\t*%s\n", state);
-#endif /* !INTEL_SYNTAX */
-    printf(".L13:\n");
-    printf("\tjmp\t.L12\n");
-    printf("\t.section\t.rodata\n");
-    printf("\t.align\t4\n");
-    printf("\t.L14:\n");
-    for (round = 0; round < 12; ++round) {
-#if X86_64_PLATFORM
-        printf("\t.quad\t.L%d\n", round);
-#else
-        printf("\t.long\t.L%d\n", round);
-#endif
+    printf(INSNL(cmp) "%s, 6\n", first_round);
+    printf("\tje\t.L6\n");
+    printf(INSNL(cmp) "%s, 0\n", first_round);
+    printf("\tje\t.L0\n");
+    printf(INSNL(cmp) "%s, 4\n", first_round);
+    printf("\tje\t.L4\n");
+    for (round = 11; round > 0; --round) {
+        if (round == 0 || round == 4 || round == 6)
+            continue;
+        printf(INSNL(cmp) "%s, %d\n", first_round, round);
+        printf("\tje\t.L%d\n", round);
     }
-    printf("\t.text\n");
+    printf("\tjmp\t.L12\n");
+#else
+    printf(INSNL(cmp) "$6, %s\n", first_round);
+    printf("\tje\t.L6\n");
+    printf(INSNL(cmp) "$0, %s\n", first_round);
+    printf("\tje\t.L0\n");
+    printf(INSNL(cmp) "$4, %s\n", first_round);
+    printf("\tje\t.L4\n");
+    for (round = 11; round > 0; --round) {
+        if (round == 0 || round == 4 || round == 6)
+            continue;
+        printf(INSNL(cmp) "$%d, %s\n", round, first_round);
+        printf("\tje\t.L%d\n", round);
+    }
+    printf("\tjmp\t.L12\n");
+#endif
 
     /* Unroll the rounds */
     for (round = 0; round < 12; ++round) {

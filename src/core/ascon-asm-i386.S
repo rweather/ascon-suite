@@ -58,28 +58,31 @@ ascon_permute:
 	movl	24(%eax), %esi
 	movl	32(%eax), %edi
 	notl	%edx
-	cmpl	$12, %ebp
-	jge	.L13
-	movl	.L14(,%ebp,4), %eax
-	jmp	*%eax
-.L13:
+	cmpl	$6, %ebp
+	je	.L6
+	cmpl	$0, %ebp
+	je	.L0
+	cmpl	$4, %ebp
+	je	.L4
+	cmpl	$11, %ebp
+	je	.L11
+	cmpl	$10, %ebp
+	je	.L10
+	cmpl	$9, %ebp
+	je	.L9
+	cmpl	$8, %ebp
+	je	.L8
+	cmpl	$7, %ebp
+	je	.L7
+	cmpl	$5, %ebp
+	je	.L5
+	cmpl	$3, %ebp
+	je	.L3
+	cmpl	$2, %ebp
+	je	.L2
+	cmpl	$1, %ebp
+	je	.L1
 	jmp	.L12
-	.section	.rodata
-	.align	4
-	.L14:
-	.long	.L0
-	.long	.L1
-	.long	.L2
-	.long	.L3
-	.long	.L4
-	.long	.L5
-	.long	.L6
-	.long	.L7
-	.long	.L8
-	.long	.L9
-	.long	.L10
-	.long	.L11
-	.text
 .L0:
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
