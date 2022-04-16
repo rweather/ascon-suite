@@ -27,6 +27,7 @@
 
 #include <ascon/aead.h>
 #include <ascon/permutation.h>
+#include <ascon/utility.h>
 
 /**
  * \brief Check an authentication tag in constant time.

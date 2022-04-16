@@ -54,6 +54,7 @@ void test_ascon_permutation(void)
 {
     ascon_state_t state;
     uint8_t buffer[40];
+    uint8_t buffer2[40];
     unsigned offset, size, posn;
     int ok;
 
@@ -61,11 +62,12 @@ void test_ascon_permutation(void)
 
     printf("    12 Rounds ... ");
     fflush(stdout);
-    memcpy(state.B, ascon_input, sizeof(ascon_input));
-    ascon_from_regular(&state);
+    ascon_init(&state);
+    ascon_add_bytes(&state, ascon_input, 0, sizeof(ascon_input));
     ascon_permute(&state, 0);
-    ascon_to_regular(&state);
-    if (memcmp(state.B, ascon_output_12, sizeof(ascon_output_12)) != 0) {
+    ascon_extract_bytes(&state, buffer, 0, sizeof(buffer));
+    ascon_free(&state);
+    if (memcmp(buffer, ascon_output_12, sizeof(ascon_output_12)) != 0) {
         printf("failed\n");
         test_exit_result = 1;
     } else {
@@ -74,11 +76,12 @@ void test_ascon_permutation(void)
 
     printf("    8 Rounds ... ");
     fflush(stdout);
-    memcpy(state.B, ascon_input, sizeof(ascon_input));
-    ascon_from_regular(&state);
+    ascon_init(&state);
+    ascon_add_bytes(&state, ascon_input, 0, sizeof(ascon_input));
     ascon_permute(&state, 4);
-    ascon_to_regular(&state);
-    if (memcmp(state.B, ascon_output_8, sizeof(ascon_output_8)) != 0) {
+    ascon_extract_bytes(&state, buffer, 0, sizeof(buffer));
+    ascon_free(&state);
+    if (memcmp(buffer, ascon_output_8, sizeof(ascon_output_8)) != 0) {
         printf("failed\n");
         test_exit_result = 1;
     } else {
@@ -89,22 +92,28 @@ void test_ascon_permutation(void)
     fflush(stdout);
     memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
     ascon_init(&state);
+    ascon_extract_bytes(&state, buffer, 0, sizeof(buffer));
+    ascon_free(&state);
     ok = 1;
     for (posn = 0; posn < 40; ++posn) {
-        if (state.B[posn] != 0)
+        if (buffer[posn] != 0)
             ok = 0;
     }
-    memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
-    ascon_from_regular(&state);
-    ascon_init(&state);
-    for (posn = 0; posn < 40; ++posn) {
-        if (state.B[posn] != 0)
-            ok = 0;
+    if (!ok) {
+        printf("failed\n");
+        test_exit_result = 1;
+    } else {
+        printf("ok\n");
     }
-    memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
+
+    printf("    Free ... ");
+    fflush(stdout);
     ascon_init(&state);
-    ascon_from_regular(&state);
+    ascon_add_bytes(&state, ascon_input, 0, sizeof(ascon_input));
+    ascon_free(&state);
+    ok = 1;
     for (posn = 0; posn < 40; ++posn) {
+        /* Check that ascon_free() sets everything in the state to zero */
         if (state.B[posn] != 0)
             ok = 0;
     }
@@ -120,15 +129,17 @@ void test_ascon_permutation(void)
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
         for (size = 0; size < (40 - offset); ++size) {
-            memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
-            ascon_from_regular(&state);
+            ascon_init(&state);
+            ascon_overwrite_bytes
+                (&state, ascon_output_12, 0, sizeof(ascon_output_12));
             ascon_add_bytes(&state, ascon_input, offset, size);
-            ascon_to_regular(&state);
+            ascon_extract_bytes(&state, buffer, 0, sizeof(buffer));
+            ascon_free(&state);
             for (posn = 0; posn < 40; ++posn) {
                 uint8_t value = ascon_output_12[posn];
                 if (posn >= offset && posn < (offset + size))
                     value ^= ascon_input[posn - offset];
-                if (value != state.B[posn])
+                if (value != buffer[posn])
                     ok = 0;
             }
         }
@@ -145,15 +156,17 @@ void test_ascon_permutation(void)
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
         for (size = 0; size < (40 - offset); ++size) {
-            memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
-            ascon_from_regular(&state);
+            ascon_init(&state);
+            ascon_overwrite_bytes
+                (&state, ascon_output_12, 0, sizeof(ascon_output_12));
             ascon_overwrite_bytes(&state, ascon_input, offset, size);
-            ascon_to_regular(&state);
+            ascon_extract_bytes(&state, buffer, 0, sizeof(buffer));
+            ascon_free(&state);
             for (posn = 0; posn < 40; ++posn) {
                 uint8_t value = ascon_output_12[posn];
                 if (posn >= offset && posn < (offset + size))
                     value = ascon_input[posn - offset];
-                if (value != state.B[posn])
+                if (value != buffer[posn])
                     ok = 0;
             }
         }
@@ -170,15 +183,17 @@ void test_ascon_permutation(void)
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
         for (size = 0; size < (40 - offset); ++size) {
-            memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
-            ascon_from_regular(&state);
+            ascon_init(&state);
+            ascon_overwrite_bytes
+                (&state, ascon_output_12, 0, sizeof(ascon_output_12));
             ascon_overwrite_with_zeroes(&state, offset, size);
-            ascon_to_regular(&state);
+            ascon_extract_bytes(&state, buffer, 0, sizeof(buffer));
+            ascon_free(&state);
             for (posn = 0; posn < 40; ++posn) {
                 uint8_t value = ascon_output_12[posn];
                 if (posn >= offset && posn < (offset + size))
                     value = 0;
-                if (value != state.B[posn])
+                if (value != buffer[posn])
                     ok = 0;
             }
         }
@@ -195,9 +210,11 @@ void test_ascon_permutation(void)
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
         for (size = 0; size < (40 - offset); ++size) {
-            memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
-            ascon_from_regular(&state);
+            ascon_init(&state);
+            ascon_overwrite_bytes
+                (&state, ascon_output_12, 0, sizeof(ascon_output_12));
             ascon_extract_bytes(&state, buffer, offset, size);
+            ascon_free(&state);
             for (posn = 0; posn < size; ++posn) {
                 if (buffer[posn] != ascon_output_12[posn + offset])
                     ok = 0;
@@ -216,11 +233,13 @@ void test_ascon_permutation(void)
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
         for (size = 0; size < (40 - offset); ++size) {
-            memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
+            ascon_init(&state);
+            ascon_overwrite_bytes
+                (&state, ascon_output_12, 0, sizeof(ascon_output_12));
             memset(buffer, 0xAA, sizeof(buffer));
-            ascon_from_regular(&state);
             ascon_extract_and_add_bytes
                 (&state, ascon_input, buffer, offset, size);
+            ascon_free(&state);
             for (posn = 0; posn < size; ++posn) {
                 uint8_t value = ascon_output_12[posn + offset];
                 value ^= ascon_input[posn];
@@ -241,12 +260,14 @@ void test_ascon_permutation(void)
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
         for (size = 0; size < (40 - offset); ++size) {
-            memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
+            ascon_init(&state);
+            ascon_overwrite_bytes
+                (&state, ascon_output_12, 0, sizeof(ascon_output_12));
             memset(buffer, 0xAA, sizeof(buffer));
-            ascon_from_regular(&state);
             ascon_extract_and_overwrite_bytes
                 (&state, ascon_input, buffer, offset, size);
-            ascon_to_regular(&state);
+            ascon_extract_bytes(&state, buffer2, 0, sizeof(buffer2));
+            ascon_free(&state);
             for (posn = 0; posn < size; ++posn) {
                 uint8_t value = ascon_output_12[posn + offset];
                 value ^= ascon_input[posn];
@@ -254,10 +275,10 @@ void test_ascon_permutation(void)
                     ok = 0;
             }
             for (posn = 0; posn < 40; ++posn) {
-                uint8_t value = state.B[posn];
+                uint8_t value = buffer2[posn];
                 if (posn >= offset && posn < (offset + size))
                     value = ascon_input[posn - offset];
-                if (value != state.B[posn])
+                if (value != buffer2[posn])
                     ok = 0;
             }
         }

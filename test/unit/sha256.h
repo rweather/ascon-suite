@@ -77,6 +77,13 @@ int sha256_hash(unsigned char *out, const unsigned char *in, size_t inlen);
 void sha256_hash_init(sha256_state_t *state);
 
 /**
+ * \brief Frees the state for a SHA256 hashing operation.
+ *
+ * \param state Hash state to be freed.
+ */
+void sha256_hash_free(sha256_state_t *state);
+
+/**
  * \brief Updates a SHA256 state with more input data.
  *
  * \param state Hash state to be updated.
@@ -118,6 +125,13 @@ void sha256_hmac
  */
 void sha256_hmac_init
     (sha256_state_t *state, const unsigned char *key, size_t keylen);
+
+/**
+ * \brief Frees the SHA256-HMAC state and destroys any sensitive material.
+ *
+ * \param state HMAC state to be freed.
+ */
+void sha256_hmac_free(sha256_state_t *state);
 
 /**
  * \brief Updates an incremental SHA256-HMAC state with more input data.

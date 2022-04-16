@@ -165,16 +165,6 @@ static void ror(const char *dest, int shift)
     shiftop(INSNL(ror), dest, shift);
 }
 
-/* AND's a register with an immediate mask value */
-static void andimm(const char *reg, int mask)
-{
-#if INTEL_SYNTAX
-    printf(INSNL(and) "%s, %d\n", reg, mask);
-#else
-    printf(INSNL(and) "$%d, %s\n", mask, reg);
-#endif
-}
-
 /* Loads a register from a memory location */
 static void load(const char *reg, const char *ptr, int offset)
 {
@@ -579,163 +569,6 @@ static void gen_permute(void)
 #endif
 }
 
-/* Do two bit_permute_step() operations in parallel to improve scheduling */
-static void bit_permute_step_two
-    (const char *y1, const char *y2, const char *t1,
-     const char *t2, unsigned long mask, int shift)
-{
-    /* t = ((y >> (shift)) ^ y) & (mask);
-     * y = (y ^ t) ^ (t << (shift)); */
-    binop(INSNL(mov), t1, y1);
-    binop(INSNL(mov), t2, y2);
-    shiftop(INSNL(shr), t1, shift);
-    shiftop(INSNL(shr), t2, shift);
-    binop(INSNL(xor), t1, y1);
-    binop(INSNL(xor), t2, y2);
-    andimm(t1, (int)mask);
-    andimm(t2, (int)mask);
-    binop(INSNL(xor), y1, t1);
-    binop(INSNL(xor), y2, t2);
-    shiftop(INSNL(shl), t1, shift);
-    shiftop(INSNL(shl), t2, shift);
-    binop(INSNL(xor), y1, t1);
-    binop(INSNL(xor), y2, t2);
-}
-
-/* Output the function to convert to sliced form */
-static void gen_to_sliced(void)
-{
-    /*
-     * The "state" argument is on the stack on entry.
-     *
-     * eax, ecx, and edx can be used as scratch registers.
-     *
-     * ebx, esi, edi, and ebp must be callee-saved.
-     */
-#if X86_64_PLATFORM
-    const char *state = REG_RAX;
-    const char *high = REG_ECX;
-    const char *low = REG_EDX;
-    const char *temp1 = REG_EDI;
-    const char *temp2 = REG_ESI;
-#else
-    const char *state = REG_EAX;
-    const char *high = REG_ECX;
-    const char *low = REG_EDX;
-    const char *temp1 = REG_EDI;
-    const char *temp2 = REG_ESI;
-#endif
-    int loop;
-
-    /* Set up the stack frame, and load the state pointer into eax */
-#if X86_64_PLATFORM
-    binop(INSNQ(mov), REG_RAX, REG_RDI);
-#else
-    unop(INSNL(push), REG_EDI);
-    unop(INSNL(push), REG_ESI);
-    load(state, REG_ESP, 12);
-#endif
-
-    /* Process 5 rounds for each of the 8-byte words of the state */
-    for (loop = 0; loop < 5; ++loop) {
-        /* load high and low from the state */
-        load(high, state, loop * 8);
-        load(low, state, loop * 8 + 4);
-
-        /* ascon_separate(high) and ascon_separate(low) */
-        bit_permute_step_two(high, low, temp1, temp2, 0x22222222, 1);
-        bit_permute_step_two(high, low, temp1, temp2, 0x0c0c0c0c, 2);
-        bit_permute_step_two(high, low, temp1, temp2, 0x000f000f, 12);
-        bit_permute_step_two(high, low, temp1, temp2, 0x000000ff, 24);
-
-        /* rearrange and store back */
-        // state->W[index] = (high << 16) | (low & 0x0000FFFFU);
-        // state->W[index + 1] = (high & 0xFFFF0000U) | (low >> 16);
-        binop(INSNL(mov), temp1, high);
-        binop(INSNL(mov), temp2, low);
-        shiftop(INSNL(shl), temp1, 16);
-        andimm(temp2, 0xFFFF);
-        binop(INSNL(or), temp2, temp1);
-        andimm(high, (int)0xFFFF0000U);
-        shiftop(INSNL(shr), low, 16);
-        binop(INSNL(or), low, high);
-        store(temp2, state, loop * 8);
-        store(low, state, loop * 8 + 4);
-    }
-
-    /* Pop the stack frame and return */
-#if !X86_64_PLATFORM
-    unop(INSNL(pop), REG_ESI);
-    unop(INSNL(pop), REG_EDI);
-#endif
-}
-
-/* Output the function to convert from sliced form */
-static void gen_from_sliced(void)
-{
-    /*
-     * The "state" argument is on the stack on entry.
-     *
-     * eax, ecx, and edx can be used as scratch registers.
-     *
-     * ebx, esi, edi, and ebp must be callee-saved.
-     */
-#if X86_64_PLATFORM
-    const char *state = REG_RAX;
-    const char *high = REG_ECX;
-    const char *low = REG_EDX;
-    const char *temp1 = REG_EDI;
-    const char *temp2 = REG_ESI;
-#else
-    const char *state = REG_EAX;
-    const char *high = REG_ECX;
-    const char *low = REG_EDX;
-    const char *temp1 = REG_EDI;
-    const char *temp2 = REG_ESI;
-#endif
-    int loop;
-
-    /* Set up the stack frame, and load the state pointer into eax */
-#if X86_64_PLATFORM
-    binop(INSNQ(mov), REG_RAX, REG_RDI);
-#else
-    unop(INSNL(push), REG_EDI);
-    unop(INSNL(push), REG_ESI);
-    load(state, REG_ESP, 12);
-#endif
-
-    /* Process 5 rounds for each of the 8-byte words of the state */
-    for (loop = 0; loop < 5; ++loop) {
-        /* load and rearrange the half words */
-        // high = (state->W[index] >> 16) | (state->W[index + 1] & 0xFFFF0000U);
-        // low  = (state->W[index] & 0x0000FFFFU) | (state->W[index + 1] << 16);
-        load(low, state, loop * 8);
-        load(high, state, loop * 8 + 4);
-        binop(INSNL(mov), temp1, low);
-        binop(INSNL(mov), temp2, high);
-        shiftop(INSNL(shr), temp1, 16);
-        shiftop(INSNL(shl), temp2, 16);
-        andimm(low, 0xFFFF);
-        andimm(high, (int)0xFFFF0000U);
-        binop(INSNL(or), low, temp2);
-        binop(INSNL(or), high, temp1);
-
-        /* ascon_combine(high) and ascon_combine(low) */
-        bit_permute_step_two(high, low, temp1, temp2, 0x0000aaaa, 15);
-        bit_permute_step_two(high, low, temp1, temp2, 0x0000cccc, 14);
-        bit_permute_step_two(high, low, temp1, temp2, 0x0000f0f0, 12);
-        bit_permute_step_two(high, low, temp1, temp2, 0x000000ff, 24);
-        store(high, state, loop * 8);
-        store(low, state, loop * 8 + 4);
-    }
-
-    /* Pop the stack frame and return */
-#if !X86_64_PLATFORM
-    unop(INSNL(pop), REG_ESI);
-    unop(INSNL(pop), REG_EDI);
-#endif
-}
-
 int main(int argc, char *argv[])
 {
     (void)argc;
@@ -754,16 +587,6 @@ int main(int argc, char *argv[])
     function_header("ascon_permute");
     gen_permute();
     function_footer("ascon_permute");
-
-    /* Output the function to convert to sliced form */
-    function_header("ascon_from_regular");
-    gen_to_sliced();
-    function_footer("ascon_from_regular");
-
-    /* Output the function to convert from sliced form */
-    function_header("ascon_to_regular");
-    gen_from_sliced();
-    function_footer("ascon_to_regular");
 
     /* Output the file footer */
     printf("\n");

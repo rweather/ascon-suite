@@ -30,34 +30,6 @@
 
 #if defined(ASCON_BACKEND_C32)
 
-void ascon_to_regular(ascon_state_t *state)
-{
-    int index;
-    uint32_t high, low;
-    for (index = 0; index < 10; index += 2) {
-        high = (state->W[index] >> 16) | (state->W[index + 1] & 0xFFFF0000U);
-        low  = (state->W[index] & 0x0000FFFFU) | (state->W[index + 1] << 16);
-        ascon_combine(high);
-        ascon_combine(low);
-        be_store_word32(state->B + index * 4,     high);
-        be_store_word32(state->B + index * 4 + 4, low);
-    }
-}
-
-void ascon_from_regular(ascon_state_t *state)
-{
-    int index;
-    uint32_t high, low;
-    for (index = 0; index < 10; index += 2) {
-        high = be_load_word32(state->B + index * 4);
-        low  = be_load_word32(state->B + index * 4 + 4);
-        ascon_separate(high);
-        ascon_separate(low);
-        state->W[index] = (high << 16) | (low & 0x0000FFFFU);
-        state->W[index + 1] = (high & 0xFFFF0000U) | (low >> 16);
-    }
-}
-
 #define ROUND_CONSTANT_PAIR(rc1, rc2) \
     (~((uint32_t)(rc1))), (~((uint32_t)(rc2)))
 

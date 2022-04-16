@@ -38,10 +38,10 @@ static void ascon_kmac_init_precomputed(ascon_kmac_state_t *state)
         0x6f, 0xfa, 0x41, 0x35, 0x0e, 0x80, 0x7e, 0x09,
         0x73, 0x27, 0x88, 0x0d, 0x8b, 0x76, 0x4c, 0x34
     };
-    memcpy(state->state.B, kmac_iv, sizeof(kmac_iv));
+    ascon_init(&(state->state));
+    ascon_overwrite_bytes(&(state->state), kmac_iv, 0, sizeof(kmac_iv));
     state->count = 0;
     state->mode = 0;
-    ascon_from_regular(&(state->state));
 }
 
 /* The actual implementation is in the "ascon-kmac-common.h" file */
@@ -53,6 +53,7 @@ static void ascon_kmac_init_precomputed(ascon_kmac_state_t *state)
 #define KMAC_RATE ASCON_XOF_RATE
 #define KMAC_XOF_INIT ascon_xof_init
 #define KMAC_XOF_PREINIT ascon_kmac_init_precomputed
+#define KMAC_XOF_FREE ascon_xof_free
 #define KMAC_XOF_ABSORB ascon_xof_absorb
 #define KMAC_XOF_SQUEEZE ascon_xof_squeeze
 #define KMAC_XOF_PAD ascon_xof_pad

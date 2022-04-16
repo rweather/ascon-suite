@@ -32,6 +32,7 @@
 #define HMAC_BLOCK_SIZE 64
 #define HMAC_STATE ascon_hmac_state_t
 #define HMAC_HASH_INIT ascon_hash_init
+#define HMAC_HASH_FREE ascon_hash_free
 #define HMAC_HASH_UPDATE ascon_xof_absorb
 #define HMAC_HASH_FINALIZE ascon_hash_finalize
 #include "mac/ascon-hmac-common.h"

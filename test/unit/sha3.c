@@ -36,6 +36,11 @@ void sha3_init(sha3_state_t *state, unsigned capacity, unsigned padding)
     state->padding = padding;
 }
 
+void sha3_free(sha3_state_t *state)
+{
+    memset(state, 0, sizeof(sha3_state_t));
+}
+
 void sha3_256_init(sha3_state_t *state)
 {
     sha3_init(state, 512, 0x06);

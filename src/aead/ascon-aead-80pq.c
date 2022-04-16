@@ -27,7 +27,7 @@
 /**
  * \brief Initialization vector for ASCON-80pq.
  */
-#define ASCON80PQ_IV    0xa0400c06U
+static uint8_t const ASCON80PQ_IV[4] = {0xa0, 0x40, 0x0c, 0x06};
 
 int ascon80pq_aead_encrypt
     (unsigned char *c, size_t *clen,
@@ -42,13 +42,10 @@ int ascon80pq_aead_encrypt
     *clen = mlen + ASCON80PQ_TAG_SIZE;
 
     /* Initialize the ASCON state */
-#if defined(ASCON_BACKEND_INIT)
     ascon_init(&state);
-#endif
-    be_store_word32(state.B, ASCON80PQ_IV);
-    memcpy(state.B + 4, k, ASCON80PQ_KEY_SIZE);
-    memcpy(state.B + 24, npub, ASCON80PQ_NONCE_SIZE);
-    ascon_from_regular(&state);
+    ascon_overwrite_bytes(&state, ASCON80PQ_IV, 0, 4);
+    ascon_overwrite_bytes(&state, k, 4, ASCON80PQ_KEY_SIZE);
+    ascon_overwrite_bytes(&state, npub, 24, ASCON80PQ_NONCE_SIZE);
     ascon_permute(&state, 0);
     ascon_absorb_partial(&state, k, 20, ASCON80PQ_KEY_SIZE);
 
@@ -66,7 +63,7 @@ int ascon80pq_aead_encrypt
     ascon_absorb_partial(&state, k, 8, ASCON80PQ_KEY_SIZE);
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k + 4, 24);
-    ascon_squeeze_partial(&state, c + mlen, 24, ASCON80PQ_TAG_SIZE);
+    ascon_squeeze_16(&state, c + mlen, 24);
     ascon_free(&state);
     return 0;
 }
@@ -79,6 +76,7 @@ int ascon80pq_aead_decrypt
      const unsigned char *k)
 {
     ascon_state_t state;
+    unsigned char tag[ASCON80PQ_TAG_SIZE];
     int result;
 
     /* Set the length of the returned plaintext */
@@ -87,13 +85,10 @@ int ascon80pq_aead_decrypt
     *mlen = clen - ASCON80PQ_TAG_SIZE;
 
     /* Initialize the ASCON state */
-#if defined(ASCON_BACKEND_INIT)
     ascon_init(&state);
-#endif
-    be_store_word32(state.B, ASCON80PQ_IV);
-    memcpy(state.B + 4, k, ASCON80PQ_KEY_SIZE);
-    memcpy(state.B + 24, npub, ASCON80PQ_NONCE_SIZE);
-    ascon_from_regular(&state);
+    ascon_overwrite_bytes(&state, ASCON80PQ_IV, 0, 4);
+    ascon_overwrite_bytes(&state, k, 4, ASCON80PQ_KEY_SIZE);
+    ascon_overwrite_bytes(&state, npub, 24, ASCON80PQ_NONCE_SIZE);
     ascon_permute(&state, 0);
     ascon_absorb_partial(&state, k, 20, ASCON80PQ_KEY_SIZE);
 
@@ -111,9 +106,9 @@ int ascon80pq_aead_decrypt
     ascon_absorb_partial(&state, k, 8, ASCON80PQ_KEY_SIZE);
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k + 4, 24);
-    ascon_to_regular(&state);
-    result = ascon_aead_check_tag
-        (m, *mlen, state.B + 24, c + *mlen, ASCON80PQ_TAG_SIZE);
+    ascon_squeeze_16(&state, tag, 24);
+    result = ascon_aead_check_tag(m, *mlen, tag, c + *mlen, ASCON80PQ_TAG_SIZE);
+    ascon_clean(tag, sizeof(tag));
     ascon_free(&state);
     return result;
 }

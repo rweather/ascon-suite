@@ -208,28 +208,6 @@ static void gen_permute(void)
     printf("\tstr\t%s, [x0, 32]\n", regs.x4);
 }
 
-/* Output the function to convert to or from sliced form,
- * which is as simple as byte-reversing the 64-bit words */
-static void gen_to_or_from_sliced(void)
-{
-    const char *x0 = "x1";
-    const char *x1 = "x2";
-    const char *x2 = "x3";
-    const char *x3 = "x4";
-    const char *x4 = "x5";
-    printf("\tldp\t%s, %s, [x0]\n", x0, x1);
-    printf("\tldp\t%s, %s, [x0, 16]\n", x2, x3);
-    printf("\tldr\t%s, [x0, 32]\n", x4);
-    printf("\trev\t%s, %s\n", x0, x0);
-    printf("\trev\t%s, %s\n", x1, x1);
-    printf("\trev\t%s, %s\n", x2, x2);
-    printf("\trev\t%s, %s\n", x3, x3);
-    printf("\trev\t%s, %s\n", x4, x4);
-    printf("\tstp\t%s, %s, [x0]\n", x0, x1);
-    printf("\tstp\t%s, %s, [x0, 16]\n", x2, x3);
-    printf("\tstr\t%s, [x0, 32]\n", x4);
-}
-
 /* Output the function to free sensitive material in registers */
 static void gen_backend_free(void)
 {
@@ -274,16 +252,6 @@ int main(int argc, char *argv[])
     function_header("ascon_permute");
     gen_permute();
     function_footer("ascon_permute");
-
-    /* Output the function to convert to sliced form */
-    function_header("ascon_from_regular");
-    gen_to_or_from_sliced();
-    function_footer("ascon_from_regular");
-
-    /* Output the function to convert from sliced form */
-    function_header("ascon_to_regular");
-    gen_to_or_from_sliced();
-    function_footer("ascon_to_regular");
 
     /* Output the function to free sensitive material in registers */
     function_header("ascon_backend_free");

@@ -27,7 +27,8 @@
 /**
  * \brief Initialization vector for ASCON-128a.
  */
-#define ASCON128a_IV    0x80800c0800000000ULL
+static uint8_t const ASCON128a_IV[8] =
+    {0x80, 0x80, 0x0c, 0x08, 0x00, 0x00, 0x00, 0x00};
 
 int ascon128a_aead_encrypt
     (unsigned char *c, size_t *clen,
@@ -42,13 +43,10 @@ int ascon128a_aead_encrypt
     *clen = mlen + ASCON128_TAG_SIZE;
 
     /* Initialize the ASCON state */
-#if defined(ASCON_BACKEND_INIT)
     ascon_init(&state);
-#endif
-    be_store_word64(state.B, ASCON128a_IV);
-    memcpy(state.B + 8, k, ASCON128_KEY_SIZE);
-    memcpy(state.B + 24, npub, ASCON128_NONCE_SIZE);
-    ascon_from_regular(&state);
+    ascon_overwrite_bytes(&state, ASCON128a_IV, 0, 8);
+    ascon_overwrite_bytes(&state, k, 8, ASCON128_KEY_SIZE);
+    ascon_overwrite_bytes(&state, npub, 24, ASCON128_NONCE_SIZE);
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k, 24);
 
@@ -79,6 +77,7 @@ int ascon128a_aead_decrypt
      const unsigned char *k)
 {
     ascon_state_t state;
+    unsigned char tag[ASCON128_TAG_SIZE];
     int result;
 
     /* Set the length of the returned plaintext */
@@ -87,13 +86,10 @@ int ascon128a_aead_decrypt
     *mlen = clen - ASCON128_TAG_SIZE;
 
     /* Initialize the ASCON state */
-#if defined(ASCON_BACKEND_INIT)
     ascon_init(&state);
-#endif
-    be_store_word64(state.B, ASCON128a_IV);
-    memcpy(state.B + 8, k, ASCON128_KEY_SIZE);
-    memcpy(state.B + 24, npub, ASCON128_NONCE_SIZE);
-    ascon_from_regular(&state);
+    ascon_overwrite_bytes(&state, ASCON128a_IV, 0, 8);
+    ascon_overwrite_bytes(&state, k, 8, ASCON128_KEY_SIZE);
+    ascon_overwrite_bytes(&state, npub, 24, ASCON128_NONCE_SIZE);
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k, 24);
 
@@ -111,9 +107,9 @@ int ascon128a_aead_decrypt
     ascon_absorb_16(&state, k, 16);
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k, 24);
-    ascon_to_regular(&state);
-    result = ascon_aead_check_tag
-        (m, *mlen, state.B + 24, c + *mlen, ASCON128_TAG_SIZE);
+    ascon_squeeze_16(&state, tag, 24);
+    result = ascon_aead_check_tag(m, *mlen, tag, c + *mlen, ASCON128_TAG_SIZE);
+    ascon_clean(tag, sizeof(tag));
     ascon_free(&state);
     return result;
 }

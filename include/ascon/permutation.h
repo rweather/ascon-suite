@@ -50,9 +50,6 @@ extern "C" {
  * stored in an "operational" form which is more efficient for the
  * back end to process.
  *
- * The functions ascon_to_regular() and ascon_from_regular() can be
- * used to convert to and from the regular form when necessary.
- *
  * This structure should be treated as opaque by calling applications
  * when it is in operational form.  It is declared publicly only to ensure
  * correct alignment for efficient 64-bit word access by the back end.
@@ -106,26 +103,6 @@ void ascon_init(ascon_state_t *state);
  * \sa ascon_init()
  */
 void ascon_free(ascon_state_t *state);
-
-/**
- * \brief Converts the ASCON state from the internal "operational" form
- * into the regular big-endian form.
- *
- * \param state The ASCON state to convert.
- *
- * \sa ascon_from_regular()
- */
-void ascon_to_regular(ascon_state_t *state);
-
-/**
- * \brief Converts the ASCON state from the regular big-endian form
- * into the internal "operational" form.
- *
- * \param state The ASCON state to convert.
- *
- * \sa ascon_to_regular()
- */
-void ascon_from_regular(ascon_state_t *state);
 
 /**
  * \brief Adds bytes to the ASCON state by XOR'ing them with existing bytes.

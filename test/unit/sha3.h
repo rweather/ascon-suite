@@ -54,6 +54,13 @@ typedef struct
 void sha3_init(sha3_state_t *state, unsigned capacity, unsigned padding);
 
 /**
+ * \brief Frees a SHA3 hashing state.
+ *
+ * \param state Points to the SHA3 state.
+ */
+void sha3_free(sha3_state_t *state);
+
+/**
  * \brief Initializes a SHA3 hashing state for SHA3-256.
  *
  * \param state Points to the SHA3 state.

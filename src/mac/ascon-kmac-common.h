@@ -32,6 +32,7 @@
  * KMAC_RATE            Rate for the underlying permutation for padding.
  * KMAC_XOF_INIT        Name of the XOF initialization function.
  * KMAC_XOF_PREINIT     Name of the XOF precomputed initialization function.
+ * KMAC_XOF_FREE        Name of the XOF state free function.
  * KMAC_XOF_ABSORB      Name of the XOF absorb function.
  * KMAC_XOF_SQUEEZE     Name of the XOF squeeze function.
  * KMAC_XOF_PAD         Name of the XOF function to zero-pad to a
@@ -55,7 +56,7 @@ void KMAC_ALG_NAME
     KMAC_XOF_ABSORB(&state, in, inlen);
     KMAC_CONCAT(KMAC_ALG_NAME,_set_output_length)(&state, outlen);
     KMAC_XOF_SQUEEZE(&state, out, outlen);
-    ascon_clean(&state, sizeof(state));
+    KMAC_CONCAT(KMAC_ALG_NAME,_free)(&state);
 }
 
 /**
@@ -131,7 +132,7 @@ void KMAC_CONCAT(KMAC_ALG_NAME,_init)
 void KMAC_CONCAT(KMAC_ALG_NAME,_free)(KMAC_STATE *state)
 {
     if (state)
-        ascon_clean(state, sizeof(KMAC_STATE));
+        KMAC_XOF_FREE(state);
 }
 
 void KMAC_CONCAT(KMAC_ALG_NAME,_absorb)

@@ -48,18 +48,6 @@ void ascon_free(ascon_state_t *state)
     }
 }
 
-void ascon_to_regular(ascon_state_t *state)
-{
-    /* Already in big-endian byte order, so nothing to do */
-    (void)state;
-}
-
-void ascon_from_regular(ascon_state_t *state)
-{
-    /* Already in big-endian byte order, so nothing to do */
-    (void)state;
-}
-
 void ascon_add_bytes
     (ascon_state_t *state, const uint8_t *data, unsigned offset, unsigned size)
 {

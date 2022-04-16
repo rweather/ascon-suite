@@ -28,12 +28,12 @@
 /**
  * \brief Initialization vector for ASCON-80pq-SIV, authentication phase.
  */
-#define ASCON80PQ_IV1   0xa1400c06U
+static uint8_t const ASCON80PQ_IV1[4] = {0xa1, 0x40, 0x0c, 0x06};
 
 /**
  * \brief Initialization vector for ASCON-80pq-SIV, encryption phase.
  */
-#define ASCON80PQ_IV2   0xa2400c06U
+static uint8_t const ASCON80PQ_IV2[4] = {0xa2, 0x40, 0x0c, 0x06};
 
 /**
  * \brief Initializes the ASCON state for ASCON-80pq-SIV.
@@ -45,15 +45,12 @@
  */
 static void ascon80pq_siv_init
     (ascon_state_t *state, const unsigned char *npub,
-     const unsigned char *k, uint32_t iv)
+     const unsigned char *k, const uint8_t iv[4])
 {
-#if defined(ASCON_BACKEND_INIT)
     ascon_init(state);
-#endif
-    be_store_word32(state->B, iv);
-    memcpy(state->B + 4, k, ASCON80PQ_KEY_SIZE);
-    memcpy(state->B + 24, npub, ASCON80PQ_NONCE_SIZE);
-    ascon_from_regular(state);
+    ascon_overwrite_bytes(state, iv, 0, 4);
+    ascon_overwrite_bytes(state, k, 4, ASCON80PQ_KEY_SIZE);
+    ascon_overwrite_bytes(state, npub, 24, ASCON80PQ_NONCE_SIZE);
     ascon_permute(state, 0);
     ascon_absorb_partial(state, k, 20, ASCON80PQ_KEY_SIZE);
 }
@@ -138,6 +135,7 @@ int ascon80pq_siv_decrypt
      const unsigned char *k)
 {
     ascon_state_t state;
+    unsigned char tag[ASCON80PQ_TAG_SIZE];
     int result;
 
     /* Set the length of the returned plaintext */
@@ -169,9 +167,9 @@ int ascon80pq_siv_decrypt
     ascon_absorb_partial(&state, k, 8, ASCON80PQ_KEY_SIZE);
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k + 4, 24);
-    ascon_to_regular(&state);
-    result = ascon_aead_check_tag
-        (m, clen, state.B + 24, c + clen, ASCON80PQ_TAG_SIZE);
+    ascon_squeeze_16(&state, tag, 24);
+    result = ascon_aead_check_tag(m, clen, tag, c + clen, ASCON80PQ_TAG_SIZE);
+    ascon_clean(tag, sizeof(tag));
     ascon_free(&state);
     return result;
 }

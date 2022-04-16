@@ -28,6 +28,7 @@
 #include <stdlib.h>
 
 typedef void (*hash_init_t)(void *state);
+typedef void (*hash_free_t)(void *state);
 typedef void (*hash_update_t)
     (void *state, const unsigned char *in, size_t inlen);
 typedef void (*hash_finalize_t)(void *state, unsigned char *out);
@@ -36,6 +37,7 @@ typedef struct
 {
     size_t state_size;
     hash_init_t init;
+    hash_free_t free;
     hash_update_t update;
     hash_finalize_t finalize;
 
@@ -70,12 +72,14 @@ static TestHMACVector const testVectorHMAC_3 = {
 static HashFuncs const alg_ascon_hash = {
     .state_size = sizeof(ascon_hash_state_t),
     .init = (hash_init_t)ascon_hash_init,
+    .free = (hash_free_t)ascon_hash_free,
     .update = (hash_update_t)ascon_hash_update,
     .finalize = (hash_finalize_t)ascon_hash_finalize
 };
 static HashFuncs const alg_ascon_hasha = {
     .state_size = sizeof(ascon_hash_state_t),
     .init = (hash_init_t)ascon_hasha_init,
+    .free = (hash_free_t)ascon_hasha_free,
     .update = (hash_update_t)ascon_hasha_update,
     .finalize = (hash_finalize_t)ascon_hasha_finalize
 };
@@ -110,6 +114,7 @@ static void hmac
         (*(alg->init))(state);
         (*(alg->update))(state, key, keylen);
         (*(alg->finalize))(state, block);
+        (*(alg->free))(state);
         memset(block + hmac_size, 0, block_size - hmac_size);
     }
     for (index = 0; index < block_size; ++index)
@@ -120,6 +125,7 @@ static void hmac
     /* Hash the input data and finalize the inner layer */
     (*(alg->update))(state, in, inlen);
     (*(alg->finalize))(state, out);
+    (*(alg->free))(state);
 
     /* Format the outer key block and hash it */
     for (index = 0; index < block_size; ++index)
@@ -130,6 +136,7 @@ static void hmac
     /* Add the inner hash value and finalize */
     (*(alg->update))(state, out, hmac_size);
     (*(alg->finalize))(state, out);
+    (*(alg->free))(state);
 
     /* Clean up */
     free(state);

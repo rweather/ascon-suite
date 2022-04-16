@@ -31,6 +31,7 @@
  * HMAC_BLOCK_SIZE      Size of the formatted key block for HMAC.
  * HMAC_STATE           Type for the HMAC state; e.g. ascon_hmac_state_t
  * HMAC_HASH_INIT       Name of the hash initialization function.
+ * HMAC_HASH_FREE       Name of the hash state free function.
  * HMAC_HASH_UPDATE     Name of the hash update function.
  * HMAC_HASH_FINALIZE   Name of the hash finalization function.
  */
@@ -99,6 +100,8 @@ static void HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)
         HMAC_HASH_INIT(state);
         HMAC_HASH_UPDATE(state, key, keylen);
         HMAC_HASH_FINALIZE(state, temp);
+        HMAC_HASH_FREE(state);
+        HMAC_HASH_INIT(state);
         HMAC_CONCAT(HMAC_ALG_NAME,_xor_pad)(temp, temp, HMAC_HASH_SIZE, pad);
         HMAC_HASH_INIT(state);
         HMAC_HASH_UPDATE(state, temp, HMAC_HASH_SIZE);
@@ -114,6 +117,9 @@ static void HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)
         HMAC_HASH_UPDATE(state, temp, len);
         posn += len;
     }
+
+    /* Clean up sensitive key material on the stack */
+    ascon_clean(temp, sizeof(temp));
 }
 
 void HMAC_ALG_NAME
@@ -125,7 +131,7 @@ void HMAC_ALG_NAME
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(&state, key, keylen, HMAC_IPAD);
     HMAC_HASH_UPDATE(&state, in, inlen);
     HMAC_CONCAT(HMAC_ALG_NAME,_finalize)(&state, key, keylen, out);
-    ascon_clean(&state, sizeof(state));
+    HMAC_CONCAT(HMAC_ALG_NAME,_free)(&state);
 }
 
 void HMAC_CONCAT(HMAC_ALG_NAME,_init)
@@ -137,7 +143,7 @@ void HMAC_CONCAT(HMAC_ALG_NAME,_init)
 void HMAC_CONCAT(HMAC_ALG_NAME,_free)(HMAC_STATE *state)
 {
     if (state)
-        ascon_clean(state, sizeof(HMAC_STATE));
+        HMAC_HASH_FREE(state);
 }
 
 void HMAC_CONCAT(HMAC_ALG_NAME,_update)

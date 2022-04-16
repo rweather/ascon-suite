@@ -191,6 +191,11 @@ void sha256_hash_init(sha256_state_t *state)
     state->posn = 0;
 }
 
+void sha256_hash_free(sha256_state_t *state)
+{
+    memset(state, 0, sizeof(sha256_state_t));
+}
+
 void sha256_hash_update
     (sha256_state_t *state, const unsigned char *in, size_t inlen)
 {
@@ -250,6 +255,7 @@ void sha256_hash_finalize(sha256_state_t *state, unsigned char *out)
 #define HMAC_BLOCK_SIZE 64
 #define HMAC_STATE sha256_state_t
 #define HMAC_HASH_INIT sha256_hash_init
+#define HMAC_HASH_FREE sha256_hash_free
 #define HMAC_HASH_UPDATE sha256_hash_update
 #define HMAC_HASH_FINALIZE sha256_hash_finalize
 #include "mac/ascon-hmac-common.h"

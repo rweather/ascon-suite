@@ -774,52 +774,6 @@ ascon_permute:
 	.cfi_endproc
 	.size	ascon_permute, .-ascon_permute
 	.p2align 4,,15
-	.globl	ascon_from_regular
-	.type	ascon_from_regular, @function
-ascon_from_regular:
-	.cfi_startproc
-	mov	rax, [rdi]
-	mov	rcx, [rdi + 8]
-	mov	rdx, [rdi + 16]
-	mov	rsi, [rdi + 24]
-	mov	r8, [rdi + 32]
-	bswap	rax
-	bswap	rcx
-	bswap	rdx
-	bswap	rsi
-	bswap	r8
-	mov	[rdi], rax
-	mov	[rdi + 8], rcx
-	mov	[rdi + 16], rdx
-	mov	[rdi + 24], rsi
-	mov	[rdi + 32], r8
-	ret
-	.cfi_endproc
-	.size	ascon_from_regular, .-ascon_from_regular
-	.p2align 4,,15
-	.globl	ascon_to_regular
-	.type	ascon_to_regular, @function
-ascon_to_regular:
-	.cfi_startproc
-	mov	rax, [rdi]
-	mov	rcx, [rdi + 8]
-	mov	rdx, [rdi + 16]
-	mov	rsi, [rdi + 24]
-	mov	r8, [rdi + 32]
-	bswap	rax
-	bswap	rcx
-	bswap	rdx
-	bswap	rsi
-	bswap	r8
-	mov	[rdi], rax
-	mov	[rdi + 8], rcx
-	mov	[rdi + 16], rdx
-	mov	[rdi + 24], rsi
-	mov	[rdi + 32], r8
-	ret
-	.cfi_endproc
-	.size	ascon_to_regular, .-ascon_to_regular
-	.p2align 4,,15
 	.globl	ascon_backend_free
 	.type	ascon_backend_free, @function
 ascon_backend_free:

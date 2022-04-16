@@ -59,9 +59,11 @@ void ascon_hasha_init(ascon_hash_state_t *state)
         0xd6, 0xf6, 0xa5, 0x4d, 0x7f, 0x52, 0x37, 0x7d,
         0xa1, 0x3c, 0x42, 0xa2, 0x23, 0xbe, 0x8d, 0x87
     };
+#if defined(ASCON_BACKEND_DIRECT_XOR)
     memcpy(state->state.B, iv, sizeof(iv));
-#if !defined(ASCON_BACKEND_DIRECT_XOR)
-    ascon_from_regular(&(state->state));
+#else
+    ascon_init(&(state->state));
+    ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
 #endif
 #endif
     state->count = 0;

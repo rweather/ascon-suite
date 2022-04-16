@@ -492,48 +492,6 @@ ascon_permute:
 
 	.align	2
 	.p2align 4,,11
-	.global	ascon_from_regular
-	.type	ascon_from_regular, %function
-ascon_from_regular:
-	.cfi_startproc
-	ldp	x1, x2, [x0]
-	ldp	x3, x4, [x0, 16]
-	ldr	x5, [x0, 32]
-	rev	x1, x1
-	rev	x2, x2
-	rev	x3, x3
-	rev	x4, x4
-	rev	x5, x5
-	stp	x1, x2, [x0]
-	stp	x3, x4, [x0, 16]
-	str	x5, [x0, 32]
-	ret
-	.cfi_endproc
-	.size	ascon_from_regular, .-ascon_from_regular
-
-	.align	2
-	.p2align 4,,11
-	.global	ascon_to_regular
-	.type	ascon_to_regular, %function
-ascon_to_regular:
-	.cfi_startproc
-	ldp	x1, x2, [x0]
-	ldp	x3, x4, [x0, 16]
-	ldr	x5, [x0, 32]
-	rev	x1, x1
-	rev	x2, x2
-	rev	x3, x3
-	rev	x4, x4
-	rev	x5, x5
-	stp	x1, x2, [x0]
-	stp	x3, x4, [x0, 16]
-	str	x5, [x0, 32]
-	ret
-	.cfi_endproc
-	.size	ascon_to_regular, .-ascon_to_regular
-
-	.align	2
-	.p2align 4,,11
 	.global	ascon_backend_free
 	.type	ascon_backend_free, %function
 ascon_backend_free:

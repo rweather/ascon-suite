@@ -358,33 +358,6 @@ static void gen_permute(void)
     unop(INSNQ(pop), REG_RBX);
 }
 
-/* Output the function to convert to or from sliced form,
- * which is as simple as byte-reversing the 64-bit words */
-static void gen_to_or_from_sliced(void)
-{
-    const char *state = REG_RDI;
-    const char *x0 = REG_RAX;
-    const char *x1 = REG_RCX;
-    const char *x2 = REG_RDX;
-    const char *x3 = REG_RSI;
-    const char *x4 = REG_R8;
-    load(x0, state, 0);
-    load(x1, state, 8);
-    load(x2, state, 16);
-    load(x3, state, 24);
-    load(x4, state, 32);
-    unop(INSNQ(bswap), x0);
-    unop(INSNQ(bswap), x1);
-    unop(INSNQ(bswap), x2);
-    unop(INSNQ(bswap), x3);
-    unop(INSNQ(bswap), x4);
-    store(x0, state, 0);
-    store(x1, state, 8);
-    store(x2, state, 16);
-    store(x3, state, 24);
-    store(x4, state, 32);
-}
-
 /* Output the function to free sensitive material in registers */
 static void gen_backend_free(void)
 {
@@ -439,16 +412,6 @@ int main(int argc, char *argv[])
     function_header("ascon_permute");
     gen_permute();
     function_footer("ascon_permute");
-
-    /* Output the function to convert to sliced form */
-    function_header("ascon_from_regular");
-    gen_to_or_from_sliced();
-    function_footer("ascon_from_regular");
-
-    /* Output the function to convert from sliced form */
-    function_header("ascon_to_regular");
-    gen_to_or_from_sliced();
-    function_footer("ascon_to_regular");
 
     /* Output the function to free sensitive material in registers */
     function_header("ascon_backend_free");

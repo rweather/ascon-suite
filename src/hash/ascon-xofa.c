@@ -58,9 +58,11 @@ void ascon_xofa_init(ascon_xof_state_t *state)
         0x24, 0x68, 0x85, 0xe1, 0xde, 0x0d, 0x22, 0x5b,
         0xa8, 0xcb, 0x5c, 0xe3, 0x34, 0x49, 0x97, 0x3f
     };
+#if defined(ASCON_BACKEND_DIRECT_XOR)
     memcpy(state->state.B, iv, sizeof(iv));
-#if !defined(ASCON_BACKEND_DIRECT_XOR)
-    ascon_from_regular(&(state->state));
+#else
+    ascon_init(&(state->state));
+    ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
 #endif
 #endif
     state->count = 0;
@@ -100,9 +102,11 @@ void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen)
             0xd6, 0xf6, 0xa5, 0x4d, 0x7f, 0x52, 0x37, 0x7d,
             0xa1, 0x3c, 0x42, 0xa2, 0x23, 0xbe, 0x8d, 0x87
         };
+#if defined(ASCON_BACKEND_DIRECT_XOR)
         memcpy(state->state.B, iv, sizeof(iv));
-#if !defined(ASCON_BACKEND_DIRECT_XOR)
-        ascon_from_regular(&(state->state));
+#else
+        ascon_init(&(state->state));
+        ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
 #endif
 #endif
         state->count = 0;
@@ -110,9 +114,10 @@ void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen)
     } else {
         /* For all other lengths, we need to run the permutation
          * to get the initial block for the XOF process */
-        be_store_word64(state->state.B, 0x00400c0400000000ULL | (outlen * 8UL));
-        memset(state->state.B + 8, 0, sizeof(state->state.B) - 8);
-        ascon_from_regular(&(state->state));
+        uint8_t iv[8];
+        ascon_init(&(state->state));
+        be_store_word64(iv, 0x00400c0400000000ULL | (outlen * 8UL));
+        ascon_overwrite_bytes(&(state->state), iv, 0, 8);
         ascon_permute(&(state->state), 0);
         state->count = 0;
         state->mode = 0;

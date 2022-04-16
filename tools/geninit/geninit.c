@@ -189,9 +189,11 @@ int main(int argc, char *argv[])
             printf(",\n");
     }
     printf("    };\n");
+    printf("#if defined(ASCON_BACKEND_DIRECT_XOR)\n");
     printf("    memcpy(state->state.B, iv, sizeof(iv));\n");
-    printf("#if !defined(ASCON_BACKEND_DIRECT_XOR)\n");
-    printf("    ascon_from_regular(&(state->state));\n");
+    printf("#else\n");
+    printf("    ascon_init(&(state->state));\n");
+    printf("    ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));\n");
     printf("#endif\n");
     printf("#endif\n");
 
