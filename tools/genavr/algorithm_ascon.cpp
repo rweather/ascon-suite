@@ -160,6 +160,28 @@ void gen_ascon_permutation(Code &code)
     code.stz(x4.reversed(), ASCON_WORD(4));
 }
 
+void gen_ascon_cleanup(Code &code)
+{
+    // Set up the function prologue with 0 bytes of local variable storage.
+    // Z points to the permutation state on input and output.
+    code.prologue_permutation("ascon_backend_free", 0);
+    code.setFlag(Code::NoLocals); // Don't need Y, so no point creating locals.
+
+    // Clear all scratch registers: r0, r18-r27, r30-r31.  We can exclude
+    // r24-r25 because they contain the incoming state pointer and we can
+    // exclude r30-r31 because the function prologue will move r24-r25
+    // into r30-r31 which will destroy that as well.  The contents of the
+    // callee-saved registers were already destroyed by ascon_permute()
+    // when it popped the stack frame.
+    code.setFlag(Code::TempR0);
+    Reg r0 = code.explicitReg(TEMP_REG, 1);
+    Reg r18to23 = code.explicitReg(18, 24 - 18);
+    Reg r26to27 = code.explicitReg(26, 28 - 26);
+    code.move(r18to23, 0);
+    code.move(r26to27, 0);
+    code.move(r0, 0);
+}
+
 bool test_ascon_permutation(Code &code)
 {
     static unsigned char const input[40] = {

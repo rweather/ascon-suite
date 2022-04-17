@@ -616,6 +616,10 @@ public:
     // Mark pointer registers as used when not allocated by the prologue.
     void usedY() { allocateExplicitReg(28, 2); }
 
+    // Get an explicit register.
+    Reg explicitReg(unsigned first_reg, unsigned size)
+        { return allocateExplicitReg(first_reg, size); }
+
     // Execute generated code in the interpreter.
     void exec_setup_key(void *schedule, unsigned schedule_len,
                         const void *key, unsigned key_len);

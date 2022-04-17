@@ -52,6 +52,10 @@ static bool ascon(enum Mode mode)
     gen_ascon_permutation(code);
     if (mode == Generate) {
         code.write(std::cout);
+
+        Code code2;
+        gen_ascon_cleanup(code2);
+        code2.write(std::cout);
     } else {
         if (!test_ascon_permutation(code)) {
             std::cout << "ASCON tests FAILED" << std::endl;

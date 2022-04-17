@@ -49,6 +49,7 @@
 /* AVR5 assembly code backend */
 #define ASCON_BACKEND_AVR5 1
 #define ASCON_BACKEND_DIRECT_XOR 1
+#define ASCON_BACKEND_FREE 1
 
 #elif defined(__ARM_ARCH_8A) && defined(__ARM_ARCH_ISA_A64)
 

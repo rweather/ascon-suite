@@ -38,6 +38,7 @@ typedef struct
 
 // ASCON permutation.
 void gen_ascon_permutation(Code &code);
+void gen_ascon_cleanup(Code &code);
 bool test_ascon_permutation(Code &code);
 
 #endif

@@ -742,4 +742,22 @@ ascon_permute:
 	ret
 	.size ascon_permute, .-ascon_permute
 
+	.text
+.global ascon_backend_free
+	.type ascon_backend_free, @function
+ascon_backend_free:
+	movw r30,r24
+.L__stack_usage = 2
+	mov r18,r1
+	mov r19,r1
+	mov r20,r1
+	mov r21,r1
+	mov r22,r1
+	mov r23,r1
+	mov r26,r1
+	mov r27,r1
+	mov r0,r1
+	ret
+	.size ascon_backend_free, .-ascon_backend_free
+
 #endif
