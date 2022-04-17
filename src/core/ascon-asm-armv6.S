@@ -765,20 +765,11 @@ ascon_permute:
 	str	r10, [r0, #28]
 	str	r6, [r0, #32]
 	str	fp, [r0, #36]
-	pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
-	.size	ascon_permute, .-ascon_permute
-
-	.align	2
-	.global	ascon_backend_free
-	.arch	armv6
-	.arm
-	.type	ascon_backend_free, %function
-ascon_backend_free:
 	mov	r1, #0
 	mov	r2, #0
 	mov	r3, #0
 	mov	ip, #0
-	bx	lr
-	.size	ascon_backend_free, .-ascon_backend_free
+	pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+	.size	ascon_permute, .-ascon_permute
 
 #endif

@@ -392,6 +392,12 @@ static void gen_permute(void)
     printf("\tstr\t%s, [r0, #%d]\n", regs.x3, X3_O);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x4, X4_O);
 
+    /* Destroy the scratch registers: r0-r3 and ip.  We don't need to
+     * destroy r0 and r1 as we already overwrote them above. */
+    printf("\tmovs\tr2, #0\n");
+    printf("\tmovs\tr3, #0\n");
+    printf("\tmov\tip, r2\n");
+
     /* Pop the stack frame */
     printf("\tadd\tsp, sp, #8\n");
     printf("\tpop\t{r2, r3, r4, r5}\n");
@@ -400,19 +406,6 @@ static void gen_permute(void)
     binop("mov", "r10", "r4");
     binop("mov", "fp", "r5");
     printf("\tpop\t{r4, r5, r6, r7, pc}\n");
-}
-
-/* Output the function to free sensitive material in registers */
-static void gen_backend_free(void)
-{
-    /* Destroy the scratch registers: r1-r3 and ip.  We don't need to
-     * destroy r0 as the caller already put the state pointer into it.
-     * That will destroy any previous contents of r0. */
-    printf("\tmovs\tr1, #0\n");
-    printf("\tmovs\tr2, #0\n");
-    printf("\tmovs\tr3, #0\n");
-    printf("\tmov\tip, r1\n");
-    printf("\tbx\tlr\n");
 }
 
 int main(int argc, char *argv[])
@@ -432,11 +425,6 @@ int main(int argc, char *argv[])
     function_header("ascon_permute");
     gen_permute();
     function_footer("ascon_permute");
-
-    /* Output the function to free sensitive material in registers */
-    function_header("ascon_backend_free");
-    gen_backend_free();
-    function_footer("ascon_backend_free");
 
     /* Output the file footer */
     printf("\n");

@@ -50,12 +50,6 @@ static void function_header(const char *name)
 
 static void function_footer(const char *name)
 {
-    printf("\tbx\tlr\n");
-    printf("\t.size\t%s, .-%s\n", name, name);
-}
-
-static void function_footer_no_lr(const char *name)
-{
     printf("\t.size\t%s, .-%s\n", name, name);
 }
 
@@ -377,7 +371,7 @@ static void gen_permute(int is_sliced)
             gen_round(&regs, round);
     }
 
-    /* Store the words back to the state and exit */
+    /* Store the words back to the state */
     printf(".%s12:\n", prefix);
     printf("\tpop\t{r0}\n");
     if (is_sliced) {
@@ -408,15 +402,9 @@ static void gen_permute(int is_sliced)
         printf("\tstr\t%s, [r0, #%d]\n", regs.x4_o, 32);
         printf("\tstr\t%s, [r0, #%d]\n", regs.x4_e, 36);
     }
-    printf("\tpop\t{r4, r5, r6, r7, r8, r9, r10, fp, pc}\n");
-}
 
-/* Output the function to free sensitive material in registers */
-static void gen_backend_free(void)
-{
-    /* Destroy the scratch registers: x0-x3 and ip.  We don't need to
-     * destroy x0 as the caller already put the state pointer into it.
-     * That will destroy any previous contents of x0. */
+    /* Destroy the scratch registers: r0-r3 and ip.  We don't need to
+     * destroy r0 as we already overwrote it with the state pointer above. */
 #if defined(FORCE_ARM_MODE)
     printf("\tmov\tr1, #0\n");
     printf("\tmov\tr2, #0\n");
@@ -428,6 +416,9 @@ static void gen_backend_free(void)
     printf("\tmovs\tr3, #0\n");
     printf("\tmov\tip, r1\n");
 #endif
+
+    /* Pop the stack frame */
+    printf("\tpop\t{r4, r5, r6, r7, r8, r9, r10, fp, pc}\n");
 }
 
 int main(int argc, char *argv[])
@@ -454,12 +445,7 @@ int main(int argc, char *argv[])
     /* Output the sliced version of the permutation function */
     function_header("ascon_permute");
     gen_permute(1);
-    function_footer_no_lr("ascon_permute");
-
-    /* Output the function to free sensitive material in registers */
-    function_header("ascon_backend_free");
-    gen_backend_free();
-    function_footer("ascon_backend_free");
+    function_footer("ascon_permute");
 
     /* Output the file footer */
     printf("\n");

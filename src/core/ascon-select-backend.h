@@ -64,7 +64,6 @@
 /* This can actually use the same backend as ARMv7-M systems */
 #define ASCON_BACKEND_ARMV7M 1
 #define ASCON_BACKEND_SLICED32 1
-#define ASCON_BACKEND_FREE 1
 
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 7
 
@@ -72,21 +71,18 @@
 /* This backend has also been tested to work on ARMv7-A systems */
 #define ASCON_BACKEND_ARMV7M 1
 #define ASCON_BACKEND_SLICED32 1
-#define ASCON_BACKEND_FREE 1
 
 #elif defined(__ARM_ARCH_ISA_THUMB) && __ARM_ARCH == 6 && defined(__ARM_ARCH_6M__)
 
 /* Assembly backend for ARMv6-M systems; e.g. ARM Cortex M0+ */
 #define ASCON_BACKEND_ARMV6M 1
 #define ASCON_BACKEND_SLICED32 1
-#define ASCON_BACKEND_FREE 1
 
 #elif defined(__ARM_ARCH) && __ARM_ARCH == 6
 
 /* Assembly backend for ARMv6 systems, should work with thumb and non-thumb */
 #define ASCON_BACKEND_ARMV6 1
 #define ASCON_BACKEND_SLICED32 1
-#define ASCON_BACKEND_FREE 1
 
 #elif defined(__XTENSA__)
 

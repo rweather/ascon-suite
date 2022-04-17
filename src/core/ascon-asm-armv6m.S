@@ -1837,6 +1837,9 @@ ascon_permute:
 	str	r5, [r0, #20]
 	str	r6, [r0, #28]
 	str	r7, [r0, #36]
+	movs	r2, #0
+	movs	r3, #0
+	mov	ip, r2
 	add	sp, sp, #8
 	pop	{r2, r3, r4, r5}
 	mov	r8, r2
@@ -1845,18 +1848,5 @@ ascon_permute:
 	mov	fp, r5
 	pop	{r4, r5, r6, r7, pc}
 	.size	ascon_permute, .-ascon_permute
-
-	.align	2
-	.global	ascon_backend_free
-	.thumb
-	.thumb_func
-	.type	ascon_backend_free, %function
-ascon_backend_free:
-	movs	r1, #0
-	movs	r2, #0
-	movs	r3, #0
-	mov	ip, r1
-	bx	lr
-	.size	ascon_backend_free, .-ascon_backend_free
 
 #endif
