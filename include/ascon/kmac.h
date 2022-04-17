@@ -48,9 +48,14 @@ extern "C" {
 #endif
 
 /**
- * \brief Default size of the output for ASCON-KMAC and ASCON-KMACA.
+ * \brief Default size of the output for ASCON-KMAC.
  */
 #define ASCON_KMAC_SIZE ASCON_HASH_SIZE
+
+/**
+ * \brief Default size of the output for ASCON-KMACA.
+ */
+#define ASCON_KMACA_SIZE ASCON_HASHA_SIZE
 
 /**
  * \brief State information for the ASCON-KMAC incremental mode.
@@ -294,7 +299,7 @@ void ascon_kmaca_squeeze
  *
  * \param state KMAC state to squeeze the output data from.
  * \param out Points to the output buffer to receive the
- * ASCON_KMAC_SIZE bytes of squeezed data.
+ * ASCON_KMACA_SIZE bytes of squeezed data.
  *
  * This function combines the effect of ascon_kmaca_set_output_length()
  * and ascon_kmaca_squeeze() for convenience.
@@ -302,7 +307,7 @@ void ascon_kmaca_squeeze
  * \sa ascon_kmaca_squeeze(), ascon_kmaca_set_output_length()
  */
 void ascon_kmaca_finalize
-    (ascon_kmaca_state_t *state, unsigned char out[ASCON_KMAC_SIZE]);
+    (ascon_kmaca_state_t *state, unsigned char out[ASCON_KMACA_SIZE]);
 
 #ifdef __cplusplus
 }

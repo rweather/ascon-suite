@@ -123,7 +123,7 @@ void ascon_hash_finalize(ascon_hash_state_t *state, unsigned char *out);
  * \brief Hashes a block of input data with ASCON-HASHA.
  *
  * \param out Buffer to receive the hash output which must be at least
- * ASCON_HASH_SIZE bytes in length.
+ * ASCON_HASHA_SIZE bytes in length.
  * \param in Points to the input data to be hashed.
  * \param inlen Length of the input data in bytes.
  *

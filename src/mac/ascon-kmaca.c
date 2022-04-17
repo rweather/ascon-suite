@@ -49,7 +49,7 @@ static void ascon_kmaca_init_precomputed(ascon_xofa_state_t *state)
 
 /* ASCON-XOFA */
 #define KMAC_ALG_NAME ascon_kmaca
-#define KMAC_SIZE ASCON_KMAC_SIZE
+#define KMAC_SIZE ASCON_KMACA_SIZE
 #define KMAC_STATE ascon_kmaca_state_t
 #define KMAC_RATE ASCON_XOF_RATE
 #define KMAC_XOF_INIT ascon_xofa_init

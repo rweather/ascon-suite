@@ -28,7 +28,7 @@
 
 /* ASCON-HMACA */
 #define HMAC_ALG_NAME ascon_hmaca
-#define HMAC_HASH_SIZE ASCON_HASH_SIZE
+#define HMAC_HASH_SIZE ASCON_HASHA_SIZE
 #define HMAC_BLOCK_SIZE 64
 #define HMAC_STATE ascon_hmaca_state_t
 #define HMAC_HASH_INIT ascon_hasha_init

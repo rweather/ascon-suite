@@ -37,10 +37,16 @@ extern "C" {
 #endif
 
 /**
- * \brief Size of the hash output for ASCON-HASH/ASCON-HASHA and the
- * default hash output size for ASCON-XOF/ASCON-XOFA.
+ * \brief Size of the hash output for ASCON-HASH and the default hash
+ * output size for ASCON-XOF.
  */
 #define ASCON_HASH_SIZE 32
+
+/**
+ * \brief Size of the hash output for ASCON-HASHA and the default hash
+ * output size for ASCON-XOFA.
+ */
+#define ASCON_HASHA_SIZE ASCON_HASH_SIZE
 
 /**
  * \brief Rate of absorbing and squeezing data for ASCON-XOF,

@@ -48,9 +48,14 @@ extern "C" {
 #endif
 
 /**
- * \brief Default size of the output for ASCON-HMAC and ASCON-HMACA.
+ * \brief Default size of the output for ASCON-HMAC.
  */
 #define ASCON_HMAC_SIZE ASCON_HASH_SIZE
+
+/**
+ * \brief Default size of the output for ASCON-HMACA.
+ */
+#define ASCON_HMACA_SIZE ASCON_HASHA_SIZE
 
 /**
  * \brief State information for the ASCON-HMAC incremental mode.
@@ -156,7 +161,7 @@ void ascon_hmac_finalize
  * \brief Computes a HMAC value using ASCON-HASHA.
  *
  * \param out Buffer to receive the output HMAC value; must be at least
- * ASCON_HMAC_SIZE bytes in length.
+ * ASCON_HMACA_SIZE bytes in length.
  * \param key Points to the key.
  * \param keylen Number of bytes in the key.
  * \param in Points to the data to authenticate.
@@ -226,7 +231,7 @@ void ascon_hmaca_update
  * \param key Points to the key.
  * \param keylen Number of bytes in the key.
  * \param out Points to the output buffer to receive the HMAC value;
- * must be at least ASCON_HMAC_SIZE bytes in length.
+ * must be at least ASCON_HMACA_SIZE bytes in length.
  *
  * \sa ascon_hmaca_init(), ascon_hmaca_update()
  */
