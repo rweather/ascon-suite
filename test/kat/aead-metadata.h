@@ -100,6 +100,13 @@ typedef int (*aead_cipher_pk_init_t)
     (unsigned char *pk, const unsigned char *k);
 
 /**
+ * \brief Frees a pre-computed key for an AEAD scheme.
+ *
+ * \param pk Points to the pre-computed key to free.
+ */
+typedef void (*aead_cipher_pk_free_t)(unsigned char *pk);
+
+/**
  * \brief Hashes a block of input data.
  *
  * \param out Buffer to receive the hash output.
@@ -220,6 +227,7 @@ typedef struct
     aead_cipher_decrypt_t decrypt;  /**< AEAD decryption function */
     unsigned pk_state_len;          /**< Length of the pre-computed state */
     aead_cipher_pk_init_t pk_init;  /**< AEAD pre-computed init function */
+    aead_cipher_pk_free_t pk_free;  /**< Free pre-computed AEAD key */
 
 } aead_cipher_t;
 

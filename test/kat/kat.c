@@ -339,8 +339,10 @@ static int test_cipher_inner
     /* All tests passed for this test vector */
     free(temp1);
     free(temp2);
-    if (pk)
+    if (pk) {
+        (*(alg->pk_free))(pk);
         free(pk);
+    }
     return 1;
 }
 

@@ -285,6 +285,7 @@ static void generate_kats_for_cipher(const aead_cipher_t *alg, FILE *file)
                 (*(alg->pk_init))(pk, key);
                 (*(alg->encrypt))
                     (ct, &clen, pt, pt_len, ad, ad_len, nonce, pk);
+                (*(alg->pk_free))(pk);
             } else {
                 (*(alg->encrypt))
                     (ct, &clen, pt, pt_len, ad, ad_len, nonce, key);

@@ -22,6 +22,7 @@
 
 #include "algorithms.h"
 #include <ascon/aead.h>
+#include <ascon/isap.h>
 #include <ascon/siv.h>
 #include <ascon/hash.h>
 #include <ascon/xof.h>
@@ -36,7 +37,7 @@ aead_cipher_t const ascon128_cipher = {
     AEAD_FLAG_NONE,
     ascon128_aead_encrypt,
     ascon128_aead_decrypt,
-    0, 0
+    0, 0, 0
 };
 
 aead_cipher_t const ascon128a_cipher = {
@@ -47,7 +48,7 @@ aead_cipher_t const ascon128a_cipher = {
     AEAD_FLAG_NONE,
     ascon128a_aead_encrypt,
     ascon128a_aead_decrypt,
-    0, 0
+    0, 0, 0
 };
 
 aead_cipher_t const ascon80pq_cipher = {
@@ -58,7 +59,7 @@ aead_cipher_t const ascon80pq_cipher = {
     AEAD_FLAG_NONE,
     ascon80pq_aead_encrypt,
     ascon80pq_aead_decrypt,
-    0, 0
+    0, 0, 0
 };
 
 aead_hash_algorithm_t const ascon_hash_algorithm = {
@@ -153,7 +154,7 @@ aead_cipher_t const ascon128_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon128_siv_encrypt,
     ascon128_siv_decrypt,
-    0, 0
+    0, 0, 0
 };
 
 aead_cipher_t const ascon128a_siv_cipher = {
@@ -164,7 +165,7 @@ aead_cipher_t const ascon128a_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon128a_siv_encrypt,
     ascon128a_siv_decrypt,
-    0, 0
+    0, 0, 0
 };
 
 aead_cipher_t const ascon80pq_siv_cipher = {
@@ -175,7 +176,33 @@ aead_cipher_t const ascon80pq_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon80pq_siv_encrypt,
     ascon80pq_siv_decrypt,
-    0, 0
+    0, 0, 0
+};
+
+aead_cipher_t const ascon128a_isap_cipher = {
+    "ISAP-A-128A",
+    ASCON_ISAP_KEY_SIZE,
+    ASCON_ISAP_NONCE_SIZE,
+    ASCON_ISAP_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_KEY | AEAD_FLAG_SLOW,
+    (aead_cipher_encrypt_t)ascon128a_isap_aead_encrypt,
+    (aead_cipher_decrypt_t)ascon128a_isap_aead_decrypt,
+    sizeof(ascon128a_isap_aead_key_t),
+    (aead_cipher_pk_init_t)ascon128a_isap_aead_init,
+    (aead_cipher_pk_free_t)ascon128a_isap_aead_free
+};
+
+aead_cipher_t const ascon128_isap_cipher = {
+    "ISAP-A-128",
+    ASCON_ISAP_KEY_SIZE,
+    ASCON_ISAP_NONCE_SIZE,
+    ASCON_ISAP_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_KEY | AEAD_FLAG_SLOW,
+    (aead_cipher_encrypt_t)ascon128_isap_aead_encrypt,
+    (aead_cipher_decrypt_t)ascon128_isap_aead_decrypt,
+    sizeof(ascon128_isap_aead_key_t),
+    (aead_cipher_pk_init_t)ascon128_isap_aead_init,
+    (aead_cipher_pk_free_t)ascon128_isap_aead_free
 };
 
 /* List of all AEAD ciphers that we can run KAT tests for */
@@ -186,6 +213,8 @@ static const aead_cipher_t *const ciphers[] = {
     &ascon128_siv_cipher,
     &ascon128a_siv_cipher,
     &ascon80pq_siv_cipher,
+    &ascon128a_isap_cipher,
+    &ascon128_isap_cipher,
     0
 };
 

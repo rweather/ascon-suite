@@ -25,6 +25,8 @@ C_SOURCES = \
 	hash/ascon-hash.c \
 	hash/ascon-xofa.c \
 	hash/ascon-xof.c \
+	isap/ascon-isap-128.c \
+	isap/ascon-isap-128a.c \
 	mac/ascon-hmac.c \
 	mac/ascon-hmaca.c \
 	mac/ascon-kmac.c \

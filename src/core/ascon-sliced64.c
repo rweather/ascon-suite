@@ -123,4 +123,21 @@ void ascon_extract_and_overwrite_bytes
     }
 }
 
+void ascon_release(ascon_state_t *state)
+{
+    /* Not needed in this implementation */
+    (void)state;
+}
+
+void ascon_acquire(ascon_state_t *state)
+{
+    /* Not needed in this implementation */
+    (void)state;
+}
+
+void ascon_copy(ascon_state_t *dest, const ascon_state_t *src)
+{
+    memcpy(dest->S, src->S, sizeof(dest->S));
+}
+
 #endif /* ASCON_BACKEND_SLICED64 */

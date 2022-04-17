@@ -27,6 +27,7 @@
 #include "ascon-select-backend.h"
 #include "ascon-util.h"
 #include "ascon-util-snp.h"
+#include <string.h>
 
 #if defined(ASCON_BACKEND_DIRECT_XOR)
 
@@ -110,6 +111,23 @@ void ascon_extract_and_overwrite_bytes
         ++offset;
         --size;
     }
+}
+
+void ascon_release(ascon_state_t *state)
+{
+    /* Not needed in this implementation */
+    (void)state;
+}
+
+void ascon_acquire(ascon_state_t *state)
+{
+    /* Not needed in this implementation */
+    (void)state;
+}
+
+void ascon_copy(ascon_state_t *dest, const ascon_state_t *src)
+{
+    memcpy(dest->B, src->B, sizeof(dest->B));
 }
 
 #endif /* ASCON_BACKEND_DIRECT_XOR */

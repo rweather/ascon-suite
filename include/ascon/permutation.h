@@ -212,6 +212,46 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round);
  */
 #define ascon_permute6(state) ascon_permute((state), 6)
 
+/**
+ * \brief Temporarily releases access to any shared hardware resources
+ * that a permutation state was using.
+ *
+ * \param state The ASCON state to be released.
+ *
+ * Operation on the state will resume the next time ascon_acquire()
+ * is called.
+ *
+ * The ascon_free() function implicitly releases the state so it usually
+ * isn't necessary to release the state explicitly.  However, if the
+ * application will not be using the state for some time then it should
+ * call ascon_release() to allow other tasks on the system to access
+ * the shared hardware.
+ *
+ * \sa ascon_acquire()
+ */
+void ascon_release(ascon_state_t *state);
+
+/**
+ * \brief Re-acquires access to any shared hardware resources that a
+ * permutation state was using.
+ *
+ * \param state The ASCON state to be re-acquired.
+ *
+ * \sa ascon_release()
+ */
+void ascon_acquire(ascon_state_t *state);
+
+/**
+ * \brief Copies the entire ASCON permutation state from a source to a
+ * destination.
+ *
+ * \param dest The destination to copy to.
+ * \param src The source to copy from.
+ *
+ * The destination must be acquired and the source must be released.
+ */
+void ascon_copy(ascon_state_t *dest, const ascon_state_t *src);
+
 #ifdef __cplusplus
 }
 #endif
