@@ -53,10 +53,22 @@ extern "C" {
 #define ASCON_HMAC_SIZE ASCON_HASH_SIZE
 
 /**
- * \brief State information for the ASCON-HMAC and ASCON-HMACA
- * incremental modes.
+ * \brief State information for the ASCON-HMAC incremental mode.
  */
-typedef ascon_xof_state_t ascon_hmac_state_t;
+typedef struct
+{
+    ascon_hash_state_t hash;    /**< Internal ASCON-HASH state */
+
+} ascon_hmac_state_t;
+
+/**
+ * \brief State information for the ASCON-HMACA incremental mode.
+ */
+typedef struct
+{
+    ascon_hasha_state_t hash;   /**< Internal ASCON-HASHA state */
+
+} ascon_hmaca_state_t;
 
 /**
  * \brief Computes a HMAC value using ASCON-HASH.
@@ -168,7 +180,7 @@ void ascon_hmaca
  * \sa ascon_hmaca_update(), ascon_hmaca_finalize()
  */
 void ascon_hmaca_init
-    (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen);
+    (ascon_hmaca_state_t *state, const unsigned char *key, size_t keylen);
 
 /**
  * \brief Re-initializes an incremental HMAC state using ASCON-HASHA.
@@ -186,14 +198,14 @@ void ascon_hmaca_init
  * \sa ascon_hmac_init()
  */
 void ascon_hmaca_reinit
-    (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen);
+    (ascon_hmaca_state_t *state, const unsigned char *key, size_t keylen);
 
 /**
  * \brief Frees the ASCON-HMACA state and destroys any sensitive material.
  *
  * \param state HMAC state to be freed.
  */
-void ascon_hmaca_free(ascon_hmac_state_t *state);
+void ascon_hmaca_free(ascon_hmaca_state_t *state);
 
 /**
  * \brief Updates an incremental ASCON-HMACA state with more input data.
@@ -205,7 +217,7 @@ void ascon_hmaca_free(ascon_hmac_state_t *state);
  * \sa ascon_hmaca_init(), ascon_hmaca_finalize()
  */
 void ascon_hmaca_update
-    (ascon_hmac_state_t *state, const unsigned char *in, size_t inlen);
+    (ascon_hmaca_state_t *state, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Finalizes an incremental ASCON-HMACA state.
@@ -219,7 +231,7 @@ void ascon_hmaca_update
  * \sa ascon_hmaca_init(), ascon_hmaca_update()
  */
 void ascon_hmaca_finalize
-    (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen,
+    (ascon_hmaca_state_t *state, const unsigned char *key, size_t keylen,
      unsigned char *out);
 
 #ifdef __cplusplus

@@ -37,9 +37,22 @@ extern "C" {
 #endif
 
 /**
- * \brief State information for ASCON-HASH and ASCON-HASHA incremental modes.
+ * \brief State information for the ASCON-HASH incremental mode.
  */
-typedef ascon_xof_state_t ascon_hash_state_t;
+typedef struct
+{
+    ascon_xof_state_t xof;  /**< Internal ASCON-XOF state */
+
+} ascon_hash_state_t;
+
+/**
+ * \brief State information for the ASCON-HASHA incremental mode.
+ */
+typedef struct
+{
+    ascon_xofa_state_t xof; /**< Internal ASCON-XOFA state */
+
+} ascon_hasha_state_t;
 
 /**
  * \brief Hashes a block of input data with ASCON-HASH.
@@ -128,7 +141,7 @@ int ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen);
  *
  * \sa ascon_hasha_update(), ascon_hasha_finalize(), ascon_hasha()
  */
-void ascon_hasha_init(ascon_hash_state_t *state);
+void ascon_hasha_init(ascon_hasha_state_t *state);
 
 /**
  * \brief Re-initializes the state for an ASCON-HASHA hashing operation.
@@ -140,14 +153,14 @@ void ascon_hasha_init(ascon_hash_state_t *state);
  *
  * \sa ascon_hasha_init()
  */
-void ascon_hasha_reinit(ascon_hash_state_t *state);
+void ascon_hasha_reinit(ascon_hasha_state_t *state);
 
 /**
  * \brief Frees the ASCON-HASHA state and destroys any sensitive material.
  *
  * \param state Hash state to be freed.
  */
-void ascon_hasha_free(ascon_hash_state_t *state);
+void ascon_hasha_free(ascon_hasha_state_t *state);
 
 /**
  * \brief Updates an ASCON-HASHA state with more input data.
@@ -159,7 +172,7 @@ void ascon_hasha_free(ascon_hash_state_t *state);
  * \sa ascon_hasha_init(), ascon_hasha_finalize()
  */
 void ascon_hasha_update
-    (ascon_hash_state_t *state, const unsigned char *in, size_t inlen);
+    (ascon_hasha_state_t *state, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Returns the final hash value from an ASCON-HASHA hashing operation.
@@ -169,7 +182,7 @@ void ascon_hasha_update
  *
  * \sa ascon_hasha_init(), ascon_hasha_update()
  */
-void ascon_hasha_finalize(ascon_hash_state_t *state, unsigned char *out);
+void ascon_hasha_finalize(ascon_hasha_state_t *state, unsigned char *out);
 
 #ifdef __cplusplus
 }

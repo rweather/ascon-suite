@@ -106,7 +106,7 @@ aead_hash_algorithm_t const ascon_xof_algorithm = {
 
 aead_hash_algorithm_t const ascon_xofa_algorithm = {
     "ASCON-XOFA",
-    sizeof(ascon_xof_state_t),
+    sizeof(ascon_xofa_state_t),
     ASCON_HASH_SIZE,
     AEAD_FLAG_NONE,
     ascon_xofa,
@@ -134,7 +134,7 @@ aead_hash_algorithm_t const ascon_xof_fixed_length_algorithm = {
 
 aead_hash_algorithm_t const ascon_xofa_fixed_length_algorithm = {
     "ASCON-XOFA-fixed-length",
-    sizeof(ascon_xof_state_t),
+    sizeof(ascon_xofa_state_t),
     ASCON_HASH_SIZE,
     AEAD_FLAG_NONE,
     ascon_xofa,

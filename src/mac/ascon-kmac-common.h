@@ -53,9 +53,9 @@ void KMAC_ALG_NAME
 {
     KMAC_STATE state;
     KMAC_CONCAT(KMAC_ALG_NAME,_init)(&state, key, keylen, custom, customlen);
-    KMAC_XOF_ABSORB(&state, in, inlen);
+    KMAC_XOF_ABSORB(&(state.xof), in, inlen);
     KMAC_CONCAT(KMAC_ALG_NAME,_set_output_length)(&state, outlen);
-    KMAC_XOF_SQUEEZE(&state, out, outlen);
+    KMAC_XOF_SQUEEZE(&(state.xof), out, outlen);
     KMAC_CONCAT(KMAC_ALG_NAME,_free)(&state);
 }
 
@@ -109,24 +109,24 @@ void KMAC_CONCAT(KMAC_ALG_NAME,_init)
     /* Initialize the XOF state and absorb the prefix.  If we have a
      * precompute function, then use it to shortcut the process. */
 #if defined(KMAC_XOF_PREINIT)
-    KMAC_XOF_PREINIT(state);
+    KMAC_XOF_PREINIT(&(state->xof));
 #else
-    KMAC_XOF_INIT(state);
-    KMAC_XOF_ABSORB(state, kmac_prefix, sizeof(kmac_prefix));
+    KMAC_XOF_INIT(&(state->xof));
+    KMAC_XOF_ABSORB(&(state->xof), kmac_prefix, sizeof(kmac_prefix));
 #endif
 
     /* Absorb the customization string and pad */
     len = KMAC_CONCAT(KMAC_ALG_NAME,_encode_length)(buf, customlen);
-    KMAC_XOF_ABSORB(state, buf, len);
-    KMAC_XOF_ABSORB(state, custom, customlen);
-    KMAC_XOF_PAD(state);
+    KMAC_XOF_ABSORB(&(state->xof), buf, len);
+    KMAC_XOF_ABSORB(&(state->xof), custom, customlen);
+    KMAC_XOF_PAD(&(state->xof));
 
     /* Absorb the key and pad */
-    KMAC_XOF_ABSORB(state, kmac_prefix, 2); /* Just the rate this time */
+    KMAC_XOF_ABSORB(&(state->xof), kmac_prefix, 2); /* Just the rate prefix */
     len = KMAC_CONCAT(KMAC_ALG_NAME,_encode_length)(buf, keylen);
-    KMAC_XOF_ABSORB(state, buf, len);
-    KMAC_XOF_ABSORB(state, key, keylen);
-    KMAC_XOF_PAD(state);
+    KMAC_XOF_ABSORB(&(state->xof), buf, len);
+    KMAC_XOF_ABSORB(&(state->xof), key, keylen);
+    KMAC_XOF_PAD(&(state->xof));
 }
 
 void KMAC_CONCAT(KMAC_ALG_NAME,_reinit)
@@ -140,13 +140,13 @@ void KMAC_CONCAT(KMAC_ALG_NAME,_reinit)
 void KMAC_CONCAT(KMAC_ALG_NAME,_free)(KMAC_STATE *state)
 {
     if (state)
-        KMAC_XOF_FREE(state);
+        KMAC_XOF_FREE(&(state->xof));
 }
 
 void KMAC_CONCAT(KMAC_ALG_NAME,_absorb)
     (KMAC_STATE *state, const unsigned char *in, size_t inlen)
 {
-    KMAC_XOF_ABSORB(state, in, inlen);
+    KMAC_XOF_ABSORB(&(state->xof), in, inlen);
 }
 
 /**
@@ -162,42 +162,42 @@ static void KMAC_CONCAT(KMAC_ALG_NAME,_encode_output_length)
     /* Similar to encode_length() but the length prefix is now a suffix */
     unsigned char buf[sizeof(uint64_t) + 1];
     size_t len = KMAC_CONCAT(KMAC_ALG_NAME,_encode_length)(buf, outlen);
-    KMAC_XOF_ABSORB(state, buf + 1, len - 1);
-    KMAC_XOF_ABSORB(state, buf, 1);
+    KMAC_XOF_ABSORB(&(state->xof), buf + 1, len - 1);
+    KMAC_XOF_ABSORB(&(state->xof), buf, 1);
 }
 
 void KMAC_CONCAT(KMAC_ALG_NAME,_set_output_length)
     (KMAC_STATE *state, size_t outlen)
 {
-    if (KMAC_XOF_IS_ABSORBING(state)) {
+    if (KMAC_XOF_IS_ABSORBING(&(state->xof))) {
         /* Encode the desired output length and absorb it into the input */
         KMAC_CONCAT(KMAC_ALG_NAME,_encode_output_length)(state, outlen);
 
         /* Switch the underlying XOF state into squeezing mode */
-        KMAC_XOF_SQUEEZE(state, 0, 0);
+        KMAC_XOF_SQUEEZE(&(state->xof), 0, 0);
     }
 }
 
 void KMAC_CONCAT(KMAC_ALG_NAME,_squeeze)
     (KMAC_STATE *state, unsigned char *out, size_t outlen)
 {
-    if (KMAC_XOF_IS_ABSORBING(state)) {
+    if (KMAC_XOF_IS_ABSORBING(&(state->xof))) {
         /* We are still in the absorb phase, so set the desired
          * output length to arbitrary */
         KMAC_CONCAT(KMAC_ALG_NAME,_encode_output_length)(state, 0);
     }
-    KMAC_XOF_SQUEEZE(state, out, outlen);
+    KMAC_XOF_SQUEEZE(&(state->xof), out, outlen);
 }
 
 void KMAC_CONCAT(KMAC_ALG_NAME,_finalize)
     (KMAC_STATE *state, unsigned char out[KMAC_SIZE])
 {
-    if (KMAC_XOF_IS_ABSORBING(state)) {
+    if (KMAC_XOF_IS_ABSORBING(&(state->xof))) {
         /* We are still in the absorb phase, so set the desired
          * output length now */
         KMAC_CONCAT(KMAC_ALG_NAME,_encode_output_length)(state, KMAC_SIZE);
     }
-    KMAC_XOF_SQUEEZE(state, out, KMAC_SIZE);
+    KMAC_XOF_SQUEEZE(&(state->xof), out, KMAC_SIZE);
 }
 
 #endif /* KMAC_ALG_NAME */

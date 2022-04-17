@@ -27,9 +27,9 @@
 /**
  * \brief Intializes a ASCON-KMAC context with the prefix pre-computed.
  *
- * \param state Points to the KMAC state to initialize.
+ * \param state Points to the internal ASCON-XOF state to initialize.
  */
-static void ascon_kmac_init_precomputed(ascon_kmac_state_t *state)
+static void ascon_kmac_init_precomputed(ascon_xof_state_t *state)
 {
     static unsigned char const kmac_iv[40] = {
         0xe9, 0x9c, 0x8c, 0x07, 0x34, 0xea, 0x50, 0x0d,

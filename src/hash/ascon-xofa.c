@@ -25,7 +25,7 @@
 
 int ascon_xofa(unsigned char *out, const unsigned char *in, size_t inlen)
 {
-    ascon_xof_state_t state;
+    ascon_xofa_state_t state;
     ascon_xofa_init(&state);
     ascon_xofa_absorb(&state, in, inlen);
     ascon_xofa_squeeze(&state, out, ASCON_HASH_SIZE);
@@ -33,7 +33,7 @@ int ascon_xofa(unsigned char *out, const unsigned char *in, size_t inlen)
     return 0;
 }
 
-void ascon_xofa_init(ascon_xof_state_t *state)
+void ascon_xofa_init(ascon_xofa_state_t *state)
 {
     /* IV for ASCON-XOFA after processing it with the permutation */
 #if defined(ASCON_BACKEND_SLICED64)
@@ -70,7 +70,7 @@ void ascon_xofa_init(ascon_xof_state_t *state)
     state->mode = 0;
 }
 
-void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen)
+void ascon_xofa_init_fixed(ascon_xofa_state_t *state, size_t outlen)
 {
 #if !defined(__SIZEOF_SIZE_T__) || __SIZEOF_SIZE_T__ >= 4
     if (outlen >= (((size_t)1) << 29))
@@ -127,7 +127,7 @@ void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen)
     }
 }
 
-void ascon_xofa_reinit(ascon_xof_state_t *state)
+void ascon_xofa_reinit(ascon_xofa_state_t *state)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
         defined(ASCON_BACKEND_DIRECT_XOR)
@@ -138,7 +138,7 @@ void ascon_xofa_reinit(ascon_xof_state_t *state)
 #endif
 }
 
-void ascon_xofa_reinit_fixed(ascon_xof_state_t *state, size_t outlen)
+void ascon_xofa_reinit_fixed(ascon_xofa_state_t *state, size_t outlen)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
         defined(ASCON_BACKEND_DIRECT_XOR)
@@ -149,7 +149,7 @@ void ascon_xofa_reinit_fixed(ascon_xof_state_t *state, size_t outlen)
 #endif
 }
 
-void ascon_xofa_free(ascon_xof_state_t *state)
+void ascon_xofa_free(ascon_xofa_state_t *state)
 {
     if (state) {
         ascon_acquire(&(state->state));
@@ -160,7 +160,7 @@ void ascon_xofa_free(ascon_xof_state_t *state)
 }
 
 void ascon_xofa_absorb
-    (ascon_xof_state_t *state, const unsigned char *in, size_t inlen)
+    (ascon_xofa_state_t *state, const unsigned char *in, size_t inlen)
 {
     unsigned temp;
 
@@ -210,7 +210,7 @@ void ascon_xofa_absorb
 }
 
 void ascon_xofa_squeeze
-    (ascon_xof_state_t *state, unsigned char *out, size_t outlen)
+    (ascon_xofa_state_t *state, unsigned char *out, size_t outlen)
 {
     unsigned temp;
 
@@ -261,7 +261,7 @@ void ascon_xofa_squeeze
     ascon_release(&(state->state));
 }
 
-void ascon_xofa_pad(ascon_xof_state_t *state)
+void ascon_xofa_pad(ascon_xofa_state_t *state)
 {
     if (state->mode) {
         /* We were squeezing output, so re-enter the absorb phase

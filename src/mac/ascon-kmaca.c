@@ -27,9 +27,9 @@
 /**
  * \brief Intializes a ASCON-KMACA context with the prefix pre-computed.
  *
- * \param state Points to the KMAC state to initialize.
+ * \param state Points to the internal ASCON-XOFA state to initialize.
  */
-static void ascon_kmaca_init_precomputed(ascon_kmac_state_t *state)
+static void ascon_kmaca_init_precomputed(ascon_xofa_state_t *state)
 {
     static unsigned char const kmac_iv[40] = {
         0xcd, 0xec, 0xd0, 0x06, 0x9c, 0xdd, 0x34, 0x6d,
@@ -50,7 +50,7 @@ static void ascon_kmaca_init_precomputed(ascon_kmac_state_t *state)
 /* ASCON-XOFA */
 #define KMAC_ALG_NAME ascon_kmaca
 #define KMAC_SIZE ASCON_KMAC_SIZE
-#define KMAC_STATE ascon_kmac_state_t
+#define KMAC_STATE ascon_kmaca_state_t
 #define KMAC_RATE ASCON_XOF_RATE
 #define KMAC_XOF_INIT ascon_xofa_init
 #define KMAC_XOF_PREINIT ascon_kmaca_init_precomputed

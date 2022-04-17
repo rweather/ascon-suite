@@ -93,18 +93,18 @@ static void HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)
             if (len > HMAC_HASH_SIZE)
                 len = HMAC_HASH_SIZE;
             HMAC_CONCAT(HMAC_ALG_NAME,_xor_pad)(temp, key, len, pad);
-            HMAC_HASH_UPDATE(state, temp, len);
+            HMAC_HASH_UPDATE(&(state->hash), temp, len);
             posn += len;
             key += len;
             keylen -= len;
         }
     } else {
         /* Hash long keys down first and then absorb */
-        HMAC_HASH_UPDATE(state, key, keylen);
-        HMAC_HASH_FINALIZE(state, temp);
-        HMAC_HASH_REINIT(state);
+        HMAC_HASH_UPDATE(&(state->hash), key, keylen);
+        HMAC_HASH_FINALIZE(&(state->hash), temp);
+        HMAC_HASH_REINIT(&(state->hash));
         HMAC_CONCAT(HMAC_ALG_NAME,_xor_pad)(temp, temp, HMAC_HASH_SIZE, pad);
-        HMAC_HASH_UPDATE(state, temp, HMAC_HASH_SIZE);
+        HMAC_HASH_UPDATE(&(state->hash), temp, HMAC_HASH_SIZE);
         posn = HMAC_HASH_SIZE;
     }
 
@@ -114,7 +114,7 @@ static void HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)
         len = HMAC_BLOCK_SIZE - posn;
         if (len > HMAC_HASH_SIZE)
             len = HMAC_HASH_SIZE;
-        HMAC_HASH_UPDATE(state, temp, len);
+        HMAC_HASH_UPDATE(&(state->hash), temp, len);
         posn += len;
     }
 
@@ -128,37 +128,37 @@ void HMAC_ALG_NAME
      const unsigned char *in, size_t inlen)
 {
     HMAC_STATE state;
-    HMAC_HASH_INIT(&state);
+    HMAC_HASH_INIT(&(state.hash));
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(&state, key, keylen, HMAC_IPAD);
-    HMAC_HASH_UPDATE(&state, in, inlen);
+    HMAC_HASH_UPDATE(&(state.hash), in, inlen);
     HMAC_CONCAT(HMAC_ALG_NAME,_finalize)(&state, key, keylen, out);
-    HMAC_CONCAT(HMAC_ALG_NAME,_free)(&state);
+    HMAC_HASH_FREE(&(state.hash));
 }
 
 void HMAC_CONCAT(HMAC_ALG_NAME,_init)
     (HMAC_STATE *state, const unsigned char *key, size_t keylen)
 {
-    HMAC_HASH_INIT(state);
+    HMAC_HASH_INIT(&(state->hash));
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(state, key, keylen, HMAC_IPAD);
 }
 
 void HMAC_CONCAT(HMAC_ALG_NAME,_reinit)
     (HMAC_STATE *state, const unsigned char *key, size_t keylen)
 {
-    HMAC_HASH_REINIT(state);
+    HMAC_HASH_REINIT(&(state->hash));
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(state, key, keylen, HMAC_IPAD);
 }
 
 void HMAC_CONCAT(HMAC_ALG_NAME,_free)(HMAC_STATE *state)
 {
     if (state)
-        HMAC_HASH_FREE(state);
+        HMAC_HASH_FREE(&(state->hash));
 }
 
 void HMAC_CONCAT(HMAC_ALG_NAME,_update)
     (HMAC_STATE *state, const unsigned char *in, size_t inlen)
 {
-    HMAC_HASH_UPDATE(state, in, inlen);
+    HMAC_HASH_UPDATE(&(state->hash), in, inlen);
 }
 
 void HMAC_CONCAT(HMAC_ALG_NAME,_finalize)
@@ -166,11 +166,11 @@ void HMAC_CONCAT(HMAC_ALG_NAME,_finalize)
      unsigned char *out)
 {
     unsigned char temp[HMAC_HASH_SIZE];
-    HMAC_HASH_FINALIZE(state, temp);
-    HMAC_HASH_REINIT(state);
+    HMAC_HASH_FINALIZE(&(state->hash), temp);
+    HMAC_HASH_REINIT(&(state->hash));
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(state, key, keylen, HMAC_OPAD);
-    HMAC_HASH_UPDATE(state, temp, HMAC_HASH_SIZE);
-    HMAC_HASH_FINALIZE(state, out);
+    HMAC_HASH_UPDATE(&(state->hash), temp, HMAC_HASH_SIZE);
+    HMAC_HASH_FINALIZE(&(state->hash), out);
     ascon_clean(temp, sizeof(temp));
 }
 

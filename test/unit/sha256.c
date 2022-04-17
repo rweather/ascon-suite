@@ -253,7 +253,7 @@ void sha256_hash_finalize(sha256_state_t *state, unsigned char *out)
 #define HMAC_ALG_NAME sha256_hmac
 #define HMAC_HASH_SIZE SHA256_HASH_SIZE
 #define HMAC_BLOCK_SIZE 64
-#define HMAC_STATE sha256_state_t
+#define HMAC_STATE sha256_hmac_state_t
 #define HMAC_HASH_INIT sha256_hash_init
 #define HMAC_HASH_REINIT sha256_hash_init
 #define HMAC_HASH_FREE sha256_hash_free

@@ -86,6 +86,12 @@ static aead_mac_test_vector_t const testVectorNIST_2 = {
     32
 };
 
+typedef struct
+{
+    sha3_state_t xof;
+
+} nist_kmac_state_t;
+
 /* Instantiate the standard NIST version of KMAC that uses SHA3 */
 void nist_kmac
     (const unsigned char *key, size_t keylen,
@@ -93,16 +99,16 @@ void nist_kmac
      const unsigned char *custom, size_t customlen,
      unsigned char *out, size_t outlen);
 void nist_kmac_init
-    (sha3_state_t *state, const unsigned char *key, size_t keylen,
+    (nist_kmac_state_t *state, const unsigned char *key, size_t keylen,
      const unsigned char *custom, size_t customlen);
-void nist_kmac_free(sha3_state_t *state);
+void nist_kmac_free(nist_kmac_state_t *state);
 void nist_kmac_absorb
-    (sha3_state_t *state, const unsigned char *in, size_t inlen);
-void nist_kmac_set_output_length(sha3_state_t *state, size_t outlen);
-void nist_kmac_squeeze(sha3_state_t *state, unsigned char *out, size_t outlen);
+    (nist_kmac_state_t *state, const unsigned char *in, size_t inlen);
+void nist_kmac_set_output_length(nist_kmac_state_t *state, size_t outlen);
+void nist_kmac_squeeze(nist_kmac_state_t *state, unsigned char *out, size_t outlen);
 #define KMAC_ALG_NAME nist_kmac
 #define KMAC_SIZE 32
-#define KMAC_STATE sha3_state_t
+#define KMAC_STATE nist_kmac_state_t
 #define KMAC_RATE 168
 #define KMAC_XOF_INIT cshake128_init
 #define KMAC_XOF_FREE sha3_free
@@ -140,7 +146,7 @@ static aead_hash_algorithm_t const ascon_xof_algorithm = {
 };
 
 static aead_hash_algorithm_t const ascon_xofa_algorithm = {
-    .state_size = sizeof(ascon_xof_state_t),
+    .state_size = sizeof(ascon_xofa_state_t),
     .hash_len = ASCON_HASH_SIZE,
     .init = (aead_hash_init_t)ascon_xofa_init,
     .free = (aead_hash_free_t)ascon_xofa_free,

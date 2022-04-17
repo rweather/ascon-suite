@@ -53,10 +53,22 @@ extern "C" {
 #define ASCON_KMAC_SIZE ASCON_HASH_SIZE
 
 /**
- * \brief State information for the ASCON-KMAC and ASCON-KMACA
- * incremental modes.
+ * \brief State information for the ASCON-KMAC incremental mode.
  */
-typedef ascon_xof_state_t ascon_kmac_state_t;
+typedef struct
+{
+    ascon_xof_state_t xof;  /**< Internal ASCON-XOF state */
+
+} ascon_kmac_state_t;
+
+/**
+ * \brief State information for the ASCON-KMACA incremental mode.
+ */
+typedef struct
+{
+    ascon_xofa_state_t xof; /**< Internal ASCON-XOFA state */
+
+} ascon_kmaca_state_t;
 
 /**
  * \brief Computes a KMAC value using ASCON-XOF.
@@ -208,7 +220,7 @@ void ascon_kmaca
  * \sa ascon_kmaca_update(), ascon_kmaca_squeeze()
  */
 void ascon_kmaca_init
-    (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
+    (ascon_kmaca_state_t *state, const unsigned char *key, size_t keylen,
      const unsigned char *custom, size_t customlen);
 
 /**
@@ -226,7 +238,7 @@ void ascon_kmaca_init
  * \sa ascon_kmaca_init()
  */
 void ascon_kmaca_reinit
-    (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
+    (ascon_kmaca_state_t *state, const unsigned char *key, size_t keylen,
      const unsigned char *custom, size_t customlen);
 
 /**
@@ -234,7 +246,7 @@ void ascon_kmaca_reinit
  *
  * \param state KMAC state to be freed.
  */
-void ascon_kmaca_free(ascon_kmac_state_t *state);
+void ascon_kmaca_free(ascon_kmaca_state_t *state);
 
 /**
  * \brief Absorbs more input data into an incremental ASCON-KMACA state.
@@ -246,7 +258,7 @@ void ascon_kmaca_free(ascon_kmac_state_t *state);
  * \sa ascon_kmaca_init(), ascon_kmaca_squeeze()
  */
 void ascon_kmaca_absorb
-    (ascon_kmac_state_t *state, const unsigned char *in, size_t inlen);
+    (ascon_kmaca_state_t *state, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Sets the desired output length for an incremental ASCON-KMACA state.
@@ -257,7 +269,7 @@ void ascon_kmaca_absorb
  *
  * \sa ascon_kmaca_squeeze()
  */
-void ascon_kmaca_set_output_length(ascon_kmac_state_t *state, size_t outlen);
+void ascon_kmaca_set_output_length(ascon_kmaca_state_t *state, size_t outlen);
 
 /**
  * \brief Squeezes output data from an incremental ASCON-KMACA state.
@@ -274,7 +286,7 @@ void ascon_kmaca_set_output_length(ascon_kmac_state_t *state, size_t outlen);
  * \sa ascon_kmaca_init(), ascon_kmaca_update(), ascon_kmaca_finalize()
  */
 void ascon_kmaca_squeeze
-    (ascon_kmac_state_t *state, unsigned char *out, size_t outlen);
+    (ascon_kmaca_state_t *state, unsigned char *out, size_t outlen);
 
 /**
  * \brief Squeezes fixed-length data from an incremental ASCON-KMACA
@@ -290,7 +302,7 @@ void ascon_kmaca_squeeze
  * \sa ascon_kmaca_squeeze(), ascon_kmaca_set_output_length()
  */
 void ascon_kmaca_finalize
-    (ascon_kmac_state_t *state, unsigned char out[ASCON_KMAC_SIZE]);
+    (ascon_kmaca_state_t *state, unsigned char out[ASCON_KMAC_SIZE]);
 
 #ifdef __cplusplus
 }

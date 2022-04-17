@@ -102,6 +102,15 @@ void sha256_hash_update
 void sha256_hash_finalize(sha256_state_t *state, unsigned char *out);
 
 /**
+ * \brief State information for the SHA256 incremental HMAC mode.
+ */
+typedef struct
+{
+    sha256_state_t hash;    /**< Internal SHA256 state */
+
+} sha256_hmac_state_t;
+
+/**
  * \brief Computes a HMAC value using SHA256.
  *
  * \param out Buffer to receive the output HMAC value; must be at least
@@ -124,14 +133,14 @@ void sha256_hmac
  * \param keylen Number of bytes in the key.
  */
 void sha256_hmac_init
-    (sha256_state_t *state, const unsigned char *key, size_t keylen);
+    (sha256_hmac_state_t *state, const unsigned char *key, size_t keylen);
 
 /**
  * \brief Frees the SHA256-HMAC state and destroys any sensitive material.
  *
  * \param state HMAC state to be freed.
  */
-void sha256_hmac_free(sha256_state_t *state);
+void sha256_hmac_free(sha256_hmac_state_t *state);
 
 /**
  * \brief Updates an incremental SHA256-HMAC state with more input data.
@@ -141,7 +150,7 @@ void sha256_hmac_free(sha256_state_t *state);
  * \param inlen Length of the input data to be incorporated into the state.
  */
 void sha256_hmac_update
-    (sha256_state_t *state, const unsigned char *in, size_t inlen);
+    (sha256_hmac_state_t *state, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Finalizes an incremental SHA256-HMAC state.
@@ -153,7 +162,7 @@ void sha256_hmac_update
  * must be at least SHA256_HASH_SIZE bytes in length.
  */
 void sha256_hmac_finalize
-    (sha256_state_t *state, const unsigned char *key, size_t keylen,
+    (sha256_hmac_state_t *state, const unsigned char *key, size_t keylen,
      unsigned char *out);
 
 #ifdef __cplusplus

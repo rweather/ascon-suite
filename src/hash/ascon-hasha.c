@@ -26,15 +26,15 @@
 
 int ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen)
 {
-    ascon_xof_state_t state;
+    ascon_hasha_state_t state;
     ascon_hasha_init(&state);
-    ascon_xofa_absorb(&state, in, inlen);
-    ascon_xofa_squeeze(&state, out, ASCON_HASH_SIZE);
-    ascon_xofa_free(&state);
+    ascon_xofa_absorb(&(state.xof), in, inlen);
+    ascon_xofa_squeeze(&(state.xof), out, ASCON_HASH_SIZE);
+    ascon_xofa_free(&(state.xof));
     return 0;
 }
 
-void ascon_hasha_init(ascon_hash_state_t *state)
+void ascon_hasha_init(ascon_hasha_state_t *state)
 {
     /* IV for ASCON-HASHA after processing it with the permutation */
 #if defined(ASCON_BACKEND_SLICED64)
@@ -43,14 +43,14 @@ void ascon_hasha_init(ascon_hash_state_t *state)
         0x2ec8e3296c76384cULL, 0xd6f6a54d7f52377dULL,
         0xa13c42a223be8d87ULL
     };
-    memcpy(state->state.S, iv, sizeof(iv));
+    memcpy(state->xof.state.S, iv, sizeof(iv));
 #elif defined(ASCON_BACKEND_SLICED32)
     static uint32_t const iv[10] = {
         0x1b16eb02, 0x0108e46d, 0xd29083f3, 0x5b9b8efd,
         0x2891ae4a, 0x7ad66562, 0xee3bfc7f, 0x9dc27156,
         0x16801633, 0xc61d5fa9
     };
-    memcpy(state->state.W, iv, sizeof(iv));
+    memcpy(state->xof.state.W, iv, sizeof(iv));
 #else
     static uint8_t const iv[40] = {
         0x01, 0x47, 0x01, 0x94, 0xfc, 0x65, 0x28, 0xa6,
@@ -60,18 +60,18 @@ void ascon_hasha_init(ascon_hash_state_t *state)
         0xa1, 0x3c, 0x42, 0xa2, 0x23, 0xbe, 0x8d, 0x87
     };
 #if defined(ASCON_BACKEND_DIRECT_XOR)
-    memcpy(state->state.B, iv, sizeof(iv));
+    memcpy(state->xof.state.B, iv, sizeof(iv));
 #else
-    ascon_init(&(state->state));
-    ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
-    ascon_release(&(state->state));
+    ascon_init(&(state->xof.state));
+    ascon_overwrite_bytes(&(state->xof.state), iv, sizeof(iv));
+    ascon_release(&(state->xof.state));
 #endif
 #endif
-    state->count = 0;
-    state->mode = 0;
+    state->xof.count = 0;
+    state->xof.mode = 0;
 }
 
-void ascon_hasha_reinit(ascon_hash_state_t *state)
+void ascon_hasha_reinit(ascon_hasha_state_t *state)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
         defined(ASCON_BACKEND_DIRECT_XOR)
@@ -82,23 +82,18 @@ void ascon_hasha_reinit(ascon_hash_state_t *state)
 #endif
 }
 
-void ascon_hasha_free(ascon_hash_state_t *state)
+void ascon_hasha_free(ascon_hasha_state_t *state)
 {
-    if (state) {
-        ascon_acquire(&(state->state));
-        ascon_free(&(state->state));
-        state->count = 0;
-        state->mode = 0;
-    }
+    ascon_xofa_free(&(state->xof));
 }
 
 void ascon_hasha_update
-    (ascon_hash_state_t *state, const unsigned char *in, size_t inlen)
+    (ascon_hasha_state_t *state, const unsigned char *in, size_t inlen)
 {
-    ascon_xofa_absorb(state, in, inlen);
+    ascon_xofa_absorb(&(state->xof), in, inlen);
 }
 
-void ascon_hasha_finalize(ascon_hash_state_t *state, unsigned char *out)
+void ascon_hasha_finalize(ascon_hasha_state_t *state, unsigned char *out)
 {
-    ascon_xofa_squeeze(state, out, ASCON_HASH_SIZE);
+    ascon_xofa_squeeze(&(state->xof), out, ASCON_HASH_SIZE);
 }
