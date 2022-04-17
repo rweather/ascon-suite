@@ -40,6 +40,7 @@ static void ascon_kmaca_init_precomputed(ascon_kmac_state_t *state)
     };
     ascon_init(&(state->state));
     ascon_overwrite_bytes(&(state->state), kmac_iv, 0, sizeof(kmac_iv));
+    ascon_release(&(state->state));
     state->count = 0;
     state->mode = 0;
 }

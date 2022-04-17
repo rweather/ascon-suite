@@ -66,6 +66,18 @@ int ascon_hash(unsigned char *out, const unsigned char *in, size_t inlen);
 void ascon_hash_init(ascon_hash_state_t *state);
 
 /**
+ * \brief Re-initializes the state for an ASCON-HASH hashing operation.
+ *
+ * \param state Hash state to be re-initialized.
+ *
+ * This function is equivalent to calling ascon_hash_free() and then
+ * ascon_hash_init() to restart the hashing process.
+ *
+ * \sa ascon_hash_init()
+ */
+void ascon_hash_reinit(ascon_hash_state_t *state);
+
+/**
  * \brief Frees the ASCON-HASH state and destroys any sensitive material.
  *
  * \param state Hash state to be freed.
@@ -117,6 +129,18 @@ int ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen);
  * \sa ascon_hasha_update(), ascon_hasha_finalize(), ascon_hasha()
  */
 void ascon_hasha_init(ascon_hash_state_t *state);
+
+/**
+ * \brief Re-initializes the state for an ASCON-HASHA hashing operation.
+ *
+ * \param state Hash state to be re-initialized.
+ *
+ * This function is equivalent to calling ascon_hasha_free() and then
+ * ascon_hasha_init() to restart the hashing process.
+ *
+ * \sa ascon_hasha_init()
+ */
+void ascon_hasha_reinit(ascon_hash_state_t *state);
 
 /**
  * \brief Frees the ASCON-HASHA state and destroys any sensitive material.

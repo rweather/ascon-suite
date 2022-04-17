@@ -29,7 +29,7 @@ int ascon_xofa(unsigned char *out, const unsigned char *in, size_t inlen)
     ascon_xofa_init(&state);
     ascon_xofa_absorb(&state, in, inlen);
     ascon_xofa_squeeze(&state, out, ASCON_HASH_SIZE);
-    ascon_free(&(state.state));
+    ascon_xofa_free(&state);
     return 0;
 }
 
@@ -63,6 +63,7 @@ void ascon_xofa_init(ascon_xof_state_t *state)
 #else
     ascon_init(&(state->state));
     ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
+    ascon_release(&(state->state));
 #endif
 #endif
     state->count = 0;
@@ -107,6 +108,7 @@ void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen)
 #else
         ascon_init(&(state->state));
         ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
+        ascon_release(&(state->state));
 #endif
 #endif
         state->count = 0;
@@ -119,14 +121,38 @@ void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen)
         be_store_word64(iv, 0x00400c0400000000ULL | (outlen * 8UL));
         ascon_overwrite_bytes(&(state->state), iv, 0, 8);
         ascon_permute(&(state->state), 0);
+        ascon_release(&(state->state));
         state->count = 0;
         state->mode = 0;
     }
 }
 
+void ascon_xofa_reinit(ascon_xof_state_t *state)
+{
+#if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
+        defined(ASCON_BACKEND_DIRECT_XOR)
+    ascon_xofa_init(state);
+#else
+    ascon_xofa_free(state);
+    ascon_xofa_init(state);
+#endif
+}
+
+void ascon_xofa_reinit_fixed(ascon_xof_state_t *state, size_t outlen)
+{
+#if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
+        defined(ASCON_BACKEND_DIRECT_XOR)
+    ascon_xofa_init_fixed(state, outlen);
+#else
+    ascon_xofa_free(state);
+    ascon_xofa_init_fixed(state, outlen);
+#endif
+}
+
 void ascon_xofa_free(ascon_xof_state_t *state)
 {
     if (state) {
+        ascon_acquire(&(state->state));
         ascon_free(&(state->state));
         state->count = 0;
         state->mode = 0;
@@ -137,6 +163,9 @@ void ascon_xofa_absorb
     (ascon_xof_state_t *state, const unsigned char *in, size_t inlen)
 {
     unsigned temp;
+
+    /* Acquire access to shared hardware if necessary */
+    ascon_acquire(&(state->state));
 
     /* If we were squeezing output, then go back to the absorb phase */
     if (state->mode) {
@@ -152,6 +181,7 @@ void ascon_xofa_absorb
             temp = (unsigned)inlen;
             ascon_absorb_partial(&(state->state), in, state->count, temp);
             state->count += temp;
+            ascon_release(&(state->state));
             return;
         }
         ascon_absorb_partial(&(state->state), in, state->count, temp);
@@ -174,12 +204,18 @@ void ascon_xofa_absorb
     if (temp > 0)
         ascon_absorb_partial(&(state->state), in, 0, temp);
     state->count = temp;
+
+    /* Release access to the shared hardware */
+    ascon_release(&(state->state));
 }
 
 void ascon_xofa_squeeze
     (ascon_xof_state_t *state, unsigned char *out, size_t outlen)
 {
     unsigned temp;
+
+    /* Acquire access to shared hardware if necessary */
+    ascon_acquire(&(state->state));
 
     /* Pad the final input block if we were still in the absorb phase */
     if (!state->mode) {
@@ -196,6 +232,7 @@ void ascon_xofa_squeeze
             temp = (unsigned)outlen;
             ascon_squeeze_partial(&(state->state), out, state->count, temp);
             state->count += temp;
+            ascon_release(&(state->state));
             return;
         }
         ascon_squeeze_partial(&(state->state), out, state->count, temp);
@@ -219,6 +256,9 @@ void ascon_xofa_squeeze
         ascon_squeeze_partial(&(state->state), out, 0, temp);
         state->count = temp;
     }
+
+    /* Release access to the shared hardware */
+    ascon_release(&(state->state));
 }
 
 void ascon_xofa_pad(ascon_xof_state_t *state)
@@ -229,7 +269,9 @@ void ascon_xofa_pad(ascon_xof_state_t *state)
         ascon_xofa_absorb(state, 0, 0);
     } else if (state->count != 0) {
         /* Not currently aligned, so invoke the permutation */
+        ascon_acquire(&(state->state));
         ascon_permute(&(state->state), 4);
+        ascon_release(&(state->state));
         state->count = 0;
     }
 }

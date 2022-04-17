@@ -89,6 +89,24 @@ void ascon_hmac_init
     (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen);
 
 /**
+ * \brief Re-initializes an incremental HMAC state using ASCON-HASH.
+ *
+ * \param state Points to the state to be re-initialized.
+ * \param key Points to the key.
+ * \param keylen Number of bytes in the key.
+ *
+ * The \a key needs to be preserved until the ascon_hmac_finalize() call
+ * to provide the outer HMAC hashing key.
+ *
+ * This function is equivalent to calling ascon_hmac_free() followed by
+ * ascon_hmac_init().
+ *
+ * \sa ascon_hmac_init()
+ */
+void ascon_hmac_reinit
+    (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen);
+
+/**
  * \brief Frees the ASCON-HMAC state and destroys any sensitive material.
  *
  * \param state HMAC state to be freed.
@@ -150,6 +168,24 @@ void ascon_hmaca
  * \sa ascon_hmaca_update(), ascon_hmaca_finalize()
  */
 void ascon_hmaca_init
+    (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen);
+
+/**
+ * \brief Re-initializes an incremental HMAC state using ASCON-HASHA.
+ *
+ * \param state Points to the state to be re-initialized.
+ * \param key Points to the key.
+ * \param keylen Number of bytes in the key.
+ *
+ * The \a key needs to be preserved until the ascon_hmaca_finalize() call
+ * to provide the outer HMAC hashing key.
+ *
+ * This function is equivalent to calling ascon_hmaca_free() followed by
+ * ascon_hmaca_init().
+ *
+ * \sa ascon_hmac_init()
+ */
+void ascon_hmaca_reinit
     (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen);
 
 /**

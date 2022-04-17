@@ -30,7 +30,7 @@ int ascon_hash(unsigned char *out, const unsigned char *in, size_t inlen)
     ascon_hash_init(&state);
     ascon_xof_absorb(&state, in, inlen);
     ascon_xof_squeeze(&state, out, ASCON_HASH_SIZE);
-    ascon_free(&(state.state));
+    ascon_xof_free(&state);
     return 0;
 }
 
@@ -64,15 +64,28 @@ void ascon_hash_init(ascon_hash_state_t *state)
 #else
     ascon_init(&(state->state));
     ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
+    ascon_release(&(state->state));
 #endif
 #endif
     state->count = 0;
     state->mode = 0;
 }
 
+void ascon_hash_reinit(ascon_hash_state_t *state)
+{
+#if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
+        defined(ASCON_BACKEND_DIRECT_XOR)
+    ascon_hash_init(state);
+#else
+    ascon_hash_free(state);
+    ascon_hash_init(state);
+#endif
+}
+
 void ascon_hash_free(ascon_hash_state_t *state)
 {
     if (state) {
+        ascon_acquire(&(state->state));
         ascon_free(&(state->state));
         state->count = 0;
         state->mode = 0;

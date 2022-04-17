@@ -194,6 +194,7 @@ int main(int argc, char *argv[])
     printf("#else\n");
     printf("    ascon_init(&(state->state));\n");
     printf("    ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));\n");
+    printf("    ascon_release(&(state->state));\n");
     printf("#endif\n");
     printf("#endif\n");
 

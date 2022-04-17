@@ -95,6 +95,24 @@ void ascon_kmac_init
      const unsigned char *custom, size_t customlen);
 
 /**
+ * \brief Re-initializes an incremental KMAC state using ASCON-XOF.
+ *
+ * \param state Points to the state to be initialized.
+ * \param key Points to the key.
+ * \param keylen Number of bytes in the key.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ *
+ * This function is equivalent to calling ascon_kmac_free() and then
+ * ascon_kmac_init().
+ *
+ * \sa ascon_kmac_init()
+ */
+void ascon_kmac_reinit
+    (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
+     const unsigned char *custom, size_t customlen);
+
+/**
  * \brief Frees the ASCON-KMAC state and destroys any sensitive material.
  *
  * \param state KMAC state to be freed.
@@ -190,6 +208,24 @@ void ascon_kmaca
  * \sa ascon_kmaca_update(), ascon_kmaca_squeeze()
  */
 void ascon_kmaca_init
+    (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
+     const unsigned char *custom, size_t customlen);
+
+/**
+ * \brief Re-initializes an incremental KMAC state using ASCON-XOFA.
+ *
+ * \param state Points to the state to be initialized.
+ * \param key Points to the key.
+ * \param keylen Number of bytes in the key.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ *
+ * This function is equivalent to calling ascon_kmaca_free() and then
+ * ascon_kmaca_init().
+ *
+ * \sa ascon_kmaca_init()
+ */
+void ascon_kmaca_reinit
     (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
      const unsigned char *custom, size_t customlen);
 

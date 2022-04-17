@@ -102,6 +102,32 @@ void ascon_xof_init(ascon_xof_state_t *state);
 void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen);
 
 /**
+ * \brief Re-initializes the state for an ASCON-XOF hashing operation.
+ *
+ * \param state XOF state to be re-initialized.
+ *
+ * This function is equivalent to calling ascon_xof_free() and then
+ * ascon_xof_init() to restart the hashing process.
+ *
+ * \sa ascon_xof_init()
+ */
+void ascon_xof_reinit(ascon_xof_state_t *state);
+
+/**
+ * \brief Re-initializes the state for an incremental ASCON-XOF operation,
+ * with a fixed output length.
+ *
+ * \param state XOF state to be re-initialized.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ *
+ * This function is equivalent to calling ascon_xof_free() and then
+ * ascon_xof_init_fixed() to restart the hashing process.
+ *
+ * \sa ascon_xof_init_fixed()
+ */
+void ascon_xof_reinit_fixed(ascon_xof_state_t *state, size_t outlen);
+
+/**
  * \brief Frees the ASCON-XOF state and destroys any sensitive material.
  *
  * \param state XOF state to be freed.
@@ -185,6 +211,32 @@ void ascon_xofa_init(ascon_xof_state_t *state);
  * \sa ascon_xofa_init()
  */
 void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen);
+
+/**
+ * \brief Re-initializes the state for an ASCON-XOFA hashing operation.
+ *
+ * \param state XOF state to be re-initialized.
+ *
+ * This function is equivalent to calling ascon_xofa_free() and then
+ * ascon_xofa_init() to restart the hashing process.
+ *
+ * \sa ascon_xof_init()
+ */
+void ascon_xofa_reinit(ascon_xof_state_t *state);
+
+/**
+ * \brief Re-initializes the state for an incremental ASCON-XOFA operation,
+ * with a fixed output length.
+ *
+ * \param state XOF state to be re-initialized.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ *
+ * This function is equivalent to calling ascon_xofa_free() and then
+ * ascon_xofa_init_fixed() to restart the hashing process.
+ *
+ * \sa ascon_xof_init_fixed()
+ */
+void ascon_xofa_reinit_fixed(ascon_xof_state_t *state, size_t outlen);
 
 /**
  * \brief Frees the ASCON-XOFA state and destroys any sensitive material.

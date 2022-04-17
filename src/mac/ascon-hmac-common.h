@@ -31,6 +31,7 @@
  * HMAC_BLOCK_SIZE      Size of the formatted key block for HMAC.
  * HMAC_STATE           Type for the HMAC state; e.g. ascon_hmac_state_t
  * HMAC_HASH_INIT       Name of the hash initialization function.
+ * HMAC_HASH_REINIT     Name of the hash re-initialization function.
  * HMAC_HASH_FREE       Name of the hash state free function.
  * HMAC_HASH_UPDATE     Name of the hash update function.
  * HMAC_HASH_FINALIZE   Name of the hash finalization function.
@@ -71,6 +72,9 @@ static void HMAC_CONCAT(HMAC_ALG_NAME,_xor_pad)
  * \param key Points to the key.
  * \param keylen Length of the key in bytes.
  * \param pad HMAC_IPAD or HMAC_OPAD.
+ *
+ * This function assumes that the HMAC \a state has already been
+ * initialized with HMAC_HASH_INIT() or HMAC_HASH_REINIT().
  */
 static void HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)
     (HMAC_STATE *state, const unsigned char *key, size_t keylen,
@@ -83,7 +87,6 @@ static void HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)
      * We do it this way to avoid having a large buffer on the
      * stack of size HMAC_BLOCK_SIZE. */
     if (keylen <= HMAC_BLOCK_SIZE) {
-        HMAC_HASH_INIT(state);
         posn = 0;
         while (keylen > 0) {
             len = keylen - posn;
@@ -97,13 +100,10 @@ static void HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)
         }
     } else {
         /* Hash long keys down first and then absorb */
-        HMAC_HASH_INIT(state);
         HMAC_HASH_UPDATE(state, key, keylen);
         HMAC_HASH_FINALIZE(state, temp);
-        HMAC_HASH_FREE(state);
-        HMAC_HASH_INIT(state);
+        HMAC_HASH_REINIT(state);
         HMAC_CONCAT(HMAC_ALG_NAME,_xor_pad)(temp, temp, HMAC_HASH_SIZE, pad);
-        HMAC_HASH_INIT(state);
         HMAC_HASH_UPDATE(state, temp, HMAC_HASH_SIZE);
         posn = HMAC_HASH_SIZE;
     }
@@ -128,6 +128,7 @@ void HMAC_ALG_NAME
      const unsigned char *in, size_t inlen)
 {
     HMAC_STATE state;
+    HMAC_HASH_INIT(&state);
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(&state, key, keylen, HMAC_IPAD);
     HMAC_HASH_UPDATE(&state, in, inlen);
     HMAC_CONCAT(HMAC_ALG_NAME,_finalize)(&state, key, keylen, out);
@@ -137,6 +138,14 @@ void HMAC_ALG_NAME
 void HMAC_CONCAT(HMAC_ALG_NAME,_init)
     (HMAC_STATE *state, const unsigned char *key, size_t keylen)
 {
+    HMAC_HASH_INIT(state);
+    HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(state, key, keylen, HMAC_IPAD);
+}
+
+void HMAC_CONCAT(HMAC_ALG_NAME,_reinit)
+    (HMAC_STATE *state, const unsigned char *key, size_t keylen)
+{
+    HMAC_HASH_REINIT(state);
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(state, key, keylen, HMAC_IPAD);
 }
 
@@ -158,6 +167,7 @@ void HMAC_CONCAT(HMAC_ALG_NAME,_finalize)
 {
     unsigned char temp[HMAC_HASH_SIZE];
     HMAC_HASH_FINALIZE(state, temp);
+    HMAC_HASH_REINIT(state);
     HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)(state, key, keylen, HMAC_OPAD);
     HMAC_HASH_UPDATE(state, temp, HMAC_HASH_SIZE);
     HMAC_HASH_FINALIZE(state, out);
@@ -173,6 +183,7 @@ void HMAC_CONCAT(HMAC_ALG_NAME,_finalize)
 #undef HMAC_BLOCK_SIZE
 #undef HMAC_STATE
 #undef HMAC_HASH_INIT
+#undef HMAC_HASH_REINIT
 #undef HMAC_HASH_UPDATE
 #undef HMAC_HASH_FINALIZE
 #undef HMAC_CONCAT_INNER

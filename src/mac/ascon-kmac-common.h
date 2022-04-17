@@ -129,6 +129,14 @@ void KMAC_CONCAT(KMAC_ALG_NAME,_init)
     KMAC_XOF_PAD(state);
 }
 
+void KMAC_CONCAT(KMAC_ALG_NAME,_reinit)
+    (KMAC_STATE *state, const unsigned char *key, size_t keylen,
+     const unsigned char *custom, size_t customlen)
+{
+    KMAC_CONCAT(KMAC_ALG_NAME,_free)(state);
+    KMAC_CONCAT(KMAC_ALG_NAME,_init)(state, key, keylen, custom, customlen);
+}
+
 void KMAC_CONCAT(KMAC_ALG_NAME,_free)(KMAC_STATE *state)
 {
     if (state)
