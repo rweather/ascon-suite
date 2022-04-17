@@ -65,10 +65,15 @@ typedef struct
     const char *x2;
     const char *x3;
     const char *x4;
+    const char *x0_alt;
+    const char *x1_alt;
+    const char *x2_alt;
+    const char *x3_alt;
+    const char *x4_alt;
+    const char *x5_alt;
     const char *t0;
     const char *t1;
     const char *t2;
-    const char *t3;
 
 } reg_names;
 
@@ -154,17 +159,19 @@ static void gen_round_sliced(const reg_names *regs, int round)
     /* Apply the S-box to the even half of the state */
     gen_sbox(regs);
 
-    /* Store the even half to the stack and load the odd half into registers */
-    printf("\tstr\t%s, [sp, #%d]\n", regs->x0, X0_E);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->x1, X1_E);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->x2, X2_E);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->x3, X3_E);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->x4, X4_E);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->x0, X0_O);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->x1, X1_O);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->x2, X2_O);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->x3, X3_O);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->x4, X4_O);
+    /* Swap the even and odd halves of the state.  The odd words that
+     * were in r8..r15 move to r0..r7 and the even words that were in
+     * r0..r7 move to r8..r15.  Even is offset by 1 for easier swapping. */
+    binop("mov", regs->x5_alt, regs->x4);
+    binop("mov", regs->x4, regs->x4_alt);
+    binop("mov", regs->x4_alt, regs->x3);
+    binop("mov", regs->x3, regs->x3_alt);
+    binop("mov", regs->x3_alt, regs->x2);
+    binop("mov", regs->x2, regs->x2_alt);
+    binop("mov", regs->x2_alt, regs->x1);
+    binop("mov", regs->x1, regs->x1_alt);
+    binop("mov", regs->x1_alt, regs->x0);
+    binop("mov", regs->x0, regs->x0_alt);
 
     /* Apply the round constant to x2_o */
     printf("\tmovs\t%s, #%d\n", regs->t0, RC[round * 2 + 1]);
@@ -177,10 +184,10 @@ static void gen_round_sliced(const reg_names *regs, int round)
      * will be back in registers and the odd words back on the stack. */
 
     /* We are very low on registers, but need 4 temporaries to do
-     * the work below.  Move x4 to a high register so that we can
-     * use it as an extra temporary.  Then later do the same with
-     * x0 when it is time to operate on x4 for real. */
-    binop("mov", regs->t3, regs->x4);
+     * the work below.  Move x4 to the stack so that we can use it
+     * an extra temporary.  Then later do the same with x0 when it
+     * is time to operate on x4 for real. */
+    printf("\tstr\t%s, [sp, #4]\n", regs->x4);
     immreg = regs->x4;
 
     /* x0 ^= rightRotate19_64(x0) ^ rightRotate28_64(x0); */
@@ -188,14 +195,14 @@ static void gen_round_sliced(const reg_names *regs, int round)
     // t1 = x0_o ^ rightRotate5(x0_e);
     // x0_e ^= rightRotate9(t1);
     // x0_o ^= rightRotate10(t0);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->t2, X0_E);
+    binop("mov", regs->t2, regs->x1_alt); // x0_e
     rotate(regs->t0, regs->x0, immreg, 4);
     binop("eor", regs->t0, regs->t2);
     rotate(regs->t1, regs->t2, immreg, 5);
     binop("eor", regs->t1, regs->x0);
     rotate(regs->t0, regs->t0, immreg, 10);
     binop("eor", regs->t0, regs->x0);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->t0, X0_O);
+    binop("mov", regs->x0_alt, regs->t0);
     rotate(regs->x0, regs->t1, immreg, 9);
     binop("eor", regs->x0, regs->t2);
 
@@ -204,14 +211,14 @@ static void gen_round_sliced(const reg_names *regs, int round)
     // t1 = x1_o ^ rightRotate11(x1_o);
     // x1_e ^= rightRotate19(t1);
     // x1_o ^= rightRotate20(t0);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->t2, X1_E);
+    binop("mov", regs->t2, regs->x2_alt); // x1_e
     rotate(regs->t0, regs->t2, immreg, 11);
     binop("eor", regs->t0, regs->t2);
     rotate(regs->t1, regs->x1, immreg, -1); // 11 but we can avoid the load.
     binop("eor", regs->t1, regs->x1);
     rotate(regs->t0, regs->t0, immreg, 20);
     binop("eor", regs->t0, regs->x1);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->t0, X1_O);
+    binop("mov", regs->x1_alt, regs->t0);
     rotate(regs->x1, regs->t1, immreg, 19);
     binop("eor", regs->x1, regs->t2);
 
@@ -220,14 +227,14 @@ static void gen_round_sliced(const reg_names *regs, int round)
     // t1 = x2_o ^ rightRotate3(x2_e);
     // x2_e ^= t1;
     // x2_o ^= rightRotate1(t0);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->t2, X2_E);
+    binop("mov", regs->t2, regs->x3_alt); // x2_e
     rotate(regs->t0, regs->x2, immreg, 2);
     binop("eor", regs->t0, regs->t2);
     rotate(regs->t1, regs->t2, immreg, 3);
     binop("eor", regs->t1, regs->x2);
     rotate(regs->t0, regs->t0, immreg, 1);
     binop("eor", regs->t0, regs->x2);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->t0, X2_O);
+    binop("mov", regs->x2_alt, regs->t0);
     binop("mov", regs->x2, regs->t1);
     binop("eor", regs->x2, regs->t2);
 
@@ -236,20 +243,20 @@ static void gen_round_sliced(const reg_names *regs, int round)
     // t1 = x3_o ^ rightRotate4(x3_e);
     // x3_e ^= rightRotate5(t0);
     // x3_o ^= rightRotate5(t1);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->t2, X3_E);
+    binop("mov", regs->t2, regs->x4_alt); // x3_e
     rotate(regs->t0, regs->x3, immreg, 3);
     binop("eor", regs->t0, regs->t2);
     rotate(regs->t1, regs->t2, immreg, 4);
     binop("eor", regs->t1, regs->x3);
     rotate(regs->t1, regs->t1, immreg, 5);
     binop("eor", regs->t1, regs->x3);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->t1, X3_O);
+    binop("mov", regs->x3_alt, regs->t1);
     rotate(regs->x3, regs->t0, immreg, -1); // 5 but we can avoid the load.
     binop("eor", regs->x3, regs->t2);
 
     /* Reclaim x4 and use x0 as the new fourth temporary */
-    binop("mov", regs->x4, regs->t3);
-    binop("mov", regs->t3, regs->x0);
+    printf("\tldr\t%s, [sp, #4]\n", regs->x4);
+    printf("\tstr\t%s, [sp, #4]\n", regs->x0);
     immreg = regs->x0;
 
     /* x4 ^= rightRotate7_64(x4)  ^ rightRotate41_64(x4); */
@@ -257,19 +264,19 @@ static void gen_round_sliced(const reg_names *regs, int round)
     // t1 = x4_o ^ rightRotate17(x4_o);
     // x4_e ^= rightRotate3(t1);
     // x4_o ^= rightRotate4(t0);
-    printf("\tldr\t%s, [sp, #%d]\n", regs->t2, X4_E);
+    binop("mov", regs->t2, regs->x5_alt); // x4_e
     rotate(regs->t0, regs->t2, immreg, 17);
     binop("eor", regs->t0, regs->t2);
     rotate(regs->t1, regs->x4, immreg, -1); // 17 but we can avoid the load.
     binop("eor", regs->t1, regs->x4);
     rotate(regs->t0, regs->t0, immreg, 4);
     binop("eor", regs->t0, regs->x4);
-    printf("\tstr\t%s, [sp, #%d]\n", regs->t0, X4_O);
+    binop("mov", regs->x4_alt, regs->t0);
     rotate(regs->x4, regs->t1, immreg, 3);
     binop("eor", regs->x4, regs->t2);
 
     /* Reclaim x0 */
-    binop("mov", regs->x0, regs->t3);
+    printf("\tldr\t%s, [sp, #4]\n", regs->x0);
 }
 
 /* Generate the body of the 32-bit sliced ASCON permutation function */
@@ -295,29 +302,45 @@ static void gen_permute(void)
     regs.x2 = "r5";
     regs.x3 = "r6";
     regs.x4 = "r7";
+    regs.x0_alt = "r8";
+    regs.x1_alt = "r9";
+    regs.x2_alt = "r10";
+    regs.x3_alt = "fp";
+    regs.x4_alt = "ip";
+    regs.x5_alt = "lr";
     regs.t0 = "r0";
     regs.t1 = "r1";
     regs.t2 = "r2";
-    regs.t3 = "ip";
     printf("\tpush\t{r4, r5, r6, r7, lr}\n");
+    binop("mov", "r2", "r8");
+    binop("mov", "r3", "r9");
+    binop("mov", "r4", "r10");
+    binop("mov", "r5", "fp");
+    printf("\tpush\t{r2, r3, r4, r5}\n");
 
-    /* Since we are so low on registers, we need r0 for temporaries.
-     * Shift the state to the stack so that we can offset via SP.
-     * We keep the even words in registers between rounds and store
-     * the odd words in the stack.  The even slots on the stack
-     * will be filled later when we need to swap even and odd. */
-    printf("\tsub\tsp, sp, #44\n");
-    printf("\tstr\tr0, [sp, #40]\n");
+    /*
+     * The armv6m architecture has restrictions as to which registers
+     * can be used for bitwise logical and shift operands.  For the most
+     * part we are limited to r0..r7 using thumb instructions only.
+     *
+     * So while we can keep the entire state in registers, we cannot
+     * always operate on it in-place.  The solution is to store the even
+     * words in r0..r7 and the odd words in r8..r15.  We then swap the
+     * halves at various points in the process.  The even words return
+     * to the low registers between each round.
+     */
+    printf("\tsub\tsp, sp, #8\n");
+    printf("\tstr\tr0, [sp, #0]\n");
     printf("\tldr\t%s, [r0, #%d]\n", regs.x0, X0_O);
     printf("\tldr\t%s, [r0, #%d]\n", regs.x1, X1_O);
     printf("\tldr\t%s, [r0, #%d]\n", regs.x2, X2_O);
     printf("\tldr\t%s, [r0, #%d]\n", regs.x3, X3_O);
     printf("\tldr\t%s, [r0, #%d]\n", regs.x4, X4_O);
-    printf("\tstr\t%s, [sp, #%d]\n", regs.x0, X0_O);
-    printf("\tstr\t%s, [sp, #%d]\n", regs.x1, X1_O);
-    printf("\tstr\t%s, [sp, #%d]\n", regs.x2, X2_O);
-    printf("\tstr\t%s, [sp, #%d]\n", regs.x3, X3_O);
-    printf("\tstr\t%s, [sp, #%d]\n", regs.x4, X4_O);
+    binop("mov", regs.x0_alt, regs.x0);
+    binop("mov", regs.x1_alt, regs.x1);
+    binop("mov", regs.x2_alt, regs.x2);
+    binop("mov", regs.x3_alt, regs.x3);
+    binop("mov", regs.x4_alt, regs.x4);
     printf("\tldr\t%s, [r0, #%d]\n", regs.x0, X0_E);
     printf("\tldr\t%s, [r0, #%d]\n", regs.x1, X1_E);
     printf("\tldr\t%s, [r0, #%d]\n", regs.x2, X2_E);
@@ -350,24 +373,46 @@ static void gen_permute(void)
 
     /* Store the words back to the state and exit */
     printf(".L12:\n");
-    printf("\tldr\tr0, [sp, #40]\n");
+    printf("\tmovs\tr1, #0\n");
+    printf("\tldr\tr0, [sp, #0]\n");
+    printf("\tstr\tr1, [sp, #4]\n"); /* Clear temporary variable slot */
     printf("\tstr\t%s, [r0, #%d]\n", regs.x0, X0_E);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x1, X1_E);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x2, X2_E);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x3, X3_E);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x4, X4_E);
-    printf("\tldr\t%s, [sp, #%d]\n", regs.x0, X0_O);
-    printf("\tldr\t%s, [sp, #%d]\n", regs.x1, X1_O);
-    printf("\tldr\t%s, [sp, #%d]\n", regs.x2, X2_O);
-    printf("\tldr\t%s, [sp, #%d]\n", regs.x3, X3_O);
-    printf("\tldr\t%s, [sp, #%d]\n", regs.x4, X4_O);
+    binop("mov", regs.x0, regs.x0_alt);
+    binop("mov", regs.x1, regs.x1_alt);
+    binop("mov", regs.x2, regs.x2_alt);
+    binop("mov", regs.x3, regs.x3_alt);
+    binop("mov", regs.x4, regs.x4_alt);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x0, X0_O);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x1, X1_O);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x2, X2_O);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x3, X3_O);
     printf("\tstr\t%s, [r0, #%d]\n", regs.x4, X4_O);
-    printf("\tadd\tsp, sp, #44\n");
+
+    /* Pop the stack frame */
+    printf("\tadd\tsp, sp, #8\n");
+    printf("\tpop\t{r2, r3, r4, r5}\n");
+    binop("mov", "r8", "r2");
+    binop("mov", "r9", "r3");
+    binop("mov", "r10", "r4");
+    binop("mov", "fp", "r5");
     printf("\tpop\t{r4, r5, r6, r7, pc}\n");
+}
+
+/* Output the function to free sensitive material in registers */
+static void gen_backend_free(void)
+{
+    /* Destroy the scratch registers: r1-r3 and ip.  We don't need to
+     * destroy r0 as the caller already put the state pointer into it.
+     * That will destroy any previous contents of r0. */
+    printf("\tmovs\tr1, #0\n");
+    printf("\tmovs\tr2, #0\n");
+    printf("\tmovs\tr3, #0\n");
+    printf("\tmov\tip, r1\n");
+    printf("\tbx\tlr\n");
 }
 
 int main(int argc, char *argv[])
@@ -387,6 +432,11 @@ int main(int argc, char *argv[])
     function_header("ascon_permute");
     gen_permute();
     function_footer("ascon_permute");
+
+    /* Output the function to free sensitive material in registers */
+    function_header("ascon_backend_free");
+    gen_backend_free();
+    function_footer("ascon_backend_free");
 
     /* Output the file footer */
     printf("\n");

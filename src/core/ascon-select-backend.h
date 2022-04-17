@@ -78,6 +78,7 @@
 /* Assembly backend for ARMv6-M systems; e.g. ARM Cortex M0+ */
 #define ASCON_BACKEND_ARMV6M 1
 #define ASCON_BACKEND_SLICED32 1
+#define ASCON_BACKEND_FREE 1
 
 #elif defined(__ARM_ARCH) && __ARM_ARCH == 6
 
