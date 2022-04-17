@@ -1794,6 +1794,21 @@ ascon_permute:
 	movl	%edx, 20(%eax)
 	movl	%esi, 28(%eax)
 	movl	%edi, 36(%eax)
+	movl	$0, %eax
+	movl	$0, %ecx
+	movl	$0, %edx
+	movl	%eax, (%esp)
+	movl	%ecx, 4(%esp)
+	movl	%edx, 8(%esp)
+	movl	%eax, 12(%esp)
+	movl	%ecx, 16(%esp)
+	movl	%edx, 20(%esp)
+	movl	%eax, 24(%esp)
+	movl	%ecx, 28(%esp)
+	movl	%edx, 32(%esp)
+	movl	%eax, 36(%esp)
+	movl	%ecx, 40(%esp)
+	movl	%edx, 44(%esp)
 	addl	$48, %esp
 	popl	%edi
 	popl	%esi

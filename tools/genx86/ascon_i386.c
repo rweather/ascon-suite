@@ -547,6 +547,28 @@ static void gen_permute(void)
     store(regs.x3, state, X3_O);
     store(regs.x4, state, X4_O);
 
+    /* Clear sensitive material from scratch registers and the stack.
+     * We would like to delay this to ascon_backend_free() but we cannot
+     * control if the same stack locations will be used when that
+     * function is called.  So we clean things up here instead. */
+#if INTEL_SYNTAX
+    printf(INSNL(mov) "%s, 0\n", REG_EAX);
+    printf(INSNL(mov) "%s, 0\n", REG_ECX);
+    printf(INSNL(mov) "%s, 0\n", REG_EDX);
+#else
+    printf(INSNL(mov) "$0, %s\n", REG_EAX);
+    printf(INSNL(mov) "$0, %s\n", REG_ECX);
+    printf(INSNL(mov) "$0, %s\n", REG_EDX);
+#endif
+    for (round = 0; round < 48; round += 4) {
+        if ((round % 12) == 0)
+            store(REG_EAX, REG_ESP, round);
+        else if ((round % 12) == 4)
+            store(REG_ECX, REG_ESP, round);
+        else
+            store(REG_EDX, REG_ESP, round);
+    }
+
     /* Pop the stack frame */
 #if X86_64_PLATFORM
 #if INTEL_SYNTAX
