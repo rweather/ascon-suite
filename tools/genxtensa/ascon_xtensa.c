@@ -105,6 +105,22 @@ static void bic(const char *dest, const char *src1, const char *src2)
     binop("and", dest, src2);
 }
 
+static int num_literals = 0;
+
+/* Load an immediate value into a register */
+static void loadimm(const char *reg, int value)
+{
+    if (value >= -32 && value <= 95) {
+        printf("\tmovi.n\t%s, %d\n", reg, value);
+    } else if (value >= -2048 && value <= 2048) {
+        printf("\tmovi\t%s, %d\n", reg, value);
+    } else {
+        ++num_literals;
+        printf("\t.literal .LC%d, %d\n", num_literals, value);
+        printf("\tl32r\t%s, .LC%d\n", reg, num_literals);
+    }
+}
+
 /* Applies the S-box to five 32-bit words of the state */
 static void gen_sbox(const reg_names *regs)
 {
@@ -357,7 +373,7 @@ static void gen_permute(void)
         gen_round_sliced(&regs, round);
     }
 
-    /* Store the words back to the state and exit */
+    /* Store the words back to the state */
     printf(".L12:\n");
     printf("\tl32i.n\ta2, sp, 0\n");
     printf("\txor\t%s, %s, a15\n", regs.x2_e, regs.x2_e);
@@ -373,6 +389,26 @@ static void gen_permute(void)
     printf("\ts32i.n\t%s, a2, %d\n", regs.x4_e, 32);
     printf("\ts32i.n\t%s, a2, %d\n", regs.x4_o, 36);
 
+    /* Destroy any sensitive material in registers.  We would like to
+     * delay this to ascon_backend_free() but if register windows
+     * are in use then we cannot guarantee that the same registers will
+     * be in the window when ascon_backend_free() is called. */
+    printf("#ifdef __XTENSA_WINDOWED_ABI__\n");
+    loadimm("a3", 0);
+    loadimm("a4", 0);
+    loadimm("a5", 0);
+    loadimm("a6", 0);
+    loadimm("a7", 0);
+    loadimm("a8", 0);
+    loadimm("a9", 0);
+    loadimm("a10", 0);
+    loadimm("a11", 0);
+    loadimm("a12", 0);
+    loadimm("a13", 0);
+    loadimm("a14", 0);
+    loadimm("a15", 0);
+    printf("#endif\n");
+
     /* Pop the stack frame, which is a NOP when register windows are in use */
     printf("#ifdef __XTENSA_WINDOWED_ABI__\n");
     printf("\tretw.n\n");
@@ -386,31 +422,12 @@ static void gen_permute(void)
     printf("#endif\n");
 }
 
-static int num_literals = 0;
-
-/* Load an immediate value into a register */
-static void loadimm(const char *reg, int value)
-{
-    if (value >= -32 && value <= 95) {
-        printf("\tmovi.n\t%s, %d\n", reg, value);
-    } else if (value >= -2048 && value <= 2048) {
-        printf("\tmovi\t%s, %d\n", reg, value);
-    } else {
-        ++num_literals;
-        printf("\t.literal .LC%d, %d\n", num_literals, value);
-        printf("\tl32r\t%s, .LC%d\n", reg, num_literals);
-    }
-}
-
-/* Output the function to free sensitive material in registers */
+/* Output the function to free sensitive material in registers.
+ * This is only used on Xtensa platforms without register windows. */
 static void gen_backend_free(void)
 {
-    /*
-     * If the Xtensa uses register windows, then it may be pointless to
-     * destroy the register contents.  The registers that we see now may
-     * not be the same as the registers when ascon_permute() was called.
-     * But do the best we can anyway.
-     */
+    /* a2 has already been destroyed by the caller loading the
+     * state pointer into it. */
     loadimm("a3", 0);
     loadimm("a4", 0);
     loadimm("a5", 0);
@@ -420,12 +437,6 @@ static void gen_backend_free(void)
     loadimm("a9", 0);
     loadimm("a10", 0);
     loadimm("a11", 0);
-    printf("#ifdef __XTENSA_WINDOWED_ABI__\n");
-    loadimm("a12", 0);
-    loadimm("a13", 0);
-    loadimm("a14", 0);
-    loadimm("a15", 0);
-    printf("#endif\n");
 }
 
 int main(int argc, char *argv[])
@@ -444,11 +455,14 @@ int main(int argc, char *argv[])
     function_footer("ascon_permute");
     printf("\n");
 
-    /* Output the function to free sensitive material in registers */
+    /* Output the function to free sensitive material in registers.
+     * This is only used on Xtensa platforms without register windows. */
+    printf("#ifndef __XTENSA_WINDOWED_ABI__\n");
     function_header("ascon_backend_free");
     gen_backend_free();
     function_return();
     function_footer("ascon_backend_free");
+    printf("#endif\n");
     printf("\n");
 
     /* Output the file footer */

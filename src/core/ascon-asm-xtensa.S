@@ -1334,6 +1334,21 @@ ascon_permute:
 	s32i.n	a8, a2, 32
 	s32i.n	a13, a2, 36
 #ifdef __XTENSA_WINDOWED_ABI__
+	movi.n	a3, 0
+	movi.n	a4, 0
+	movi.n	a5, 0
+	movi.n	a6, 0
+	movi.n	a7, 0
+	movi.n	a8, 0
+	movi.n	a9, 0
+	movi.n	a10, 0
+	movi.n	a11, 0
+	movi.n	a12, 0
+	movi.n	a13, 0
+	movi.n	a14, 0
+	movi.n	a15, 0
+#endif
+#ifdef __XTENSA_WINDOWED_ABI__
 	retw.n
 #else
 	l32i.n	a12, sp, 4
@@ -1345,6 +1360,7 @@ ascon_permute:
 #endif
 	.size	ascon_permute, .-ascon_permute
 
+#ifndef __XTENSA_WINDOWED_ABI__
 #ifdef ESP8266
 	.section .irom0.text,"ax",@progbits
 #else
@@ -1365,16 +1381,11 @@ ascon_backend_free:
 	movi.n	a10, 0
 	movi.n	a11, 0
 #ifdef __XTENSA_WINDOWED_ABI__
-	movi.n	a12, 0
-	movi.n	a13, 0
-	movi.n	a14, 0
-	movi.n	a15, 0
-#endif
-#ifdef __XTENSA_WINDOWED_ABI__
 	retw.n
 #else
 	ret.n
 #endif
 	.size	ascon_backend_free, .-ascon_backend_free
+#endif
 
 #endif
