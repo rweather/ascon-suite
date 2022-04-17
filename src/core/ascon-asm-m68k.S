@@ -3887,6 +3887,10 @@ ascon_permute:
 	move.l	%d5, 20(%a5)
 	move.l	%a3, 28(%a5)
 	move.l	%a4, 36(%a5)
+	move.l	%a5, -44(%fp)
+#ifdef __mcoldfire__
+	move.l	%a5, -48(%fp)
+#endif
 	move.l	-4(%fp), %d2
 	move.l	-8(%fp), %d3
 	move.l	-12(%fp), %d4
@@ -3900,5 +3904,16 @@ ascon_permute:
 	unlk	%fp
 	rts
 	.size	ascon_permute, .-ascon_permute
+
+	.align	2
+	.globl	ascon_backend_free
+	.type	ascon_backend_free, @function
+ascon_backend_free:
+	moveq.l	#0, %d0
+	moveq.l	#0, %d1
+	movea.l	%d0, %a0
+	movea.l	%d1, %a1
+	rts
+	.size	ascon_backend_free, .-ascon_backend_free
 
 #endif

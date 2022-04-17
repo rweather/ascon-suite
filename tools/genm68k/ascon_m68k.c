@@ -445,6 +445,12 @@ static void gen_permute(void)
     printf("\tmove.l\t%s, %d(%s)\n", regs.x3_alt, X3_O, state);
     printf("\tmove.l\t%s, %d(%s)\n", regs.x4_alt, X4_O, state);
 
+    /* Destroy temporaries on the stack that were holding sensitive material */
+    printf("\tmove.l\t%s, -44(%%fp)\n", state);
+    printf("#ifdef __mcoldfire__\n");
+    printf("\tmove.l\t%s, -48(%%fp)\n", state);
+    printf("#endif\n");
+
     /* Pop the stack frame */
     printf("\tmove.l\t-4(%%fp), %%d2\n");
     printf("\tmove.l\t-8(%%fp), %%d3\n");
@@ -457,6 +463,16 @@ static void gen_permute(void)
     printf("\tmovea.l\t-36(%%fp), %%a4\n");
     printf("\tmovea.l\t-40(%%fp), %%a5\n");
     printf("\tunlk\t%%fp\n");
+}
+
+/* Output the function to free sensitive material in registers */
+static void gen_backend_free(void)
+{
+    /* Destroy the scratch registers: d0, d1, a0, and a1 */
+    printf("\tmoveq.l\t#0, %%d0\n");
+    printf("\tmoveq.l\t#0, %%d1\n");
+    mov("%a0", "%d0");
+    mov("%a1", "%d1");
 }
 
 int main(int argc, char *argv[])
@@ -475,6 +491,11 @@ int main(int argc, char *argv[])
     function_header("ascon_permute");
     gen_permute();
     function_footer("ascon_permute");
+
+    /* Output the function to free sensitive material in registers */
+    function_header("ascon_backend_free");
+    gen_backend_free();
+    function_footer("ascon_backend_free");
 
     /* Output the file footer */
     printf("\n");
