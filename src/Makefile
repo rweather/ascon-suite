@@ -42,6 +42,8 @@ ASM_SOURCES = \
 	core/ascon-asm-avr5.S \
 	core/ascon-asm-i386.S \
 	core/ascon-asm-m68k.S \
+	core/ascon-asm-riscv32e.S \
+	core/ascon-asm-riscv32i.S \
 	core/ascon-asm-riscv64i.S \
 	core/ascon-asm-x86-64.S \
 	core/ascon-asm-xtensa.S

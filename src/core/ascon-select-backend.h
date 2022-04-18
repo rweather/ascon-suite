@@ -119,6 +119,20 @@
 #define ASCON_BACKEND_SLICED64 1
 #define ASCON_BACKEND_FREE 1
 
+#elif defined(__riscv) && __riscv_xlen == 32 && defined(__riscv_32e)
+
+/* Assembly backend for RISC-V systems, RV32E base integer instruction set */
+#define ASCON_BACKEND_RISCV32E 1
+#define ASCON_BACKEND_SLICED32 1
+#define ASCON_BACKEND_FREE 1
+
+#elif defined(__riscv) && __riscv_xlen == 32
+
+/* Assembly backend for RISC-V systems, RV32I base integer instruction set */
+#define ASCON_BACKEND_RISCV32I 1
+#define ASCON_BACKEND_SLICED32 1
+#define ASCON_BACKEND_FREE 1
+
 #elif defined(__x86_64) || defined(__x86_64__) || \
       defined(__aarch64__) || defined(__ARM_ARCH_ISA_A64) || \
       defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64) || \
