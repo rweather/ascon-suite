@@ -57,7 +57,8 @@
 /* Determine if we are compiling for a 64-bit CPU */
 #if defined(__x86_64) || defined(__x86_64__) || \
     defined(__aarch64__) || defined(__ARM_ARCH_ISA_A64) || \
-    defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64)
+    defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64) || \
+    (defined(__riscv) && __riscv_xlen == 64)
 #define LW_UTIL_CPU_IS_64BIT 1
 #endif
 

@@ -114,7 +114,8 @@
 
 #elif defined(__x86_64) || defined(__x86_64__) || \
       defined(__aarch64__) || defined(__ARM_ARCH_ISA_A64) || \
-      defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64)
+      defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64) || \
+      (defined(__riscv) && __riscv_xlen == 64)
 
 /* C backend for 64-bit systems with words in host byte order */
 #define ASCON_BACKEND_C64 1
