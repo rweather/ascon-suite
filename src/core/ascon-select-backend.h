@@ -112,6 +112,13 @@
 #define ASCON_BACKEND_M68K 1
 #define ASCON_BACKEND_SLICED32 1
 
+#elif defined(__riscv) && __riscv_xlen == 64
+
+/* Assembly backend for 64-bit RISC-V based systems */
+#define ASCON_BACKEND_RISCV64 1
+#define ASCON_BACKEND_SLICED64 1
+#define ASCON_BACKEND_FREE 1
+
 #elif defined(__x86_64) || defined(__x86_64__) || \
       defined(__aarch64__) || defined(__ARM_ARCH_ISA_A64) || \
       defined(_M_AMD64) || defined(_M_X64) || defined(_M_IA64) || \

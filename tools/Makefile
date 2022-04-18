@@ -5,6 +5,7 @@ SUBDIRS = \
 	genarm \
 	genavr \
 	genm68k \
+	genriscv \
 	genx86 \
 	genxtensa
 
