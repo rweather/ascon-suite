@@ -52,7 +52,7 @@ assembly code but some of the SnP utility functions may still be in C.
 <tr><td>avr5</td><td>ASM</td><td>8-bit</td><td>AVR5 and higher; e.g. ATmega328P (Arduino Uno), ATmega2560 (Arduino Mega 2560), ...</td></tr>
 <tr><td>i386</td><td>ASM</td><td>Sliced 32-bit</td><td>32-bit x86 systems (i386/i486/i586/i686)</td></tr>
 <tr><td>m68k</td><td>ASM</td><td>Sliced 32-bit</td><td>32-bit 680x0 and ColdFire systems</td></tr>
-<tr><td>riscv64</td><td>ASM</td><td>Host 64-bit</td><td>64-bit RISC-V systems, RV64I base integer instruction set</td></tr>
+<tr><td>riscv64i</td><td>ASM</td><td>Host 64-bit</td><td>64-bit RISC-V systems, RV64I base integer instruction set</td></tr>
 <tr><td>x86-64</td><td>ASM</td><td>Host 64-bit</td><td>64-bit x86-64 systems</td></tr>
 <tr><td>xtensa</td><td>ASM</td><td>Sliced 32-bit</td><td>Xtensa, as used on ESP32 and ESP8266 modules</td></tr>
 </table>

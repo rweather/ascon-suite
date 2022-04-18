@@ -21,4 +21,4 @@ clean:
 check:
 
 generate: all
-	bin/ascon_riscv64 >../../src/core/ascon-asm-riscv64.S
+	bin/ascon_riscv64 >../../src/core/ascon-asm-riscv64i.S

@@ -114,8 +114,8 @@
 
 #elif defined(__riscv) && __riscv_xlen == 64
 
-/* Assembly backend for 64-bit RISC-V based systems */
-#define ASCON_BACKEND_RISCV64 1
+/* Assembly backend for RISC-V systems, RV64I base integer instruction set */
+#define ASCON_BACKEND_RISCV64I 1
 #define ASCON_BACKEND_SLICED64 1
 #define ASCON_BACKEND_FREE 1
 

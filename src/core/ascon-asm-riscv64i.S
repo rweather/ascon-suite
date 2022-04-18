@@ -1,5 +1,5 @@
 #include "ascon-select-backend.h"
-#if defined(ASCON_BACKEND_RISCV64)
+#if defined(ASCON_BACKEND_RISCV64I)
 /*
  * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *
