@@ -57,7 +57,8 @@ The following ASCON primitives are provided:
 \li ASCON-HASH and ASCON-HASHA hash algorithms with a 256-bit output.
 \li ASCON-XOF and ASCON-XOFA extendable output functions (XOF) with an
 arbitrary-length output.
-\li Raw access to the ASCON permutation itself to build other application modes.
+\li Raw access to the \ref permutation "ASCON permutation itself" to
+build other application modes.
 
 \section mainpage_extensions Extensions
 

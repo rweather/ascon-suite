@@ -3,6 +3,8 @@
  * This example demonstrates how to implement ASCON-HASHA using
  * just the ASCON permutation API.
  *
+ * Usage: hash "text to be hashed"
+ *
  * This example is placed into the public domain.
  */
 
@@ -18,7 +20,7 @@ int main(int argc, char *argv[])
 
     /* Validate the command-line parameters */
     if (argc < 2) {
-        fprintf(stderr, "Usage: %s \"string\"\n", argv[0]);
+        fprintf(stderr, "Usage: %s \"text to be hashed\"\n", argv[0]);
         return 1;
     }
     data = (const unsigned char *)(argv[1]);
@@ -32,7 +34,7 @@ int main(int argc, char *argv[])
     static unsigned char const iv[8] = {
         0x00, 0x40, 0x0c, 0x04, 0x00, 0x00, 0x01, 0x00
     };
-    ascon_add_bytes(&state, iv, 0, 8);
+    ascon_overwrite_bytes(&state, iv, 0, 8);
     ascon_permute12(&state);
 
     /* Absorb the data 8 bytes at a time.  Permute each block with 8 rounds */
@@ -50,11 +52,13 @@ int main(int argc, char *argv[])
 
     /* Squeeze out the 32-byte hash value, 8 bytes at a time */
     unsigned char hash[32];
-    for (posn = 0; posn < 24; posn += 8) {
-        ascon_extract_bytes(&state, hash + posn, 0, 8);
-        ascon_permute8(&state);
-    }
-    ascon_extract_bytes(&state, hash + posn, 0, 8);
+    ascon_extract_bytes(&state, hash, 0, 8);
+    ascon_permute8(&state);
+    ascon_extract_bytes(&state, hash + 8, 0, 8);
+    ascon_permute8(&state);
+    ascon_extract_bytes(&state, hash + 16, 0, 8);
+    ascon_permute8(&state);
+    ascon_extract_bytes(&state, hash + 24, 0, 8);
 
     /* Free the resources associated with the ASCON permutation state */
     ascon_free(&state);

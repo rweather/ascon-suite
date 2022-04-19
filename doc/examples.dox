@@ -1,0 +1,5 @@
+/**
+ * \file examples.dox
+ * \example permutation/encrypt/main.c
+ * \example permutation/hash/main.c
+ */
