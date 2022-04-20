@@ -8,6 +8,7 @@ add_executable(ascon-tests
     sha3.h
     test-cipher.c
     test-cipher.h
+    test-hkdf.c
     test-hmac.c
     test-kmac.c
     test-main.c

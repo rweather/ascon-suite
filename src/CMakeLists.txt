@@ -35,6 +35,8 @@ list(APPEND ASCON_SOURCES
     isap/ascon-isap-128.c
     isap/ascon-isap-128a.c
     isap/ascon-isap-common.h
+    kdf/ascon-hkdf.c
+    kdf/ascon-hkdfa.c
     kdf/ascon-pbkdf2.c
     mac/ascon-hmac.c
     mac/ascon-hmaca.c

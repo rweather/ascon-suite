@@ -38,20 +38,6 @@ int test_memcmp
     (const unsigned char *actual, const unsigned char *expected,
      unsigned long long len);
 
-/* Simple implementation of ASCON-based HMAC */
-void HMAC_common(unsigned char out[32],
-                 const unsigned char *key, size_t key_len,
-                 const unsigned char *data1, size_t data1_len,
-                 const unsigned char *data2, size_t data2_len,
-                 const unsigned char *data3, size_t data3_len);
-#define HMAC(out, key, data, len) \
-    HMAC_common((out), (key), 32, (data), (len), 0, 0, 0, 0)
-#define HMAC_2(out, key, data1, len1, data2, len2) \
-    HMAC_common((out), (key), 32, (data1), (len1), (data2), (len2), 0, 0)
-#define HMAC_3(out, key, data1, len1, data2, len2, data3, len3) \
-    HMAC_common((out), (key), 32, (data1), (len1), \
-                (data2), (len2), (data3), (len3))
-
 #ifdef __cplusplus
 }
 #endif

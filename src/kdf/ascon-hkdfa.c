@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,24 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "test-cipher.h"
-#include <stdio.h>
+#include <ascon/hkdf.h>
+#include <ascon/hmac.h>
+#include <ascon/utility.h>
+#include "core/ascon-util.h"
+#include <string.h>
 
-void test_ascon_permutation(void);
-void test_hkdf(void);
-void test_hmac(void);
-void test_kmac(void);
-void test_pbkdf2(void);
+/* The actual implementation is in the "ascon-hkdf-common.h" file */
 
-int main(int argc, char *argv[])
-{
-    (void)argc;
-    (void)argv;
-    printf("\n");
-    test_ascon_permutation();
-    test_hkdf();
-    test_hmac();
-    test_kmac();
-    test_pbkdf2();
-    return test_exit_result;
-}
+/* ASCON-HKDFA */
+#define HKDF_ALG_NAME ascon_hkdfa
+#define HKDF_STATE ascon_hkdfa_state_t
+#define HKDF_HMAC_SIZE ASCON_HMACA_SIZE
+#define HKDF_HMAC_STATE ascon_hmaca_state_t
+#define HKDF_HMAC_INIT ascon_hmaca_init
+#define HKDF_HMAC_UPDATE ascon_hmaca_update
+#define HKDF_HMAC_FINALIZE ascon_hmaca_finalize
+#include "kdf/ascon-hkdf-common.h"

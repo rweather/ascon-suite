@@ -17,6 +17,8 @@ MAIN_SOURCES = \
 	$(SOURCE_DIR)/hash/ascon-xof.c \
 	$(SOURCE_DIR)/isap/ascon-isap-128.c \
 	$(SOURCE_DIR)/isap/ascon-isap-128a.c \
+	$(SOURCE_DIR)/kdf/ascon-hkdf.c \
+	$(SOURCE_DIR)/kdf/ascon-hkdfa.c \
 	$(SOURCE_DIR)/kdf/ascon-pbkdf2.c \
 	$(SOURCE_DIR)/mac/ascon-hmac.c \
 	$(SOURCE_DIR)/mac/ascon-hmaca.c \
@@ -49,6 +51,7 @@ UTIL_INCLUDES = \
 	$(SOURCE_DIR)/core/ascon-util-snp.h \
 	$(SOURCE_DIR)/aead/ascon-aead-common.h \
 	$(SOURCE_DIR)/isap/ascon-isap-common.h \
+	$(SOURCE_DIR)/kdf/ascon-hkdf-common.h \
 	$(SOURCE_DIR)/mac/ascon-hmac-common.h \
 	$(SOURCE_DIR)/mac/ascon-kmac-common.h
 
