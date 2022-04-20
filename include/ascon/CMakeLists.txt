@@ -5,6 +5,7 @@ list(APPEND ASCON_HEADERS
     hmac.h
     isap.h
     kmac.h
+    pbkdf2.h
     permutation.h
     siv.h
     utility.h

@@ -26,6 +26,7 @@
 void test_ascon_permutation(void);
 void test_hmac(void);
 void test_kmac(void);
+void test_pbkdf2(void);
 
 int main(int argc, char *argv[])
 {
@@ -35,5 +36,6 @@ int main(int argc, char *argv[])
     test_ascon_permutation();
     test_hmac();
     test_kmac();
+    test_pbkdf2();
     return test_exit_result;
 }
