@@ -34,4 +34,4 @@
 #define ISAP_sE 6
 #define ISAP_sB 1
 #define ISAP_sK 12
-#include "ascon-isap-common.h"
+#include "isap/ascon-isap-common.h"

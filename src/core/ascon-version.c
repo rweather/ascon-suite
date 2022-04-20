@@ -20,32 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_VERSION_H
-#define ASCON_VERSION_H
+#include "version.h"
 
-/**
- * \file version.h
- * \brief Version information for the ASCON Suite API.
- */
-
-/**
- * \brief Major version for the ASCON Suite API.
- */
-#define ASCON_SUITE_VER_MAJOR 0
-
-/**
- * \brief Minor version for the ASCON Suite API.
- */
-#define ASCON_SUITE_VER_MINOR 1
-
-/**
- * \brief Patch version for the ASCON Suite API.
- */
-#define ASCON_SUITE_VER_PATCH 0
-
-/**
- * \brief String form of the version for the ASCON Suite API.
- */
-#define ASCON_SUITE_VER_STR "0.1.0"
-
-#endif
+int ascon_suite_version(void)
+{
+    return ASCON_SUITE_VERSION;
+}

@@ -1,8 +1,9 @@
 
 .PHONY: all clean check arduino generate
 
-INCLUDE_DIR = ../../include
-SOURCE_DIR = ../../src
+TOP_DIR = ../..
+INCLUDE_DIR = $(TOP_DIR)/include
+SOURCE_DIR = $(TOP_DIR)/src
 ARDUINO_SRCDIR = ../../../ASCON/src
 
 # Source files to copy to the main Arduino src directory.
@@ -38,6 +39,7 @@ UTIL_SOURCES = \
 	$(SOURCE_DIR)/core/ascon-direct-xor.c \
 	$(SOURCE_DIR)/core/ascon-sliced32.c \
 	$(SOURCE_DIR)/core/ascon-sliced64.c \
+	$(SOURCE_DIR)/core/ascon-version.c \
 	$(SOURCE_DIR)/aead/ascon-aead-common.c
 
 UTIL_INCLUDES = \
@@ -58,11 +60,13 @@ all:
 ARDUINO_COPY_SOURCES = ./copy-sources.sh
 ARDUINO_COPY_INCLUDES = ./copy-includes.sh
 ARDUINO_COPY_UTILS = ./copy-utils.sh
+ARDUINO_COPY_VERSION_H = ./copy-version-h.sh
 
 arduino:
 	$(SHELL) $(ARDUINO_COPY_SOURCES) $(ARDUINO_SRCDIR) $(MAIN_SOURCES)
 	$(SHELL) $(ARDUINO_COPY_INCLUDES) $(ARDUINO_SRCDIR) $(INCLUDE_DIR)/ascon/*.h
 	$(SHELL) $(ARDUINO_COPY_UTILS) $(ARDUINO_SRCDIR)/utility $(UTIL_SOURCES) $(UTIL_INCLUDES)
+	$(SHELL) $(ARDUINO_COPY_VERSION_H) $(ARDUINO_SRCDIR)/ascon-version.h $(INCLUDE_DIR)/ascon/version.h.in $(TOP_DIR)/CMakeLists.txt
 
 generate: arduino
 

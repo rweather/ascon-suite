@@ -15,6 +15,8 @@ for i in $* ; do
 1,$s/"core\//"utility\//g
 1,$s/"aead\//"utility\//g
 1,$s/"mac\//"utility\//g
+1,$s/"isap\//"utility\//g
+1,$s/"version.h"/"ascon-version.h"/g
 ' $i >$DEST_DIR/$BASENAME
 done
 

@@ -377,9 +377,13 @@ int main(int argc, char *argv[])
     }
 
     /* Open the output file */
-    if ((file = fopen(output_filename, "w")) == NULL) {
-        perror(output_filename);
-        return 1;
+    if (!strcmp(output_filename, "-")) {
+        file = stdout;
+    } else {
+        if ((file = fopen(output_filename, "w")) == NULL) {
+            perror(output_filename);
+            return 1;
+        }
     }
 
     /* Generate the KAT vectors for the algorithm */
@@ -389,6 +393,7 @@ int main(int argc, char *argv[])
         generate_kats_for_hash(alg_hash, file);
 
     /* Clean up and exit */
-    fclose(file);
+    if (strcmp(output_filename, "-") != 0)
+        fclose(file);
     return 0;
 }

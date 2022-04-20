@@ -10,7 +10,10 @@ shift
 
 for i in $* ; do
     BASENAME=`basename $i`
-    sed -e '1,$s/<ascon\/\(.*\)>/"..\/ascon-\1"/g' $i >$DEST_DIR/$BASENAME
+    sed -e '
+1,$s/<ascon\/\(.*\)>/"..\/ascon-\1"/g
+1,$s/"version.h"/"..\/ascon-version.h"/g
+' $i >$DEST_DIR/$BASENAME
 done
 
 exit 0

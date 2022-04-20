@@ -20,6 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
 #define __STDC_WANT_LIB_EXT1__ 1 /* Detect if the C library has memset_s */
 #include <ascon/utility.h>
 #include <stdlib.h>
