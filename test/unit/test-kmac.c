@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -266,7 +266,7 @@ static void test_nist_kmac(const aead_mac_test_vector_t *test)
 {
     unsigned char out[AEAD_MAX_HASH_LEN];
 
-    printf("    SHA3 KMAC %s ... ", test->name);
+    printf("SHA3 KMAC %s ... ", test->name);
     fflush(stdout);
 
     /* Check the instantiation of "internal-kmac.h" */
@@ -323,7 +323,7 @@ static void test_kmac_alg
     void *state;
     int ok;
 
-    printf("    %s %s ... ", name, test->name);
+    printf("%s %s ... ", name, test->name);
     fflush(stdout);
 
     /* Use the simple implementation to get the output we're looking for */
@@ -380,9 +380,10 @@ static void test_kmac_alg
     }
 }
 
-void test_kmac(void)
+int main(int argc, char *argv[])
 {
-    printf("KMAC:\n");
+    (void)argc;
+    (void)argv;
 
     test_nist_kmac(&testVectorNIST_1);
     test_nist_kmac(&testVectorNIST_2);
@@ -429,5 +430,5 @@ void test_kmac(void)
                   (kmac_finalize_t)ascon_kmaca_finalize,
                   &testVectorNIST_2);
 
-    printf("\n");
+    return test_exit_result;
 }

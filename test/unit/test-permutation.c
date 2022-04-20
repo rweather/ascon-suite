@@ -58,9 +58,7 @@ void test_ascon_permutation(void)
     unsigned offset, size, posn;
     int ok;
 
-    printf("Permutation:\n");
-
-    printf("    12 Rounds ... ");
+    printf("12 Rounds ... ");
     fflush(stdout);
     ascon_init(&state);
     ascon_add_bytes(&state, ascon_input, 0, sizeof(ascon_input));
@@ -74,7 +72,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    8 Rounds ... ");
+    printf("8 Rounds ... ");
     fflush(stdout);
     ascon_init(&state);
     ascon_add_bytes(&state, ascon_input, 0, sizeof(ascon_input));
@@ -88,7 +86,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    Init ... ");
+    printf("Init ... ");
     fflush(stdout);
     memcpy(state.B, ascon_output_12, sizeof(ascon_output_12));
     ascon_init(&state);
@@ -106,7 +104,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    Free ... ");
+    printf("Free ... ");
     fflush(stdout);
     ascon_init(&state);
     ascon_add_bytes(&state, ascon_input, 0, sizeof(ascon_input));
@@ -124,7 +122,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    Add Bytes ... ");
+    printf("Add Bytes ... ");
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
@@ -151,7 +149,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    Overwrite Bytes ... ");
+    printf("Overwrite Bytes ... ");
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
@@ -178,7 +176,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    Overwrite With Zeroes ... ");
+    printf("Overwrite With Zeroes ... ");
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
@@ -205,7 +203,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    Extract Bytes ... ");
+    printf("Extract Bytes ... ");
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
@@ -228,7 +226,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    Extract And Add Bytes ... ");
+    printf("Extract And Add Bytes ... ");
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
@@ -255,7 +253,7 @@ void test_ascon_permutation(void)
         printf("ok\n");
     }
 
-    printf("    Extract And Overwrite Bytes ... ");
+    printf("Extract And Overwrite Bytes ... ");
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; ++offset) {
@@ -289,6 +287,14 @@ void test_ascon_permutation(void)
     } else {
         printf("ok\n");
     }
+}
 
-    printf("\n");
+int main(int argc, char *argv[])
+{
+    (void)argc;
+    (void)argv;
+
+    test_ascon_permutation();
+
+    return test_exit_result;
 }

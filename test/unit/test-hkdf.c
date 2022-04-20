@@ -175,7 +175,7 @@ static void test_sha256_hkdf_vector(const TestHKDFVector *test_vector)
     size_t offset;
     int ok = 1;
 
-    printf("    SHA256-HKDF %s ... ", test_vector->name);
+    printf("SHA256-HKDF %s ... ", test_vector->name);
     fflush(stdout);
 
     /* Test the all-in-one HKDF function */
@@ -279,7 +279,7 @@ static void test_hkdf_vector
     size_t offset;
     int ok = 1;
 
-    printf("    %s %s ... ", name, test_vector->name);
+    printf("%s %s ... ", name, test_vector->name);
     fflush(stdout);
 
     /* Test the all-in-one HKDF function */
@@ -321,9 +321,10 @@ static void test_hkdf_vector
     }
 }
 
-void test_hkdf(void)
+int main(int argc, char *argv[])
 {
-    printf("HKDF:\n");
+    (void)argc;
+    (void)argv;
 
     test_sha256_hkdf_vector(&testVectorHKDF_1);
     test_sha256_hkdf_vector(&testVectorHKDF_2);
@@ -367,5 +368,5 @@ void test_hkdf(void)
          (hkdf_expand_t)ascon_hkdfa_expand,
          ascon_hmaca, sizeof(ascon_hkdfa_state_t));
 
-    printf("\n");
+    return test_exit_result;
 }

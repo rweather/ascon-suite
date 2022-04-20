@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -160,7 +160,7 @@ static void test_pbkdf2_vector
     unsigned char actual[MAX_OUT_LEN];
     int ok = 1;
 
-    printf("    %s %s ... ", hash_name, test_vector->name);
+    printf("%s %s ... ", hash_name, test_vector->name);
     fflush(stdout);
 
     /* Create the expected vector using the underlying HMAC function */
@@ -202,9 +202,10 @@ static void test_pbkdf2_vector
     }
 }
 
-void test_pbkdf2(void)
+int main(int argc, char *argv[])
 {
-    printf("PBKDF2:\n");
+    (void)argc;
+    (void)argv;
 
     test_pbkdf2_vector
         ("ASCON", ascon_pbkdf2, ascon_hmac,
@@ -219,5 +220,5 @@ void test_pbkdf2(void)
         ("ASCON", ascon_pbkdf2, ascon_hmac,
          ASCON_HMAC_SIZE, &testVectorPBKDF2_4);
 
-    printf("\n");
+    return test_exit_result;
 }

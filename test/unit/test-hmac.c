@@ -173,9 +173,10 @@ static void test_hmac_vector
     }
 }
 
-void test_hmac(void)
+int main(int argc, char *argv[])
 {
-    printf("HMAC:\n");
+    (void)argc;
+    (void)argv;
 
     test_hmac_vector
         (&alg_ascon_hash, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_1, 32, 64);
@@ -191,5 +192,5 @@ void test_hmac(void)
     test_hmac_vector
         (&alg_ascon_hasha, "ASCON-HMACA", ascon_hmaca, &testVectorHMAC_3, 32, 64);
 
-    printf("\n");
+    return test_exit_result;
 }
