@@ -56,7 +56,7 @@ assembly code but some of the SnP utility functions may still be in C.
 <tr><td>riscv32i</td><td>ASM</td><td>Sliced 32-bit</td><td>32-bit RISC-V systems, RV32I base integer instruction set</td></tr>
 <tr><td>riscv64i</td><td>ASM</td><td>Host 64-bit</td><td>64-bit RISC-V systems, RV64I base integer instruction set</td></tr>
 <tr><td>x86-64</td><td>ASM</td><td>Host 64-bit</td><td>64-bit x86-64 systems</td></tr>
-<tr><td>xtensa</td><td>ASM</td><td>Sliced 32-bit</td><td>Xtensa, as used on ESP32 and ESP8266 modules</td></tr>
+<tr><td>xtensa</td><td>ASM</td><td>Host 64-bit</td><td>Xtensa, as used on ESP32 and ESP8266 modules, using funnel shifts for 64-bit word rotations</td></tr>
 </table>
 
 The "armv7m" backend can run unmodified on many higher-spec'ed 32-bit
