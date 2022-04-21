@@ -27,23 +27,73 @@
 
 This <a href="https://github.com/rweather/ascon-suite">repository</a>
 builds a number of useful crytographic primitives around the ASCON
-permutation:
-
-\li Regular AEAD and SIV encryption modes
-\li Hashing in regular, XOF, HMAC, and KMAC modes
-\li PRNG to expand a seed to an arbitrary amount of random data
-\li Password hashing using PBKDF2
+permutation.
 
 The idea is that if you want to use ASCON in an embedded application,
-that you copy the suite and the back end of choice to your platform
+that you copy the suite and the backend of choice to your platform
 and you'll get pretty much everything you need for symmetric encryption
 using ASCON.
 
 One of the key goals for this suite is to keep the code size relatively
 small on embedded platforms while also providing good performance.
 
-The suite has a number of permutation back ends for different CPU
-configurations, which are detailed on the \ref porting "Porting" page.
+The suite has a number of permutation backends for different CPU
+configurations, which are detailed on the
+\ref porting "Porting the ASCON Permutation" page.
+
+\section mainpage_apiref API Reference
+
+\li \ref aead.h "Authenticated Encryption with Associated Data (AEAD)"
+\li \ref hash.h "Hashing"
+\li \ref hkdf.h "HMAC-based Key Derivation Function (HKDF)"
+\li \ref hmac.h "Hashed Message Authentication Code (HMAC)"
+\li \ref isap.h "ISAP AEAD Mode with Side Channel Protections"
+\li \ref kmac.h "Keyed Message Authentication Code (KMAC)"
+\li \ref pbkdf2.h "Password-Based Key Derivation Function (PBKDF2)"
+\li \ref random.h "Pseudorandom Number Generation (PRNG)"
+\li \ref siv.h "Synthetic Initialization Vector (SIV)"
+\li \ref xof.h "Extensible Output Functions (XOF)"
+\li \ref permutation "Direct Access to the ASCON Permutation"
+\li \ref utility.h "Utility Functions"
+
+\section mainpage_building Building
+
+ASCON Suite uses <a href="https://cmake.org/">cmake</a> to build,
+so you will need to have that installed.  Here is the simplest method to
+compile, test, and install the library:
+
+\verbatim
+mkdir build
+cd build
+cmake ..
+make
+make test
+sudo make install
+\endverbatim
+
+To build with a cross-compiler, set the <tt>CC</tt> and <tt>CMAKE_C_FLAGS</tt>
+variables when invoking cmake:
+
+\verbatim
+mkdir build
+cd build
+CC="avr-gcc" MINIMAL=1 cmake -DCMAKE_C_FLAGS="-mmcu=atmega2560" ..
+make
+\endverbatim
+
+Note carefully the placement of environment variables before the "cmake"
+command name, and the cmake variables specified with "-D" after.
+
+The <tt>MINIMAL</tt> variable suppresses the compilation of shared libraries,
+examples, and test programs, which may not compile for embedded
+microcontrollers due to missing libc functions or other platform constraints.
+Only the static library <tt>libascon_static.a</tt> is built in the
+minimal configuration.
+
+\section mainpage_examples Examples
+
+\li \ref permutation/hash/main.c "Direct hashing" with the \ref permutation "ASCON permutation"
+\li \ref permutation/encrypt/main.c "Direct CFB encryption" with the \ref permutation "ASCON permutation"
 
 \section mainpage_standards Standards
 
@@ -57,8 +107,8 @@ The following ASCON primitives are provided:
 \li ASCON-HASH and ASCON-HASHA hash algorithms with a 256-bit output.
 \li ASCON-XOF and ASCON-XOFA extendable output functions (XOF) with an
 arbitrary-length output.
-\li Raw access to the \ref permutation "ASCON permutation itself" to
-build other application modes.
+\li Direct access to the \ref permutation "ASCON permutation itself" to
+build custom application modes.
 
 \section mainpage_extensions Extensions
 
@@ -67,17 +117,20 @@ The following higher-level extensions are provided:
 \li ASCON-128-SIV, ASCON-128a-SIV, and ASCON-80pq-SIV variants that
 provide Synthetic Initialization Vector (SIV) encryption modes.
 See the \ref siv "SIV page" for more information.
+\li ISAP-A-128 and ISAP-A-128A modes for enhanced protection against
+side channel leakage.
 \li HMAC and KMAC modes for keyed hashing built around ASCON-HASH and
 ASCON-XOF.  See the \ref kmac "KMAC page" for more information on ASCON-KMAC.
 \li ASCON-PRNG for generating an arbitary sequence of random data from
-system-supplied and application-supplied seed material.  This is based on a
-slightly modified version of ASCON-128.  See the \ref prng "PRNG page"
-for more information.
-\li PBKDF2 mode built around the ASCON HMAC mode.
+system-supplied and application-supplied seed material.  This is based on
+ASCON-XOF and uses the <a href="https://keccak.team/files/SpongePRNG.pdf">SpongePRNG</a>
+construction.  See the \ref prng "PRNG page" for more information.
+\li HKDF and PBKDF2 modes built around the ASCON HMAC mode.
 
-These extensions have not yet been standardised by a public standards body,
-but I did try to follow general practice when creating such modes.
-See the individual pages for the design choices that I made.  Feedback welcome.
+Other than ISAP, these extensions have not yet been standardised by a
+public standards body, but I did try to follow general practice when
+creating such modes.  See the individual pages for the design choices
+that I made.  Feedback welcome.
 
 \section mainpage_contact Contact
 

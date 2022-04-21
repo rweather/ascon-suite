@@ -22,7 +22,7 @@
 
 /**
 \file porting.dox
-\page porting Porting the ASCON permutation to new platforms
+\page porting Porting the ASCON permutation
 \tableofcontents
 
 Most of ASCON Suite is written in C and provides high-level API's
