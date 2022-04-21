@@ -5,6 +5,13 @@ include(CheckFunctionExists)
 # Set the project name and version number.
 project(AsconSuite VERSION 0.1.0 LANGUAGES C ASM)
 
+# Options to force the use of specific backends for testing.
+# Use "cmake -DBACKEND_X=ON" to enable the specific backend.
+option(BACKEND_C32 "Force the use of the c32 backend" OFF)
+option(BACKEND_C64 "Force the use of the c64 backend" OFF)
+option(BACKEND_DIRECT_XOR "Force the use of the direct-xor backend" OFF)
+option(BACKEND_GENERIC "Force the use of the generic backend" OFF)
+
 # Add the version details to the version.h include file.
 configure_file(include/ascon/version.h.in version.h)
 
@@ -15,6 +22,18 @@ endif()
 set(CMAKE_C_FLAGS "-Wall -Wextra -DHAVE_CONFIG_H ${CMAKE_C_FLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "-g")
 set(CMAKE_C_FLAGS_RELEASE "-O3")
+if(BACKEND_C32)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_C32")
+endif()
+if(BACKEND_C64)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_C64")
+endif()
+if(BACKEND_DIRECT_XOR)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_DIRECT_XOR")
+endif()
+if(BACKEND_GENERIC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_GENERIC")
+endif()
 
 # Require the c99 standard to compile the code.
 set(CMAKE_C_STANDARD 99)
