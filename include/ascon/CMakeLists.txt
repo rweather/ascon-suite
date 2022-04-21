@@ -2,11 +2,13 @@
 list(APPEND ASCON_HEADERS
     aead.h
     hash.h
+    hkdf.h
     hmac.h
     isap.h
     kmac.h
     pbkdf2.h
     permutation.h
+    random.h
     siv.h
     utility.h
     xof.h

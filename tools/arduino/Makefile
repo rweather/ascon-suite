@@ -24,6 +24,8 @@ MAIN_SOURCES = \
 	$(SOURCE_DIR)/mac/ascon-hmaca.c \
 	$(SOURCE_DIR)/mac/ascon-kmac.c \
 	$(SOURCE_DIR)/mac/ascon-kmaca.c \
+	$(SOURCE_DIR)/random/ascon-prng.c \
+	$(SOURCE_DIR)/random/ascon-random.c \
 	$(SOURCE_DIR)/siv/ascon-siv-128.c \
 	$(SOURCE_DIR)/siv/ascon-siv-128a.c \
 	$(SOURCE_DIR)/siv/ascon-siv-80pq.c
@@ -32,6 +34,7 @@ MAIN_SOURCES = \
 # We copy a subset of the backends, as it is unlikely that an
 # Arduino will be running on an x86-64 system any time soon!
 UTIL_SOURCES = \
+	$(SOURCE_DIR)/aead/ascon-aead-common.c \
 	$(SOURCE_DIR)/core/ascon-asm-armv6m.S \
 	$(SOURCE_DIR)/core/ascon-asm-armv7m.S \
 	$(SOURCE_DIR)/core/ascon-asm-avr5.S \
@@ -43,7 +46,9 @@ UTIL_SOURCES = \
 	$(SOURCE_DIR)/core/ascon-sliced32.c \
 	$(SOURCE_DIR)/core/ascon-sliced64.c \
 	$(SOURCE_DIR)/core/ascon-version.c \
-	$(SOURCE_DIR)/aead/ascon-aead-common.c
+	$(SOURCE_DIR)/random/ascon-trng-due.c \
+	$(SOURCE_DIR)/random/ascon-trng-esp.c \
+	$(SOURCE_DIR)/random/ascon-trng-none.c
 
 UTIL_INCLUDES = \
 	$(SOURCE_DIR)/core/ascon-sliced32.h \
@@ -53,7 +58,8 @@ UTIL_INCLUDES = \
 	$(SOURCE_DIR)/isap/ascon-isap-common.h \
 	$(SOURCE_DIR)/kdf/ascon-hkdf-common.h \
 	$(SOURCE_DIR)/mac/ascon-hmac-common.h \
-	$(SOURCE_DIR)/mac/ascon-kmac-common.h
+	$(SOURCE_DIR)/mac/ascon-kmac-common.h \
+	$(SOURCE_DIR)/random/ascon-trng.h
 
 all:
 

@@ -26,8 +26,17 @@ set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} ${ASM_OPTIONS}")
 
 # Check for some system features.
 check_include_files(strings.h HAVE_STRINGS_H)
+check_include_files(sys/random.h HAVE_SYS_RANDOM_H)
+check_include_files(sys/syscall.h HAVE_SYS_SYSCALL_H)
+check_include_files(time.h HAVE_TIME_H)
+check_include_files(sys/time.h HAVE_SYS_TIME_H)
 check_function_exists(explicit_bzero HAVE_EXPLICIT_BZERO)
 check_function_exists(memset_s HAVE_MEMSET_S)
+check_function_exists(getrandom HAVE_GETRANDOM)
+check_function_exists(getentropy HAVE_GETENTROPY)
+check_function_exists(time HAVE_TIME)
+check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
+check_function_exists(clock_gettime HAVE_CLOCK_GETTIME)
 configure_file(config.h.in config.h)
 
 # Set up the main include directory.

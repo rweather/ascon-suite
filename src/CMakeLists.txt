@@ -44,6 +44,17 @@ list(APPEND ASCON_SOURCES
     mac/ascon-kmac.c
     mac/ascon-kmaca.c
     mac/ascon-kmac-common.h
+    random/ascon-prng.c
+    random/ascon-random.c
+    random/ascon-select-trng.h
+    random/ascon-trng.h
+    random/ascon-trng-dev-random.c
+    random/ascon-trng-due.c
+    random/ascon-trng-esp.c
+    random/ascon-trng-none.c
+    random/ascon-trng-stm32.c
+    random/ascon-trng-stm32.h
+    random/ascon-trng-windows.c
     siv/ascon-siv-128.c
     siv/ascon-siv-128a.c
     siv/ascon-siv-80pq.c
