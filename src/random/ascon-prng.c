@@ -52,17 +52,10 @@ static void ascon_random_rekey(ascon_random_state_t *state)
 {
     int temp;
 
-    /* Pad the data that has been absorbed so far to a rate block boundary */
-    ascon_xof_pad(&(state->xof));
-
     /* Zero out part of the state and run the permutation several times.
      * This enforces forward security on the SpongePRNG state. */
-    ascon_acquire(&(state->xof.state));
-    for (temp = 0; temp < (40 - ASCON_XOF_RATE); temp += ASCON_XOF_RATE) {
-        ascon_overwrite_with_zeroes(&(state->xof.state), 0, ASCON_XOF_RATE);
-        ascon_permute(&(state->xof.state), 0);
-    }
-    ascon_release(&(state->xof.state));
+    for (temp = 0; temp < (40 - ASCON_XOF_RATE); temp += ASCON_XOF_RATE)
+        ascon_xof_clear_rate(&(state->xof));
 }
 
 int ascon_random_init(ascon_random_state_t *state)

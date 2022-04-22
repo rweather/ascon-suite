@@ -188,6 +188,22 @@ void ascon_xof_squeeze
 void ascon_xof_pad(ascon_xof_state_t *state);
 
 /**
+ * \brief Clears the rate portion of an ASCON-XOF state to all-zeroes and
+ * runs the permutation.
+ *
+ * \param state XOF state to clear the rate on.
+ *
+ * This operation is used in the SpongePRNG construction for pseudorandom
+ * number generators.  The rate is zeroed and then the permutation is run.
+ * This makes it difficult to run the PRNG backwards if the state is
+ * captured sometime in the future.
+ *
+ * This function calls ascon_xof_pad() before clearing the rate to
+ * ensure that the XOF is in absorb mode and aligned on a block boundary.
+ */
+void ascon_xof_clear_rate(ascon_xof_state_t *state);
+
+/**
  * \brief Hashes a block of input data with ASCON-XOFA and generates a
  * fixed-length 32 byte output.
  *
@@ -297,6 +313,22 @@ void ascon_xofa_squeeze
  * to save some time when padding is required.
  */
 void ascon_xofa_pad(ascon_xofa_state_t *state);
+
+/**
+ * \brief Clears the rate portion of an ASCON-XOFA state to all-zeroes and
+ * runs the permutation.
+ *
+ * \param state XOF state to clear the rate on.
+ *
+ * This operation is used in the SpongePRNG construction for pseudorandom
+ * number generators.  The rate is zeroed and then the permutation is run.
+ * This makes it difficult to run the PRNG backwards if the state is
+ * captured sometime in the future.
+ *
+ * This function calls ascon_xofa_pad() before clearing the rate to
+ * ensure that the XOF is in absorb mode and aligned on a block boundary.
+ */
+void ascon_xofa_clear_rate(ascon_xofa_state_t *state);
 
 #ifdef __cplusplus
 }

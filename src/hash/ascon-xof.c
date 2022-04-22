@@ -274,3 +274,12 @@ void ascon_xof_pad(ascon_xof_state_t *state)
         state->count = 0;
     }
 }
+
+void ascon_xof_clear_rate(ascon_xof_state_t *state)
+{
+    ascon_xof_pad(state);
+    ascon_acquire(&(state->state));
+    ascon_overwrite_with_zeroes(&(state->state), 0, ASCON_XOF_RATE);
+    ascon_permute(&(state->state), 0);
+    ascon_release(&(state->state));
+}
