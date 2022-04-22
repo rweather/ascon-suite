@@ -33,6 +33,7 @@
 extern uint32_t esp_random(void);
 #endif
 
+//! [snippet_trng_generate]
 int ascon_trng_generate(unsigned char *out, size_t outlen)
 {
     uint32_t x;
@@ -48,6 +49,7 @@ int ascon_trng_generate(unsigned char *out, size_t outlen)
     }
     return 1; /* Assume that it works */
 }
+//! [snippet_trng_generate]
 
 int ascon_trng_init(ascon_trng_state_t *state)
 {
@@ -60,6 +62,7 @@ void ascon_trng_free(ascon_trng_state_t *state)
     (void)state;
 }
 
+//! [snippet_trng_generate_32]
 uint32_t ascon_trng_generate_32(ascon_trng_state_t *state)
 {
     (void)state;
@@ -71,11 +74,14 @@ uint64_t ascon_trng_generate_64(ascon_trng_state_t *state)
     (void)state;
     return ((uint64_t)esp_random()) | (((uint64_t)esp_random()) << 32);
 }
+//! [snippet_trng_generate_32]
 
+//! [snippet_trng_reseed]
 int ascon_trng_reseed(ascon_trng_state_t *state)
 {
     (void)state;
     return 1;
 }
+//! [snippet_trng_reseed]
 
 #endif /* ASCON_TRNG_ESP */

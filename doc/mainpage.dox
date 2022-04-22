@@ -41,6 +41,12 @@ The suite has a number of permutation backends for different CPU
 configurations, which are detailed on the
 \ref porting "Porting the ASCON Permutation" page.
 
+When porting to a new microcontroller, you will probably also need to
+provide a \ref porting_trng "TRNG backend" to access the random number
+generator on your CPU.
+
+Patches are welcome to provide new permutation and TRNG backends.
+
 \section mainpage_apiref API Reference
 
 \li \ref aead.h "Authenticated Encryption with Associated Data (AEAD)"
@@ -124,7 +130,7 @@ ASCON-XOF.  See the \ref kmac "KMAC page" for more information on ASCON-KMAC.
 \li ASCON-PRNG for generating an arbitary sequence of random data from
 system-supplied and application-supplied seed material.  This is based on
 ASCON-XOF and uses the <a href="https://keccak.team/files/SpongePRNG.pdf">SpongePRNG</a>
-construction.  See the \ref prng "PRNG page" for more information.
+construction.  See the \ref random.h "PRNG page" for more information.
 \li HKDF and PBKDF2 modes built around the ASCON HMAC mode.
 
 Other than ISAP, these extensions have not yet been standardised by a
