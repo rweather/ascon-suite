@@ -10,3 +10,5 @@
 #cmakedefine HAVE_TIME
 #cmakedefine HAVE_GETTIMEOFDAY
 #cmakedefine HAVE_CLOCK_GETTIME
+#cmakedefine HAVE_GETOPT_H
+#cmakedefine HAVE_GETOPT

@@ -1,5 +1,6 @@
 /**
  * \file examples.dox
+ * \example asconsum/asconsum.c
  * \example permutation/encrypt/main.c
  * \example permutation/hash/main.c
  */
