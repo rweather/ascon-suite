@@ -189,10 +189,83 @@ static int test_all_zeroes(const unsigned char *buf, size_t len)
     return 1;
 }
 
+/* Wrap incremental encryption to make it look like an all-in-one cipher */
+static int incremental_aead_cipher_encrypt
+    (const aead_cipher_t *alg, void *state, size_t increment,
+     unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    size_t posn, temp;
+    int result;
+    result = (*(alg->start_inc))(state, ad, adlen, npub, k);
+    if (result == 0) {
+        if (increment == 0) {
+            /* Encrypt everything in one go */
+            result = (*(alg->encrypt_inc))(state, m, c, mlen);
+        } else {
+            /* Break the request up into chunks */
+            for (posn = 0; posn < mlen; posn += increment) {
+                temp = mlen - posn;
+                if (temp > increment)
+                    temp = increment;
+                result = (*(alg->encrypt_inc))(state, m + posn, c + posn, temp);
+                if (result != 0)
+                    break;
+            }
+        }
+        *clen = mlen + alg->tag_len;
+    }
+    if (result == 0) {
+        result = (*(alg->encrypt_fin))(state, c + mlen);
+    }
+    return result;
+}
+
+/* Wrap incremental decryption to make it look like an all-in-one cipher */
+static int incremental_aead_cipher_decrypt
+    (const aead_cipher_t *alg, void *state, size_t increment,
+     unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    size_t posn, temp;
+    int result;
+    if (clen < alg->tag_len)
+        return -1;
+    result = (*(alg->start_inc))(state, ad, adlen, npub, k);
+    if (result == 0) {
+        *mlen = clen - alg->tag_len;
+        if (increment == 0) {
+            /* Decrypt everything in one go */
+            result = (*(alg->decrypt_inc))(state, c, m, *mlen);
+        } else {
+            /* Break the request up into chunks */
+            for (posn = 0; posn < *mlen; posn += increment) {
+                temp = *mlen - posn;
+                if (temp > increment)
+                    temp = increment;
+                result = (*(alg->decrypt_inc))(state, c + posn, m + posn, temp);
+                if (result != 0)
+                    break;
+            }
+        }
+    }
+    if (result == 0) {
+        result = (*(alg->decrypt_fin))(state, c + clen - alg->tag_len);
+    }
+    return result;
+}
+
 /* Test a cipher algorithm on a specific test vector */
 static int test_cipher_inner
     (const aead_cipher_t *alg, const test_vector_t *vec)
 {
+    static size_t const sizes[] = {1, 2, 3, 5, 8, 6, 16, 17, 21, 0};
     unsigned char *pk = 0;
     const test_string_t *key;
     const test_string_t *nonce;
@@ -201,9 +274,11 @@ static int test_cipher_inner
     const test_string_t *ad;
     unsigned char *temp1;
     unsigned char *temp2;
+    unsigned char *inc_state = 0;
     const unsigned char *actual_key = 0;
     size_t len;
-    int result;
+    int result = 0;
+    int exit_val = 1;
 
     /* Get the parameters for the test */
     key = get_test_string(vec, "Key");
@@ -239,61 +314,130 @@ static int test_cipher_inner
         actual_key = key->data;
     }
 
+    /* Set up an incremental state object if necessary */
+    if (alg->inc_state_len) {
+        inc_state = malloc(alg->inc_state_len);
+        if (!inc_state)
+            exit(2);
+    }
+
     /* Test encryption */
     memset(temp1, 0xAA, ciphertext->size);
     len = 0xBADBEEF;
-    result = (*(alg->encrypt))
-        (temp1, &len, plaintext->data, plaintext->size,
-         ad->data, ad->size, nonce->data, actual_key);
+    if (alg->start_inc) {
+        result = incremental_aead_cipher_encrypt
+            (alg, inc_state, 0, temp1, &len,
+             plaintext->data, plaintext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    } else {
+        result = (*(alg->encrypt))
+            (temp1, &len, plaintext->data, plaintext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    }
     if (result != 0 || len != ciphertext->size ||
             !test_compare(temp1, ciphertext->data, len)) {
         test_print_error(alg->name, vec, "encryption failed");
-        free(temp1);
-        free(temp2);
-        return 0;
+        exit_val = 0;
+        goto cleanup;
+    }
+
+    /* Test incremental encryption with various block sizes */
+    if (alg->start_inc) {
+        unsigned posn;
+        result = 0;
+        for (posn = 0; sizes[posn] != 0 && result == 0; ++posn) {
+            memset(temp1, 0xAA, ciphertext->size);
+            len = 0xBADBEEF;
+            result = incremental_aead_cipher_encrypt
+                (alg, inc_state, sizes[posn], temp1, &len,
+                 plaintext->data, plaintext->size,
+                 ad->data, ad->size, nonce->data, actual_key);
+            if (result != 0 || len != ciphertext->size ||
+                    !test_compare(temp1, ciphertext->data, len)) {
+                test_print_error(alg->name, vec, "incremental encryption failed");
+                exit_val = 0;
+                goto cleanup;
+            }
+        }
     }
 
     /* Test in-place encryption */
     memset(temp1, 0xAA, ciphertext->size);
     memcpy(temp1, plaintext->data, plaintext->size);
     len = 0xBADBEEF;
-    result = (*(alg->encrypt))
-        (temp1, &len, temp1, plaintext->size,
-         ad->size ? ad->data : 0, ad->size, nonce->data, actual_key);
+    if (alg->start_inc) {
+        result = incremental_aead_cipher_encrypt
+            (alg, inc_state, 0, temp1, &len, temp1, plaintext->size,
+             ad->size ? ad->data : 0, ad->size, nonce->data, actual_key);
+    } else {
+        result = (*(alg->encrypt))
+            (temp1, &len, temp1, plaintext->size,
+             ad->size ? ad->data : 0, ad->size, nonce->data, actual_key);
+    }
     if (result != 0 || len != ciphertext->size ||
             !test_compare(temp1, ciphertext->data, len)) {
         test_print_error(alg->name, vec, "in-place encryption failed");
-        free(temp1);
-        free(temp2);
-        return 0;
+        exit_val = 0;
+        goto cleanup;
     }
 
     /* Test decryption */
     memset(temp1, 0xAA, ciphertext->size);
     len = 0xBADBEEF;
-    result = (*(alg->decrypt))
-        (temp1, &len, ciphertext->data, ciphertext->size,
-         ad->data, ad->size, nonce->data, actual_key);
+    if (alg->start_inc) {
+        result = incremental_aead_cipher_decrypt
+            (alg, inc_state, 0, temp1, &len,
+             ciphertext->data, ciphertext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    } else {
+        result = (*(alg->decrypt))
+            (temp1, &len, ciphertext->data, ciphertext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    }
     if (result != 0 || len != plaintext->size ||
             !test_compare(temp1, plaintext->data, len)) {
         test_print_error(alg->name, vec, "decryption failed");
-        free(temp1);
-        free(temp2);
-        return 0;
+        exit_val = 0;
+        goto cleanup;
+    }
+
+    /* Test incremental decryption with various block sizes */
+    if (alg->start_inc) {
+        unsigned posn;
+        result = 0;
+        for (posn = 0; sizes[posn] != 0 && result == 0; ++posn) {
+            memset(temp1, 0xAA, ciphertext->size);
+            len = 0xBADBEEF;
+            result = incremental_aead_cipher_decrypt
+                (alg, inc_state, sizes[posn], temp1, &len,
+                 ciphertext->data, ciphertext->size,
+                 ad->data, ad->size, nonce->data, actual_key);
+            if (result != 0 || len != plaintext->size ||
+                    !test_compare(temp1, plaintext->data, len)) {
+                test_print_error(alg->name, vec, "decryption failed");
+                exit_val = 0;
+                goto cleanup;
+            }
+        }
     }
 
     /* Test in-place decryption */
     memcpy(temp1, ciphertext->data, ciphertext->size);
     len = 0xBADBEEF;
-    result = (*(alg->decrypt))
-        (temp1, &len, temp1, ciphertext->size,
-         ad->data, ad->size, nonce->data, actual_key);
+    if (alg->start_inc) {
+        result = incremental_aead_cipher_decrypt
+            (alg, inc_state, 0, temp1, &len, temp1, ciphertext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    } else {
+        result = (*(alg->decrypt))
+            (temp1, &len, temp1, ciphertext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    }
     if (result != 0 || len != plaintext->size ||
             !test_compare(temp1, plaintext->data, len)) {
         test_print_error(alg->name, vec, "in-place decryption failed");
-        free(temp1);
-        free(temp2);
-        return 0;
+        exit_val = 0;
+        goto cleanup;
     }
 
     /* Test decryption with a failed tag check */
@@ -301,49 +445,61 @@ static int test_cipher_inner
     memcpy(temp2, ciphertext->data, ciphertext->size);
     temp2[0] ^= 0x01; /* Corrupt the first byte of the ciphertext */
     len = 0xBADBEEF;
-    result = (*(alg->decrypt))
-        (temp1, &len, temp2, ciphertext->size,
-         ad->data, ad->size, nonce->data, actual_key);
+    if (alg->start_inc) {
+        result = incremental_aead_cipher_decrypt
+            (alg, inc_state, 0, temp1, &len, temp2, ciphertext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    } else {
+        result = (*(alg->decrypt))
+            (temp1, &len, temp2, ciphertext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    }
     if (result != -1) {
         test_print_error(alg->name, vec, "corrupt ciphertext check failed");
-        free(temp1);
-        free(temp2);
-        return 0;
+        exit_val = 0;
+        goto cleanup;
     }
-    if (!test_all_zeroes(temp1, plaintext->size)) {
+    if (!test_all_zeroes(temp1, plaintext->size) && !(alg->start_inc)) {
         test_print_error(alg->name, vec, "plaintext not destroyed");
-        free(temp1);
-        free(temp2);
-        return 0;
+        exit_val = 0;
+        goto cleanup;
     }
     memset(temp1, 0xAA, ciphertext->size);
     memcpy(temp2, ciphertext->data, ciphertext->size);
     temp2[ciphertext->size - 1] ^= 0x01; /* Corrupt last byte of the tag */
     len = 0xBADBEEF;
-    result = (*(alg->decrypt))
-        (temp1, &len, temp2, ciphertext->size,
-         ad->data, ad->size, nonce->data, actual_key);
+    if (alg->start_inc) {
+        result = incremental_aead_cipher_decrypt
+            (alg, inc_state, 0, temp1, &len, temp2, ciphertext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    } else {
+        result = (*(alg->decrypt))
+            (temp1, &len, temp2, ciphertext->size,
+             ad->data, ad->size, nonce->data, actual_key);
+    }
     if (result != -1) {
         test_print_error(alg->name, vec, "corrupt tag check failed");
-        free(temp1);
-        free(temp2);
-        return 0;
+        exit_val = 0;
+        goto cleanup;
     }
-    if (!test_all_zeroes(temp1, plaintext->size)) {
+    if (!test_all_zeroes(temp1, plaintext->size) && !(alg->start_inc)) {
         test_print_error(alg->name, vec, "plaintext not destroyed");
-        free(temp1);
-        free(temp2);
-        return 0;
+        exit_val = 0;
+        goto cleanup;
     }
 
     /* All tests passed for this test vector */
+cleanup:
     free(temp1);
     free(temp2);
     if (pk) {
         (*(alg->pk_free))(pk);
         free(pk);
     }
-    return 1;
+    if (inc_state) {
+        free(inc_state);
+    }
+    return exit_val;
 }
 
 /* Test a cipher algorithm */

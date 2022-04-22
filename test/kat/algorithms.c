@@ -37,7 +37,7 @@ aead_cipher_t const ascon128_cipher = {
     AEAD_FLAG_NONE,
     ascon128_aead_encrypt,
     ascon128_aead_decrypt,
-    0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128a_cipher = {
@@ -48,7 +48,7 @@ aead_cipher_t const ascon128a_cipher = {
     AEAD_FLAG_NONE,
     ascon128a_aead_encrypt,
     ascon128a_aead_decrypt,
-    0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon80pq_cipher = {
@@ -59,7 +59,7 @@ aead_cipher_t const ascon80pq_cipher = {
     AEAD_FLAG_NONE,
     ascon80pq_aead_encrypt,
     ascon80pq_aead_decrypt,
-    0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_hash_algorithm_t const ascon_hash_algorithm = {
@@ -154,7 +154,7 @@ aead_cipher_t const ascon128_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon128_siv_encrypt,
     ascon128_siv_decrypt,
-    0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128a_siv_cipher = {
@@ -165,7 +165,7 @@ aead_cipher_t const ascon128a_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon128a_siv_encrypt,
     ascon128a_siv_decrypt,
-    0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon80pq_siv_cipher = {
@@ -176,7 +176,7 @@ aead_cipher_t const ascon80pq_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon80pq_siv_encrypt,
     ascon80pq_siv_decrypt,
-    0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128a_isap_cipher = {
@@ -189,7 +189,8 @@ aead_cipher_t const ascon128a_isap_cipher = {
     (aead_cipher_decrypt_t)ascon128a_isap_aead_decrypt,
     sizeof(ascon128a_isap_aead_key_t),
     (aead_cipher_pk_init_t)ascon128a_isap_aead_init,
-    (aead_cipher_pk_free_t)ascon128a_isap_aead_free
+    (aead_cipher_pk_free_t)ascon128a_isap_aead_free,
+    0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128_isap_cipher = {
@@ -202,7 +203,59 @@ aead_cipher_t const ascon128_isap_cipher = {
     (aead_cipher_decrypt_t)ascon128_isap_aead_decrypt,
     sizeof(ascon128_isap_aead_key_t),
     (aead_cipher_pk_init_t)ascon128_isap_aead_init,
-    (aead_cipher_pk_free_t)ascon128_isap_aead_free
+    (aead_cipher_pk_free_t)ascon128_isap_aead_free,
+    0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128_inc_cipher = {
+    "ASCON-128-incremental",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon128_aead_encrypt,
+    ascon128_aead_decrypt,
+    0, 0, 0,
+    sizeof(ascon128_state_t),
+    (aead_cipher_inc_start_t)ascon128_aead_start,
+    (aead_cipher_enc_inc_t)ascon128_aead_encrypt_block,
+    (aead_cipher_enc_fin_t)ascon128_aead_encrypt_finalize,
+    (aead_cipher_dec_inc_t)ascon128_aead_decrypt_block,
+    (aead_cipher_dec_fin_t)ascon128_aead_decrypt_finalize
+};
+
+aead_cipher_t const ascon128a_inc_cipher = {
+    "ASCON-128a-incremental",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon128a_aead_encrypt,
+    ascon128a_aead_decrypt,
+    0, 0, 0,
+    sizeof(ascon128a_state_t),
+    (aead_cipher_inc_start_t)ascon128a_aead_start,
+    (aead_cipher_enc_inc_t)ascon128a_aead_encrypt_block,
+    (aead_cipher_enc_fin_t)ascon128a_aead_encrypt_finalize,
+    (aead_cipher_dec_inc_t)ascon128a_aead_decrypt_block,
+    (aead_cipher_dec_fin_t)ascon128a_aead_decrypt_finalize
+};
+
+aead_cipher_t const ascon80pq_inc_cipher = {
+    "ASCON-80pq-incremental",
+    ASCON80PQ_KEY_SIZE,
+    ASCON80PQ_NONCE_SIZE,
+    ASCON80PQ_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon80pq_aead_encrypt,
+    ascon80pq_aead_decrypt,
+    0, 0, 0,
+    sizeof(ascon80pq_state_t),
+    (aead_cipher_inc_start_t)ascon80pq_aead_start,
+    (aead_cipher_enc_inc_t)ascon80pq_aead_encrypt_block,
+    (aead_cipher_enc_fin_t)ascon80pq_aead_encrypt_finalize,
+    (aead_cipher_dec_inc_t)ascon80pq_aead_decrypt_block,
+    (aead_cipher_dec_fin_t)ascon80pq_aead_decrypt_finalize
 };
 
 /* List of all AEAD ciphers that we can run KAT tests for */
@@ -215,6 +268,9 @@ static const aead_cipher_t *const ciphers[] = {
     &ascon80pq_siv_cipher,
     &ascon128a_isap_cipher,
     &ascon128_isap_cipher,
+    &ascon128_inc_cipher,
+    &ascon128a_inc_cipher,
+    &ascon80pq_inc_cipher,
     0
 };
 

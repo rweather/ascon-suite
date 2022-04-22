@@ -37,6 +37,7 @@ int ascon80pq_aead_encrypt
      const unsigned char *k)
 {
     ascon_state_t state;
+    unsigned char partial;
 
     /* Set the length of the returned ciphertext */
     *clen = mlen + ASCON80PQ_TAG_SIZE;
@@ -57,7 +58,8 @@ int ascon80pq_aead_encrypt
     ascon_separator(&state);
 
     /* Encrypt the plaintext to create the ciphertext */
-    ascon_aead_encrypt_8(&state, c, m, mlen, 6);
+    partial = ascon_aead_encrypt_8(&state, c, m, mlen, 6, 0);
+    ascon_pad(&state, partial);
 
     /* Finalize and compute the authentication tag */
     ascon_absorb_partial(&state, k, 8, ASCON80PQ_KEY_SIZE);
@@ -77,6 +79,7 @@ int ascon80pq_aead_decrypt
 {
     ascon_state_t state;
     unsigned char tag[ASCON80PQ_TAG_SIZE];
+    unsigned char partial;
     int result;
 
     /* Set the length of the returned plaintext */
@@ -100,7 +103,8 @@ int ascon80pq_aead_decrypt
     ascon_separator(&state);
 
     /* Decrypt the ciphertext to create the plaintext */
-    ascon_aead_decrypt_8(&state, m, c, *mlen, 6);
+    partial = ascon_aead_decrypt_8(&state, m, c, *mlen, 6, 0);
+    ascon_pad(&state, partial);
 
     /* Finalize and check the authentication tag */
     ascon_absorb_partial(&state, k, 8, ASCON80PQ_KEY_SIZE);

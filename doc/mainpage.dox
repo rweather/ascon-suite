@@ -117,6 +117,10 @@ arbitrary-length output.
 \li Direct access to the \ref permutation "ASCON permutation itself" to
 build custom application modes.
 
+We also provide incremental versions of ASCON-128, ASCON-128a, and
+ASCON-80pq for encrypting and decrypting extremely large amounts of
+data in chunks.
+
 \section mainpage_extensions Extensions
 
 The following higher-level extensions are provided:

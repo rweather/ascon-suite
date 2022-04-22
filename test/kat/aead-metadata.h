@@ -107,6 +107,78 @@ typedef int (*aead_cipher_pk_init_t)
 typedef void (*aead_cipher_pk_free_t)(unsigned char *pk);
 
 /**
+ * \brief Starts encrypting or decrypting a packet with in incremental mode.
+ *
+ * \param state State to initialize for incremental operations.
+ * \param ad Buffer that contains associated data to authenticate
+ * along with the packet but which does not need to be encrypted.
+ * \param adlen Length of the associated data in bytes.
+ * \param npub Points to the public nonce for the packet.
+ * \param k Points to the key.
+ *
+ * \return 0 on success, or a negative value if there was an error in
+ * the parameters.
+ */
+typedef int (*aead_cipher_inc_start_t)
+    (void *state, const unsigned char *ad, size_t adlen,
+     const unsigned char *npub, const unsigned char *k);
+
+/**
+ * \brief Encrypts a block of data incremental mode.
+ *
+ * \param state State to use for incremental operations.
+ * \param in Buffer that contains the plaintext to encrypt.
+ * \param out Buffer to receive the ciphertext output.  Can be the
+ * same buffer as \a in.
+ * \param len Length of the plaintext and ciphertext in bytes.
+ *
+ * \return 0 on success, or a negative value if there was an error in
+ * the parameters.
+ */
+typedef int (*aead_cipher_enc_inc_t)
+    (void *state, const unsigned char *in, unsigned char *out, size_t len);
+
+/**
+ * \brief Finalizes an incremental encryption operation and
+ * generates the authentication tag.
+ *
+ * \param state State to use for incremental encryption.
+ * \param tag Points to the buffer to receive the authentication tag.
+ *
+ * \return 0 on success, or a negative value if there was an error in
+ * the parameters.
+ */
+typedef int (*aead_cipher_enc_fin_t)(void *state, unsigned char *tag);
+
+/**
+ * \brief Decrypts a block of data in incremental mode.
+ *
+ * \param state State to use for incremental operations.
+ * \param in Buffer that contains the ciphertext to decrypt.
+ * \param out Buffer to receive the plaintext output.  Can be the
+ * same buffer as \a in.
+ * \param len Length of the plaintext and ciphertext in bytes.
+ *
+ * \return 0 on success, or a negative value if there was an error in
+ * the parameters.
+ */
+typedef int (*aead_cipher_dec_inc_t)
+    (void *state, const unsigned char *in, unsigned char *out, size_t len);
+
+/**
+ * \brief Finalizes an incremental decryption operation and
+ * checks the authentication tag.
+ *
+ * \param state State to use for ASCON-80pq encryption operations.
+ * \param tag Points to the buffer containing the ciphertext's
+ * authentication tag.
+ *
+ * \return 0 on success, -1 if the authentication tag was incorrect,
+ * or some other negative number if there was an error in the parameters.
+ */
+typedef int (*aead_cipher_dec_fin_t)(void *state, const unsigned char *tag);
+
+/**
  * \brief Hashes a block of input data.
  *
  * \param out Buffer to receive the hash output.
@@ -228,6 +300,12 @@ typedef struct
     unsigned pk_state_len;          /**< Length of the pre-computed state */
     aead_cipher_pk_init_t pk_init;  /**< AEAD pre-computed init function */
     aead_cipher_pk_free_t pk_free;  /**< Free pre-computed AEAD key */
+    unsigned inc_state_len;         /**< Length of the incremental state */
+    aead_cipher_inc_start_t start_inc; /**< Start incremental mode */
+    aead_cipher_enc_inc_t encrypt_inc; /**< Incremental encryption */
+    aead_cipher_enc_fin_t encrypt_fin; /**< Finalize encryption */
+    aead_cipher_dec_inc_t decrypt_inc; /**< Incremental decryption */
+    aead_cipher_dec_fin_t decrypt_fin; /**< Finalize decryption */
 
 } aead_cipher_t;
 

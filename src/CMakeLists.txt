@@ -5,6 +5,9 @@ list(APPEND ASCON_SOURCES
     aead/ascon-aead-80pq.c
     aead/ascon-aead-common.c
     aead/ascon-aead-common.h
+    aead/ascon-aead-inc-128.c
+    aead/ascon-aead-inc-128a.c
+    aead/ascon-aead-inc-80pq.c
     core/ascon-asm-armv6m.S
     core/ascon-asm-armv6.S
     core/ascon-asm-armv7m.S

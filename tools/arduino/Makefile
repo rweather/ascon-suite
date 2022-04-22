@@ -11,6 +11,9 @@ MAIN_SOURCES = \
 	$(SOURCE_DIR)/aead/ascon-aead-128.c \
 	$(SOURCE_DIR)/aead/ascon-aead-128a.c \
 	$(SOURCE_DIR)/aead/ascon-aead-80pq.c \
+	$(SOURCE_DIR)/aead/ascon-aead-inc-128.c \
+	$(SOURCE_DIR)/aead/ascon-aead-inc-128a.c \
+	$(SOURCE_DIR)/aead/ascon-aead-inc-80pq.c \
 	$(SOURCE_DIR)/hash/ascon-hasha.c \
 	$(SOURCE_DIR)/hash/ascon-hash.c \
 	$(SOURCE_DIR)/hash/ascon-xofa.c \
