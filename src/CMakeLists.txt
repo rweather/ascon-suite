@@ -60,7 +60,7 @@ list(APPEND ASCON_SOURCES
     siv/ascon-siv-80pq.c
 )
 
-if(NOT DEFINED ENV{MINIMAL})
+if(NOT MINIMAL)
 add_library(ascon SHARED ${ASCON_SOURCES})
 
 target_include_directories(ascon
@@ -86,5 +86,7 @@ target_include_directories(ascon_static
 )
 
 # Install the libraries.
-install(TARGETS ascon DESTINATION lib)
+if(NOT MINIMAL)
+    install(TARGETS ascon DESTINATION lib)
+endif()
 install(TARGETS ascon_static DESTINATION lib)

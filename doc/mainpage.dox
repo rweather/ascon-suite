@@ -83,14 +83,14 @@ variables when invoking cmake:
 \verbatim
 mkdir build
 cd build
-CC="avr-gcc" MINIMAL=1 cmake -DCMAKE_C_FLAGS="-mmcu=atmega2560" ..
+CC="avr-gcc" cmake -DMINIMAL=ON -DCMAKE_C_FLAGS="-mmcu=atmega2560" ..
 make
 \endverbatim
 
 Note carefully the placement of environment variables before the "cmake"
 command name, and the cmake variables specified with "-D" after.
 
-The <tt>MINIMAL</tt> variable suppresses the compilation of shared libraries,
+The <tt>MINIMAL</tt> option suppresses the compilation of shared libraries,
 examples, and test programs, which may not compile for embedded
 microcontrollers due to missing libc functions or other platform constraints.
 Only the static library <tt>libascon_static.a</tt> is built in the

@@ -12,6 +12,10 @@ option(BACKEND_C64 "Force the use of the c64 backend" OFF)
 option(BACKEND_DIRECT_XOR "Force the use of the direct-xor backend" OFF)
 option(BACKEND_GENERIC "Force the use of the generic backend" OFF)
 
+# Option to compile a minimal configuration with just the static library.
+# This may be needed when cross-compiling for embedded microcontrollers.
+option(MINIMAL "Build a minimal configuration only" OFF)
+
 # Add the version details to the version.h include file.
 configure_file(include/ascon/version.h.in version.h)
 
@@ -64,7 +68,7 @@ include_directories(include)
 # Add the subdirectories.
 add_subdirectory(include)
 add_subdirectory(src)
-if(NOT DEFINED ENV{MINIMAL})
+if(NOT MINIMAL)
     add_subdirectory(test)
     add_subdirectory(examples EXCLUDE_FROM_ALL)
 endif()

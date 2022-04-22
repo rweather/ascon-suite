@@ -40,13 +40,13 @@ variables when invoking cmake:
 
     mkdir build
     cd build
-    CC="avr-gcc" MINIMAL=1 cmake -DCMAKE_C_FLAGS="-mmcu=atmega2560" ..
+    CC="avr-gcc" cmake -DMINIMAL=ON -DCMAKE_C_FLAGS="-mmcu=atmega2560" ..
     make
 
 Note carefully the placement of environment variables before the "cmake"
 command name, and the cmake variables specified with "-D" after.
 
-The MINIMAL variable suppresses the compilation of shared libraries, examples,
+The MINIMAL option suppresses the compilation of shared libraries, examples,
 and test programs, which may not compile for embedded microcontrollers due to
 missing libc functions or other platform constraints.  Only the static library
 libascon\_static.a is built in the minimal configuration.
