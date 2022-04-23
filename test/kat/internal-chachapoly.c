@@ -177,7 +177,8 @@ typedef struct
 #else
 #define littleToHost(r,size)   \
     do { \
-        for (uint8_t i = 0; i < (size); ++i) \
+        uint8_t i; \
+        for (i = 0; i < (size); ++i) \
             (r)[i] = le_load_word32((const uint8_t *)((r) + i)); \
     } while (0)
 #endif

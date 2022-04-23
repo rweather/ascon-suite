@@ -48,7 +48,7 @@
     defined(__LITTLE_ENDIAN__)
 #define LW_UTIL_LITTLE_ENDIAN 1
 #elif (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == 4321) || \
-    defined(__BIG_ENDIAN__)
+    defined(__BIG_ENDIAN__) || defined(__m68k__)
 /* Big endian */
 #else
 #error "Cannot determine the endianess of this platform"

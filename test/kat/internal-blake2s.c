@@ -103,7 +103,7 @@ static void blake2s_process_chunk(blake2s_state_t *state, uint32_t f0)
     /* Byte-swap the message buffer into little-endian if necessary */
 #if !defined(LW_UTIL_LITTLE_ENDIAN)
     for (index = 0; index < 16; ++index)
-        state.m[index] = le32toh(state.m[index]);
+        state->m[index] = le_load_word32((const unsigned char *)(&(state->m[index])));
 #endif
 
     /* Format the block to be hashed */

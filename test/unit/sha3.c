@@ -96,7 +96,7 @@ static void sha3_keccakp(sha3_state_t *state)
     for (index = 0; index < 5; ++index) {
         for (index2 = 0; index2 < 5; ++index2) {
             state->A[index][index2] =
-                le_load_word64((const uint8_t *)(&(state->a[index, index2])));
+                le_load_word64((const uint8_t *)(&(state->A[index][index2])));
         }
     }
 #endif
@@ -160,7 +160,7 @@ static void sha3_keccakp(sha3_state_t *state)
 #if !defined(LW_UTIL_LITTLE_ENDIAN)
     for (index = 0; index < 5; ++index) {
         for (index2 = 0; index2 < 5; ++index2) {
-            le_store_word64((uint8_t *)(&(state->a[index, index2])),
+            le_store_word64((uint8_t *)(&(state->A[index][index2])),
                             state->A[index][index2]);
         }
     }
