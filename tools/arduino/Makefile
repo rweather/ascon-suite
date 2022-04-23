@@ -4,7 +4,7 @@
 TOP_DIR = ../..
 INCLUDE_DIR = $(TOP_DIR)/include
 SOURCE_DIR = $(TOP_DIR)/src
-ARDUINO_SRCDIR = ../../../ASCON/src
+ARDUINO_SRCDIR = ../../../ascon-arduino/src
 
 # Source files to copy to the main Arduino src directory.
 MAIN_SOURCES = \
@@ -67,7 +67,7 @@ UTIL_INCLUDES = \
 all:
 
 # The 'arduino' rule creates the Arduino version of the source code
-# under the directory "../ASCON" from the top-level.  The code is
+# under the directory "../ascon-arduino" from the top-level.  The code is
 # modified to comply with Arduino IDE conventions for libraries.
 
 ARDUINO_COPY_SOURCES = ./copy-sources.sh
