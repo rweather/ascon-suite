@@ -19,6 +19,9 @@ target_include_directories(kat
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/../../src/aead
 )
+if(HAVE_LIBRT)
+    target_link_libraries(kat PRIVATE -lrt)
+endif()
 
 # Program for generating KAT tests.
 add_executable(kat-gen
@@ -28,6 +31,9 @@ add_executable(kat-gen
     kat-gen.c
 )
 target_link_libraries(kat-gen PUBLIC ascon_static)
+if(HAVE_LIBRT)
+    target_link_libraries(kat-gen PRIVATE -lrt)
+endif()
 
 # Function to perform KAT tests on a specific algorithm.
 function(kat_test algorithm kat_file)

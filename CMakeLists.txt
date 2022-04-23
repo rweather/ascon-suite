@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
+include(CheckLibraryExists)
 
 # Set the project name and version number.
 project(AsconSuite VERSION 0.1.0 LANGUAGES C ASM)
@@ -66,6 +67,7 @@ check_function_exists(getrandom HAVE_GETRANDOM)
 check_function_exists(getentropy HAVE_GETENTROPY)
 check_function_exists(time HAVE_TIME)
 check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
+check_library_exists(rt clock_gettime "" HAVE_LIBRT)
 check_function_exists(clock_gettime HAVE_CLOCK_GETTIME)
 check_function_exists(getopt HAVE_GETOPT)
 check_function_exists(isatty HAVE_ISATTY)
