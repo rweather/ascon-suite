@@ -53,6 +53,15 @@ int ascon80pq_aead_start
     return 0;
 }
 
+void ascon80pq_aead_abort(ascon80pq_state_t *state)
+{
+    if (state) {
+        ascon_acquire(&(state->state));
+        ascon_free(&(state->state));
+        ascon_clean(state, sizeof(ascon80pq_state_t));
+    }
+}
+
 int ascon80pq_aead_encrypt_block
     (ascon80pq_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len)

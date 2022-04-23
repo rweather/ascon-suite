@@ -54,6 +54,15 @@ int ascon128a_aead_start
     return 0;
 }
 
+void ascon128a_aead_abort(ascon128a_state_t *state)
+{
+    if (state) {
+        ascon_acquire(&(state->state));
+        ascon_free(&(state->state));
+        ascon_clean(state, sizeof(ascon128a_state_t));
+    }
+}
+
 int ascon128a_aead_encrypt_block
     (ascon128a_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len)

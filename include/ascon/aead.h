@@ -371,6 +371,17 @@ int ascon128_aead_start
      const unsigned char *npub, const unsigned char *k);
 
 /**
+ * \brief Aborts use of ASCON-128 in incremental mode.
+ *
+ * \param state State to abort.
+ *
+ * This function may be used any time after ascon128_aead_start() and
+ * before the encryption or decryption process is finalized to abort
+ * the process entirely and free the \a state.
+ */
+void ascon128_aead_abort(ascon128_state_t *state);
+
+/**
  * \brief Encrypts a block of data with ASCON-128 in incremental mode.
  *
  * \param state State to use for ASCON-128 encryption operations.
@@ -500,6 +511,17 @@ int ascon128a_aead_start
      const unsigned char *npub, const unsigned char *k);
 
 /**
+ * \brief Aborts use of ASCON-128a in incremental mode.
+ *
+ * \param state State to abort.
+ *
+ * This function may be used any time after ascon128a_aead_start() and
+ * before the encryption or decryption process is finalized to abort
+ * the process entirely and free the \a state.
+ */
+void ascon128a_aead_abort(ascon128a_state_t *state);
+
+/**
  * \brief Encrypts a block of data with ASCON-128a in incremental mode.
  *
  * \param state State to use for ASCON-128a encryption operations.
@@ -627,6 +649,17 @@ int ascon128a_aead_decrypt_finalize
 int ascon80pq_aead_start
     (ascon80pq_state_t *state, const unsigned char *ad, size_t adlen,
      const unsigned char *npub, const unsigned char *k);
+
+/**
+ * \brief Aborts use of ASCON-80pq in incremental mode.
+ *
+ * \param state State to abort.
+ *
+ * This function may be used any time after ascon80pq_aead_start() and
+ * before the encryption or decryption process is finalized to abort
+ * the process entirely and free the \a state.
+ */
+void ascon80pq_aead_abort(ascon80pq_state_t *state);
 
 /**
  * \brief Encrypts a block of data with ASCON-80pq in incremental mode.
