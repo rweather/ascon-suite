@@ -51,11 +51,8 @@ extern "C" {
  * \param adlen Length of the associated data in bytes.
  * \param npub Points to the public nonce for the packet.
  * \param k Points to the key to use to encrypt the packet.
- *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
  */
-typedef int (*aead_cipher_encrypt_t)
+typedef void (*aead_cipher_encrypt_t)
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -92,11 +89,8 @@ typedef int (*aead_cipher_decrypt_t)
  *
  * \param pk Points to the object to receive the pre-computed key value.
  * \param k Points to the bytes of the key.
- *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
  */
-typedef int (*aead_cipher_pk_init_t)
+typedef void (*aead_cipher_pk_init_t)
     (unsigned char *pk, const unsigned char *k);
 
 /**
@@ -115,11 +109,8 @@ typedef void (*aead_cipher_pk_free_t)(unsigned char *pk);
  * \param adlen Length of the associated data in bytes.
  * \param npub Points to the public nonce for the packet.
  * \param k Points to the key.
- *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
  */
-typedef int (*aead_cipher_inc_start_t)
+typedef void (*aead_cipher_inc_start_t)
     (void *state, const unsigned char *ad, size_t adlen,
      const unsigned char *npub, const unsigned char *k);
 
@@ -131,11 +122,8 @@ typedef int (*aead_cipher_inc_start_t)
  * \param out Buffer to receive the ciphertext output.  Can be the
  * same buffer as \a in.
  * \param len Length of the plaintext and ciphertext in bytes.
- *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
  */
-typedef int (*aead_cipher_enc_inc_t)
+typedef void (*aead_cipher_enc_inc_t)
     (void *state, const unsigned char *in, unsigned char *out, size_t len);
 
 /**
@@ -144,11 +132,8 @@ typedef int (*aead_cipher_enc_inc_t)
  *
  * \param state State to use for incremental encryption.
  * \param tag Points to the buffer to receive the authentication tag.
- *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
  */
-typedef int (*aead_cipher_enc_fin_t)(void *state, unsigned char *tag);
+typedef void (*aead_cipher_enc_fin_t)(void *state, unsigned char *tag);
 
 /**
  * \brief Decrypts a block of data in incremental mode.
@@ -158,11 +143,8 @@ typedef int (*aead_cipher_enc_fin_t)(void *state, unsigned char *tag);
  * \param out Buffer to receive the plaintext output.  Can be the
  * same buffer as \a in.
  * \param len Length of the plaintext and ciphertext in bytes.
- *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
  */
-typedef int (*aead_cipher_dec_inc_t)
+typedef void (*aead_cipher_dec_inc_t)
     (void *state, const unsigned char *in, unsigned char *out, size_t len);
 
 /**
@@ -184,11 +166,8 @@ typedef int (*aead_cipher_dec_fin_t)(void *state, const unsigned char *tag);
  * \param out Buffer to receive the hash output.
  * \param in Points to the input data to be hashed.
  * \param inlen Length of the input data in bytes.
- *
- * \return Returns zero on success or -1 if there was an error in the
- * parameters.
  */
-typedef int (*aead_hash_t)
+typedef void (*aead_hash_t)
     (unsigned char *out, const unsigned char *in, size_t inlen);
 
 /**

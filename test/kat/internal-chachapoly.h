@@ -79,12 +79,9 @@ extern aead_cipher_t const internal_chachapoly_cipher;
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa chachapoly_aead_decrypt()
  */
-int internal_chachapoly_aead_encrypt
+void internal_chachapoly_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,

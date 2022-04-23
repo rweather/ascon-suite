@@ -23,14 +23,13 @@
 #include <ascon/xof.h>
 #include "core/ascon-util-snp.h"
 
-int ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen)
+void ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen)
 {
     ascon_xof_state_t state;
     ascon_xof_init(&state);
     ascon_xof_absorb(&state, in, inlen);
     ascon_xof_squeeze(&state, out, ASCON_HASH_SIZE);
     ascon_xof_free(&state);
-    return 0;
 }
 
 void ascon_xof_init(ascon_xof_state_t *state)

@@ -28,7 +28,7 @@
 static uint8_t const ASCON128_IV[8] =
     {0x80, 0x40, 0x0c, 0x06, 0x00, 0x00, 0x00, 0x00};
 
-int ascon128_aead_start
+void ascon128_aead_start
     (ascon128_state_t *state, const unsigned char *ad, size_t adlen,
      const unsigned char *npub, const unsigned char *k)
 {
@@ -51,7 +51,6 @@ int ascon128_aead_start
     /* Prepare for encryption or decryption */
     ascon_release(&(state->state));
     state->posn = 0;
-    return 0;
 }
 
 void ascon128_aead_abort(ascon128_state_t *state)
@@ -63,7 +62,7 @@ void ascon128_aead_abort(ascon128_state_t *state)
     }
 }
 
-int ascon128_aead_encrypt_block
+void ascon128_aead_encrypt_block
     (ascon128_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len)
 {
@@ -71,10 +70,9 @@ int ascon128_aead_encrypt_block
     state->posn = ascon_aead_encrypt_8
         (&(state->state), out, in, len, 6, state->posn);
     ascon_release(&(state->state));
-    return 0;
 }
 
-int ascon128_aead_encrypt_finalize
+void ascon128_aead_encrypt_finalize
     (ascon128_state_t *state, unsigned char *tag)
 {
     /* Pad the final plaintext block */
@@ -90,10 +88,9 @@ int ascon128_aead_encrypt_finalize
     /* Clean up */
     ascon_free(&(state->state));
     ascon_clean(state, sizeof(ascon128_state_t));
-    return 0;
 }
 
-int ascon128_aead_decrypt_block
+void ascon128_aead_decrypt_block
     (ascon128_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len)
 {
@@ -101,7 +98,6 @@ int ascon128_aead_decrypt_block
     state->posn = ascon_aead_decrypt_8
         (&(state->state), out, in, len, 6, state->posn);
     ascon_release(&(state->state));
-    return 0;
 }
 
 int ascon128_aead_decrypt_finalize

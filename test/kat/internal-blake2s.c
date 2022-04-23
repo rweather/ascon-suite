@@ -137,7 +137,7 @@ static void blake2s_process_chunk(blake2s_state_t *state, uint32_t f0)
         state->h[index] ^= (v[index] ^ v[index + 8]);
 }
 
-int internal_blake2s_hash
+void internal_blake2s_hash
     (unsigned char *out, const unsigned char *in, size_t inlen)
 {
     blake2s_state_t state;
@@ -179,5 +179,4 @@ int internal_blake2s_hash
     le_store_word32(out + 20, state.h[5]);
     le_store_word32(out + 24, state.h[6]);
     le_store_word32(out + 28, state.h[7]);
-    return 0;
 }

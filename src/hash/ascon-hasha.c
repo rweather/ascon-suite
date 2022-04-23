@@ -24,14 +24,13 @@
 #include "core/ascon-util-snp.h"
 #include <string.h>
 
-int ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen)
+void ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen)
 {
     ascon_hasha_state_t state;
     ascon_hasha_init(&state);
     ascon_xofa_absorb(&(state.xof), in, inlen);
     ascon_xofa_squeeze(&(state.xof), out, ASCON_HASH_SIZE);
     ascon_xofa_free(&(state.xof));
-    return 0;
 }
 
 void ascon_hasha_init(ascon_hasha_state_t *state)

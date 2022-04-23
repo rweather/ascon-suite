@@ -85,14 +85,11 @@ typedef struct
  * \param in Points to the input data to be hashed.
  * \param inlen Length of the input data in bytes.
  *
- * \return Returns zero on success or -1 if there was an error in the
- * parameters.
- *
  * Use ascon_xof_squeeze() instead if you need variable-length XOF ouutput.
  *
  * \sa ascon_xof_init(), ascon_xof_absorb(), ascon_xof_squeeze()
  */
-int ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen);
+void ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Initializes the state for an ASCON-XOF hashing operation.
@@ -212,14 +209,11 @@ void ascon_xof_clear_rate(ascon_xof_state_t *state);
  * \param in Points to the input data to be hashed.
  * \param inlen Length of the input data in bytes.
  *
- * \return Returns zero on success or -1 if there was an error in the
- * parameters.
- *
  * Use ascon_xofa_squeeze() instead if you need variable-length XOF ouutput.
  *
  * \sa ascon_xofa_init(), ascon_xofa_absorb(), ascon_xofa_squeeze()
  */
-int ascon_xofa(unsigned char *out, const unsigned char *in, size_t inlen);
+void ascon_xofa(unsigned char *out, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Initializes the state for an ASCON-XOFA hashing operation.

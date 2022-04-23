@@ -62,12 +62,9 @@ typedef struct
  * \param in Points to the input data to be hashed.
  * \param inlen Length of the input data in bytes.
  *
- * \return Returns zero on success or -1 if there was an error in the
- * parameters.
- *
  * \sa ascon_hash_init(), ascon_hash_absorb(), ascon_hash_squeeze()
  */
-int ascon_hash(unsigned char *out, const unsigned char *in, size_t inlen);
+void ascon_hash(unsigned char *out, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Initializes the state for an ASCON-HASH hashing operation.
@@ -127,12 +124,9 @@ void ascon_hash_finalize(ascon_hash_state_t *state, unsigned char *out);
  * \param in Points to the input data to be hashed.
  * \param inlen Length of the input data in bytes.
  *
- * \return Returns zero on success or -1 if there was an error in the
- * parameters.
- *
  * \sa ascon_hasha_init(), ascon_hasha_absorb(), ascon_hasha_squeeze()
  */
-int ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen);
+void ascon_hasha(unsigned char *out, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Initializes the state for an ASCON-HASHA hashing operation.

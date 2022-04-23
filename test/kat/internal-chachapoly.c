@@ -361,7 +361,7 @@ static void poly1305_finalize
     memcpy(out, state->h, 16);
 }
 
-int internal_chachapoly_aead_encrypt
+void internal_chachapoly_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -404,7 +404,6 @@ int internal_chachapoly_aead_encrypt
 
     /* Compute the final Poly1305 authentication tag */
     poly1305_finalize(&poly, c + mlen, poly_nonce);
-    return 0;
 }
 
 int internal_chachapoly_aead_decrypt

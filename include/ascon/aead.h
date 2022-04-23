@@ -109,12 +109,9 @@ extern "C" {
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128_aead_decrypt()
  */
-int ascon128_aead_encrypt
+void ascon128_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -164,12 +161,9 @@ int ascon128_aead_decrypt
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128a_aead_decrypt()
  */
-int ascon128a_aead_encrypt
+void ascon128a_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -219,12 +213,9 @@ int ascon128a_aead_decrypt
  * be 16 bytes in length.
  * \param k Points to the 20 bytes of the key to use to encrypt the packet.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon80pq_aead_decrypt()
  */
-int ascon80pq_aead_encrypt
+void ascon80pq_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -329,9 +320,6 @@ typedef struct
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * The following sequence can be used to encrypt a list of i plaintext
  * message blocks (m) to produce i ciphertext message blocks (c)
  * and an authentication tag (t).
@@ -366,7 +354,7 @@ typedef struct
  * \sa ascon128_aead_encrypt_block(), ascon128_aead_decrypt_block(),
  * ascon128_aead_encrypt_finalize(), ascon128_aead_decrypt_finalize()
  */
-int ascon128_aead_start
+void ascon128_aead_start
     (ascon128_state_t *state, const unsigned char *ad, size_t adlen,
      const unsigned char *npub, const unsigned char *k);
 
@@ -390,13 +378,10 @@ void ascon128_aead_abort(ascon128_state_t *state);
  * same buffer as \a in.
  * \param len Length of the plaintext and ciphertext in bytes.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128_aead_decrypt_block(), ascon128_aead_start(),
  * ascon128_aead_encrypt_finalize()
  */
-int ascon128_aead_encrypt_block
+void ascon128_aead_encrypt_block
     (ascon128_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len);
 
@@ -408,15 +393,12 @@ int ascon128_aead_encrypt_block
  * \param tag Points to the buffer to receive the authentication tag.
  * Must be at least ASCON128_TAG_SIZE bytes in length.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * The contents of \a state will be freed by this function, destroying
  * any sensitive material that may be present.
  *
  * \sa ascon128_aead_encrypt_block(), ascon128_aead_start()
  */
-int ascon128_aead_encrypt_finalize
+void ascon128_aead_encrypt_finalize
     (ascon128_state_t *state, unsigned char *tag);
 
 /**
@@ -428,13 +410,10 @@ int ascon128_aead_encrypt_finalize
  * same buffer as \a in.
  * \param len Length of the plaintext and ciphertext in bytes.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128_aead_encrypt_block(), ascon128_aead_start(),
  * ascon128_aead_decrypt_finalize()
  */
-int ascon128_aead_decrypt_block
+void ascon128_aead_decrypt_block
     (ascon128_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len);
 
@@ -468,9 +447,6 @@ int ascon128_aead_decrypt_finalize
  * \param npub Points to the public nonce for the packet which must
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
- *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
  *
  * The following sequence can be used to encrypt a list of i plaintext
  * message blocks (m) to produce i ciphertext message blocks (c)
@@ -506,7 +482,7 @@ int ascon128_aead_decrypt_finalize
  * \sa ascon128a_aead_encrypt_block(), ascon128a_aead_decrypt_block(),
  * ascon128a_aead_encrypt_finalize(), ascon128a_aead_decrypt_finalize()
  */
-int ascon128a_aead_start
+void ascon128a_aead_start
     (ascon128a_state_t *state, const unsigned char *ad, size_t adlen,
      const unsigned char *npub, const unsigned char *k);
 
@@ -530,13 +506,10 @@ void ascon128a_aead_abort(ascon128a_state_t *state);
  * same buffer as \a in.
  * \param len Length of the plaintext and ciphertext in bytes.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128a_aead_decrypt_block(), ascon128a_aead_start(),
  * ascon128a_aead_encrypt_finalize()
  */
-int ascon128a_aead_encrypt_block
+void ascon128a_aead_encrypt_block
     (ascon128a_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len);
 
@@ -548,15 +521,12 @@ int ascon128a_aead_encrypt_block
  * \param tag Points to the buffer to receive the authentication tag.
  * Must be at least ASCON128_TAG_SIZE bytes in length.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * The contents of \a state will be freed by this function, destroying
  * any sensitive material that may be present.
  *
  * \sa ascon128a_aead_encrypt_block(), ascon128a_aead_start()
  */
-int ascon128a_aead_encrypt_finalize
+void ascon128a_aead_encrypt_finalize
     (ascon128a_state_t *state, unsigned char *tag);
 
 /**
@@ -568,13 +538,10 @@ int ascon128a_aead_encrypt_finalize
  * same buffer as \a in.
  * \param len Length of the plaintext and ciphertext in bytes.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128a_aead_encrypt_block(), ascon128a_aead_start(),
  * ascon128a_aead_decrypt_finalize()
  */
-int ascon128a_aead_decrypt_block
+void ascon128a_aead_decrypt_block
     (ascon128a_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len);
 
@@ -608,9 +575,6 @@ int ascon128a_aead_decrypt_finalize
  * \param npub Points to the public nonce for the packet which must
  * be 16 bytes in length.
  * \param k Points to the 20 bytes of the key to use to encrypt the packet.
- *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
  *
  * The following sequence can be used to encrypt a list of i plaintext
  * message blocks (m) to produce i ciphertext message blocks (c)
@@ -646,7 +610,7 @@ int ascon128a_aead_decrypt_finalize
  * \sa ascon80pq_aead_encrypt_block(), ascon80pq_aead_decrypt_block(),
  * ascon80pq_aead_encrypt_finalize(), ascon80pq_aead_decrypt_finalize()
  */
-int ascon80pq_aead_start
+void ascon80pq_aead_start
     (ascon80pq_state_t *state, const unsigned char *ad, size_t adlen,
      const unsigned char *npub, const unsigned char *k);
 
@@ -670,13 +634,10 @@ void ascon80pq_aead_abort(ascon80pq_state_t *state);
  * same buffer as \a in.
  * \param len Length of the plaintext and ciphertext in bytes.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon80pq_aead_decrypt_block(), ascon80pq_aead_start(),
  * ascon80pq_aead_encrypt_finalize()
  */
-int ascon80pq_aead_encrypt_block
+void ascon80pq_aead_encrypt_block
     (ascon80pq_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len);
 
@@ -688,15 +649,12 @@ int ascon80pq_aead_encrypt_block
  * \param tag Points to the buffer to receive the authentication tag.
  * Must be at least ASCON80PQ_TAG_SIZE bytes in length.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * The contents of \a state will be freed by this function, destroying
  * any sensitive material that may be present.
  *
  * \sa ascon80pq_aead_encrypt_block(), ascon80pq_aead_start()
  */
-int ascon80pq_aead_encrypt_finalize
+void ascon80pq_aead_encrypt_finalize
     (ascon80pq_state_t *state, unsigned char *tag);
 
 /**
@@ -708,13 +666,10 @@ int ascon80pq_aead_encrypt_finalize
  * same buffer as \a in.
  * \param len Length of the plaintext and ciphertext in bytes.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon80pq_aead_encrypt_block(), ascon80pq_aead_start(),
  * ascon80pq_aead_decrypt_finalize()
  */
-int ascon80pq_aead_decrypt_block
+void ascon80pq_aead_decrypt_block
     (ascon80pq_state_t *state, const unsigned char *in,
      unsigned char *out, size_t len);
 

@@ -100,9 +100,6 @@ typedef struct
  * \param pk Points to the object to receive the pre-computed key value.
  * \param k Points to the 16 bytes of the key.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * The ascon128a_isap_aead_load_key() function can be used to
  * initialize the pre-computed key from a value that was previously
  * saved with ascon128a_isap_aead_save_key().
@@ -110,7 +107,7 @@ typedef struct
  * \sa ascon128a_isap_aead_free(), ascon128a_isap_aead_encrypt(),
  * ascon128a_isap_aead_decrypt(), ascon128a_isap_aead_load_key()
  */
-int ascon128a_isap_aead_init
+void ascon128a_isap_aead_init
     (ascon128a_isap_aead_key_t *pk, const unsigned char *k);
 
 /**
@@ -120,13 +117,10 @@ int ascon128a_isap_aead_init
  * \param pk Points to the object to receive the pre-computed key value.
  * \param k Points to the bytes of the previously-saved key.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128a_isap_aead_free(), ascon128a_isap_aead_encrypt(),
  * ascon128a_isap_aead_decrypt(), ascon128a_isap_aead_save_key()
  */
-int ascon128a_isap_aead_load_key
+void ascon128a_isap_aead_load_key
     (ascon128a_isap_aead_key_t *pk,
      const unsigned char k[ASCON_ISAP_SAVED_KEY_SIZE]);
 
@@ -136,13 +130,10 @@ int ascon128a_isap_aead_load_key
  * \param pk Points to the object to receive the pre-computed key value.
  * \param k Points to the buffer to save the pre-computed key in.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128a_isap_aead_free(), ascon128a_isap_aead_encrypt(),
  * ascon128a_isap_aead_decrypt(), ascon128a_isap_aead_load_key()
  */
-int ascon128a_isap_aead_save_key
+void ascon128a_isap_aead_save_key
     (ascon128a_isap_aead_key_t *pk,
      unsigned char k[ASCON_ISAP_SAVED_KEY_SIZE]);
 
@@ -171,12 +162,9 @@ void ascon128a_isap_aead_free(ascon128a_isap_aead_key_t *pk);
  * be 16 bytes in length.
  * \param pk Points to the pre-computed key value.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128a_isap_aead_decrypt(), ascon128a_isap_aead_init()
  */
-int ascon128a_isap_aead_encrypt
+void ascon128a_isap_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -218,9 +206,6 @@ int ascon128a_isap_aead_decrypt
  * \param pk Points to the object to receive the pre-computed key value.
  * \param k Points to the 16 bytes of the key.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * The ascon128_isap_aead_load_key() function can be used to
  * initialize the pre-computed key from a value that was previously
  * saved with ascon128_isap_aead_save_key().
@@ -228,7 +213,7 @@ int ascon128a_isap_aead_decrypt
  * \sa ascon128_isap_aead_free(), ascon128_isap_aead_encrypt(),
  * ascon128_isap_aead_decrypt(), ascon128_isap_aead_load_key()
  */
-int ascon128_isap_aead_init
+void ascon128_isap_aead_init
     (ascon128_isap_aead_key_t *pk, const unsigned char *k);
 
 /**
@@ -238,13 +223,10 @@ int ascon128_isap_aead_init
  * \param pk Points to the object to receive the pre-computed key value.
  * \param k Points to the bytes of the previously-saved key.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128_isap_aead_free(), ascon128_isap_aead_encrypt(),
  * ascon128_isap_aead_decrypt(), ascon128_isap_aead_save_key()
  */
-int ascon128_isap_aead_load_key
+void ascon128_isap_aead_load_key
     (ascon128_isap_aead_key_t *pk,
      const unsigned char k[ASCON_ISAP_SAVED_KEY_SIZE]);
 
@@ -254,13 +236,10 @@ int ascon128_isap_aead_load_key
  * \param pk Points to the object to receive the pre-computed key value.
  * \param k Points to the buffer to save the pre-computed key in.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128_isap_aead_free(), ascon128_isap_aead_encrypt(),
  * ascon128_isap_aead_decrypt(), ascon128_isap_aead_load_key()
  */
-int ascon128_isap_aead_save_key
+void ascon128_isap_aead_save_key
     (ascon128_isap_aead_key_t *pk,
      unsigned char k[ASCON_ISAP_SAVED_KEY_SIZE]);
 
@@ -289,12 +268,9 @@ void ascon128_isap_aead_free(ascon128_isap_aead_key_t *pk);
  * be 16 bytes in length.
  * \param pk Points to the pre-computed key value.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128_isap_aead_decrypt(), ascon128_isap_aead_init()
  */
-int ascon128_isap_aead_encrypt
+void ascon128_isap_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,

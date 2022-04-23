@@ -71,12 +71,9 @@ extern "C" {
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128_siv_decrypt()
  */
-int ascon128_siv_encrypt
+void ascon128_siv_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -126,12 +123,9 @@ int ascon128_siv_decrypt
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon128a_siv_decrypt()
  */
-int ascon128a_siv_encrypt
+void ascon128a_siv_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -181,12 +175,9 @@ int ascon128a_siv_decrypt
  * be 16 bytes in length.
  * \param k Points to the 20 bytes of the key to use to encrypt the packet.
  *
- * \return 0 on success, or a negative value if there was an error in
- * the parameters.
- *
  * \sa ascon80pq_siv_decrypt()
  */
-int ascon80pq_siv_encrypt
+void ascon80pq_siv_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,

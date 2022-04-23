@@ -190,7 +190,7 @@ static int test_all_zeroes(const unsigned char *buf, size_t len)
 }
 
 /* Wrap incremental encryption to make it look like an all-in-one cipher */
-static int incremental_aead_cipher_encrypt
+static void incremental_aead_cipher_encrypt
     (const aead_cipher_t *alg, void *state, size_t increment,
      unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
@@ -199,29 +199,21 @@ static int incremental_aead_cipher_encrypt
      const unsigned char *k)
 {
     size_t posn, temp;
-    int result;
-    result = (*(alg->start_inc))(state, ad, adlen, npub, k);
-    if (result == 0) {
-        if (increment == 0) {
-            /* Encrypt everything in one go */
-            result = (*(alg->encrypt_inc))(state, m, c, mlen);
-        } else {
-            /* Break the request up into chunks */
-            for (posn = 0; posn < mlen; posn += increment) {
-                temp = mlen - posn;
-                if (temp > increment)
-                    temp = increment;
-                result = (*(alg->encrypt_inc))(state, m + posn, c + posn, temp);
-                if (result != 0)
-                    break;
-            }
+    (*(alg->start_inc))(state, ad, adlen, npub, k);
+    if (increment == 0) {
+        /* Encrypt everything in one go */
+        (*(alg->encrypt_inc))(state, m, c, mlen);
+    } else {
+        /* Break the request up into chunks */
+        for (posn = 0; posn < mlen; posn += increment) {
+            temp = mlen - posn;
+            if (temp > increment)
+                temp = increment;
+            (*(alg->encrypt_inc))(state, m + posn, c + posn, temp);
         }
-        *clen = mlen + alg->tag_len;
     }
-    if (result == 0) {
-        result = (*(alg->encrypt_fin))(state, c + mlen);
-    }
-    return result;
+    *clen = mlen + alg->tag_len;
+    (*(alg->encrypt_fin))(state, c + mlen);
 }
 
 /* Wrap incremental decryption to make it look like an all-in-one cipher */
@@ -234,31 +226,23 @@ static int incremental_aead_cipher_decrypt
      const unsigned char *k)
 {
     size_t posn, temp;
-    int result;
     if (clen < alg->tag_len)
         return -1;
-    result = (*(alg->start_inc))(state, ad, adlen, npub, k);
-    if (result == 0) {
-        *mlen = clen - alg->tag_len;
-        if (increment == 0) {
-            /* Decrypt everything in one go */
-            result = (*(alg->decrypt_inc))(state, c, m, *mlen);
-        } else {
-            /* Break the request up into chunks */
-            for (posn = 0; posn < *mlen; posn += increment) {
-                temp = *mlen - posn;
-                if (temp > increment)
-                    temp = increment;
-                result = (*(alg->decrypt_inc))(state, c + posn, m + posn, temp);
-                if (result != 0)
-                    break;
-            }
+    (*(alg->start_inc))(state, ad, adlen, npub, k);
+    *mlen = clen - alg->tag_len;
+    if (increment == 0) {
+        /* Decrypt everything in one go */
+        (*(alg->decrypt_inc))(state, c, m, *mlen);
+    } else {
+        /* Break the request up into chunks */
+        for (posn = 0; posn < *mlen; posn += increment) {
+            temp = *mlen - posn;
+            if (temp > increment)
+                temp = increment;
+            (*(alg->decrypt_inc))(state, c + posn, m + posn, temp);
         }
     }
-    if (result == 0) {
-        result = (*(alg->decrypt_fin))(state, c + clen - alg->tag_len);
-    }
-    return result;
+    return (*(alg->decrypt_fin))(state, c + clen - alg->tag_len);
 }
 
 /* Test a cipher algorithm on a specific test vector */
@@ -325,16 +309,16 @@ static int test_cipher_inner
     memset(temp1, 0xAA, ciphertext->size);
     len = 0xBADBEEF;
     if (alg->start_inc) {
-        result = incremental_aead_cipher_encrypt
+        incremental_aead_cipher_encrypt
             (alg, inc_state, 0, temp1, &len,
              plaintext->data, plaintext->size,
              ad->data, ad->size, nonce->data, actual_key);
     } else {
-        result = (*(alg->encrypt))
+        (*(alg->encrypt))
             (temp1, &len, plaintext->data, plaintext->size,
              ad->data, ad->size, nonce->data, actual_key);
     }
-    if (result != 0 || len != ciphertext->size ||
+    if (len != ciphertext->size ||
             !test_compare(temp1, ciphertext->data, len)) {
         test_print_error(alg->name, vec, "encryption failed");
         exit_val = 0;
@@ -348,11 +332,11 @@ static int test_cipher_inner
         for (posn = 0; sizes[posn] != 0 && result == 0; ++posn) {
             memset(temp1, 0xAA, ciphertext->size);
             len = 0xBADBEEF;
-            result = incremental_aead_cipher_encrypt
+            incremental_aead_cipher_encrypt
                 (alg, inc_state, sizes[posn], temp1, &len,
                  plaintext->data, plaintext->size,
                  ad->data, ad->size, nonce->data, actual_key);
-            if (result != 0 || len != ciphertext->size ||
+            if (len != ciphertext->size ||
                     !test_compare(temp1, ciphertext->data, len)) {
                 test_print_error(alg->name, vec, "incremental encryption failed");
                 exit_val = 0;
@@ -366,15 +350,15 @@ static int test_cipher_inner
     memcpy(temp1, plaintext->data, plaintext->size);
     len = 0xBADBEEF;
     if (alg->start_inc) {
-        result = incremental_aead_cipher_encrypt
+        incremental_aead_cipher_encrypt
             (alg, inc_state, 0, temp1, &len, temp1, plaintext->size,
              ad->size ? ad->data : 0, ad->size, nonce->data, actual_key);
     } else {
-        result = (*(alg->encrypt))
+        (*(alg->encrypt))
             (temp1, &len, temp1, plaintext->size,
              ad->size ? ad->data : 0, ad->size, nonce->data, actual_key);
     }
-    if (result != 0 || len != ciphertext->size ||
+    if (len != ciphertext->size ||
             !test_compare(temp1, ciphertext->data, len)) {
         test_print_error(alg->name, vec, "in-place encryption failed");
         exit_val = 0;
@@ -760,7 +744,6 @@ static int test_hash_inner
     void *state;
     const test_string_t *msg;
     const test_string_t *md;
-    int result;
     size_t index;
     size_t inc;
 
@@ -775,11 +758,7 @@ static int test_hash_inner
     /* Hash the input message with the all-in-one function */
     if (!alg->init_fixed) {
         memset(out, 0xAA, alg->hash_len);
-        result = (*(alg->hash))(out, msg->data, msg->size);
-        if (result != 0) {
-            test_print_error(alg->name, vec, "all-in-one hash returned %d", result);
-            return 0;
-        }
+        (*(alg->hash))(out, msg->data, msg->size);
         if (!test_compare(out, md->data, md->size)) {
             test_print_error(alg->name, vec, "all-in-one hash failed");
             return 0;

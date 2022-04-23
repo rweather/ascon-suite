@@ -87,7 +87,7 @@ static void ascon_siv_encrypt_8_80pq
     }
 }
 
-int ascon80pq_siv_encrypt
+void ascon80pq_siv_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -125,7 +125,6 @@ int ascon80pq_siv_encrypt
     /* Encrypt the plaintext to create the ciphertext */
     ascon_siv_encrypt_8_80pq(&state, c, m, mlen, 6);
     ascon_free(&state);
-    return 0;
 }
 
 int ascon80pq_siv_decrypt

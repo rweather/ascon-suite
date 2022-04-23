@@ -61,11 +61,8 @@ extern aead_hash_algorithm_t const internal_blake2s_hash_algorithm;
  * BLAKE2S_HASH_SIZE bytes in length.
  * \param in Points to the input data to be hashed.
  * \param inlen Length of the input data in bytes.
- *
- * \return Returns zero on success or -1 if there was an error in the
- * parameters.
  */
-int internal_blake2s_hash
+void internal_blake2s_hash
     (unsigned char *out, const unsigned char *in, size_t inlen);
 
 #ifdef __cplusplus

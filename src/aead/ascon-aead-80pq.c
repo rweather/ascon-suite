@@ -29,7 +29,7 @@
  */
 static uint8_t const ASCON80PQ_IV[4] = {0xa0, 0x40, 0x0c, 0x06};
 
-int ascon80pq_aead_encrypt
+void ascon80pq_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -67,7 +67,6 @@ int ascon80pq_aead_encrypt
     ascon_absorb_16(&state, k + 4, 24);
     ascon_squeeze_16(&state, c + mlen, 24);
     ascon_free(&state);
-    return 0;
 }
 
 int ascon80pq_aead_decrypt

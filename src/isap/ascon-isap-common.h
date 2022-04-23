@@ -224,13 +224,9 @@ static void ISAP_CONCAT(ISAP_ALG_NAME,_mac)
     ascon_clean(preserve, sizeof(preserve));
 }
 
-int ISAP_CONCAT(ISAP_ALG_NAME,_aead_init)
+void ISAP_CONCAT(ISAP_ALG_NAME,_aead_init)
     (ISAP_KEY_STATE *pk, const unsigned char *k)
 {
-    /* Validate the parameters */
-    if (!pk || !k)
-        return -1;
-
     /* Expand the encryption key */
     ascon_init(&(pk->ke));
     ascon_overwrite_bytes(&(pk->ke), k, 0, ISAP_KEY_SIZE);
@@ -248,17 +244,12 @@ int ISAP_CONCAT(ISAP_ALG_NAME,_aead_init)
          sizeof(ISAP_CONCAT(ISAP_ALG_NAME,_IV_KA)));
     ascon_permute(&(pk->ka), 12 - ISAP_sK);
     ascon_release(&(pk->ka));
-    return 0;
 }
 
-int ISAP_CONCAT(ISAP_ALG_NAME,_aead_load_key)
+void ISAP_CONCAT(ISAP_ALG_NAME,_aead_load_key)
     (ISAP_KEY_STATE *pk,
      const unsigned char k[ASCON_ISAP_SAVED_KEY_SIZE])
 {
-    /* Validate the parameters */
-    if (!pk || !k)
-        return -1;
-
     /* Load the ke and ka values directly into the permutation states */
     ascon_init(&(pk->ke));
     ascon_overwrite_bytes(&(pk->ke), k, 0, ISAP_STATE_SIZE);
@@ -266,17 +257,12 @@ int ISAP_CONCAT(ISAP_ALG_NAME,_aead_load_key)
     ascon_init(&(pk->ka));
     ascon_overwrite_bytes(&(pk->ka), k + ISAP_STATE_SIZE, 0, ISAP_STATE_SIZE);
     ascon_release(&(pk->ka));
-    return 0;
 }
 
-int ISAP_CONCAT(ISAP_ALG_NAME,_aead_save_key)
+void ISAP_CONCAT(ISAP_ALG_NAME,_aead_save_key)
     (ISAP_KEY_STATE *pk,
      unsigned char k[ASCON_ISAP_SAVED_KEY_SIZE])
 {
-    /* Validate the parameters */
-    if (!pk || !k)
-        return -1;
-
     /* Extract the ASCON state for ke and ka into the buffer */
     ascon_acquire(&(pk->ke));
     ascon_extract_bytes(&(pk->ke), k, 0, ISAP_STATE_SIZE);
@@ -284,7 +270,6 @@ int ISAP_CONCAT(ISAP_ALG_NAME,_aead_save_key)
     ascon_acquire(&(pk->ka));
     ascon_extract_bytes(&(pk->ka), k + ISAP_STATE_SIZE, 0, ISAP_STATE_SIZE);
     ascon_release(&(pk->ka));
-    return 0;
 }
 
 void ISAP_CONCAT(ISAP_ALG_NAME,_aead_free)(ISAP_KEY_STATE *pk)
@@ -297,7 +282,7 @@ void ISAP_CONCAT(ISAP_ALG_NAME,_aead_free)(ISAP_KEY_STATE *pk)
     }
 }
 
-int ISAP_CONCAT(ISAP_ALG_NAME,_aead_encrypt)
+void ISAP_CONCAT(ISAP_ALG_NAME,_aead_encrypt)
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -317,7 +302,6 @@ int ISAP_CONCAT(ISAP_ALG_NAME,_aead_encrypt)
     ISAP_CONCAT(ISAP_ALG_NAME,_mac)
         (&state, pk, npub, ad, adlen, c, mlen, c + mlen);
     ascon_free(&state);
-    return 0;
 }
 
 int ISAP_CONCAT(ISAP_ALG_NAME,_aead_decrypt)

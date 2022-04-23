@@ -89,7 +89,7 @@ static void ascon_siv_encrypt_16
     }
 }
 
-int ascon128a_siv_encrypt
+void ascon128a_siv_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -127,7 +127,6 @@ int ascon128a_siv_encrypt
     /* Encrypt the plaintext to create the ciphertext */
     ascon_siv_encrypt_16(&state, c, m, mlen, 4);
     ascon_free(&state);
-    return 0;
 }
 
 int ascon128a_siv_decrypt

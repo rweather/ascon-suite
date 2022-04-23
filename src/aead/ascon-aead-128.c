@@ -28,7 +28,7 @@
 static uint8_t const ASCON128_IV[8] =
     {0x80, 0x40, 0x0c, 0x06, 0x00, 0x00, 0x00, 0x00};
 
-int ascon128_aead_encrypt
+void ascon128_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -66,7 +66,6 @@ int ascon128_aead_encrypt
     ascon_absorb_16(&state, k, 24);
     ascon_squeeze_partial(&state, c + mlen, 24, ASCON128_TAG_SIZE);
     ascon_free(&state);
-    return 0;
 }
 
 int ascon128_aead_decrypt
