@@ -117,6 +117,7 @@ int ascon80pq_siv_encrypt
     ascon_permute(&state, 0);
     ascon_absorb_16(&state, k + 4, 24);
     ascon_squeeze_16(&state, c + mlen, 24);
+    ascon_free(&state);
 
     /* Re-initalize the ASCON state for the encryption phase */
     ascon80pq_siv_init(&state, c + mlen, k, ASCON80PQ_IV2);
@@ -149,6 +150,7 @@ int ascon80pq_siv_decrypt
 
     /* Decrypt the ciphertext to create the plaintext */
     ascon_siv_encrypt_8_80pq(&state, m, c, clen, 6);
+    ascon_free(&state);
 
     /* Re-initialize the ASCON state for the authentication phase */
     ascon80pq_siv_init(&state, npub, k, ASCON80PQ_IV1);

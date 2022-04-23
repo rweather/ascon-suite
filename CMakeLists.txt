@@ -11,6 +11,7 @@ option(BACKEND_C32 "Force the use of the c32 backend" OFF)
 option(BACKEND_C64 "Force the use of the c64 backend" OFF)
 option(BACKEND_DIRECT_XOR "Force the use of the direct-xor backend" OFF)
 option(BACKEND_GENERIC "Force the use of the generic backend" OFF)
+option(CHECK_ACQUIRE_RELEASE "Check that acquire/release calls are balanced" OFF)
 
 # Option to compile a minimal configuration with just the static library.
 # This may be needed when cross-compiling for embedded microcontrollers.
@@ -37,6 +38,9 @@ if(BACKEND_DIRECT_XOR)
 endif()
 if(BACKEND_GENERIC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_GENERIC")
+endif()
+if(CHECK_ACQUIRE_RELEASE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_GENERIC -DASCON_CHECK_ACQUIRE_RELEASE")
 endif()
 
 # Require the c99 standard to compile the code.
