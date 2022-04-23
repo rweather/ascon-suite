@@ -51,6 +51,14 @@ and test programs, which may not compile for embedded microcontrollers due to
 missing libc functions or other platform constraints.  Only the static library
 libascon\_static.a is built in the minimal configuration.
 
+History
+-------
+
+The functionality in this library was originally prototyped in the
+[LWC Finalists](https://github.com/rweather/lwc-finalists) repository.
+This repository extracts and expands the ASCON-specific parts of the
+original repository.
+
 Contact
 -------
 

@@ -144,6 +144,13 @@ public standards body, but I did try to follow general practice when
 creating such modes.  See the individual pages for the design choices
 that I made.  Feedback welcome.
 
+\section mainpage_histor History
+
+The functionality in this library was originally prototyped in the
+<a href="https://github.com/rweather/lwc-finalists">LWC Finalists</a>
+repository.  This repository extracts and expands the ASCON-specific
+parts of the original repository.
+
 \section mainpage_contact Contact
 
 For more information on these libraries, to report bugs, or to suggest
