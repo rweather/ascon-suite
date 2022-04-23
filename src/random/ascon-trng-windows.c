@@ -38,7 +38,7 @@
 
 int ascon_trng_generate(unsigned char *out, size_t outlen)
 {
-    HCRYPTPROV provider = NULL;
+    HCRYPTPROV provider = 0;
     int ok = 0;
     if (CryptAcquireContextW
             (&provider, 0, 0, PROV_RSA_FULL,
