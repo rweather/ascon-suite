@@ -98,6 +98,7 @@ minimal configuration.
 
 \section mainpage_examples Examples
 
+\li \ref asconcrypt "Encrypting and decrypting files with ASCONcrypt"
 \li \ref asconsum "Computing file checksums with ASCON-HASH"
 \li \ref permutation/hash/main.c "Direct hashing" with the \ref permutation "ASCON permutation"
 \li \ref permutation/encrypt/main.c "Direct CFB encryption" with the \ref permutation "ASCON permutation"

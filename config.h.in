@@ -12,3 +12,8 @@
 #cmakedefine HAVE_CLOCK_GETTIME
 #cmakedefine HAVE_GETOPT_H
 #cmakedefine HAVE_GETOPT
+#cmakedefine HAVE_ISATTY
+#cmakedefine HAVE_UNISTD_H
+#cmakedefine HAVE_FCNTL_H
+#cmakedefine HAVE_OPEN
+#cmakedefine HAVE_GETPASS

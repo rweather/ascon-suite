@@ -88,15 +88,13 @@ static void HMAC_CONCAT(HMAC_ALG_NAME,_absorb_key)
      * stack of size HMAC_BLOCK_SIZE. */
     if (keylen <= HMAC_BLOCK_SIZE) {
         posn = 0;
-        while (keylen > 0) {
+        while (posn < keylen) {
             len = keylen - posn;
             if (len > HMAC_HASH_SIZE)
                 len = HMAC_HASH_SIZE;
-            HMAC_CONCAT(HMAC_ALG_NAME,_xor_pad)(temp, key, len, pad);
+            HMAC_CONCAT(HMAC_ALG_NAME,_xor_pad)(temp, key + posn, len, pad);
             HMAC_HASH_UPDATE(&(state->hash), temp, len);
             posn += len;
-            key += len;
-            keylen -= len;
         }
     } else {
         /* Hash long keys down first and then absorb */
