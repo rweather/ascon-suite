@@ -129,7 +129,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng_8h.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outlen)</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    HCRYPTPROV provider = NULL;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    HCRYPTPROV provider = 0;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">int</span> ok = 0;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">if</span> (CryptAcquireContextW</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            (&amp;provider, 0, 0, PROV_RSA_FULL,</div>
@@ -254,7 +254,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 24 2022 04:15:55 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 24 2022 11:51:26 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

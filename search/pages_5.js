@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['using_20the_20ascon_20snp_20permutation_20api',['Using the ASCON SnP Permutation API',['../permutation.html',1,'']]]
+  ['synthetic_20initialization_20vector_20_28siv_29_20mode_20for_20ascon',['Synthetic Initialization Vector (SIV) mode for ASCON',['../siv.html',1,'']]]
 ];

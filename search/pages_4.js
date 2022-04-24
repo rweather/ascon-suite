@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['synthetic_20initialization_20vector_20_28siv_29_20mode_20for_20ascon',['Synthetic Initialization Vector (SIV) mode for ASCON',['../siv.html',1,'']]]
+  ['porting_20the_20ascon_20permutation',['Porting the ASCON permutation',['../porting.html',1,'']]],
+  ['porting_20the_20trng_20to_20new_20platforms',['Porting the TRNG to new platforms',['../porting_trng.html',1,'']]]
 ];
