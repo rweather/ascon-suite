@@ -102,6 +102,7 @@ minimal configuration.
 \li \ref asconsum "Computing file checksums with ASCON-HASH"
 \li \ref permutation/hash/main.c "Direct hashing" with the \ref permutation "ASCON permutation"
 \li \ref permutation/encrypt/main.c "Direct CFB encryption" with the \ref permutation "ASCON permutation"
+\li \ref blockcipher "Building a block cipher with the ASCON permutation"
 
 \section mainpage_standards Standards
 
