@@ -12,7 +12,10 @@ option(BACKEND_C32 "Force the use of the c32 backend" OFF)
 option(BACKEND_C64 "Force the use of the c64 backend" OFF)
 option(BACKEND_DIRECT_XOR "Force the use of the direct-xor backend" OFF)
 option(BACKEND_GENERIC "Force the use of the generic backend" OFF)
+
+# Other options.
 option(CHECK_ACQUIRE_RELEASE "Check that acquire/release calls are balanced" OFF)
+option(COVERAGE "Enable the use of gcov for coverage testing" OFF)
 
 # Option to compile a minimal configuration with just the static library.
 # This may be needed when cross-compiling for embedded microcontrollers.
@@ -23,7 +26,11 @@ configure_file(include/ascon/version.h.in version.h)
 
 # Set up the type of build and the compiler flags to use.
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
+    if(COVERAGE)
+        set(CMAKE_BUILD_TYPE Debug)
+    else()
+        set(CMAKE_BUILD_TYPE Release)
+    endif()
 endif()
 set(CMAKE_C_FLAGS "-Wall -Wextra -DHAVE_CONFIG_H ${CMAKE_C_FLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "-g")
@@ -42,6 +49,9 @@ if(BACKEND_GENERIC)
 endif()
 if(CHECK_ACQUIRE_RELEASE)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_GENERIC -DASCON_CHECK_ACQUIRE_RELEASE")
+endif()
+if(COVERAGE)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
 # Require the c99 standard to compile the code.
