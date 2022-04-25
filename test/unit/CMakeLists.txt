@@ -40,7 +40,28 @@ add_executable(ascon-test-permutation
 )
 target_link_libraries(ascon-test-permutation PUBLIC ascon_static)
 
+add_executable(ascon-test-permutation-x2
+    ${COMMON_TEST_SOURCES}
+    test-permutation-x2.c
+)
+target_link_libraries(ascon-test-permutation-x2 PUBLIC ascon_static)
+
+add_executable(ascon-test-permutation-x3
+    ${COMMON_TEST_SOURCES}
+    test-permutation-x3.c
+)
+target_link_libraries(ascon-test-permutation-x3 PUBLIC ascon_static)
+
+add_executable(ascon-test-permutation-x4
+    ${COMMON_TEST_SOURCES}
+    test-permutation-x4.c
+)
+target_link_libraries(ascon-test-permutation-x4 PUBLIC ascon_static)
+
 add_test(NAME ASCON-Permutation COMMAND ascon-test-permutation)
+add_test(NAME ASCON-Permutation-x2 COMMAND ascon-test-permutation-x2)
+add_test(NAME ASCON-Permutation-x3 COMMAND ascon-test-permutation-x3)
+add_test(NAME ASCON-Permutation-x4 COMMAND ascon-test-permutation-x4)
 add_test(NAME ASCON-HKDF COMMAND ascon-test-hkdf)
 add_test(NAME ASCON-HMAC COMMAND ascon-test-hmac)
 add_test(NAME ASCON-KMAC COMMAND ascon-test-kmac)

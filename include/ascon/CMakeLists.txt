@@ -6,6 +6,7 @@ list(APPEND ASCON_HEADERS
     hmac.h
     isap.h
     kmac.h
+    masking.h
     pbkdf2.h
     permutation.h
     random.h

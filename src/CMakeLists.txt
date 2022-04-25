@@ -47,6 +47,14 @@ list(APPEND ASCON_SOURCES
     mac/ascon-kmac.c
     mac/ascon-kmaca.c
     mac/ascon-kmac-common.h
+    masking/ascon-masked-backend.h
+    masking/ascon-masked-word.h
+    masking/ascon-masked-word64.c
+    masking/ascon-masked-state.h
+    masking/ascon-masked-state64.c
+    masking/ascon-x2-c64.c
+    masking/ascon-x3-c64.c
+    masking/ascon-x4-c64.c
     random/ascon-prng.c
     random/ascon-random.c
     random/ascon-select-trng.h
