@@ -106,7 +106,8 @@ void ascon_masked_word_x3_from_x4
 {
     uint64_t random1 = ascon_trng_generate_64(trng);
     uint64_t random2 = ascon_trng_generate_64(trng);
-    dest->S[0] = (random1 ^ random2 ^ src->S[0]) ^ src->S[3];
+    dest->S[0] = (random1 ^ random2 ^ src->S[0]) ^
+                 ascon_mask64_unrotate_share3_0(src->S[3]);
     dest->S[1] = ascon_mask64_rotate_share1_0(random1) ^ src->S[1];
     dest->S[2] = ascon_mask64_rotate_share2_0(random2) ^ src->S[2];
     dest->S[3] = 0;

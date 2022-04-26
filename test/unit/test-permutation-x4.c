@@ -63,6 +63,18 @@ static void ascon_x4_add_bytes_all
     }
 }
 
+static void ascon_x4_add_bytes_all_load32
+    (ascon_masked_state_t *state, const uint8_t *data, ascon_trng_state_t *trng)
+{
+    unsigned offset;
+    ascon_masked_word_t word;
+    for (offset = 0; offset < 40; offset += 8) {
+        ascon_masked_word_x4_load_32
+            (&word, data + offset, data + offset + 4, trng);
+        ascon_x4_add_word(state, &word, offset);
+    }
+}
+
 static void ascon_x4_overwrite_bytes_all
     (ascon_masked_state_t *state, const uint8_t *data, ascon_trng_state_t *trng)
 {
@@ -205,8 +217,8 @@ void test_ascon_permutation_x4(void)
     printf("Free ... ");
     fflush(stdout);
     ascon_x4_init(&state);
-    ascon_x4_randomize(&state, &trng);
     ascon_x4_add_bytes_all(&state, ascon_input, &trng);
+    ascon_x4_randomize(&state, &trng);
     ascon_x4_free(&state);
     ok = 1;
     for (posn = 0; posn < sizeof(state); ++posn) {
@@ -230,6 +242,7 @@ void test_ascon_permutation_x4(void)
         ascon_x4_add_bytes_all(&state, ascon_output_8, &trng);
         ascon_masked_word_x4_load(&word, ascon_input, &trng);
         ascon_x4_add_word(&state, &word, offset);
+        ascon_x4_randomize(&state, &trng);
         ascon_x4_extract_bytes_all(&state, buffer);
         ascon_x4_free(&state);
         for (posn = 0; posn < 40; ++posn) {
@@ -304,12 +317,16 @@ void test_ascon_permutation_x4(void)
     for (offset = 0; offset < 40; offset += 8) {
         ascon_x4_init(&state);
         ascon_x4_randomize(&state, &trng);
-        ascon_x4_add_bytes_all(&state, ascon_output_8, &trng);
+        ascon_x4_add_bytes_all_load32(&state, ascon_output_8, &trng);
         ascon_x4_extract_word(&state, &word, offset);
         ascon_masked_word_x4_store(buffer, &word);
+        ascon_masked_word_x4_randomize(&word, &trng);
+        ascon_masked_word_x4_store(buffer + 8, &word);
         ascon_x4_free(&state);
         for (posn = 0; posn < 8; ++posn) {
             if (buffer[posn] != ascon_output_8[posn + offset])
+                ok = 0;
+            if (buffer[posn + 8] != ascon_output_8[posn + offset])
                 ok = 0;
         }
     }
@@ -473,6 +490,28 @@ void test_ascon_permutation_x4(void)
     ascon_x4_acquire(&state);
     ascon_x4_free(&state);
     if (memcmp(buffer, ascon_output_12, 40) != 0) {
+        printf("failed\n");
+        test_exit_result = 1;
+    } else {
+        printf("ok\n");
+    }
+
+    printf("Convert Masked Words ... ");
+    fflush(stdout);
+    ok = 1;
+    memset(&word2, 0, sizeof(word2));
+    ascon_masked_word_x2_load(&word, ascon_output_12, &trng);
+    ascon_masked_word_x4_from_x2(&word2, &word, &trng);
+    ascon_masked_word_x4_store(buffer, &word2);
+    if (memcmp(buffer, ascon_output_12, 8) != 0)
+        ok = 0;
+    memset(&word2, 0, sizeof(word2));
+    ascon_masked_word_x3_load(&word, ascon_output_8, &trng);
+    ascon_masked_word_x4_from_x3(&word2, &word, &trng);
+    ascon_masked_word_x4_store(buffer, &word2);
+    if (memcmp(buffer, ascon_output_8, 8) != 0)
+        ok = 0;
+    if (!ok) {
         printf("failed\n");
         test_exit_result = 1;
     } else {
