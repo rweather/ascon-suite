@@ -160,27 +160,6 @@ void ascon_x2_extract_word
      unsigned offset);
 
 /**
- * \brief Extracts a masked word from the ASCON-x2 state and XOR's it
- * with an input masked word to produce an output masked word.
- * Also write the original input word into the ASCON-x2 state.
- *
- * \param state The ASCON-x2 state in "operational" form.
- * \param input Points to the input word.
- * \param output Points to the output word.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * This function has the effect of calling ascon_x2_extract_and_add_word()
- * and then ascon_x2_overwrite_word(), but it also works for the case where
- * \a input and \a output are the same word.  This combination is
- * typically used for AEAD decryption where the input ciphertext
- * needs to be incorporated into the state to authenticate it.
- */
-void ascon_x2_extract_and_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *input,
-     ascon_masked_word_t *output, unsigned offset);
-
-/**
  * \brief Permutes the ASCON-x2 state with a specified number of rounds.
  *
  * \param state The ASCON-x2 state in "operational" form.
@@ -352,27 +331,6 @@ void ascon_x3_extract_word
      unsigned offset);
 
 /**
- * \brief Extracts a masked word from the ASCON-x3 state and XOR's it
- * with an input masked word to produce an output masked word.
- * Also write the original input word into the ASCON-x3 state.
- *
- * \param state The ASCON-x3 state in "operational" form.
- * \param input Points to the input word.
- * \param output Points to the output word.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * This function has the effect of calling ascon_x3_extract_and_add_word()
- * and then ascon_x3_overwrite_word(), but it also works for the case where
- * \a input and \a output are the same word.  This combination is
- * typically used for AEAD decryption where the input ciphertext
- * needs to be incorporated into the state to authenticate it.
- */
-void ascon_x3_extract_and_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *input,
-     ascon_masked_word_t *output, unsigned offset);
-
-/**
  * \brief Permutes the ASCON-x3 state with a specified number of rounds.
  *
  * \param state The ASCON-x3 state in "operational" form.
@@ -542,27 +500,6 @@ void ascon_x4_extract_word
      unsigned offset);
 
 /**
- * \brief Extracts a masked word from the ASCON-x4 state and XOR's it
- * with an input masked word to produce an output masked word.
- * Also write the original input word into the ASCON-x4 state.
- *
- * \param state The ASCON-x4 state in "operational" form.
- * \param input Points to the input word.
- * \param output Points to the output word.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * This function has the effect of calling ascon_x4_extract_and_add_word()
- * and then ascon_x4_overwrite_word(), but it also works for the case where
- * \a input and \a output are the same word.  This combination is
- * typically used for AEAD decryption where the input ciphertext
- * needs to be incorporated into the state to authenticate it.
- */
-void ascon_x4_extract_and_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *input,
-     ascon_masked_word_t *output, unsigned offset);
-
-/**
  * \brief Permutes the ASCON-x4 state with a specified number of rounds.
  *
  * \param state The ASCON-x4 state in "operational" form.
@@ -653,6 +590,21 @@ void ascon_x4_copy_from_x3
 void ascon_x4_copy_from_x4
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng);
+
+/**
+ * \brief Adds a padding marker to the masked state.
+ *
+ * \param state The masked state to be padded.
+ * \param offset Offset of the padding marker (0 to 39).
+ */
+void ascon_masked_state_pad(ascon_masked_state_t *state, unsigned offset);
+
+/**
+ * \brief Adds a separator marker to the masked state.
+ *
+ * \param state The masked state to add the separator marker to.
+ */
+void ascon_masked_state_separator(ascon_masked_state_t *state);
 
 #ifdef __cplusplus
 }

@@ -155,7 +155,6 @@ void test_ascon_permutation_x4(void)
     ascon_masked_word_t word2;
     uint64_t preserve[3];
     uint8_t buffer[40];
-    uint8_t buffer2[40];
     unsigned offset, posn;
     int ok;
 
@@ -327,40 +326,6 @@ void test_ascon_permutation_x4(void)
             if (buffer[posn] != ascon_output_8[posn + offset])
                 ok = 0;
             if (buffer[posn + 8] != ascon_output_8[posn + offset])
-                ok = 0;
-        }
-    }
-    if (!ok) {
-        printf("failed\n");
-        test_exit_result = 1;
-    } else {
-        printf("ok\n");
-    }
-
-    printf("Extract And Overwrite Words ... ");
-    fflush(stdout);
-    ok = 1;
-    for (offset = 0; offset < 40; offset += 8) {
-        ascon_x4_init(&state);
-        ascon_x4_randomize(&state, &trng);
-        ascon_x4_overwrite_bytes_all(&state, ascon_output_8, &trng);
-        memset(buffer, 0x55, sizeof(buffer));
-        ascon_masked_word_x4_load(&word, ascon_input, &trng);
-        ascon_x4_extract_and_overwrite_word(&state, &word, &word2, offset);
-        ascon_x4_extract_bytes_all(&state, buffer2);
-        ascon_masked_word_x4_store(buffer, &word2);
-        ascon_x4_free(&state);
-        for (posn = 0; posn < 8; ++posn) {
-            uint8_t value = ascon_output_8[posn + offset];
-            value ^= ascon_input[posn];
-            if (value != buffer[posn])
-                ok = 0;
-        }
-        for (posn = 0; posn < 40; ++posn) {
-            uint8_t value = buffer2[posn];
-            if (posn >= offset && posn < (offset + 8))
-                value = ascon_input[posn - offset];
-            if (value != buffer2[posn])
                 ok = 0;
         }
     }

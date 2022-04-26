@@ -74,18 +74,6 @@ void ascon_x2_extract_word
     word->S[1] = state->M[offset / 8].S[1];
 }
 
-void ascon_x2_extract_and_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *input,
-     ascon_masked_word_t *output, unsigned offset)
-{
-    uint64_t word0 = input->S[0];
-    uint64_t word1 = input->S[1];
-    output->S[0] = word0 ^ state->M[offset / 8].S[0];
-    output->S[1] = word1 ^ state->M[offset / 8].S[1];
-    state->M[offset / 8].S[0] = word0;
-    state->M[offset / 8].S[1] = word1;
-}
-
 void ascon_x2_release(ascon_masked_state_t *state)
 {
     /* Nothing to do here */
@@ -260,21 +248,6 @@ void ascon_x3_extract_word
     word->S[0] = state->M[offset / 8].S[0];
     word->S[1] = state->M[offset / 8].S[1];
     word->S[2] = state->M[offset / 8].S[2];
-}
-
-void ascon_x3_extract_and_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *input,
-     ascon_masked_word_t *output, unsigned offset)
-{
-    uint64_t word0 = input->S[0];
-    uint64_t word1 = input->S[1];
-    uint64_t word2 = input->S[2];
-    output->S[0] = word0 ^ state->M[offset / 8].S[0];
-    output->S[1] = word1 ^ state->M[offset / 8].S[1];
-    output->S[2] = word2 ^ state->M[offset / 8].S[2];
-    state->M[offset / 8].S[0] = word0;
-    state->M[offset / 8].S[1] = word1;
-    state->M[offset / 8].S[2] = word2;
 }
 
 void ascon_x3_release(ascon_masked_state_t *state)
@@ -468,24 +441,6 @@ void ascon_x4_extract_word
     word->S[3] = state->M[offset / 8].S[3];
 }
 
-void ascon_x4_extract_and_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *input,
-     ascon_masked_word_t *output, unsigned offset)
-{
-    uint64_t word0 = input->S[0];
-    uint64_t word1 = input->S[1];
-    uint64_t word2 = input->S[2];
-    uint64_t word3 = input->S[3];
-    output->S[0] = word0 ^ state->M[offset / 8].S[0];
-    output->S[1] = word1 ^ state->M[offset / 8].S[1];
-    output->S[2] = word2 ^ state->M[offset / 8].S[2];
-    output->S[3] = word3 ^ state->M[offset / 8].S[3];
-    state->M[offset / 8].S[0] = word0;
-    state->M[offset / 8].S[1] = word1;
-    state->M[offset / 8].S[2] = word2;
-    state->M[offset / 8].S[3] = word3;
-}
-
 void ascon_x4_release(ascon_masked_state_t *state)
 {
     /* Nothing to do here */
@@ -628,6 +583,17 @@ void ascon_x4_copy_from_x4
         dest->M[index].S[3] =
             ascon_mask64_rotate_share3_0(random3) ^ src->M[index].S[3];
     }
+}
+
+void ascon_masked_state_pad(ascon_masked_state_t *state, unsigned offset)
+{
+    state->M[offset / 8U].S[0] ^=
+        (0x8000000000000000ULL >> ((offset & 7U) * 8U));
+}
+
+void ascon_masked_state_separator(ascon_masked_state_t *state)
+{
+    state->M[4].S[0] ^= 1;
 }
 
 #endif /* ASCON_MASKED_BACKEND_SLICED64 */

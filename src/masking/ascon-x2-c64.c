@@ -173,6 +173,36 @@ void ascon_masked_word_x2_load
     word->S[3] = 0;
 }
 
+void ascon_masked_word_x2_load_partial
+    (ascon_masked_word_t *word, const uint8_t *data, unsigned size,
+     ascon_trng_state_t *trng)
+{
+    uint64_t random = ascon_trng_generate_64(trng);
+    uint64_t masked = random;
+    random = ascon_mask64_rotate_share1_0(random);
+    if (size >= 4) {
+        masked ^= be_load_word32(data + size - 4);
+        masked = rightRotate32_64(masked);
+        random = rightRotate32_64(random);
+        size -= 4;
+    }
+    if (size >= 2) {
+        masked ^= be_load_word16(data + size - 2);
+        masked = rightRotate16_64(masked);
+        random = rightRotate16_64(random);
+        size -= 2;
+    }
+    if (size > 0) {
+        masked ^= data[0];
+        masked = rightRotate8_64(masked);
+        random = rightRotate8_64(random);
+    }
+    word->S[0] = masked;
+    word->S[1] = random;
+    word->S[2] = 0;
+    word->S[3] = 0;
+}
+
 void ascon_masked_word_x2_load_32
     (ascon_masked_word_t *word, const uint8_t *data1,
      const uint8_t *data2, ascon_trng_state_t *trng)
@@ -190,6 +220,32 @@ void ascon_masked_word_x2_store
 {
     be_store_word64
         (data, word->S[0] ^ ascon_mask64_unrotate_share1_0(word->S[1]));
+}
+
+void ascon_masked_word_x2_store_partial
+    (uint8_t *data, unsigned size, const ascon_masked_word_t *word)
+{
+    uint64_t masked1 = word->S[0];
+    uint64_t masked2 = ascon_mask64_unrotate_share1_0(word->S[1]);
+    if (size >= 4) {
+        masked1 = leftRotate32_64(masked1);
+        masked2 = leftRotate32_64(masked2);
+        be_store_word32(data, (uint32_t)(masked1 ^ masked2));
+        data += 4;
+        size -= 4;
+    }
+    if (size >= 2) {
+        masked1 = leftRotate16_64(masked1);
+        masked2 = leftRotate16_64(masked2);
+        be_store_word16(data, (uint32_t)(masked1 ^ masked2));
+        data += 2;
+        size -= 2;
+    }
+    if (size > 0) {
+        masked1 = leftRotate8_64(masked1);
+        masked2 = leftRotate8_64(masked2);
+        data[0] = (uint8_t)(masked1 ^ masked2);
+    }
 }
 
 #endif /* ASCON_MASKED_X2_BACKEND_C64 */

@@ -42,6 +42,22 @@ void ascon_masked_word_x2_randomize
     word->S[1] ^= ascon_mask64_rotate_share1_0(random);
 }
 
+void ascon_masked_word_x2_xor
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src)
+{
+    dest->S[0] ^= src->S[0];
+    dest->S[1] ^= src->S[1];
+}
+
+void ascon_masked_word_x2_replace
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src, unsigned size)
+{
+    uint64_t mask1 = (~((uint64_t)0)) >> (size * 8U);
+    uint64_t mask2 = ~mask1;
+    dest->S[0] = (dest->S[0] & mask2) | (src->S[0] & mask1);
+    dest->S[1] = (dest->S[1] & mask2) | (src->S[1] & mask1);
+}
+
 void ascon_masked_word_x2_from_x3
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
      ascon_trng_state_t *trng)
@@ -86,6 +102,24 @@ void ascon_masked_word_x3_randomize
     word->S[0] ^= random1 ^ random2;
     word->S[1] ^= ascon_mask64_rotate_share1_0(random1);
     word->S[2] ^= ascon_mask64_rotate_share2_0(random2);
+}
+
+void ascon_masked_word_x3_xor
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src)
+{
+    dest->S[0] ^= src->S[0];
+    dest->S[1] ^= src->S[1];
+    dest->S[2] ^= src->S[2];
+}
+
+void ascon_masked_word_x3_replace
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src, unsigned size)
+{
+    uint64_t mask1 = (~((uint64_t)0)) >> (size * 8U);
+    uint64_t mask2 = ~mask1;
+    dest->S[0] = (dest->S[0] & mask2) | (src->S[0] & mask1);
+    dest->S[1] = (dest->S[1] & mask2) | (src->S[1] & mask1);
+    dest->S[2] = (dest->S[2] & mask2) | (src->S[2] & mask1);
 }
 
 void ascon_masked_word_x3_from_x2
@@ -135,6 +169,26 @@ void ascon_masked_word_x4_randomize
     word->S[1] ^= ascon_mask64_rotate_share1_0(random1);
     word->S[2] ^= ascon_mask64_rotate_share2_0(random2);
     word->S[3] ^= ascon_mask64_rotate_share3_0(random3);
+}
+
+void ascon_masked_word_x4_xor
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src)
+{
+    dest->S[0] ^= src->S[0];
+    dest->S[1] ^= src->S[1];
+    dest->S[2] ^= src->S[2];
+    dest->S[3] ^= src->S[3];
+}
+
+void ascon_masked_word_x4_replace
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src, unsigned size)
+{
+    uint64_t mask1 = (~((uint64_t)0)) >> (size * 8U);
+    uint64_t mask2 = ~mask1;
+    dest->S[0] = (dest->S[0] & mask2) | (src->S[0] & mask1);
+    dest->S[1] = (dest->S[1] & mask2) | (src->S[1] & mask1);
+    dest->S[2] = (dest->S[2] & mask2) | (src->S[2] & mask1);
+    dest->S[3] = (dest->S[3] & mask2) | (src->S[3] & mask1);
 }
 
 void ascon_masked_word_x4_from_x2
