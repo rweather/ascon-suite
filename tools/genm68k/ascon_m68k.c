@@ -253,8 +253,8 @@ static void gen_round_sliced(const reg_names *regs, int round)
     ror(regs->t0, 20, temp1, temp2);
     binop("eor", regs->t1, regs->t2);
     binop("eor", regs->t0, regs->x1);
-    mov(regs->x1_alt, regs->t0);
     mov(regs->x1, regs->t1);
+    mov(regs->x1_alt, regs->t0);
 
     /* x2 ^= rightRotate1_64(x2)  ^ rightRotate6_64(x2); */
     // t0 = x2_e ^ rightRotate2(x2_o);
@@ -262,17 +262,17 @@ static void gen_round_sliced(const reg_names *regs, int round)
     // x2_e ^= t1;
     // x2_o ^= rightRotate1(t0);
     mov(regs->t2, regs->x3_alt); // x2_e
-    mov(regs->t0, regs->x0);
+    mov(regs->t0, regs->x2);
     mov(regs->t1, regs->t2);
     ror(regs->t0, 2, temp1, temp2);
     ror(regs->t1, 3, temp1, temp2);
     binop("eor", regs->t0, regs->t2);
     binop("eor", regs->t1, regs->x2);
     ror(regs->t0, 1, temp1, temp2);
-    binop("eor", regs->t0, regs->x2);
     binop("eor", regs->t1, regs->t2);
-    mov(regs->x2_alt, regs->t0);
+    binop("eor", regs->t0, regs->x2);
     mov(regs->x2, regs->t1);
+    mov(regs->x2_alt, regs->t0);
 
     /* Reclaim x3 and x4 and use x0 and x1 as the new temporaries */
     printf("#ifdef __mcoldfire__\n");
@@ -322,8 +322,8 @@ static void gen_round_sliced(const reg_names *regs, int round)
     ror(regs->t0, 4, temp1, temp2);
     binop("eor", regs->t1, regs->t2);
     binop("eor", regs->t0, regs->x4);
-    mov(regs->x4_alt, regs->t0);
     mov(regs->x4, regs->t1);
+    mov(regs->x4_alt, regs->t0);
 
     /* Reclaim x0 and x1 for the next round */
     printf("\tmove.l\t-44(%%fp), %s\n", regs->x0);

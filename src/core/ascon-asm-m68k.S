@@ -251,10 +251,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -285,10 +285,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -390,8 +390,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -567,10 +567,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -601,10 +601,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -706,8 +706,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -883,10 +883,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -917,10 +917,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -1022,8 +1022,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -1199,10 +1199,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -1233,10 +1233,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -1338,8 +1338,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -1515,10 +1515,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -1549,10 +1549,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -1654,8 +1654,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -1831,10 +1831,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -1865,10 +1865,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -1970,8 +1970,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -2147,10 +2147,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -2181,10 +2181,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -2286,8 +2286,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -2463,10 +2463,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -2497,10 +2497,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -2602,8 +2602,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -2779,10 +2779,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -2813,10 +2813,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -2918,8 +2918,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -3095,10 +3095,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -3129,10 +3129,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -3234,8 +3234,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -3411,10 +3411,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -3445,10 +3445,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -3550,8 +3550,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
@@ -3727,10 +3727,10 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d1, %d5
-	movea.l	%d5, %a1
 	move.l	%d6, %d1
+	movea.l	%d5, %a1
 	move.l	%a3, %d7
-	move.l	%d0, %d5
+	move.l	%d2, %d5
 	move.l	%d7, %d6
 #ifdef __mcoldfire__
 	move.l	%d5, %d3
@@ -3761,10 +3761,10 @@ ascon_permute:
 #else
 	ror.l	#1, %d5
 #endif
-	eor.l	%d2, %d5
 	eor.l	%d7, %d6
-	movea.l	%d5, %a2
+	eor.l	%d2, %d5
 	move.l	%d6, %d2
+	movea.l	%d5, %a2
 #ifdef __mcoldfire__
 	move.l	-44(%fp), %d3
 	move.l	-48(%fp), %d4
@@ -3866,8 +3866,8 @@ ascon_permute:
 #endif
 	eor.l	%d7, %d6
 	eor.l	%d4, %d5
-	movea.l	%d5, %a4
 	move.l	%d6, %d4
+	movea.l	%d5, %a4
 	move.l	-44(%fp), %d0
 #ifdef __mcoldfire__
 	move.l	-48(%fp), %d1
