@@ -197,8 +197,6 @@ void ascon_masked_word_x2_load
  * \param data Points to the data to be loaded.
  * \param size Number of bytes to load between 1 and 7.
  * \param trng TRNG to use to generate masking material.
- *
- * \sa ascon_masked_word_x2_store()
  */
 void ascon_masked_word_x2_load_partial
     (ascon_masked_word_t *word, const uint8_t *data, unsigned size,
@@ -245,16 +243,37 @@ void ascon_masked_word_x2_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
 
 /**
+ * \brief Masks a 64-bit word and loads it into a x2 masked word.
+ *
+ * \param word The x2 masked word to write to.
+ * \param data The 64-bit word to be masked.
+ * \param trng TRNG to use to generate masking material.
+ */
+void ascon_masked_word_x2_mask
+    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
+
+/**
+ * \brief Unmasks the contents of a x2 masked word.
+ *
+ * \param word The x2 masked word to unmask.
+ *
+ * \return The unmasked version of the word.
+ */
+uint64_t ascon_masked_word_x2_unmask(const ascon_masked_word_t *word);
+
+/**
  * \brief Randomizes a x2 masked word by incorporating fresh randomness.
  *
- * \param word Points to the masked word to be randomized.
+ * \param dest Points to the destination for the randomized version.
+ * \param src Points to the source to randomize, can be the same as \a dest.
  * \param trng TRNG to use to randomize the state.
  *
  * The word will still have the same effective value, but this function
  * will mix in fresh randomness.
  */
 void ascon_masked_word_x2_randomize
-    (ascon_masked_word_t *word, ascon_trng_state_t *trng);
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
+     ascon_trng_state_t *trng);
 
 /**
  * \brief XOR's a source x2 masked word against a destination x2 masked word.
@@ -328,8 +347,6 @@ void ascon_masked_word_x3_load
  * \param data Points to the data to be loaded.
  * \param size Number of bytes to load between 1 and 7.
  * \param trng TRNG to use to generate masking material.
- *
- * \sa ascon_masked_word_x3_store()
  */
 void ascon_masked_word_x3_load_partial
     (ascon_masked_word_t *word, const uint8_t *data, unsigned size,
@@ -376,16 +393,37 @@ void ascon_masked_word_x3_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
 
 /**
- * \brief Randomizes a masked word by incorporating fresh randomness.
+ * \brief Masks a 64-bit word and loads it into a x3 masked word.
  *
- * \param word Points to the masked word to be randomized.
+ * \param word The x3 masked word to write to.
+ * \param data The 64-bit word to be masked.
+ * \param trng TRNG to use to generate masking material.
+ */
+void ascon_masked_word_x3_mask
+    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
+
+/**
+ * \brief Unmasks the contents of a x3 masked word.
+ *
+ * \param word The x3 masked word to unmask.
+ *
+ * \return The unmasked version of the word.
+ */
+uint64_t ascon_masked_word_x3_unmask(const ascon_masked_word_t *word);
+
+/**
+ * \brief Randomizes a x3 masked word by incorporating fresh randomness.
+ *
+ * \param dest Points to the destination for the randomized version.
+ * \param src Points to the source to randomize, can be the same as \a dest.
  * \param trng TRNG to use to randomize the state.
  *
  * The word will still have the same effective value, but this function
  * will mix in fresh randomness.
  */
 void ascon_masked_word_x3_randomize
-    (ascon_masked_word_t *word, ascon_trng_state_t *trng);
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
+     ascon_trng_state_t *trng);
 
 /**
  * \brief XOR's a source x3 masked word against a destination x3 masked word.
@@ -507,16 +545,37 @@ void ascon_masked_word_x4_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
 
 /**
- * \brief Randomizes a masked word by incorporating fresh randomness.
+ * \brief Masks a 64-bit word and loads it into a x4 masked word.
  *
- * \param word Points to the masked word to be randomized.
+ * \param word The x4 masked word to write to.
+ * \param data The 64-bit word to be masked.
+ * \param trng TRNG to use to generate masking material.
+ */
+void ascon_masked_word_x4_mask
+    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
+
+/**
+ * \brief Unmasks the contents of a x4 masked word.
+ *
+ * \param word The x4 masked word to unmask.
+ *
+ * \return The unmasked version of the word.
+ */
+uint64_t ascon_masked_word_x4_unmask(const ascon_masked_word_t *word);
+
+/**
+ * \brief Randomizes a x4 masked word by incorporating fresh randomness.
+ *
+ * \param dest Points to the destination for the randomized version.
+ * \param src Points to the source to randomize, can be the same as \a dest.
  * \param trng TRNG to use to randomize the state.
  *
  * The word will still have the same effective value, but this function
  * will mix in fresh randomness.
  */
 void ascon_masked_word_x4_randomize
-    (ascon_masked_word_t *word, ascon_trng_state_t *trng);
+    (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
+     ascon_trng_state_t *trng);
 
 /**
  * \brief XOR's a source x4 masked word against a destination x4 masked word.
@@ -558,6 +617,21 @@ void ascon_masked_word_x4_from_x2
 void ascon_masked_word_x4_from_x3
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
      ascon_trng_state_t *trng);
+
+/**
+ * \brief Adds a padding marker to a masked word.
+ *
+ * \param word The masked word to be padded.
+ * \param offset Offset of the padding marker (0 to 7).
+ */
+void ascon_masked_word_pad(ascon_masked_word_t *word, unsigned offset);
+
+/**
+ * \brief Adds a separator marker to a masked word.
+ *
+ * \param word The masked word to add the separator marker to.
+ */
+void ascon_masked_word_separator(ascon_masked_word_t *word);
 
 #ifdef __cplusplus
 }

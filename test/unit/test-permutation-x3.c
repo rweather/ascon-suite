@@ -59,7 +59,7 @@ static void ascon_x3_add_bytes_all
     ascon_masked_word_t word;
     for (offset = 0; offset < 40; offset += 8) {
         ascon_masked_word_x3_load(&word, data + offset, trng);
-        ascon_x3_add_word(state, &word, offset);
+        ascon_masked_word_x3_xor(&(state->M[offset / 8]), &word);
     }
 }
 
@@ -71,7 +71,7 @@ static void ascon_x3_add_bytes_all_load32
     for (offset = 0; offset < 40; offset += 8) {
         ascon_masked_word_x3_load_32
             (&word, data + offset, data + offset + 4, trng);
-        ascon_x3_add_word(state, &word, offset);
+        ascon_masked_word_x3_xor(&(state->M[offset / 8]), &word);
     }
 }
 
@@ -79,22 +79,16 @@ static void ascon_x3_overwrite_bytes_all
     (ascon_masked_state_t *state, const uint8_t *data, ascon_trng_state_t *trng)
 {
     unsigned offset;
-    ascon_masked_word_t word;
-    for (offset = 0; offset < 40; offset += 8) {
-        ascon_masked_word_x3_load(&word, data + offset, trng);
-        ascon_x3_overwrite_word(state, &word, offset);
-    }
+    for (offset = 0; offset < 40; offset += 8)
+        ascon_masked_word_x3_load(&(state->M[offset / 8]), data + offset, trng);
 }
 
 static void ascon_x3_extract_bytes_all
     (const ascon_masked_state_t *state, uint8_t *data)
 {
     unsigned offset;
-    ascon_masked_word_t word;
-    for (offset = 0; offset < 40; offset += 8) {
-        ascon_x3_extract_word(state, &word, offset);
-        ascon_masked_word_x3_store(data + offset, &word);
-    }
+    for (offset = 0; offset < 40; offset += 8)
+        ascon_masked_word_x3_store(data + offset, &(state->M[offset / 8]));
 }
 
 static void ascon_x2_add_bytes_all
@@ -104,7 +98,7 @@ static void ascon_x2_add_bytes_all
     ascon_masked_word_t word;
     for (offset = 0; offset < 40; offset += 8) {
         ascon_masked_word_x2_load(&word, data + offset, trng);
-        ascon_x2_add_word(state, &word, offset);
+        ascon_masked_word_x2_xor(&(state->M[offset / 8]), &word);
     }
 }
 
@@ -112,10 +106,9 @@ static void ascon_x2_extract_bytes_all
     (const ascon_masked_state_t *state, uint8_t *data)
 {
     unsigned offset;
-    ascon_masked_word_t word;
     for (offset = 0; offset < 40; offset += 8) {
-        ascon_x2_extract_word(state, &word, offset);
-        ascon_masked_word_x2_store(data + offset, &word);
+        ascon_masked_word_x2_store
+            (data + offset, &(state->M[offset / 8]));
     }
 }
 
@@ -216,7 +209,7 @@ void test_ascon_permutation_x3(void)
         ascon_x3_randomize(&state, &trng);
         ascon_x3_add_bytes_all(&state, ascon_output_8, &trng);
         ascon_masked_word_x3_load(&word, ascon_input, &trng);
-        ascon_x3_add_word(&state, &word, offset);
+        ascon_masked_word_x3_xor(&(state.M[offset / 8]), &word);
         ascon_x3_randomize(&state, &trng);
         ascon_x3_extract_bytes_all(&state, buffer);
         ascon_x3_free(&state);
@@ -243,7 +236,7 @@ void test_ascon_permutation_x3(void)
         ascon_x3_randomize(&state, &trng);
         ascon_x3_overwrite_bytes_all(&state, ascon_output_8, &trng);
         ascon_masked_word_x3_load(&word, ascon_input, &trng);
-        ascon_x3_overwrite_word(&state, &word, offset);
+        state.M[offset / 8] = word;
         ascon_x3_extract_bytes_all(&state, buffer);
         ascon_x3_free(&state);
         for (posn = 0; posn < 40; ++posn) {
@@ -268,7 +261,7 @@ void test_ascon_permutation_x3(void)
         ascon_x3_init(&state);
         ascon_x3_overwrite_bytes_all(&state, ascon_output_12, &trng);
         ascon_masked_word_x3_zero(&word, &trng);
-        ascon_x3_overwrite_word(&state, &word, offset);
+        state.M[offset / 8] = word;
         ascon_x3_extract_bytes_all(&state, buffer);
         ascon_x3_free(&state);
         for (posn = 0; posn < 40; ++posn) {
@@ -293,9 +286,9 @@ void test_ascon_permutation_x3(void)
         ascon_x3_init(&state);
         ascon_x3_randomize(&state, &trng);
         ascon_x3_add_bytes_all_load32(&state, ascon_output_8, &trng);
-        ascon_x3_extract_word(&state, &word, offset);
+        word = state.M[offset / 8];
         ascon_masked_word_x3_store(buffer, &word);
-        ascon_masked_word_x3_randomize(&word, &trng);
+        ascon_masked_word_x3_randomize(&word, &word, &trng);
         ascon_masked_word_x3_store(buffer + 8, &word);
         ascon_x3_free(&state);
         for (posn = 0; posn < 8; ++posn) {
@@ -334,11 +327,9 @@ void test_ascon_permutation_x3(void)
     ascon_x2_init(&state_x2);
     ascon_x2_randomize(&state_x2, &trng);
     ascon_x2_add_bytes_all(&state_x2, ascon_output_8, &trng);
-    ascon_x2_release(&state_x2);
     ascon_x3_copy_from_x2(&state, &state_x2, &trng);
     ascon_x3_extract_bytes_all(&state, buffer);
     ascon_x3_free(&state);
-    ascon_x2_acquire(&state_x2);
     ascon_x2_free(&state_x2);
     if (memcmp(buffer, ascon_output_8, 40) != 0) {
         printf("failed\n");
@@ -352,11 +343,9 @@ void test_ascon_permutation_x3(void)
     ascon_x3_init(&state_x3);
     ascon_x3_randomize(&state_x3, &trng);
     ascon_x3_add_bytes_all(&state_x3, ascon_output_12, &trng);
-    ascon_x3_release(&state_x3);
     ascon_x3_copy_from_x3(&state, &state_x3, &trng);
     ascon_x3_extract_bytes_all(&state, buffer);
     ascon_x3_free(&state);
-    ascon_x3_acquire(&state_x3);
     ascon_x3_free(&state_x3);
     if (memcmp(buffer, ascon_output_12, 40) != 0) {
         printf("failed\n");
@@ -370,11 +359,9 @@ void test_ascon_permutation_x3(void)
     ascon_x3_init(&state);
     ascon_x3_randomize(&state, &trng);
     ascon_x3_add_bytes_all(&state, ascon_output_12, &trng);
-    ascon_x3_release(&state);
     ascon_x3_copy_to_x1(&state_x1, &state);
     ascon_extract_bytes(&state_x1, buffer, 0, 40);
     ascon_free(&state_x1);
-    ascon_x3_acquire(&state);
     ascon_x3_free(&state);
     if (memcmp(buffer, ascon_output_12, 40) != 0) {
         printf("failed\n");
@@ -388,11 +375,9 @@ void test_ascon_permutation_x3(void)
     ascon_x3_init(&state);
     ascon_x3_randomize(&state, &trng);
     ascon_x3_add_bytes_all(&state, ascon_output_12, &trng);
-    ascon_x3_release(&state);
     ascon_x2_copy_from_x3(&state_x2, &state, &trng);
     ascon_x2_extract_bytes_all(&state_x2, buffer);
     ascon_x2_free(&state_x2);
-    ascon_x3_acquire(&state);
     ascon_x3_free(&state);
     if (memcmp(buffer, ascon_output_12, 40) != 0) {
         printf("failed\n");

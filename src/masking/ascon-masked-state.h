@@ -115,51 +115,6 @@ void ascon_x2_free(ascon_masked_state_t *state);
 void ascon_x2_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng);
 
 /**
- * \brief Adds a masked word to the ASCON-x2 state by XOR'ing them it
- * with the state.
- *
- * \param state The ASCON-x2 permutation state.
- * \param word Points to the masked word to add to the state.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The randomness in the masked word will be incorporated into the state.
- */
-void ascon_x2_add_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *word,
-     unsigned offset);
-
-/**
- * \brief Overwrites an existing masked word in the ASCON-x2 state.
- *
- * \param state The ASCON-x2 permutation state.
- * \param word The masked word to write to the state.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The randomness in the masked word will be copied into \a state.
- */
-void ascon_x2_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *word,
-     unsigned offset);
-
-/**
- * \brief Extracts a masked word from the ASCON-x2 state.
- *
- * \param state The ASCON-x2 permutation state.
- * \param word Points to the buffer to receive the masked word.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The masked word is directly copied out of the \a state into \a word.
- * It should be randomized with ascon_x2_word_randomize() if it is
- * likely to be stored for a long period of time.
- */
-void ascon_x2_extract_word
-    (const ascon_masked_state_t *state, ascon_masked_word_t *word,
-     unsigned offset);
-
-/**
  * \brief Permutes the ASCON-x2 state with a specified number of rounds.
  *
  * \param state The ASCON-x2 state in "operational" form.
@@ -170,29 +125,6 @@ void ascon_x2_extract_word
  */
 void ascon_x2_permute
     (ascon_masked_state_t *state, uint8_t first_round, uint64_t *preserve);
-
-/**
- * \brief Temporarily releases access to any shared hardware resources
- * that a permutation state was using.
- *
- * \param state The ASCON-x2 state to be released.
- *
- * Operation on the state will resume the next time ascon_x2_acquire()
- * is called.
- *
- * \sa ascon_x2_acquire()
- */
-void ascon_x2_release(ascon_masked_state_t *state);
-
-/**
- * \brief Re-acquires access to any shared hardware resources that a
- * permutation state was using.
- *
- * \param state The ASCON-x2 state to be re-acquired.
- *
- * \sa ascon_x2_release()
- */
-void ascon_x2_acquire(ascon_masked_state_t *state);
 
 /**
  * \brief Copies the entire ASCON-x2 permutation state from a regular
@@ -286,51 +218,6 @@ void ascon_x3_free(ascon_masked_state_t *state);
 void ascon_x3_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng);
 
 /**
- * \brief Adds a masked word to the ASCON-x3 state by XOR'ing them it
- * with the state.
- *
- * \param state The ASCON-x3 permutation state.
- * \param word Points to the masked word to add to the state.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The randomness in the masked word will be incorporated into the state.
- */
-void ascon_x3_add_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *word,
-     unsigned offset);
-
-/**
- * \brief Overwrites an existing masked word in the ASCON-x3 state.
- *
- * \param state The ASCON-x3 permutation state.
- * \param word The masked word to write to the state.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The randomness in the masked word will be copied into \a state.
- */
-void ascon_x3_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *word,
-     unsigned offset);
-
-/**
- * \brief Extracts a masked word from the ASCON-x3 state.
- *
- * \param state The ASCON-x3 permutation state.
- * \param word Points to the buffer to receive the masked word.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The masked word is directly copied out of the \a state into \a word.
- * It should be randomized with ascon_x3_word_randomize() if it is
- * likely to be stored for a long period of time.
- */
-void ascon_x3_extract_word
-    (const ascon_masked_state_t *state, ascon_masked_word_t *word,
-     unsigned offset);
-
-/**
  * \brief Permutes the ASCON-x3 state with a specified number of rounds.
  *
  * \param state The ASCON-x3 state in "operational" form.
@@ -341,29 +228,6 @@ void ascon_x3_extract_word
  */
 void ascon_x3_permute
     (ascon_masked_state_t *state, uint8_t first_round, uint64_t preserve[2]);
-
-/**
- * \brief Temporarily releases access to any shared hardware resources
- * that a permutation state was using.
- *
- * \param state The ASCON-x3 state to be released.
- *
- * Operation on the state will resume the next time ascon_x3_acquire()
- * is called.
- *
- * \sa ascon_x3_acquire()
- */
-void ascon_x3_release(ascon_masked_state_t *state);
-
-/**
- * \brief Re-acquires access to any shared hardware resources that a
- * permutation state was using.
- *
- * \param state The ASCON-x3 state to be re-acquired.
- *
- * \sa ascon_x3_release()
- */
-void ascon_x3_acquire(ascon_masked_state_t *state);
 
 /**
  * \brief Copies the entire ASCON-x3 permutation state from a regular
@@ -457,49 +321,6 @@ void ascon_x4_free(ascon_masked_state_t *state);
 void ascon_x4_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng);
 
 /**
- * \brief Adds a masked word to the ASCON-x4 state by XOR'ing them it
- * with the state.
- *
- * \param state The ASCON-x4 permutation state.
- * \param word Points to the masked word to add to the state.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The randomness in the masked word will be incorporated into the state.
- */
-void ascon_x4_add_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *word, unsigned offset);
-
-/**
- * \brief Overwrites an existing masked word in the ASCON-x4 state.
- *
- * \param state The ASCON-x4 permutation state.
- * \param word The masked word to write to the state.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The randomness in the masked word will be copied into \a state.
- */
-void ascon_x4_overwrite_word
-    (ascon_masked_state_t *state, const ascon_masked_word_t *word, unsigned offset);
-
-/**
- * \brief Extracts a masked word from the ASCON-x4 state.
- *
- * \param state The ASCON-x4 permutation state.
- * \param word Points to the buffer to receive the masked word.
- * \param offset Offset into the state between 0 and 32; must be a
- * multiple of 8.
- *
- * The masked word is directly copied out of the \a state into \a word.
- * It should be randomized with ascon_x4_word_randomize() if it is
- * likely to be stored for a long period of time.
- */
-void ascon_x4_extract_word
-    (const ascon_masked_state_t *state, ascon_masked_word_t *word,
-     unsigned offset);
-
-/**
  * \brief Permutes the ASCON-x4 state with a specified number of rounds.
  *
  * \param state The ASCON-x4 state in "operational" form.
@@ -510,29 +331,6 @@ void ascon_x4_extract_word
  */
 void ascon_x4_permute
     (ascon_masked_state_t *state, uint8_t first_round, uint64_t preserve[3]);
-
-/**
- * \brief Temporarily releases access to any shared hardware resources
- * that a permutation state was using.
- *
- * \param state The ASCON-x4 state to be released.
- *
- * Operation on the state will resume the next time ascon_x4_acquire()
- * is called.
- *
- * \sa ascon_x4_acquire()
- */
-void ascon_x4_release(ascon_masked_state_t *state);
-
-/**
- * \brief Re-acquires access to any shared hardware resources that a
- * permutation state was using.
- *
- * \param state The ASCON-x4 state to be re-acquired.
- *
- * \sa ascon_x4_release()
- */
-void ascon_x4_acquire(ascon_masked_state_t *state);
 
 /**
  * \brief Copies the entire ASCON-x4 permutation state from a regular
@@ -590,21 +388,6 @@ void ascon_x4_copy_from_x3
 void ascon_x4_copy_from_x4
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng);
-
-/**
- * \brief Adds a padding marker to the masked state.
- *
- * \param state The masked state to be padded.
- * \param offset Offset of the padding marker (0 to 39).
- */
-void ascon_masked_state_pad(ascon_masked_state_t *state, unsigned offset);
-
-/**
- * \brief Adds a separator marker to the masked state.
- *
- * \param state The masked state to add the separator marker to.
- */
-void ascon_masked_state_separator(ascon_masked_state_t *state);
 
 #ifdef __cplusplus
 }
