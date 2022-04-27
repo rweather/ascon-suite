@@ -28,6 +28,12 @@ add_executable(ascon-test-kmac
 )
 target_link_libraries(ascon-test-kmac PUBLIC ascon_static)
 
+add_executable(ascon-test-masked-keys
+    ${COMMON_TEST_SOURCES}
+    test-masked-keys.c
+)
+target_link_libraries(ascon-test-masked-keys PUBLIC ascon_static)
+
 add_executable(ascon-test-pbkdf2
     ${COMMON_TEST_SOURCES}
     test-pbkdf2.c
@@ -65,4 +71,5 @@ add_test(NAME ASCON-Permutation-x4 COMMAND ascon-test-permutation-x4)
 add_test(NAME ASCON-HKDF COMMAND ascon-test-hkdf)
 add_test(NAME ASCON-HMAC COMMAND ascon-test-hmac)
 add_test(NAME ASCON-KMAC COMMAND ascon-test-kmac)
+add_test(NAME ASCON-Masked-Keys COMMAND ascon-test-masked-keys)
 add_test(NAME ASCON-PBKDF2 COMMAND ascon-test-pbkdf2)

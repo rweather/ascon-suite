@@ -61,6 +61,14 @@ typedef struct
 /**
  * \brief 128-bit key that has been masked to hide its value when the
  * code is operating on it.
+ *
+ * This structure should be treated as opaque.  The number of shares used,
+ * the bit ordering, and the method of masking is determined by the library.
+ *
+ * The application can copy the entire contents of this structure
+ * as-is to non-volatile memory to preserve the masked form of the key.
+ * It is not possible to transport such keys between systems because
+ * of different numbers of shares and bit ordering issues.
  */
 typedef struct
 {
@@ -75,6 +83,14 @@ typedef struct
  * ASCON-80pq absorbs the key into state words at both offset 0 and 4.
  * This requires the key to be masked twice for the two offset values
  * to avoid additional word rotations when the key is used.
+ *
+ * This structure should be treated as opaque.  The number of shares used,
+ * the bit ordering, and the method of masking is determined by the library.
+ *
+ * The application can copy the entire contents of this structure
+ * as-is to non-volatile memory to preserve the masked form of the key.
+ * It is not possible to transport such keys between systems because
+ * of different numbers of shares and bit ordering issues.
  */
 typedef struct
 {
