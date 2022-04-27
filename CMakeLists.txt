@@ -13,6 +13,13 @@ option(BACKEND_C64 "Force the use of the c64 backend" OFF)
 option(BACKEND_DIRECT_XOR "Force the use of the direct-xor backend" OFF)
 option(BACKEND_GENERIC "Force the use of the generic backend" OFF)
 
+# Set the number of shares for masked ciphers.  Note that
+# DATA_SHARES must be less than or equal to KEY_SHARES.
+set(KEY_SHARES 4 CACHE STRING "Set the number key shares for masked ciphers (2, 3, or 4)")
+set_property(CACHE KEY_SHARES PROPERTY STRINGS 2 3 4)
+set(DATA_SHARES 2 CACHE STRING "Set the number data shares for masked ciphers (1, 2, 3, or 4)")
+set_property(CACHE DATA_SHARES PROPERTY STRINGS 1 2 3 4)
+
 # Other options.
 option(CHECK_ACQUIRE_RELEASE "Check that acquire/release calls are balanced" OFF)
 option(COVERAGE "Enable the use of gcov for coverage testing" OFF)

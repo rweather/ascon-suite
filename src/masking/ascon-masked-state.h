@@ -389,6 +389,30 @@ void ascon_x4_copy_from_x4
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng);
 
+/**
+ * \brief Randomizes a masked 128-bit key by mixing in fresh random material
+ * from a caller-supplied TRNG.
+ *
+ * \param masked Points to the masked key to randomize.
+ * \param trng TRNG to use to randomize the key.
+ *
+ * Long-lived keys should be randomized regularly to mix in fresh randomness.
+ */
+void ascon_masked_key_128_randomize_with_trng
+    (ascon_masked_key_128_t *masked, ascon_trng_state_t *trng);
+
+/**
+ * \brief Randomizes a masked 160-bit key by mixing in fresh random material
+ * from a caller-supplied TRNG.
+ *
+ * \param masked Points to the masked key to randomize.
+ * \param trng TRNG to use to randomize the key.
+ *
+ * Long-lived keys should be randomized regularly to mix in fresh randomness.
+ */
+void ascon_masked_key_160_randomize_with_trng
+    (ascon_masked_key_160_t *masked, ascon_trng_state_t *trng);
+
 #ifdef __cplusplus
 }
 #endif

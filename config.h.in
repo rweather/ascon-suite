@@ -17,3 +17,5 @@
 #cmakedefine HAVE_FCNTL_H
 #cmakedefine HAVE_OPEN
 #cmakedefine HAVE_GETPASS
+#define ASCON_MASKED_KEY_SHARES @KEY_SHARES@
+#define ASCON_MASKED_DATA_SHARES @DATA_SHARES@
