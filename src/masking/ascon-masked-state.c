@@ -72,17 +72,16 @@ void ascon_x2_copy_from_x1
 
 void ascon_x2_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src)
 {
+    int index;
+    ascon_init(dest);
 #if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
         (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    int index;
     for (index = 0; index < 5; ++index)
         dest->S[index] = ascon_masked_word_x2_unmask(&(src->M[index]));
 #elif defined(ASCON_BACKEND_DIRECT_XOR)
-    int index;
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x2_store(dest->B + index * 8, &(src->M[index]));
 #else
-    int index;
     unsigned char word[8];
     for (index = 0; index < 5; ++index) {
         ascon_masked_word_x2_store(word, &(src->M[index]));
@@ -167,17 +166,16 @@ void ascon_x3_copy_from_x1
 
 void ascon_x3_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src)
 {
+    int index;
+    ascon_init(dest);
 #if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
         (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    int index;
     for (index = 0; index < 5; ++index)
         dest->S[index] = ascon_masked_word_x3_unmask(&(src->M[index]));
 #elif defined(ASCON_BACKEND_DIRECT_XOR)
-    int index;
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x3_store(dest->B + index * 8, &(src->M[index]));
 #else
-    int index;
     unsigned char word[8];
     for (index = 0; index < 5; ++index) {
         ascon_masked_word_x3_store(word, &(src->M[index]));
@@ -262,17 +260,16 @@ void ascon_x4_copy_from_x1
 
 void ascon_x4_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src)
 {
+    int index;
+    ascon_init(dest);
 #if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
         (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    int index;
     for (index = 0; index < 5; ++index)
         dest->S[index] = ascon_masked_word_x4_unmask(&(src->M[index]));
 #elif defined(ASCON_BACKEND_DIRECT_XOR)
-    int index;
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x4_store(dest->B + index * 8, &(src->M[index]));
 #else
-    int index;
     unsigned char word[8];
     for (index = 0; index < 5; ++index) {
         ascon_masked_word_x4_store(word, &(src->M[index]));

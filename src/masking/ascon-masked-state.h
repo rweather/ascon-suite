@@ -144,6 +144,9 @@ void ascon_x2_copy_from_x1
  *
  * \param dest The destination to copy to after unmasking it.
  * \param src The source to copy from.
+ *
+ * The \a dest must be released and freed before this operation as it
+ * will be initialized by the process.
  */
 void ascon_x2_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src);
 
@@ -247,6 +250,9 @@ void ascon_x3_copy_from_x1
  *
  * \param dest The destination to copy to after unmasking it.
  * \param src The source to copy from.
+ *
+ * The \a dest must be released and freed before this operation as it
+ * will be initialized by the process.
  */
 void ascon_x3_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src);
 
@@ -350,6 +356,9 @@ void ascon_x4_copy_from_x1
  *
  * \param dest The destination to copy to after unmasking it.
  * \param src The source to copy from.
+ *
+ * The \a dest must be released and freed before this operation as it
+ * will be initialized by the process.
  */
 void ascon_x4_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src);
 
