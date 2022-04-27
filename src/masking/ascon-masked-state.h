@@ -57,7 +57,7 @@
  *
  * The masked implementation at https://github.com/ascon/simpleserial-ascon
  * goes even further, reusing the randomness from one permutation call
- * to the next.  We are being a little more paranoid here.
+ * to the next.  We allow the caller to decide whether to do that.
  *
  * We also add randomness whenever data is injected into or squeezed
  * from the masked ASCON permutation state.
@@ -79,6 +79,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * \brief State of the ASCON permutation which has been masked
+ * with up to 4 shares.
+ *
+ * This structure should be treated as opaque.
+ */
+typedef struct
+{
+    ascon_masked_word_t M[5]; /**< Masked words of the state */
+
+} ascon_masked_state_t;
 
 /**
  * \brief Initializes the words of the ASCON-x2 permutation state.

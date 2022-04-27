@@ -47,18 +47,6 @@ typedef union
 } ascon_masked_word_t;
 
 /**
- * \brief State of the ASCON permutation which has been masked
- * with up to 4 shares.
- *
- * This structure should be treated as opaque.
- */
-typedef struct
-{
-    ascon_masked_word_t M[5]; /**< Masked words of the state */
-
-} ascon_masked_state_t;
-
-/**
  * \brief 128-bit key that has been masked to hide its value when the
  * code is operating on it.
  *
