@@ -202,7 +202,7 @@ static int ascon_trng_global_init(unsigned char seed[ASCON_SYSTEM_SEED_SIZE])
 int ascon_trng_generate(unsigned char *out, size_t outlen)
 {
     unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
-    int ok
+    int ok;
 
     /* If the application has declared ascon_trng_get_bytes() to be good,
      * then use it directly rather than run a global PRNG.  We fall through

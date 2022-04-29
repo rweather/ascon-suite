@@ -18,6 +18,7 @@ for i in $* ; do
 1,$s/"isap\//"utility\//g
 1,$s/"kdf\//"utility\//g
 1,$s/"random\//"utility\//g
+1,$s/"masking\//"utility\//g
 1,$s/"version.h"/"ascon-version.h"/g
 ' $i >$DEST_DIR/$BASENAME
 done

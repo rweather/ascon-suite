@@ -14,6 +14,9 @@ MAIN_SOURCES = \
 	$(SOURCE_DIR)/aead/ascon-aead-inc-128.c \
 	$(SOURCE_DIR)/aead/ascon-aead-inc-128a.c \
 	$(SOURCE_DIR)/aead/ascon-aead-inc-80pq.c \
+	$(SOURCE_DIR)/aead/ascon-aead-masked-128.c \
+	$(SOURCE_DIR)/aead/ascon-aead-masked-128a.c \
+	$(SOURCE_DIR)/aead/ascon-aead-masked-80pq.c \
 	$(SOURCE_DIR)/hash/ascon-hasha.c \
 	$(SOURCE_DIR)/hash/ascon-hash.c \
 	$(SOURCE_DIR)/hash/ascon-xofa.c \
@@ -38,6 +41,7 @@ MAIN_SOURCES = \
 # Arduino will be running on an x86-64 system any time soon!
 UTIL_SOURCES = \
 	$(SOURCE_DIR)/aead/ascon-aead-common.c \
+	$(SOURCE_DIR)/aead/ascon-aead-masked-common.c \
 	$(SOURCE_DIR)/core/ascon-asm-armv6m.S \
 	$(SOURCE_DIR)/core/ascon-asm-armv7m.S \
 	$(SOURCE_DIR)/core/ascon-asm-avr5.S \
@@ -49,6 +53,16 @@ UTIL_SOURCES = \
 	$(SOURCE_DIR)/core/ascon-sliced32.c \
 	$(SOURCE_DIR)/core/ascon-sliced64.c \
 	$(SOURCE_DIR)/core/ascon-version.c \
+	$(SOURCE_DIR)/masking/ascon-masked-key.c \
+	$(SOURCE_DIR)/masking/ascon-masked-word-c32.c \
+	$(SOURCE_DIR)/masking/ascon-masked-word-c64.c \
+	$(SOURCE_DIR)/masking/ascon-masked-state.c \
+	$(SOURCE_DIR)/masking/ascon-x2-c32.c \
+	$(SOURCE_DIR)/masking/ascon-x2-c64.c \
+	$(SOURCE_DIR)/masking/ascon-x3-c32.c \
+	$(SOURCE_DIR)/masking/ascon-x3-c64.c \
+	$(SOURCE_DIR)/masking/ascon-x4-c32.c \
+	$(SOURCE_DIR)/masking/ascon-x4-c64.c \
 	$(SOURCE_DIR)/random/ascon-trng-due.c \
 	$(SOURCE_DIR)/random/ascon-trng-esp.c \
 	$(SOURCE_DIR)/random/ascon-trng-none.c
@@ -58,10 +72,15 @@ UTIL_INCLUDES = \
 	$(SOURCE_DIR)/core/ascon-util.h \
 	$(SOURCE_DIR)/core/ascon-util-snp.h \
 	$(SOURCE_DIR)/aead/ascon-aead-common.h \
+	$(SOURCE_DIR)/aead/ascon-aead-masked-common.h \
 	$(SOURCE_DIR)/isap/ascon-isap-common.h \
 	$(SOURCE_DIR)/kdf/ascon-hkdf-common.h \
 	$(SOURCE_DIR)/mac/ascon-hmac-common.h \
 	$(SOURCE_DIR)/mac/ascon-kmac-common.h \
+	$(SOURCE_DIR)/masking/ascon-masked-backend.h \
+	$(SOURCE_DIR)/masking/ascon-masked-config.h \
+	$(SOURCE_DIR)/masking/ascon-masked-word.h \
+	$(SOURCE_DIR)/masking/ascon-masked-state.h \
 	$(SOURCE_DIR)/random/ascon-trng.h
 
 all:

@@ -93,15 +93,19 @@ void ascon_trng_free(ascon_trng_state_t *state)
 
 uint32_t ascon_trng_generate_32(ascon_trng_state_t *state)
 {
+    uint32_t word;
     (void)state;
-    return ascon_trng_generate_word();
+    ascon_trng_generate_word(&word);
+    return word;
 }
 
 uint64_t ascon_trng_generate_64(ascon_trng_state_t *state)
 {
+    uint32_t low, high;
     (void)state;
-    return ((uint64_t)ascon_trng_generate_word()) |
-          (((uint64_t)ascon_trng_generate_word()) << 32);
+    ascon_trng_generate_word(&low);
+    ascon_trng_generate_word(&high);
+    return ((uint64_t)low) | (((uint64_t)high) << 32);
 }
 
 int ascon_trng_reseed(ascon_trng_state_t *state)
