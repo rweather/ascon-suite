@@ -8,6 +8,11 @@ list(APPEND ASCON_SOURCES
     aead/ascon-aead-inc-128.c
     aead/ascon-aead-inc-128a.c
     aead/ascon-aead-inc-80pq.c
+    aead/ascon-aead-masked-128.c
+    aead/ascon-aead-masked-128a.c
+    aead/ascon-aead-masked-80pq.c
+    aead/ascon-aead-masked-common.c
+    aead/ascon-aead-masked-common.h
     core/ascon-asm-armv6m.S
     core/ascon-asm-armv6.S
     core/ascon-asm-armv7m.S

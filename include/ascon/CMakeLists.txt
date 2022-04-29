@@ -1,6 +1,7 @@
 
 list(APPEND ASCON_HEADERS
     aead.h
+    aead-masked.h
     hash.h
     hkdf.h
     hmac.h

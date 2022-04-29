@@ -26,12 +26,12 @@
 #include <ascon/utility.h>
 #include <string.h>
 
-void ascon_x2_init(ascon_masked_state_t *state)
+void ascon_masked_state_init(ascon_masked_state_t *state)
 {
     memset(state, 0, sizeof(ascon_masked_state_t));
 }
 
-void ascon_x2_free(ascon_masked_state_t *state)
+void ascon_masked_state_free(ascon_masked_state_t *state)
 {
     if (state)
         ascon_clean(state, sizeof(ascon_masked_state_t));
@@ -120,17 +120,6 @@ void ascon_x2_copy_from_x4
         ascon_masked_word_x2_from_x4(&(dest->M[index]), &(src->M[index]), trng);
 }
 
-void ascon_x3_init(ascon_masked_state_t *state)
-{
-    memset(state, 0, sizeof(ascon_masked_state_t));
-}
-
-void ascon_x3_free(ascon_masked_state_t *state)
-{
-    if (state)
-        ascon_clean(state, sizeof(ascon_masked_state_t));
-}
-
 void ascon_x3_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng)
 {
     int index;
@@ -212,17 +201,6 @@ void ascon_x3_copy_from_x4
     int index;
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x3_from_x4(&(dest->M[index]), &(src->M[index]), trng);
-}
-
-void ascon_x4_init(ascon_masked_state_t *state)
-{
-    memset(state, 0, sizeof(ascon_masked_state_t));
-}
-
-void ascon_x4_free(ascon_masked_state_t *state)
-{
-    if (state)
-        ascon_clean(state, sizeof(ascon_masked_state_t));
 }
 
 void ascon_x4_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng)

@@ -22,6 +22,7 @@
 
 #include "algorithms.h"
 #include <ascon/aead.h>
+#include <ascon/aead-masked.h>
 #include <ascon/isap.h>
 #include <ascon/siv.h>
 #include <ascon/hash.h>
@@ -258,6 +259,48 @@ aead_cipher_t const ascon80pq_inc_cipher = {
     (aead_cipher_dec_fin_t)ascon80pq_aead_decrypt_finalize
 };
 
+aead_cipher_t const ascon128_masked_cipher = {
+    "ASCON-128-masked",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_ALL,
+    (aead_cipher_encrypt_t)ascon128_masked_aead_encrypt,
+    (aead_cipher_decrypt_t)ascon128_masked_aead_decrypt,
+    sizeof(ascon_masked_key_128_t),
+    (aead_cipher_pk_init_t)ascon_masked_key_128_init,
+    (aead_cipher_pk_free_t)ascon_masked_key_128_free,
+    0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128a_masked_cipher = {
+    "ASCON-128a-masked",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_ALL,
+    (aead_cipher_encrypt_t)ascon128a_masked_aead_encrypt,
+    (aead_cipher_decrypt_t)ascon128a_masked_aead_decrypt,
+    sizeof(ascon_masked_key_128_t),
+    (aead_cipher_pk_init_t)ascon_masked_key_128_init,
+    (aead_cipher_pk_free_t)ascon_masked_key_128_free,
+    0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon80pq_masked_cipher = {
+    "ASCON-80pq-masked",
+    ASCON80PQ_KEY_SIZE,
+    ASCON80PQ_NONCE_SIZE,
+    ASCON80PQ_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_ALL,
+    (aead_cipher_encrypt_t)ascon80pq_masked_aead_encrypt,
+    (aead_cipher_decrypt_t)ascon80pq_masked_aead_decrypt,
+    sizeof(ascon_masked_key_160_t),
+    (aead_cipher_pk_init_t)ascon_masked_key_160_init,
+    (aead_cipher_pk_free_t)ascon_masked_key_160_free,
+    0, 0, 0, 0, 0, 0
+};
+
 /* List of all AEAD ciphers that we can run KAT tests for */
 static const aead_cipher_t *const ciphers[] = {
     &ascon128_cipher,
@@ -271,6 +314,9 @@ static const aead_cipher_t *const ciphers[] = {
     &ascon128_inc_cipher,
     &ascon128a_inc_cipher,
     &ascon80pq_inc_cipher,
+    &ascon128_masked_cipher,
+    &ascon128a_masked_cipher,
+    &ascon80pq_masked_cipher,
     0
 };
 

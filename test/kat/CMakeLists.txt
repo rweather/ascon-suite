@@ -70,6 +70,9 @@ kat_test(ASCON-128a-SIV ASCON-128a-SIV.txt)
 kat_test(ASCON-80pq-SIV ASCON-80pq-SIV.txt)
 kat_test(ISAP-A-128 ISAP-A-128.txt)
 kat_test(ISAP-A-128A ISAP-A-128A.txt)
+kat_test(ASCON-128-masked ASCON-128.txt)
+kat_test(ASCON-128a-masked ASCON-128a.txt)
+kat_test(ASCON-80pq-masked ASCON-80pq.txt)
 
 # Add a custom 'perf' target to run all performance tests.
 add_custom_target(perf DEPENDS ${PERF_RULES})

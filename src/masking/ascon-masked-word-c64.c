@@ -112,7 +112,7 @@ void ascon_masked_word_x2_store_partial
     if (size >= 2) {
         masked1 = leftRotate16_64(masked1);
         masked2 = leftRotate16_64(masked2);
-        be_store_word16(data, (uint32_t)(masked1 ^ masked2));
+        be_store_word16(data, (uint16_t)(masked1 ^ masked2));
         data += 2;
         size -= 2;
     }
@@ -159,8 +159,9 @@ void ascon_masked_word_x2_replace
 {
     uint64_t mask1 = (~((uint64_t)0)) >> (size * 8U);
     uint64_t mask2 = ~mask1;
-    dest->S[0] = (dest->S[0] & mask2) | (src->S[0] & mask1);
-    dest->S[1] = (dest->S[1] & mask2) | (src->S[1] & mask1);
+    dest->S[0] = (dest->S[0] & mask1) | (src->S[0] & mask2);
+    dest->S[1] = (dest->S[1] & ascon_mask64_rotate_share1_0(mask1)) |
+                 ( src->S[1] & ascon_mask64_rotate_share1_0(mask2));
 }
 
 void ascon_masked_word_x2_from_x3
@@ -281,7 +282,7 @@ void ascon_masked_word_x3_store_partial
         masked1 = leftRotate16_64(masked1);
         masked2 = leftRotate16_64(masked2);
         masked3 = leftRotate16_64(masked3);
-        be_store_word16(data, (uint32_t)(masked1 ^ masked2 ^ masked3));
+        be_store_word16(data, (uint16_t)(masked1 ^ masked2 ^ masked3));
         data += 2;
         size -= 2;
     }
@@ -334,9 +335,11 @@ void ascon_masked_word_x3_replace
 {
     uint64_t mask1 = (~((uint64_t)0)) >> (size * 8U);
     uint64_t mask2 = ~mask1;
-    dest->S[0] = (dest->S[0] & mask2) | (src->S[0] & mask1);
-    dest->S[1] = (dest->S[1] & mask2) | (src->S[1] & mask1);
-    dest->S[2] = (dest->S[2] & mask2) | (src->S[2] & mask1);
+    dest->S[0] = (dest->S[0] & mask1) | (src->S[0] & mask2);
+    dest->S[1] = (dest->S[1] & ascon_mask64_rotate_share1_0(mask1)) |
+                 ( src->S[1] & ascon_mask64_rotate_share1_0(mask2));
+    dest->S[2] = (dest->S[2] & ascon_mask64_rotate_share2_0(mask1)) |
+                 ( src->S[2] & ascon_mask64_rotate_share2_0(mask2));
 }
 
 void ascon_masked_word_x3_from_x2
@@ -477,7 +480,7 @@ void ascon_masked_word_x4_store_partial
         masked2 = leftRotate16_64(masked2);
         masked3 = leftRotate16_64(masked3);
         masked4 = leftRotate16_64(masked4);
-        be_store_word16(data, (uint32_t)(masked1 ^ masked2 ^ masked3 ^ masked4));
+        be_store_word16(data, (uint16_t)(masked1 ^ masked2 ^ masked3 ^ masked4));
         data += 2;
         size -= 2;
     }
@@ -536,10 +539,13 @@ void ascon_masked_word_x4_replace
 {
     uint64_t mask1 = (~((uint64_t)0)) >> (size * 8U);
     uint64_t mask2 = ~mask1;
-    dest->S[0] = (dest->S[0] & mask2) | (src->S[0] & mask1);
-    dest->S[1] = (dest->S[1] & mask2) | (src->S[1] & mask1);
-    dest->S[2] = (dest->S[2] & mask2) | (src->S[2] & mask1);
-    dest->S[3] = (dest->S[3] & mask2) | (src->S[3] & mask1);
+    dest->S[0] = (dest->S[0] & mask1) | (src->S[0] & mask2);
+    dest->S[1] = (dest->S[1] & ascon_mask64_rotate_share1_0(mask1)) |
+                 ( src->S[1] & ascon_mask64_rotate_share1_0(mask2));
+    dest->S[2] = (dest->S[2] & ascon_mask64_rotate_share2_0(mask1)) |
+                 ( src->S[2] & ascon_mask64_rotate_share2_0(mask2));
+    dest->S[3] = (dest->S[3] & ascon_mask64_rotate_share3_0(mask1)) |
+                 ( src->S[3] & ascon_mask64_rotate_share3_0(mask2));
 }
 
 void ascon_masked_word_x4_from_x2

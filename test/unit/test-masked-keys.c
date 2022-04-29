@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     ascon_permute(&state_x1, 0);
     ascon_extract_bytes(&state_x1, state_x1_out, 0, 40);
     ascon_free(&state_x1);
-    ascon_x4_init(&state_x4);
+    ascon_masked_state_init(&state_x4);
     ascon_x4_randomize(&state_x4, &trng);
     ascon_masked_word_x4_xor(&(state_x4.M[1]), &(masked_128.k[0]));
     ascon_masked_word_x4_xor(&(state_x4.M[2]), &(masked_128.k[1]));
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
     ascon_x4_permute(&state_x4, 0, preserve);
     ascon_x4_extract_bytes_all(&state_x4, state_x4_out);
     ascon_masked_key_128_free(&masked_128);
-    ascon_x4_free(&state_x4);
+    ascon_masked_state_free(&state_x4);
     if (memcmp(state_x4_out, state_x1_out, sizeof(state_x1_out)) != 0) {
         printf("failed\n");
         test_exit_result = 1;
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
     ascon_permute(&state_x1, 0);
     ascon_extract_bytes(&state_x1, state_x1_out, 0, 40);
     ascon_free(&state_x1);
-    ascon_x4_init(&state_x4);
+    ascon_masked_state_init(&state_x4);
     ascon_x4_randomize(&state_x4, &trng);
     ascon_masked_word_x4_xor(&(state_x4.M[0]), &(masked_160.k[3]));
     ascon_masked_word_x4_xor(&(state_x4.M[1]), &(masked_160.k[4]));
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     ascon_x4_permute(&state_x4, 0, preserve);
     ascon_x4_extract_bytes_all(&state_x4, state_x4_out);
     ascon_masked_key_160_free(&masked_160);
-    ascon_x4_free(&state_x4);
+    ascon_masked_state_free(&state_x4);
     if (memcmp(state_x4_out, state_x1_out, sizeof(state_x1_out)) != 0) {
         printf("failed\n");
         test_exit_result = 1;
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
     ascon_permute(&state_x1, 0);
     ascon_extract_bytes(&state_x1, state_x1_out, 0, 40);
     ascon_free(&state_x1);
-    ascon_x4_init(&state_x4);
+    ascon_masked_state_init(&state_x4);
     ascon_x4_randomize(&state_x4, &trng);
     ascon_masked_word_x4_xor(&(state_x4.M[1]), &(masked_160.k[0]));
     ascon_masked_word_x4_xor(&(state_x4.M[2]), &(masked_160.k[1]));
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     ascon_x4_permute(&state_x4, 0, preserve);
     ascon_x4_extract_bytes_all(&state_x4, state_x4_out);
     ascon_masked_key_160_free(&masked_160);
-    ascon_x4_free(&state_x4);
+    ascon_masked_state_free(&state_x4);
     if (memcmp(state_x4_out, state_x1_out, sizeof(state_x1_out)) != 0) {
         printf("failed\n");
         test_exit_result = 1;

@@ -93,17 +93,17 @@ typedef struct
 } ascon_masked_state_t;
 
 /**
- * \brief Initializes the words of the ASCON-x2 permutation state.
+ * \brief Initializes the words of a masked ASCON permutation state.
  *
- * \param state The ASCON-x2 state to initialize.
+ * \param state The masked ASCON state to initialize.
  *
  * All words will be set to zero with no randomness.  The application
- * must use ascon_x2_overwrite_word() and ascon_x2_overwrite_words()
- * to populate the initial randomized state.
+ * must use functions ascon_x2_overwrite_word() to populate the initial
+ * randomized state.
  *
- * \sa ascon_x2_free()
+ * \sa ascon_masked_state_free()
  */
-void ascon_x2_init(ascon_masked_state_t *state);
+void ascon_masked_state_init(ascon_masked_state_t *state);
 
 /**
  * \brief Frees an ASCON-x2 permutation state and attempts to destroy
@@ -111,9 +111,9 @@ void ascon_x2_init(ascon_masked_state_t *state);
  *
  * \param state The ASCON-x2 state to be freed.
  *
- * \sa ascon_x2_init()
+ * \sa ascon_masked_state_init()
  */
-void ascon_x2_free(ascon_masked_state_t *state);
+void ascon_masked_state_free(ascon_masked_state_t *state);
 
 /**
  * \brief Randomizes an ASCON-x2 permutation state.
@@ -199,29 +199,6 @@ void ascon_x2_copy_from_x4
      ascon_trng_state_t *trng);
 
 /**
- * \brief Initializes the words of the ASCON-x3 permutation state.
- *
- * \param state The ASCON-x3 state to initialize.
- *
- * All words will be set to zero with no randomness.  The application
- * must use ascon_x3_overwrite_word() and ascon_x3_overwrite_words()
- * to populate the initial randomized state.
- *
- * \sa ascon_x3_free()
- */
-void ascon_x3_init(ascon_masked_state_t *state);
-
-/**
- * \brief Frees an ASCON-x3 permutation state and attempts to destroy
- * any sensitive material.
- *
- * \param state The ASCON-x3 state to be freed.
- *
- * \sa ascon_x3_init()
- */
-void ascon_x3_free(ascon_masked_state_t *state);
-
-/**
  * \brief Randomizes an ASCON-x3 permutation state.
  *
  * \param state The ASCON-x3 state to be randomized.
@@ -303,29 +280,6 @@ void ascon_x3_copy_from_x3
 void ascon_x3_copy_from_x4
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng);
-
-/**
- * \brief Initializes the words of the ASCON-x4 permutation state.
- *
- * \param state The ASCON-x4 state to initialize.
- *
- * All words will be set to zero with no randomness.  The application
- * must use ascon_x4_overwrite_word() and ascon_x4_overwrite_words()
- * to populate the initial randomized state.
- *
- * \sa ascon_x4_free()
- */
-void ascon_x4_init(ascon_masked_state_t *state);
-
-/**
- * \brief Frees an ASCON-x4 permutation state and attempts to destroy
- * any sensitive material.
- *
- * \param state The ASCON-x4 state to be freed.
- *
- * \sa ascon_x4_init()
- */
-void ascon_x4_free(ascon_masked_state_t *state);
 
 /**
  * \brief Randomizes an ASCON-x4 permutation state.

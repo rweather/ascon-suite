@@ -115,13 +115,13 @@ void test_ascon_permutation_x2(void)
 
     printf("12 Rounds ... ");
     fflush(stdout);
-    ascon_x2_init(&state);
+    ascon_masked_state_init(&state);
     ascon_x2_randomize(&state, &trng);
     ascon_x2_add_bytes_all(&state, ascon_input, &trng);
     ascon_x2_permute(&state, 0, &preserve);
     ascon_x2_randomize(&state, &trng);
     ascon_x2_extract_bytes_all(&state, buffer);
-    ascon_x2_free(&state);
+    ascon_masked_state_free(&state);
     if (memcmp(buffer, ascon_output_12, sizeof(ascon_output_12)) != 0) {
         printf("failed\n");
         test_exit_result = 1;
@@ -130,12 +130,12 @@ void test_ascon_permutation_x2(void)
     }
 
     printf("8 Rounds ... ");
-    ascon_x2_init(&state);
+    ascon_masked_state_init(&state);
     ascon_x2_randomize(&state, &trng);
     ascon_x2_overwrite_bytes_all(&state, ascon_input, &trng);
     ascon_x2_permute(&state, 4, &preserve);
     ascon_x2_extract_bytes_all(&state, buffer);
-    ascon_x2_free(&state);
+    ascon_masked_state_free(&state);
     fflush(stdout);
     if (memcmp(buffer, ascon_output_8, sizeof(ascon_output_8)) != 0) {
         printf("failed\n");
@@ -147,10 +147,10 @@ void test_ascon_permutation_x2(void)
     printf("Init ... ");
     fflush(stdout);
     memset(&state, 0xAA, sizeof(state));
-    ascon_x2_init(&state);
+    ascon_masked_state_init(&state);
     ascon_x2_randomize(&state, &trng);
     ascon_x2_extract_bytes_all(&state, buffer);
-    ascon_x2_free(&state);
+    ascon_masked_state_free(&state);
     ok = 1;
     for (posn = 0; posn < 40; ++posn) {
         if (buffer[posn] != 0)
@@ -165,13 +165,13 @@ void test_ascon_permutation_x2(void)
 
     printf("Free ... ");
     fflush(stdout);
-    ascon_x2_init(&state);
+    ascon_masked_state_init(&state);
     ascon_x2_add_bytes_all(&state, ascon_input, &trng);
     ascon_x2_randomize(&state, &trng);
-    ascon_x2_free(&state);
+    ascon_masked_state_free(&state);
     ok = 1;
     for (posn = 0; posn < sizeof(state); ++posn) {
-        /* Check that ascon_x2_free() sets everything in the state to zero */
+        /* Check that free sets everything in the state to zero */
         if (((const unsigned char *)&state)[posn] != 0)
             ok = 0;
     }
@@ -186,14 +186,14 @@ void test_ascon_permutation_x2(void)
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; offset += 8) {
-        ascon_x2_init(&state);
+        ascon_masked_state_init(&state);
         ascon_x2_randomize(&state, &trng);
         ascon_x2_add_bytes_all(&state, ascon_output_8, &trng);
         ascon_masked_word_x2_load(&word, ascon_input, &trng);
         ascon_masked_word_x2_xor(&(state.M[offset / 8]), &word);
         ascon_x2_randomize(&state, &trng);
         ascon_x2_extract_bytes_all(&state, buffer);
-        ascon_x2_free(&state);
+        ascon_masked_state_free(&state);
         for (posn = 0; posn < 40; ++posn) {
             uint8_t value = ascon_output_8[posn];
             if (posn >= offset && posn < (offset + 8))
@@ -213,13 +213,13 @@ void test_ascon_permutation_x2(void)
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; offset += 8) {
-        ascon_x2_init(&state);
+        ascon_masked_state_init(&state);
         ascon_x2_randomize(&state, &trng);
         ascon_x2_overwrite_bytes_all(&state, ascon_output_8, &trng);
         ascon_masked_word_x2_load(&word, ascon_input, &trng);
         state.M[offset / 8] = word;
         ascon_x2_extract_bytes_all(&state, buffer);
-        ascon_x2_free(&state);
+        ascon_masked_state_free(&state);
         for (posn = 0; posn < 40; ++posn) {
             uint8_t value = ascon_output_8[posn];
             if (posn >= offset && posn < (offset + 8))
@@ -239,12 +239,12 @@ void test_ascon_permutation_x2(void)
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; offset += 8) {
-        ascon_x2_init(&state);
+        ascon_masked_state_init(&state);
         ascon_x2_overwrite_bytes_all(&state, ascon_output_12, &trng);
         ascon_masked_word_x2_zero(&word, &trng);
         state.M[offset / 8] = word;
         ascon_x2_extract_bytes_all(&state, buffer);
-        ascon_x2_free(&state);
+        ascon_masked_state_free(&state);
         for (posn = 0; posn < 40; ++posn) {
             uint8_t value = ascon_output_12[posn];
             if (posn >= offset && posn < (offset + 8))
@@ -264,14 +264,14 @@ void test_ascon_permutation_x2(void)
     fflush(stdout);
     ok = 1;
     for (offset = 0; offset < 40; offset += 8) {
-        ascon_x2_init(&state);
+        ascon_masked_state_init(&state);
         ascon_x2_randomize(&state, &trng);
         ascon_x2_add_bytes_all_load32(&state, ascon_output_8, &trng);
         word = state.M[offset / 8];
         ascon_masked_word_x2_store(buffer, &word);
         ascon_masked_word_x2_randomize(&word, &word, &trng);
         ascon_masked_word_x2_store(buffer + 8, &word);
-        ascon_x2_free(&state);
+        ascon_masked_state_free(&state);
         for (posn = 0; posn < 8; ++posn) {
             if (buffer[posn] != ascon_output_8[posn + offset])
                 ok = 0;
@@ -293,7 +293,7 @@ void test_ascon_permutation_x2(void)
     ascon_release(&state_x1);
     ascon_x2_copy_from_x1(&state, &state_x1, &trng);
     ascon_x2_extract_bytes_all(&state, buffer);
-    ascon_x2_free(&state);
+    ascon_masked_state_free(&state);
     ascon_acquire(&state_x1);
     ascon_free(&state_x1);
     if (memcmp(buffer, ascon_output_8, 40) != 0) {
@@ -305,12 +305,12 @@ void test_ascon_permutation_x2(void)
 
     printf("Copy From ASCON-x2 ... ");
     fflush(stdout);
-    ascon_x2_init(&state_x2);
+    ascon_masked_state_init(&state_x2);
     ascon_x2_add_bytes_all(&state_x2, ascon_output_12, &trng);
     ascon_x2_copy_from_x2(&state, &state_x2, &trng);
     ascon_x2_extract_bytes_all(&state, buffer);
-    ascon_x2_free(&state);
-    ascon_x2_free(&state_x2);
+    ascon_masked_state_free(&state);
+    ascon_masked_state_free(&state_x2);
     if (memcmp(buffer, ascon_output_12, 40) != 0) {
         printf("failed\n");
         test_exit_result = 1;
@@ -320,13 +320,13 @@ void test_ascon_permutation_x2(void)
 
     printf("Copy To ASCON-x1 ... ");
     fflush(stdout);
-    ascon_x2_init(&state);
+    ascon_masked_state_init(&state);
     ascon_x2_randomize(&state, &trng);
     ascon_x2_add_bytes_all(&state, ascon_output_12, &trng);
     ascon_x2_copy_to_x1(&state_x1, &state);
     ascon_extract_bytes(&state_x1, buffer, 0, 40);
     ascon_free(&state_x1);
-    ascon_x2_free(&state);
+    ascon_masked_state_free(&state);
     if (memcmp(buffer, ascon_output_12, 40) != 0) {
         printf("failed\n");
         test_exit_result = 1;
@@ -349,6 +349,31 @@ void test_ascon_permutation_x2(void)
     ascon_masked_word_x2_store(buffer, &word2);
     if (memcmp(buffer, ascon_output_8, 8) != 0)
         ok = 0;
+    if (!ok) {
+        printf("failed\n");
+        test_exit_result = 1;
+    } else {
+        printf("ok\n");
+    }
+
+    printf("Replace Word ... ");
+    fflush(stdout);
+    ok = 1;
+    for (offset = 0; offset < 8; ++offset) {
+        ascon_masked_word_x2_load(&word, ascon_output_8, &trng);
+        ascon_masked_word_x2_load(&word2, ascon_output_12, &trng);
+        ascon_masked_word_x2_replace(&word, &word2, offset);
+        ascon_masked_word_x2_store(buffer, &word);
+        for (posn = 0; posn < 8; ++posn) {
+            uint8_t value;
+            if (posn < offset)
+                value = ascon_output_12[posn];
+            else
+                value = ascon_output_8[posn];
+            if (buffer[posn] != value)
+                ok = 0;
+        }
+    }
     if (!ok) {
         printf("failed\n");
         test_exit_result = 1;
