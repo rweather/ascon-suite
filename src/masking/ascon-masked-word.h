@@ -49,7 +49,7 @@
  * are in the other half.  This can be more efficient on 32-bit platforms
  * that lack a funnel shift instruction.
  *
- * The shares of a 32-bit masked word are stored in a rorated form where
+ * The shares of a 32-bit masked word are stored in a rotated form where
  * shares 1, 2, 3, and 4 are rotated right by 0, 5, 10, and 15 bits
  * respectively.
  */
@@ -165,6 +165,114 @@ extern "C" {
  * \return Value of share 3 in the same bit positions as share 2.
  */
 #define ascon_mask64_unrotate_share3_2(x) (rightRotate53_64((x)))
+
+/**
+ * \brief Rotates 32-bit masked share 1 with respect to share 0.
+ *
+ * \param x Value of share 1 in the same bit positions as share 0.
+ *
+ * \return Value of share 1 after rotation with respect to share 0.
+ */
+#define ascon_mask32_rotate_share1_0(x) (rightRotate5((x)))
+
+/**
+ * \brief Rotates 32-bit masked share 2 with respect to share 0.
+ *
+ * \param x Value of share 2 in the same bit positions as share 0.
+ *
+ * \return Value of share 2 after rotation with respect to share 0.
+ */
+#define ascon_mask32_rotate_share2_0(x) (rightRotate10((x)))
+
+/**
+ * \brief Rotates 32-bit masked share 2 with respect to share 1.
+ *
+ * \param x Value of share 2 in the same bit positions as share 1.
+ *
+ * \return Value of share 2 after rotation with respect to share 1.
+ */
+#define ascon_mask32_rotate_share2_1(x) (rightRotate5((x)))
+
+/**
+ * \brief Rotates 32-bit masked share 3 with respect to share 0.
+ *
+ * \param x Value of share 3 in the same bit positions as share 0.
+ *
+ * \return Value of share 3 after rotation with respect to share 0.
+ */
+#define ascon_mask32_rotate_share3_0(x) (rightRotate15((x)))
+
+/**
+ * \brief Rotates 32-bit masked share 3 with respect to share 1.
+ *
+ * \param x Value of share 3 in the same bit positions as share 1.
+ *
+ * \return Value of share 3 after rotation with respect to share 1.
+ */
+#define ascon_mask32_rotate_share3_1(x) (rightRotate10((x)))
+
+/**
+ * \brief Rotates 32-bit masked share 3 with respect to share 2.
+ *
+ * \param x Value of share 3 in the same bit positions as share 2.
+ *
+ * \return Value of share 3 after rotation with respect to share 2.
+ */
+#define ascon_mask32_rotate_share3_2(x) (rightRotate5((x)))
+
+/**
+ * \brief Unrotates 32-bit masked share 1 with respect to share 0.
+ *
+ * \param x Value of share 1, rotated with respect to share 0.
+ *
+ * \return Value of share 1 in the same bit positions as share 0.
+ */
+#define ascon_mask32_unrotate_share1_0(x) (rightRotate27((x)))
+
+/**
+ * \brief Unrotates 32-bit masked share 2 with respect to share 0.
+ *
+ * \param x Value of share 2, rotated with respect to share 0.
+ *
+ * \return Value of share 2 in the same bit positions as share 0.
+ */
+#define ascon_mask32_unrotate_share2_0(x) (rightRotate22((x)))
+
+/**
+ * \brief Unrotates 32-bit masked share 2 with respect to share 1.
+ *
+ * \param x Value of share 2, rotated with respect to share 1.
+ *
+ * \return Value of share 2 in the same bit positions as share 1.
+ */
+#define ascon_mask32_unrotate_share2_1(x) (rightRotate27((x)))
+
+/**
+ * \brief Unrotates 32-bit masked share 3 with respect to share 0.
+ *
+ * \param x Value of share 3, rotated with respect to share 0.
+ *
+ * \return Value of share 3 in the same bit positions as share 0.
+ */
+#define ascon_mask32_unrotate_share3_0(x) (rightRotate17((x)))
+
+/**
+ * \brief Unrotates 32-bit masked share 3 with respect to share 1.
+ *
+ * \param x Value of share 3, rotated with respect to share 1.
+ *
+ * \return Value of share 3 in the same bit positions as share 1.
+ */
+#define ascon_mask32_unrotate_share3_1(x) (rightRotate22((x)))
+
+/**
+ * \brief Unrotates 32-bit masked share 3 with respect to share 2.
+ *
+ * \param x Value of share 3, rotated with respect to share 2.
+ *
+ * \return Value of share 3 in the same bit positions as share 2.
+ */
+#define ascon_mask32_unrotate_share3_2(x) (rightRotate27((x)))
 
 /**
  * \brief Sets a x2 masked word to zero.

@@ -486,6 +486,41 @@ void test_ascon_permutation_x4(void)
         printf("ok\n");
     }
 
+    printf("Partial Words ... ");
+    fflush(stdout);
+    ok = 1;
+    for (offset = 0; offset < 8; ++offset) {
+        ascon_masked_word_x4_load_partial(&word, ascon_output_8, offset, &trng);
+        ascon_masked_word_x4_store(buffer, &word);
+        for (posn = 0; posn < 8; ++posn) {
+            uint8_t value;
+            if (posn < offset)
+                value = ascon_output_8[posn];
+            else
+                value = 0;
+            if (buffer[posn] != value)
+                ok = 0;
+        }
+        ascon_masked_word_x4_load(&word, ascon_output_12, &trng);
+        memcpy(buffer, ascon_output_8, sizeof(ascon_output_8));
+        ascon_masked_word_x4_store_partial(buffer, offset, &word);
+        for (posn = 0; posn < 8; ++posn) {
+            uint8_t value;
+            if (posn < offset)
+                value = ascon_output_12[posn];
+            else
+                value = ascon_output_8[posn];
+            if (buffer[posn] != value)
+                ok = 0;
+        }
+    }
+    if (!ok) {
+        printf("failed\n");
+        test_exit_result = 1;
+    } else {
+        printf("ok\n");
+    }
+
     ascon_trng_free(&trng);
 }
 

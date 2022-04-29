@@ -392,18 +392,6 @@ void ascon_masked_word_x4_load
     word->S[3] = ascon_mask64_rotate_share3_0(random3);
 }
 
-void ascon_masked_word_x4_load_direct
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng)
-{
-    uint64_t random1 = ascon_trng_generate_64(trng);
-    uint64_t random2 = ascon_trng_generate_64(trng);
-    uint64_t random3 = ascon_trng_generate_64(trng);
-    word->S[0] = random1 ^ random2 ^ random3 ^ data;
-    word->S[1] = ascon_mask64_rotate_share1_0(random1);
-    word->S[2] = ascon_mask64_rotate_share2_0(random2);
-    word->S[3] = ascon_mask64_rotate_share3_0(random3);
-}
-
 void ascon_masked_word_x4_load_partial
     (ascon_masked_word_t *word, const uint8_t *data, unsigned size,
      ascon_trng_state_t *trng)

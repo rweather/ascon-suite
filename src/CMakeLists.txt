@@ -56,11 +56,15 @@ list(APPEND ASCON_SOURCES
     masking/ascon-masked-config.h
     masking/ascon-masked-word.h
     masking/ascon-masked-key.c
+    masking/ascon-masked-word-c32.c
     masking/ascon-masked-word-c64.c
     masking/ascon-masked-state.h
     masking/ascon-masked-state.c
+    masking/ascon-x2-c32.c
     masking/ascon-x2-c64.c
+    masking/ascon-x3-c32.c
     masking/ascon-x3-c64.c
+    masking/ascon-x4-c32.c
     masking/ascon-x4-c64.c
     random/ascon-prng.c
     random/ascon-random.c
