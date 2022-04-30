@@ -23,6 +23,8 @@
 #ifndef X86_COMMON_H
 #define X86_COMMON_H
 
+#include "reg_alloc.h"
+
 /* Should we output Intel syntax (1) or AT&T syntax (0)? */
 #ifndef INTEL_SYNTAX
 #define INTEL_SYNTAX 1
@@ -70,6 +72,7 @@
 #define REG_R14 "%r14"
 #define REG_R15 "%r15"
 #endif
+#define REG_STATE64 REG_RDI
 
 /* Determine the register names to use on 32-bit platforms */
 #if INTEL_SYNTAX
@@ -82,8 +85,10 @@
 #define REG_EBP "ebp"
 #if X86_64_PLATFORM
 #define REG_ESP REG_RSP
+#define REG_STATE32 REG_RDI
 #else
 #define REG_ESP "esp"
+#define REG_STATE32 REG_EAX
 #endif
 #else
 #define REG_EAX "%eax"
@@ -95,8 +100,10 @@
 #define REG_EBP "%ebp"
 #if X86_64_PLATFORM
 #define REG_ESP REG_RSP
+#define REG_STATE32 REG_RDI
 #else
 #define REG_ESP "%esp"
+#define REG_STATE32 REG_EAX
 #endif
 #endif
 
@@ -119,24 +126,27 @@ void function_header(const char *name);
 void function_footer(const char *name);
 
 /* Generates a binary operator */
-void binop(const char *name, const char *reg1, const char *reg2);
+void binop(const char *name, reg_t reg1, reg_t reg2);
 
 /* Generates a unary operator */
-void unop(const char *name, const char *reg);
+void unop(const char *name, reg_t reg);
 
 /* Generates a rotate-right of a register */
-void ror(const char *dest, int shift);
-
-/* Loads a register from a memory location */
-void load(const char *reg, const char *ptr, int offset);
-
-/* Stores a register to a memory location */
-void store(const char *reg, const char *ptr, int offset);
+void ror(reg_t dest, int shift);
 
 /* XOR's a round constant with a register */
-void xor_rc(const char *reg, int rc);
+void xor_rc(reg_t reg, int rc);
 
 /* Clears the contents of a register to zero */
 void clear_reg(const char *reg);
+
+/* Pushes a register on the stack */
+void push(const char *reg);
+
+/* Pops a register from the stack */
+void pop(const char *reg);
+
+/* Moves a register directly */
+void move_direct(const char *dest, const char *src);
 
 #endif /* X86_COMMON_H */

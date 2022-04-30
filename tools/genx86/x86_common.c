@@ -22,6 +22,8 @@
 
 #include "x86_common.h"
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 int target_word_size = 64;
 
@@ -61,60 +63,60 @@ void function_footer(const char *name)
     }
 }
 
-void binop(const char *name, const char *reg1, const char *reg2)
+void binop(const char *name, reg_t reg1, reg_t reg2)
 {
 #if INTEL_SYNTAX
-    printf("%s%s, %s\n", name, reg1, reg2);
+    printf("\t%s\t%s, %s\n", name, get_real(&reg1), get_real(&reg2));
 #else
-    printf("%s%s, %s\n", name, reg2, reg1);
+    if (target_word_size == 32)
+        printf("\t%sl\t%s, %s\n", name, get_real(&reg2), get_real(&reg1));
+    else
+        printf("\t%sq\t%s, %s\n", name, get_real(&reg2), get_real(&reg1));
 #endif
 }
 
-void unop(const char *name, const char *reg)
-{
-    printf("%s%s\n", name, reg);
-}
-
-void ror(const char *dest, int shift)
+void unop(const char *name, reg_t reg)
 {
 #if INTEL_SYNTAX
-    if (target_word_size == 32)
-        printf(INSNL(ror) "%s, %d\n", dest, shift);
-    else
-        printf(INSNQ(ror) "%s, %d\n", dest, shift);
+    printf("\t%s\t%s\n", name, get_real(&reg));
 #else
     if (target_word_size == 32)
-        printf(INSNL(ror) "$%d, %s\n", shift, dest);
+        printf("\t%sl\t%s\n", name, get_real(&reg));
     else
-        printf(INSNQ(ror) "$%d, %s\n", shift, dest);
+        printf("\t%sq\t%s\n", name, get_real(&reg));
+#endif
+}
+
+void ror(reg_t dest, int shift)
+{
+#if INTEL_SYNTAX
+    printf("\tror\t%s, %d\n", get_real(&dest), shift);
+#else
+    if (target_word_size == 32)
+        printf("\trorl\t$%d, %s\n", shift, get_real(&dest));
+    else
+        printf("\trorq\t$%d, %s\n", shift, get_real(&dest));
 #endif
 }
 
 void load(const char *reg, const char *ptr, int offset)
 {
 #if INTEL_SYNTAX
-    if (target_word_size == 32) {
-        if (offset != 0)
-            printf(INSNL(mov) "%s, [%s + %d]\n", reg, ptr, offset);
-        else
-            printf(INSNL(mov) "%s, [%s]\n", reg, ptr);
-    } else {
-        if (offset != 0)
-            printf(INSNQ(mov) "%s, [%s + %d]\n", reg, ptr, offset);
-        else
-            printf(INSNQ(mov) "%s, [%s]\n", reg, ptr);
-    }
+    if (offset != 0)
+        printf("\tmov\t%s, [%s + %d]\n", reg, ptr, offset);
+    else
+        printf("\tmov\t%s, [%s]\n", reg, ptr);
 #else
     if (target_word_size == 32) {
         if (offset != 0)
-            printf(INSNL(mov) "%d(%s), %s\n", offset, ptr, reg);
+            printf("\tmovl\t%d(%s), %s\n", offset, ptr, reg);
         else
-            printf(INSNL(mov) "(%s), %s\n", ptr, reg);
+            printf("\tmovl\t(%s), %s\n", ptr, reg);
     } else {
         if (offset != 0)
-            printf(INSNQ(mov) "%d(%s), %s\n", offset, ptr, reg);
+            printf("\tmovq\t%d(%s), %s\n", offset, ptr, reg);
         else
-            printf(INSNQ(mov) "(%s), %s\n", ptr, reg);
+            printf("\tmovq\t(%s), %s\n", ptr, reg);
     }
 #endif
 }
@@ -122,58 +124,81 @@ void load(const char *reg, const char *ptr, int offset)
 void store(const char *reg, const char *ptr, int offset)
 {
 #if INTEL_SYNTAX
-    if (target_word_size == 32) {
-        if (offset != 0)
-            printf(INSNL(mov) "[%s + %d], %s\n", ptr, offset, reg);
-        else
-            printf(INSNL(mov) "[%s], %s\n", ptr, reg);
-    } else {
-        if (offset != 0)
-            printf(INSNQ(mov) "[%s + %d], %s\n", ptr, offset, reg);
-        else
-            printf(INSNQ(mov) "[%s], %s\n", ptr, reg);
-    }
+    if (offset != 0)
+        printf("\tmov\t[%s + %d], %s\n", ptr, offset, reg);
+    else
+        printf("\tmov\t[%s], %s\n", ptr, reg);
 #else
     if (target_word_size == 32) {
         if (offset != 0)
-            printf(INSNL(mov) "%s, %d(%s)\n", reg, offset, ptr);
+            printf("\tmovl\t%s, %d(%s)\n", reg, offset, ptr);
         else
-            printf(INSNL(mov) "%s, (%s)\n", reg, ptr);
+            printf("\tmovl\t%s, (%s)\n", reg, ptr);
     } else {
         if (offset != 0)
-            printf(INSNQ(mov) "%s, %d(%s)\n", reg, offset, ptr);
+            printf("\tmovq\t%s, %d(%s)\n", reg, offset, ptr);
         else
-            printf(INSNQ(mov) "%s, (%s)\n", reg, ptr);
+            printf("\tmovq\t%s, (%s)\n", reg, ptr);
     }
 #endif
 }
 
-void xor_rc(const char *reg, int rc)
+void xor_rc(reg_t reg, int rc)
 {
 #if INTEL_SYNTAX
-    if (target_word_size == 32)
-        printf(INSNL(xor) "%s, %d\n", reg, rc);
-    else
-        printf(INSNQ(xor) "%s, %d\n", reg, rc);
+    printf("\txor\t%s, %d\n", get_real(&reg), rc);
 #else
     if (target_word_size == 32)
-        printf(INSNL(xor) "$%d, %s\n", rc, reg);
+        printf("\txorl\t$%d, %s\n", rc, get_real(&reg));
     else
-        printf(INSNQ(xor) "$%d, %s\n", rc, reg);
+        printf("\txorq\t$%d, %s\n", rc, get_real(&reg));
 #endif
 }
 
 void clear_reg(const char *reg)
 {
 #if INTEL_SYNTAX
-    if (target_word_size == 32)
-        printf(INSNL(mov) "%s, 0\n", reg);
-    else
-        printf(INSNQ(mov) "%s, 0\n", reg);
+    printf("\tmov\t%s, 0\n", reg);
 #else
     if (target_word_size == 32)
-        printf(INSNL(mov) "$0, %s\n", reg);
+        printf("\tmovl\t$0, %s\n", reg);
     else
-        printf(INSNQ(mov) "$0, %s\n", reg);
+        printf("\tmovq\t$0, %s\n", reg);
+#endif
+}
+
+void push(const char *reg)
+{
+#if INTEL_SYNTAX
+    printf("\tpush\t%s\n", reg);
+#else
+    if (target_word_size == 32 && !X86_64_PLATFORM)
+        printf("\tpushl\t%s\n", reg);
+    else
+        printf("\tpushq\t%s\n", reg);
+#endif
+}
+
+void pop(const char *reg)
+{
+#if INTEL_SYNTAX
+    printf("\tpop\t%s\n", reg);
+#else
+    if (target_word_size == 32 && !X86_64_PLATFORM)
+        printf("\tpopl\t%s\n", reg);
+    else
+        printf("\tpopq\t%s\n", reg);
+#endif
+}
+
+void move_direct(const char *dest, const char *src)
+{
+#if INTEL_SYNTAX
+    printf("\tmov\t%s, %s\n", dest, src);
+#else
+    if (target_word_size == 32 && !X86_64_PLATFORM)
+        printf("\tmovl\t%s, %s\n", src, dest);
+    else
+        printf("\tmovq\t%s, %s\n", src, dest);
 #endif
 }

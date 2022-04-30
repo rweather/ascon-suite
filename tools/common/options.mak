@@ -1,6 +1,6 @@
 
 # Common optimization and warning CFLAGS for compiling all source files.
-COMMON_CFLAGS = -O3 -Wall -Wextra
+COMMON_CFLAGS = -g -Wall -Wextra
 
 # Common linker flags.
 COMMON_LDFLAGS =

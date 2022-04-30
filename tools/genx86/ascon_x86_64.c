@@ -34,17 +34,17 @@
 /* List of all registers that we can work with */
 typedef struct
 {
-    const char *x0;
-    const char *x1;
-    const char *x2;
-    const char *x3;
-    const char *x4;
-    const char *t0;
-    const char *t1;
-    const char *t2;
-    const char *t3;
-    const char *t4;
-    const char *t5;
+    reg_t x0;
+    reg_t x1;
+    reg_t x2;
+    reg_t x3;
+    reg_t x4;
+    reg_t t0;
+    reg_t t1;
+    reg_t t2;
+    reg_t t3;
+    reg_t t4;
+    reg_t t5;
 
 } reg_names;
 
@@ -52,43 +52,43 @@ typedef struct
 static void gen_sbox(const reg_names *regs)
 {
     /* x0 ^= x4;   x4 ^= x3;   x2 ^= x1; */
-    binop(INSNQ(xor), regs->x0, regs->x4);
-    binop(INSNQ(xor), regs->x4, regs->x3);
-    binop(INSNQ(xor), regs->x2, regs->x1);
+    binop("xor", regs->x0, regs->x4);
+    binop("xor", regs->x4, regs->x3);
+    binop("xor", regs->x2, regs->x1);
 
     /* t0 = ~x0;   t1 = ~x1;   t2 = ~x2;   t3 = ~x3;   t4 = ~x4; */
-    binop(INSNQ(mov), regs->t0, regs->x0);
-    binop(INSNQ(mov), regs->t1, regs->x1);
-    binop(INSNQ(mov), regs->t2, regs->x2);
-    binop(INSNQ(mov), regs->t3, regs->x3);
-    binop(INSNQ(mov), regs->t4, regs->x4);
-    unop(INSNQ(not), regs->t0);
-    unop(INSNQ(not), regs->t1);
-    unop(INSNQ(not), regs->t2);
-    unop(INSNQ(not), regs->t3);
-    unop(INSNQ(not), regs->t4);
+    binop("mov", regs->t0, regs->x0);
+    binop("mov", regs->t1, regs->x1);
+    binop("mov", regs->t2, regs->x2);
+    binop("mov", regs->t3, regs->x3);
+    binop("mov", regs->t4, regs->x4);
+    unop("not", regs->t0);
+    unop("not", regs->t1);
+    unop("not", regs->t2);
+    unop("not", regs->t3);
+    unop("not", regs->t4);
 
     /* t0 &= x1;   t1 &= x2;   t2 &= x3;   t3 &= x4;   t4 &= x0; */
-    binop(INSNQ(and), regs->t0, regs->x1);
-    binop(INSNQ(and), regs->t1, regs->x2);
-    binop(INSNQ(and), regs->t2, regs->x3);
-    binop(INSNQ(and), regs->t3, regs->x4);
-    binop(INSNQ(and), regs->t4, regs->x0);
+    binop("and", regs->t0, regs->x1);
+    binop("and", regs->t1, regs->x2);
+    binop("and", regs->t2, regs->x3);
+    binop("and", regs->t3, regs->x4);
+    binop("and", regs->t4, regs->x0);
 
     /* x0 ^= t1;   x1 ^= t2;   x2 ^= t3;   x3 ^= t4;   x4 ^= t0; */
-    binop(INSNQ(xor), regs->x0, regs->t1);
-    binop(INSNQ(xor), regs->x1, regs->t2);
-    binop(INSNQ(xor), regs->x2, regs->t3);
-    binop(INSNQ(xor), regs->x3, regs->t4);
-    binop(INSNQ(xor), regs->x4, regs->t0);
+    binop("xor", regs->x0, regs->t1);
+    binop("xor", regs->x1, regs->t2);
+    binop("xor", regs->x2, regs->t3);
+    binop("xor", regs->x3, regs->t4);
+    binop("xor", regs->x4, regs->t0);
 
     /* x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   x2 = ~x2; */
-    binop(INSNQ(xor), regs->x1, regs->x0);
-    binop(INSNQ(xor), regs->x0, regs->x4);
-    binop(INSNQ(xor), regs->x3, regs->x2);
+    binop("xor", regs->x1, regs->x0);
+    binop("xor", regs->x0, regs->x4);
+    binop("xor", regs->x3, regs->x2);
 #if 0
     /* Inverting x2 is integrated into the round constant for the next round */
-    unop(INSNQ(not), regs->x2);
+    unop("not", regs->x2);
 #endif
 }
 
@@ -110,36 +110,36 @@ static void gen_round(const reg_names *regs, int round)
     /* x2 ^= rightRotate1_64(x2)  ^ rightRotate6_64(x2); */
     /* x3 ^= rightRotate10_64(x3) ^ rightRotate17_64(x3); */
     /* x4 ^= rightRotate7_64(x4)  ^ rightRotate41_64(x4); */
-    binop(INSNQ(mov), regs->t0, regs->x0);
-    binop(INSNQ(mov), regs->t1, regs->x0);
-    binop(INSNQ(mov), regs->t2, regs->x1);
-    binop(INSNQ(mov), regs->t3, regs->x1);
-    binop(INSNQ(mov), regs->t4, regs->x2);
-    binop(INSNQ(mov), regs->t5, regs->x2);
+    binop("mov", regs->t0, regs->x0);
+    binop("mov", regs->t1, regs->x0);
+    binop("mov", regs->t2, regs->x1);
+    binop("mov", regs->t3, regs->x1);
+    binop("mov", regs->t4, regs->x2);
+    binop("mov", regs->t5, regs->x2);
     ror(regs->t0, 19);
     ror(regs->t1, 28);
     ror(regs->t2, 61);
     ror(regs->t3, 39);
     ror(regs->t4, 1);
     ror(regs->t5, 6);
-    binop(INSNQ(xor), regs->x0, regs->t0);
-    binop(INSNQ(xor), regs->x0, regs->t1);
-    binop(INSNQ(xor), regs->x1, regs->t2);
-    binop(INSNQ(xor), regs->x1, regs->t3);
-    binop(INSNQ(xor), regs->x2, regs->t4);
-    binop(INSNQ(xor), regs->x2, regs->t5);
-    binop(INSNQ(mov), regs->t0, regs->x3);
-    binop(INSNQ(mov), regs->t1, regs->x3);
-    binop(INSNQ(mov), regs->t2, regs->x4);
-    binop(INSNQ(mov), regs->t3, regs->x4);
+    binop("xor", regs->x0, regs->t0);
+    binop("xor", regs->x0, regs->t1);
+    binop("xor", regs->x1, regs->t2);
+    binop("xor", regs->x1, regs->t3);
+    binop("xor", regs->x2, regs->t4);
+    binop("xor", regs->x2, regs->t5);
+    binop("mov", regs->t0, regs->x3);
+    binop("mov", regs->t1, regs->x3);
+    binop("mov", regs->t2, regs->x4);
+    binop("mov", regs->t3, regs->x4);
     ror(regs->t0, 10);
     ror(regs->t1, 17);
     ror(regs->t2, 7);
     ror(regs->t3, 41);
-    binop(INSNQ(xor), regs->x3, regs->t0);
-    binop(INSNQ(xor), regs->x3, regs->t1);
-    binop(INSNQ(xor), regs->x4, regs->t2);
-    binop(INSNQ(xor), regs->x4, regs->t3);
+    binop("xor", regs->x3, regs->t0);
+    binop("xor", regs->x3, regs->t1);
+    binop("xor", regs->x4, regs->t2);
+    binop("xor", regs->x4, regs->t3);
 }
 
 /* Generate the body of the ASCON permutation function */
@@ -156,58 +156,66 @@ static void gen_permute(void)
      *
      * %rbx, %rbp, %r12, %r13, %r14, %r15 must be callee-saved.
      */
-    const char *state = REG_RDI;
     const char *first_round = REG_RSI;
     reg_names regs;
     int round;
-    regs.x0 = REG_RAX;
-    regs.x1 = REG_RCX;
-    regs.x2 = REG_RDX;
-    regs.x3 = REG_R8;
-    regs.x4 = REG_R9;
-    regs.t0 = REG_RBX;
-    regs.t1 = REG_RSI;
-    regs.t2 = REG_R10;
-    regs.t3 = REG_R11;
-    regs.t4 = REG_R12;
-    regs.t5 = REG_R13;
+    char *reg_list[] = {
+        REG_RAX, REG_RCX, REG_RDX, REG_R8, REG_R9, REG_RBX,
+        REG_R10, REG_R11, REG_R12, REG_R13, REG_RSI, NULL
+    };
+
+    /* Start the register allocator */
+    start_allocator(reg_list, REG_RDI, REG_RSP);
 
     /* Push callee-saved registers on the stack */
-    unop(INSNQ(push), REG_RBX);
-    unop(INSNQ(push), REG_R12);
-    unop(INSNQ(push), REG_R13);
+    push(REG_RBX);
+    push(REG_R12);
+    push(REG_R13);
 
     /* Load all words of the state into registers */
-    load(regs.x0, state, 0);
-    load(regs.x1, state, 8);
-    load(regs.x2, state, 16);
-    load(regs.x3, state, 24);
-    load(regs.x4, state, 32);
+    alloc_state("x0", &regs.x0, 0);
+    alloc_state("x1", &regs.x1, 8);
+    alloc_state("x2", &regs.x2, 16);
+    alloc_state("x3", &regs.x3, 24);
+    alloc_state("x4", &regs.x4, 32);
+    live(&regs.x0);
+    live(&regs.x1);
+    live(&regs.x2);
+    live(&regs.x3);
+    live(&regs.x4);
+
+    /* Allocate the registers that we need to hold temporary values */
+    get_temp("t0", &regs.t0);
+    get_temp("t1", &regs.t1);
+    get_temp("t2", &regs.t2);
+    get_temp("t3", &regs.t3);
+    get_temp("t4", &regs.t4);
+    get_temp("t5", &regs.t5);
 
     /* Invert x2 before entry to the rounds */
-    unop(INSNQ(not), regs.x2);
+    unop("not", regs.x2);
 
     /* Switch on the "first round" parameter and jump ahead */
 #if INTEL_SYNTAX
     printf(INSNQ(cmp) "%s, 12\n", first_round);
     printf("\tjge\t.L13\n");
-    printf(INSNQ(lea) "%s, [rip + .L14]\n", regs.t0);
-    printf(INSNQ(movsxd) "%s, [%s + %s*4]\n", regs.t1, regs.t0, first_round);
-    printf(INSNQ(add) "%s, %s\n", regs.t1, regs.t0);
-    printf("\tjmp\t%s\n", regs.t1);
+    printf(INSNQ(lea) "%s, [rip + .L14]\n", regs.t0.real_reg);
+    printf(INSNQ(movsxd) "%s, [%s + %s*4]\n", regs.t1.real_reg, regs.t0.real_reg, first_round);
+    printf(INSNQ(add) "%s, %s\n", regs.t1.real_reg, regs.t0.real_reg);
+    printf("\tjmp\t%s\n", regs.t1.real_reg);
 #else
     printf(INSNQ(cmp) "$12, %s\n", first_round);
     printf("\tjge\t.L13\n");
-    printf(INSNQ(lea) ".L14(%%rip), %s\n", regs.t0);
-    printf(INSNQ(movsl) "(%s,%s,4), %s\n", regs.t0, first_round, regs.t1);
-    printf(INSNQ(add) "%s, %s\n", regs.t0, regs.t1);
-    printf("\tjmp\t*%s\n", regs.t1);
+    printf(INSNQ(lea) ".L14(%%rip), %s\n", regs.t0.real_reg);
+    printf(INSNQ(movsl) "(%s,%s,4), %s\n", regs.t0.real_reg, first_round, regs.t1.real_reg);
+    printf(INSNQ(add) "%s, %s\n", regs.t0, regs.t1.real_reg);
+    printf("\tjmp\t*%s\n", regs.t1.real_reg);
 #endif
     printf(".L13:\n");
     printf("\tjmp\t.L12\n");
     printf("\t.section\t.rodata\n");
     printf("\t.align\t4\n");
-    printf("\t.L14:\n");
+    printf(".L14:\n");
     for (round = 0; round < 12; ++round) {
         printf("\t.long\t.L%d-.L14\n", round);
     }
@@ -223,15 +231,15 @@ static void gen_permute(void)
 
     /* Store the words back to the state and exit */
     printf(".L12:\n");
-    unop(INSNQ(not), regs.x2);
-    store(regs.x0, state, 0);
-    store(regs.x1, state, 8);
-    store(regs.x2, state, 16);
-    store(regs.x3, state, 24);
-    store(regs.x4, state, 32);
-    unop(INSNQ(pop), REG_R13);
-    unop(INSNQ(pop), REG_R12);
-    unop(INSNQ(pop), REG_RBX);
+    unop("not", regs.x2);
+    spill(&regs.x0);
+    spill(&regs.x1);
+    spill(&regs.x2);
+    spill(&regs.x3);
+    spill(&regs.x4);
+    pop(REG_R13);
+    pop(REG_R12);
+    pop(REG_RBX);
 }
 
 /* Output the function to free sensitive material in registers */
