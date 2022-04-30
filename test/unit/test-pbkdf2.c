@@ -207,6 +207,9 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
+    if (!hash_sanity_check())
+        return 1;
+
     test_pbkdf2_vector
         ("ASCON", ascon_pbkdf2, ascon_hmac,
          ASCON_HMAC_SIZE, &testVectorPBKDF2_1);

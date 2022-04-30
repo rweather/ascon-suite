@@ -385,6 +385,9 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
+    if (!hash_sanity_check())
+        return 1;
+
     test_nist_kmac(&testVectorNIST_1);
     test_nist_kmac(&testVectorNIST_2);
 

@@ -178,6 +178,9 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
+    if (!hash_sanity_check())
+        return 1;
+
     test_hmac_vector
         (&alg_ascon_hash, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_1, 32, 64);
     test_hmac_vector

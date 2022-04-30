@@ -38,6 +38,9 @@ int test_memcmp
     (const unsigned char *actual, const unsigned char *expected,
      unsigned long long len);
 
+/* Sanity check on ASCON-HASH and ASCON-HASHA */
+int hash_sanity_check(void);
+
 #ifdef __cplusplus
 }
 #endif

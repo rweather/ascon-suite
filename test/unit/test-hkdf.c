@@ -326,6 +326,9 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
+    if (!hash_sanity_check())
+        return 1;
+
     test_sha256_hkdf_vector(&testVectorHKDF_1);
     test_sha256_hkdf_vector(&testVectorHKDF_2);
     test_sha256_hkdf_vector(&testVectorHKDF_3);

@@ -21,7 +21,7 @@
  */
 
 #include "test-cipher.h"
-//#include <ascon/hash.h>
+#include <ascon/hash.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,4 +51,46 @@ int test_memcmp
     test_print_hex("actual  ", actual, len);
     test_print_hex("expected", expected, len);
     return cmp;
+}
+
+/*
+ * HMAC, HKDF, KMAC, and PBKDF2 use ASCON-HASH and ASCON-HASHA to
+ * cross-check the actual code against simplified versions.
+ *
+ * The problem is that if the hash is broken the tests will appear to
+ * succeed because it is checking the broken hash against itself.
+ *
+ * This sanity check is used to make sure ASCON-HASH and ASCON-HASHA
+ * are basically working before falsely reporting that the modes work.
+ */
+int hash_sanity_check(void)
+{
+    static unsigned char const hash_expected[ASCON_HASH_SIZE] = {
+        0xd3, 0x7f, 0xe9, 0xf1, 0xd1, 0x0d, 0xbc, 0xfa,
+        0xd8, 0x40, 0x8a, 0x68, 0x04, 0xdb, 0xe9, 0x11,
+        0x24, 0xa8, 0x91, 0x26, 0x93, 0x32, 0x2b, 0xb2,
+        0x3e, 0xc1, 0x70, 0x1e, 0x19, 0xe3, 0xfd, 0x51
+    };
+    static unsigned char const hasha_expected[ASCON_HASHA_SIZE] = {
+        0xb2, 0x09, 0x99, 0x00, 0x45, 0x71, 0xad, 0x14,
+        0x61, 0xb2, 0xa9, 0xb4, 0x7a, 0x8e, 0xab, 0xa6,
+        0x23, 0x87, 0xa8, 0x27, 0xf0, 0xc3, 0xba, 0xd3,
+        0x99, 0xe6, 0xf2, 0x51, 0xc3, 0x5e, 0x16, 0x34
+    };
+    unsigned char hash[ASCON_HASH_SIZE];
+    unsigned char hasha[ASCON_HASHA_SIZE];
+    int ok = 1;
+    printf("Hash Sanity Check ...");
+    fflush(stdout);
+    ascon_hash(hash, (const unsigned char *)"abc", 3);
+    ascon_hasha(hasha, (const unsigned char *)"xyzzy", 5);
+    if (test_memcmp(hash, hash_expected, sizeof(hash)) != 0)
+        ok = 0;
+    if (test_memcmp(hasha, hasha_expected, sizeof(hasha)) != 0)
+        ok = 0;
+    if (!ok)
+        printf("failed\n");
+    else
+        printf("ok\n");
+    return ok;
 }
