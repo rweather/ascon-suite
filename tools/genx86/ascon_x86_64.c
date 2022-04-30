@@ -29,69 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "copyright.h"
-
-/* Should we output Intel syntax (1) or AT&T syntax (0)? */
-#define INTEL_SYNTAX 1
-
-/* Determine the register names to use */
-#if INTEL_SYNTAX
-#define REG_RAX "rax"
-#define REG_RBX "rbx"
-#define REG_RCX "rcx"
-#define REG_RDX "rdx"
-#define REG_RDI "rdi"
-#define REG_RSI "rsi"
-#define REG_RBP "rbp"
-#define REG_RSP "rsp"
-#define REG_R8  "r8"
-#define REG_R9  "r9"
-#define REG_R10 "r10"
-#define REG_R11 "r11"
-#define REG_R12 "r12"
-#define REG_R13 "r13"
-#define REG_R14 "r14"
-#define REG_R15 "r15"
-#else
-#define REG_RAX "%rax"
-#define REG_RBX "%rbx"
-#define REG_RCX "%rcx"
-#define REG_RDX "%rdx"
-#define REG_RDI "%rdi"
-#define REG_RSI "%rsi"
-#define REG_RBP "%rbp"
-#define REG_RSP "%rsp"
-#define REG_R8  "%r8"
-#define REG_R9  "%r9"
-#define REG_R10 "%r10"
-#define REG_R11 "%r11"
-#define REG_R12 "%r12"
-#define REG_R13 "%r13"
-#define REG_R14 "%r14"
-#define REG_R15 "%r15"
-#endif
-
-/* Instruction that operates on a quad word register */
-#if INTEL_SYNTAX
-#define INSNQ(name) "\t" #name "\t"
-#else
-#define INSNQ(name) "\t" #name "q\t"
-#endif
-
-static void function_header(const char *name)
-{
-    printf("\t.p2align 4,,15\n");
-    printf("\t.globl\t%s\n", name);
-    printf("\t.type\t%s, @function\n", name);
-    printf("%s:\n", name);
-    printf("\t.cfi_startproc\n");
-}
-
-static void function_footer(const char *name)
-{
-    printf("\tret\n");
-    printf("\t.cfi_endproc\n");
-    printf("\t.size\t%s, .-%s\n", name, name);
-}
+#include "x86_common.h"
 
 /* List of all registers that we can work with */
 typedef struct
@@ -109,64 +47,6 @@ typedef struct
     const char *t5;
 
 } reg_names;
-
-/* Generates a binary operator */
-static void binop(const char *name, const char *reg1, const char *reg2)
-{
-#if INTEL_SYNTAX
-    printf("%s%s, %s\n", name, reg1, reg2);
-#else
-    printf("%s%s, %s\n", name, reg2, reg1);
-#endif
-}
-
-/* Generates a unary operator */
-static void unop(const char *name, const char *reg)
-{
-    printf("%s%s\n", name, reg);
-}
-
-/* Generates a rotate-right of a register */
-static void ror(const char *dest, int shift)
-{
-#if INTEL_SYNTAX
-    printf(INSNQ(ror) "%s, %d\n", dest, shift);
-#else
-    printf(INSNQ(ror) "$%d, %s\n", shift, dest);
-#endif
-}
-
-/* Loads a register from a memory location */
-static void load(const char *reg, const char *ptr, int offset)
-{
-#if INTEL_SYNTAX
-    if (offset != 0)
-        printf(INSNQ(mov) "%s, [%s + %d]\n", reg, ptr, offset);
-    else
-        printf(INSNQ(mov) "%s, [%s]\n", reg, ptr);
-#else
-    if (offset != 0)
-        printf(INSNQ(mov) "%d(%s), %s\n", offset, ptr, reg);
-    else
-        printf(INSNQ(mov) "(%s), %s\n", ptr, reg);
-#endif
-}
-
-/* Stores a register to a memory location */
-static void store(const char *reg, const char *ptr, int offset)
-{
-#if INTEL_SYNTAX
-    if (offset != 0)
-        printf(INSNQ(mov) "[%s + %d], %s\n", ptr, offset, reg);
-    else
-        printf(INSNQ(mov) "[%s], %s\n", ptr, reg);
-#else
-    if (offset != 0)
-        printf(INSNQ(mov) "%s, %d(%s)\n", reg, offset, ptr);
-    else
-        printf(INSNQ(mov) "%s, (%s)\n", reg, ptr);
-#endif
-}
 
 /* Applies the S-box to five 64-bit words of the state */
 static void gen_sbox(const reg_names *regs)
@@ -219,11 +99,7 @@ static void gen_round(const reg_names *regs, int round)
 
     /* Apply the round constant to x2, and also NOT x2 in the process */
     rc = ~(((0x0F - round) << 4) | round);
-#if INTEL_SYNTAX
-    printf(INSNQ(xor) "%s, %d\n", regs->x2, rc);
-#else
-    printf(INSNQ(xor) "$%d, %s\n", rc, regs->x2);
-#endif
+    xor_rc(regs->x2, rc);
 
     /* Apply the S-box to the words of the state */
     gen_sbox(regs);
@@ -371,27 +247,15 @@ static void gen_backend_free(void)
      * %rbx, %rbp, %r12, %r13, %r14, %r15 must be callee-saved, so their
      * contents were already destroyed when ascon_permute() returned.
      */
-#if INTEL_SYNTAX
-    printf(INSNQ(mov) "rax, 0\n");
-    printf(INSNQ(mov) "rcx, 0\n");
-    /* %rdi contains the pointer to the state so it is already destroyed */
-    /*printf(INSNQ(mov) "rdi, 0\n");*/
-    printf(INSNQ(mov) "rsi, 0\n");
-    printf(INSNQ(mov) "r8, 0\n");
-    printf(INSNQ(mov) "r9, 0\n");
-    printf(INSNQ(mov) "r10, 0\n");
-    printf(INSNQ(mov) "r11, 0\n");
-#else
-    printf(INSNQ(mov) "$0, %%rax\n");
-    printf(INSNQ(mov) "$0, %%rcx\n");
-    /* %rdi contains the pointer to the state so it is already destroyed */
-    /*printf(INSNQ(mov) "$0, %%rdi\n");*/
-    printf(INSNQ(mov) "$0, %%rsi\n");
-    printf(INSNQ(mov) "$0, %%r8\n");
-    printf(INSNQ(mov) "$0, %%r9\n");
-    printf(INSNQ(mov) "$0, %%r10\n");
-    printf(INSNQ(mov) "$0, %%r11\n");
-#endif
+    clear_reg(REG_RAX);
+    clear_reg(REG_RCX);
+    /* rdi contains the pointer to the state so it is already destroyed */
+    /*clear_reg(REG_RDI);*/
+    clear_reg(REG_RSI);
+    clear_reg(REG_R8);
+    clear_reg(REG_R9);
+    clear_reg(REG_R10);
+    clear_reg(REG_R11);
 }
 
 int main(int argc, char *argv[])

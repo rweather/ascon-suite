@@ -12,13 +12,13 @@ TARGETS = \
 
 all: $(TARGETS)
 
-bin/ascon_i386: ascon_i386.c ../common/copyright.h
+bin/ascon_i386: ascon_i386.c ../common/copyright.h x86_common.h x86_common.c
 	@mkdir -p bin
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+	$(CC) -DINTEL_SYNTAX=0 $(CFLAGS) -o $@ $< x86_common.c $(LDFLAGS)
 
-bin/ascon_x86_64: ascon_x86_64.c ../common/copyright.h
+bin/ascon_x86_64: ascon_x86_64.c ../common/copyright.h x86_common.h x86_common.c
 	@mkdir -p bin
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< x86_common.c $(LDFLAGS)
 
 clean:
 	rm -rf $(TARGETS) bin

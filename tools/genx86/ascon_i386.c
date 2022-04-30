@@ -29,62 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "copyright.h"
-
-/* Should we output Intel syntax (1) or AT&T syntax (0)? */
-#define INTEL_SYNTAX 0
-
-/* Special hack for testing the i386 backend on x86-64 platforms if 1 */
-#define X86_64_PLATFORM 0
-
-/* Determine the register names to use */
-#if INTEL_SYNTAX
-#define REG_EAX "eax"
-#define REG_EBX "ebx"
-#define REG_ECX "ecx"
-#define REG_EDX "edx"
-#define REG_EDI "edi"
-#define REG_ESI "esi"
-#define REG_EBP "ebp"
-#if X86_64_PLATFORM
-#define REG_ESP "rsp"
-#else
-#define REG_ESP "esp"
-#endif
-#define REG_RAX "rax"
-#define REG_RBX "rbx"
-#define REG_RDI "rdi"
-#define REG_RSI "rsi"
-#define REG_RBP "rbp"
-#define REG_R8  "r8"
-#else
-#define REG_EAX "%eax"
-#define REG_EBX "%ebx"
-#define REG_ECX "%ecx"
-#define REG_EDX "%edx"
-#define REG_EDI "%edi"
-#define REG_ESI "%esi"
-#define REG_EBP "%ebp"
-#if X86_64_PLATFORM
-#define REG_ESP "%rsp"
-#else
-#define REG_ESP "%esp"
-#endif
-#define REG_RAX "%rax"
-#define REG_RBX "%rbx"
-#define REG_RDI "%rdi"
-#define REG_RSI "%rsi"
-#define REG_RBP "%rbp"
-#define REG_R8  "%r8"
-#endif
-
-/* Instructions that operate on long and quad word registers */
-#if INTEL_SYNTAX
-#define INSNL(name) "\t" #name "\t"
-#define INSNQ(name) "\t" #name "\t"
-#else
-#define INSNL(name) "\t" #name "l\t"
-#define INSNQ(name) "\t" #name "q\t"
-#endif
+#include "x86_common.h"
 
 /* Offsets of words in the bit-sliced state */
 #define X0_E 0
@@ -98,28 +43,6 @@
 #define X4_E 32
 #define X4_O 36
 
-static void function_header(const char *name)
-{
-    printf("\n\t.p2align 4,,15\n");
-    printf("#if defined(__CYGWIN32__) || defined(_WIN32)\n");
-    printf("\t.globl\t_%s\n", name);
-    printf("\t.def\t_%s;\t.scl\t2;\t.type\t32;\t.endef\n", name);
-    printf("_%s:\n", name);
-    printf("#else\n");
-    printf("\t.globl\t%s\n", name);
-    printf("\t.type\t%s, @function\n", name);
-    printf("%s:\n", name);
-    printf("#endif\n");
-}
-
-static void function_footer(const char *name)
-{
-    printf("\tret\n");
-    printf("#if !(defined(__CYGWIN32__) || defined(_WIN32))\n");
-    printf("\t.size\t%s, .-%s\n", name, name);
-    printf("#endif\n");
-}
-
 /* List of all registers that we can work with */
 typedef struct
 {
@@ -132,71 +55,6 @@ typedef struct
     const char *t1;
 
 } reg_names;
-
-/* Generates a binary operator */
-static void binop(const char *name, const char *reg1, const char *reg2)
-{
-#if INTEL_SYNTAX
-    printf("%s%s, %s\n", name, reg1, reg2);
-#else
-    printf("%s%s, %s\n", name, reg2, reg1);
-#endif
-}
-
-/* Generates a unary operator */
-static void unop(const char *name, const char *reg)
-{
-    printf("%s%s\n", name, reg);
-}
-
-/* Generates a shift operation on a register */
-static void shiftop(const char *name, const char *dest, int shift)
-{
-#if INTEL_SYNTAX
-    printf("%s%s, %d\n", name, dest, shift);
-#else
-    printf("%s$%d, %s\n", name, shift, dest);
-#endif
-}
-
-/* Generates a rotate-right of a register */
-static void ror(const char *dest, int shift)
-{
-    shiftop(INSNL(ror), dest, shift);
-}
-
-/* Loads a register from a memory location */
-static void load(const char *reg, const char *ptr, int offset)
-{
-#if INTEL_SYNTAX
-    if (offset != 0)
-        printf(INSNL(mov) "%s, [%s + %d]\n", reg, ptr, offset);
-    else
-        printf(INSNL(mov) "%s, [%s]\n", reg, ptr);
-#else
-    if (offset != 0)
-        printf(INSNL(mov) "%d(%s), %s\n", offset, ptr, reg);
-    else
-        printf(INSNL(mov) "(%s), %s\n", ptr, reg);
-#endif
-}
-
-/* Stores a register to a memory location */
-static void store(const char *reg, const char *ptr, int offset)
-{
-#if INTEL_SYNTAX
-    if (offset != 0)
-        printf(INSNL(mov) "[%s + %d], %s\n", ptr, offset, reg);
-    else
-        printf(INSNL(mov) "[%s], %s\n", ptr, reg);
-#else
-    if (offset != 0)
-        printf(INSNL(mov) "%s, %d(%s)\n", reg, offset, ptr);
-    else
-        printf(INSNL(mov) "%s, (%s)\n", reg, ptr);
-#endif
-}
-
 
 /* Applies the S-box to five 32-bit words of the state */
 static void gen_sbox(const reg_names *regs)
@@ -264,11 +122,7 @@ static void gen_round_sliced(const reg_names *regs, int round)
     const char *t2;
 
     /* Apply the inverted version of the round constant to x2_e */
-#if INTEL_SYNTAX
-    printf(INSNL(xor) "%s, %d\n", regs->x2, ~((int)RC[round * 2]));
-#else
-    printf(INSNL(xor) "$%d, %s\n", ~((int)RC[round * 2]), regs->x2);
-#endif
+    xor_rc(regs->x2, ~((int)RC[round * 2]));
 
     /* Apply the S-box to the even half of the state */
     gen_sbox(regs);
@@ -286,11 +140,7 @@ static void gen_round_sliced(const reg_names *regs, int round)
     load(regs->x4, REG_ESP, X4_O);
 
     /* Apply the inverted version of the round constant to x2_o */
-#if INTEL_SYNTAX
-    printf(INSNL(xor) "%s, %d\n", regs->x2, ~((int)RC[round * 2 + 1]));
-#else
-    printf(INSNL(xor) "$%d, %s\n", ~((int)RC[round * 2 + 1]), regs->x2);
-#endif
+    xor_rc(regs->x2, ~((int)RC[round * 2 + 1]));
 
     /* Apply the S-box to the odd half of the state */
     gen_sbox(regs);
@@ -595,6 +445,9 @@ int main(int argc, char *argv[])
 {
     (void)argc;
     (void)argv;
+
+    /* Targetting a 32-bit platform */
+    target_word_size = 32;
 
     /* Output the file header */
     printf("#include \"ascon-select-backend.h\"\n");
