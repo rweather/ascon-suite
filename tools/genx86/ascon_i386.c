@@ -46,28 +46,28 @@
 /* List of all registers that we can work with */
 typedef struct
 {
-    reg_t x0_e;
-    reg_t x1_e;
-    reg_t x2_e;
-    reg_t x3_e;
-    reg_t x4_e;
-    reg_t x0_o;
-    reg_t x1_o;
-    reg_t x2_o;
-    reg_t x3_o;
-    reg_t x4_o;
-    reg_t x0;
-    reg_t x1;
-    reg_t x2;
-    reg_t x3;
-    reg_t x4;
-    reg_t t0;
-    reg_t t1;
+    reg_t *x0_e;
+    reg_t *x1_e;
+    reg_t *x2_e;
+    reg_t *x3_e;
+    reg_t *x4_e;
+    reg_t *x0_o;
+    reg_t *x1_o;
+    reg_t *x2_o;
+    reg_t *x3_o;
+    reg_t *x4_o;
+    reg_t *x0;
+    reg_t *x1;
+    reg_t *x2;
+    reg_t *x3;
+    reg_t *x4;
+    reg_t *t0;
+    reg_t *t1;
 
 } reg_names;
 
 /* Applies the S-box to five 32-bit words of the state */
-static void gen_sbox(const reg_names *regs)
+static void gen_sbox(reg_names *regs)
 {
     /* x0 ^= x4;   x4 ^= x3;   x2 ^= x1; */
     binop("xor", regs->x0, regs->x4);
@@ -77,16 +77,16 @@ static void gen_sbox(const reg_names *regs)
     /* We are low on registers, so we save t0/t1 on the stack until later */
     /* t1 = x0; */
     /* t0 = (~x0) & x1; */
-    store(regs->x0.real_reg, REG_ESP, 44);
-    binop("mov", regs->t0, regs->x0);
+    store(regs->x0, REG_ESP, 44);
+    move(regs->t0, regs->x0);
     unop("not", regs->t0);
     binop("and", regs->t0, regs->x1);
-    store(regs->t0.real_reg, REG_ESP, 40);
+    store(regs->t0, REG_ESP, 40);
 
     /* x0 ^= (~x1) & x2; */
     /* x1 ^= (~x2) & x3; */
-    binop("mov", regs->t1, regs->x1);
-    binop("mov", regs->t0, regs->x2);
+    move(regs->t1, regs->x1);
+    move(regs->t0, regs->x2);
     unop("not", regs->t1);
     unop("not", regs->t0);
     binop("and", regs->t1, regs->x2);
@@ -95,20 +95,20 @@ static void gen_sbox(const reg_names *regs)
     binop("xor", regs->x1, regs->t0);
 
     /* x3 ^= (~x4) & t1; */
-    binop("mov", regs->t0, regs->x4);
-    load(regs->t1.real_reg, REG_ESP, 44);
+    move(regs->t0, regs->x4);
+    load(regs->t1, REG_ESP, 44);
     unop("not", regs->t0);
     binop("and", regs->t0, regs->t1);
     binop("xor", regs->x3, regs->t0);
 
     /* x2 ^= (~x3) & x4; */
-    binop("mov", regs->t1, regs->x3);
+    move(regs->t1, regs->x3);
     unop("not", regs->t1);
     binop("and", regs->t1, regs->x4);
     binop("xor", regs->x2, regs->t1);
 
     /* x4 ^= t0; */
-    load(regs->t0.real_reg, REG_ESP, 40);
+    load(regs->t0, REG_ESP, 40);
     binop("xor", regs->x4, regs->t0);
 
     /* x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   x2 = ~x2; */
@@ -129,7 +129,7 @@ static void gen_round_sliced(reg_names *regs, int round)
         12, 12, 9, 12, 12, 9, 9, 9, 6, 12, 3, 12,
         6, 9, 3, 9, 12, 6, 9, 6, 12, 3, 9, 3
     };
-    reg_t t2;
+    reg_t *t2;
 
     /* Set up to operate on the even words which are currently in registers */
     regs->x0 = regs->x0_e;
@@ -145,16 +145,16 @@ static void gen_round_sliced(reg_names *regs, int round)
     gen_sbox(regs);
 
     /* Store the even half to the stack and load the odd half into registers */
-    spill_to_stack(&regs->x0_e);
-    spill_to_stack(&regs->x1_e);
-    spill_to_stack(&regs->x2_e);
-    spill_to_stack(&regs->x3_e);
-    spill_to_stack(&regs->x4_e);
-    live_from_stack(&regs->x0_o);
-    live_from_stack(&regs->x1_o);
-    live_from_stack(&regs->x2_o);
-    live_from_stack(&regs->x3_o);
-    live_from_stack(&regs->x4_o);
+    spill_to_stack(regs->x0_e);
+    spill_to_stack(regs->x1_e);
+    spill_to_stack(regs->x2_e);
+    spill_to_stack(regs->x3_e);
+    spill_to_stack(regs->x4_e);
+    live_from_stack(regs->x0_o);
+    live_from_stack(regs->x1_o);
+    live_from_stack(regs->x2_o);
+    live_from_stack(regs->x3_o);
+    live_from_stack(regs->x4_o);
 
     /* Set up to operate on the odd words which are now in registers */
     regs->x0 = regs->x0_o;
@@ -176,7 +176,7 @@ static void gen_round_sliced(reg_names *regs, int round)
      * the work below.  Move x4 to the stack so that we can use it
      * as an extra temporary.  Then later do the same with x0 when
      * it is time to operate on x4 for real. */
-    store(regs->x4.real_reg, REG_ESP, 40);
+    store(regs->x4, REG_ESP, 40);
     t2 = regs->x4;
 
     /* x0 ^= rightRotate19_64(x0) ^ rightRotate28_64(x0); */
@@ -184,9 +184,9 @@ static void gen_round_sliced(reg_names *regs, int round)
     // t1 = x0_o ^ rightRotate5(x0_e);
     // x0_e ^= rightRotate9(t1);
     // x0_o ^= rightRotate10(t0);
-    load(t2.real_reg, REG_ESP, X0_E);
-    binop("mov", regs->t0, regs->x0);
-    binop("mov", regs->t1, t2);
+    load(t2, REG_ESP, X0_E);
+    move(regs->t0, regs->x0);
+    move(regs->t1, t2);
     ror(regs->t0, 4);
     ror(regs->t1, 5);
     binop("xor", regs->t0, t2);
@@ -195,17 +195,17 @@ static void gen_round_sliced(reg_names *regs, int round)
     ror(regs->t1, 9);
     binop("xor", regs->t0, regs->x0);
     binop("xor", t2, regs->t1);
-    store(regs->t0.real_reg, REG_ESP, X0_O);
-    binop("mov", regs->x0, t2);
+    store(regs->t0, REG_ESP, X0_O);
+    move(regs->x0, t2);
 
     /* x1 ^= rightRotate61_64(x1) ^ rightRotate39_64(x1); */
     // t0 = x1_e ^ rightRotate11(x1_e);
     // t1 = x1_o ^ rightRotate11(x1_o);
     // x1_e ^= rightRotate19(t1);
     // x1_o ^= rightRotate20(t0);
-    load(t2.real_reg, REG_ESP, X1_E);
-    binop("mov", regs->t1, regs->x1);
-    binop("mov", regs->t0, t2);
+    load(t2, REG_ESP, X1_E);
+    move(regs->t1, regs->x1);
+    move(regs->t0, t2);
     ror(regs->t1, 11);
     ror(regs->t0, 11);
     binop("xor", regs->t1, regs->x1);
@@ -214,17 +214,17 @@ static void gen_round_sliced(reg_names *regs, int round)
     ror(regs->t0, 20);
     binop("xor", t2, regs->t1);
     binop("xor", regs->t0, regs->x1);
-    binop("mov", regs->x1, t2);
-    store(regs->t0.real_reg, REG_ESP, X1_O);
+    move(regs->x1, t2);
+    store(regs->t0, REG_ESP, X1_O);
 
     /* x2 ^= rightRotate1_64(x2)  ^ rightRotate6_64(x2); */
     // t0 = x2_e ^ rightRotate2(x2_o);
     // t1 = x2_o ^ rightRotate3(x2_e);
     // x2_e ^= t1;
     // x2_o ^= rightRotate1(t0);
-    load(t2.real_reg, REG_ESP, X2_E);
-    binop("mov", regs->t0, regs->x2);
-    binop("mov", regs->t1, t2);
+    load(t2, REG_ESP, X2_E);
+    move(regs->t0, regs->x2);
+    move(regs->t1, t2);
     ror(regs->t0, 2);
     ror(regs->t1, 3);
     binop("xor", regs->t0, t2);
@@ -232,17 +232,17 @@ static void gen_round_sliced(reg_names *regs, int round)
     ror(regs->t0, 1);
     binop("xor", t2, regs->t1);
     binop("xor", regs->t0, regs->x2);
-    binop("mov", regs->x2, t2);
-    store(regs->t0.real_reg, REG_ESP, X2_O);
+    move(regs->x2, t2);
+    store(regs->t0, REG_ESP, X2_O);
 
     /* x3 ^= rightRotate10_64(x3) ^ rightRotate17_64(x3); */
     // t0 = x3_e ^ rightRotate3(x3_o);
     // t1 = x3_o ^ rightRotate4(x3_e);
     // x3_e ^= rightRotate5(t0);
     // x3_o ^= rightRotate5(t1);
-    load(t2.real_reg, REG_ESP, X3_E);
-    binop("mov", regs->t0, regs->x3);
-    binop("mov", regs->t1, t2);
+    load(t2, REG_ESP, X3_E);
+    move(regs->t0, regs->x3);
+    move(regs->t1, t2);
     ror(regs->t0, 3);
     ror(regs->t1, 4);
     binop("xor", regs->t0, t2);
@@ -251,12 +251,12 @@ static void gen_round_sliced(reg_names *regs, int round)
     ror(regs->t1, 5);
     binop("xor", t2, regs->t0);
     binop("xor", regs->t1, regs->x3);
-    binop("mov", regs->x3, t2);
-    store(regs->t1.real_reg, REG_ESP, X3_O);
+    move(regs->x3, t2);
+    store(regs->t1, REG_ESP, X3_O);
 
     /* Reclaim x4 and use x0 as the new third temporary */
-    load(regs->x4.real_reg, REG_ESP, 40);
-    store(regs->x0.real_reg, REG_ESP, 40);
+    load(regs->x4, REG_ESP, 40);
+    store(regs->x0, REG_ESP, 40);
     t2 = regs->x0;
 
     /* x4 ^= rightRotate7_64(x4)  ^ rightRotate41_64(x4); */
@@ -264,9 +264,9 @@ static void gen_round_sliced(reg_names *regs, int round)
     // t1 = x4_o ^ rightRotate17(x4_o);
     // x4_e ^= rightRotate3(t1);
     // x4_o ^= rightRotate4(t0);
-    load(t2.real_reg, REG_ESP, X4_E);
-    binop("mov", regs->t1, regs->x4);
-    binop("mov", regs->t0, t2);
+    load(t2, REG_ESP, X4_E);
+    move(regs->t1, regs->x4);
+    move(regs->t0, t2);
     ror(regs->t1, 17);
     ror(regs->t0, 17);
     binop("xor", regs->t1, regs->x4);
@@ -275,23 +275,23 @@ static void gen_round_sliced(reg_names *regs, int round)
     ror(regs->t0, 4);
     binop("xor", t2, regs->t1);
     binop("xor", regs->t0, regs->x4);
-    binop("mov", regs->x4, t2);
-    store(regs->t0.real_reg, REG_ESP, X4_O);
+    move(regs->x4, t2);
+    store(regs->t0, REG_ESP, X4_O);
 
     /* Reclaim x0 */
-    load(regs->x0.real_reg, REG_ESP, 40);
+    load(regs->x0, REG_ESP, 40);
 
-    /* Move the register allocations back to the even words */
-    regs->x0_e.real_reg = regs->x0_o.real_reg;
-    regs->x1_e.real_reg = regs->x1_o.real_reg;
-    regs->x2_e.real_reg = regs->x2_o.real_reg;
-    regs->x3_e.real_reg = regs->x3_o.real_reg;
-    regs->x4_e.real_reg = regs->x4_o.real_reg;
-    regs->x0_o.real_reg = 0;
-    regs->x1_o.real_reg = 0;
-    regs->x2_o.real_reg = 0;
-    regs->x3_o.real_reg = 0;
-    regs->x4_o.real_reg = 0;
+    /* Transfer the register allocations back to the even words */
+    transfer(regs->x0_e, regs->x0_o);
+    transfer(regs->x1_e, regs->x1_o);
+    transfer(regs->x2_e, regs->x2_o);
+    transfer(regs->x3_e, regs->x3_o);
+    transfer(regs->x4_e, regs->x4_o);
+    dirty(regs->x0_e);
+    dirty(regs->x1_e);
+    dirty(regs->x2_e);
+    dirty(regs->x3_e);
+    dirty(regs->x4_e);
 }
 
 /* Generate the body of the 32-bit sliced ASCON permutation function */
@@ -316,6 +316,7 @@ static void gen_permute(void)
 #if X86_64_PLATFORM
     push(REG_RBP);
     push(REG_RBX);
+    flush_pipeline();
 #if INTEL_SYNTAX
     printf(INSNQ(sub) "%s, 48\n", REG_ESP);
 #else
@@ -326,20 +327,23 @@ static void gen_permute(void)
     move_direct(REG_R8, REG_RDI); /* Save in r8 for the later store */
     state = REG_RAX;
     first_round = REG_EBP;
+    flush_pipeline();
 #else
     push(REG_EBP);
     push(REG_EBX);
     push(REG_ESI);
     push(REG_EDI);
+    flush_pipeline();
 #if INTEL_SYNTAX
     printf(INSNL(sub) "%s, 48\n", REG_ESP);
 #else
     printf(INSNL(sub) "$48, %s\n", REG_ESP);
 #endif
-    load(REG_EAX, REG_ESP, 48 + 16 + 4);
-    load(REG_EBP, REG_ESP, 48 + 16 + 8);
+    load_machine(REG_EAX, REG_ESP, 48 + 16 + 4);
+    load_machine(REG_EBP, REG_ESP, 48 + 16 + 8);
     state = REG_EAX;
     first_round = REG_EBP;
+    flush_pipeline();
 #endif
 
     /* Start the register allocator */
@@ -349,42 +353,45 @@ static void gen_permute(void)
      * We keep the even words in registers between rounds and store
      * the odd words in the stack.  The even slots on the stack
      * will be filled later when we need to swap even and odd. */
-    alloc_state("x0_o", &regs.x0_o, X0_O);
-    alloc_state("x1_o", &regs.x1_o, X1_O);
-    alloc_state("x2_o", &regs.x2_o, X2_O);
-    alloc_state("x3_o", &regs.x3_o, X3_O);
-    alloc_state("x4_o", &regs.x4_o, X4_O);
-    live(&regs.x0_o);
-    live(&regs.x1_o);
-    live(&regs.x2_o);
-    live(&regs.x3_o);
-    live(&regs.x4_o);
+    regs.x0_o = alloc_state("x0_o", X0_O);
+    regs.x1_o = alloc_state("x1_o", X1_O);
+    regs.x2_o = alloc_state("x2_o", X2_O);
+    regs.x3_o = alloc_state("x3_o", X3_O);
+    regs.x4_o = alloc_state("x4_o", X4_O);
+    live(regs.x0_o);
+    live(regs.x1_o);
+    live(regs.x2_o);
+    live(regs.x3_o);
+    live(regs.x4_o);
     unop("not", regs.x2_o); /* Invert x2_o before the first round */
-    spill_to_stack(&regs.x0_o);
-    spill_to_stack(&regs.x1_o);
-    spill_to_stack(&regs.x2_o);
-    spill_to_stack(&regs.x3_o);
-    spill_to_stack(&regs.x4_o);
-    alloc_state("x0_e", &regs.x0_e, X0_E);
-    alloc_state("x1_e", &regs.x1_e, X1_E);
-    alloc_state("x2_e", &regs.x2_e, X2_E);
-    alloc_state("x3_e", &regs.x3_e, X3_E);
-    alloc_state("x4_e", &regs.x4_e, X4_E);
-    live(&regs.x0_e);
-    live(&regs.x1_e);
-    live(&regs.x2_e);
-    live(&regs.x3_e);
-    live(&regs.x4_e);
+    spill_to_stack(regs.x0_o);
+    spill_to_stack(regs.x1_o);
+    spill_to_stack(regs.x2_o);
+    spill_to_stack(regs.x3_o);
+    spill_to_stack(regs.x4_o);
+    regs.x0_e = alloc_state("x0_e", X0_E);
+    regs.x1_e = alloc_state("x1_e", X1_E);
+    regs.x2_e = alloc_state("x2_e", X2_E);
+    regs.x3_e = alloc_state("x3_e", X3_E);
+    regs.x4_e = alloc_state("x4_e", X4_E);
+    live(regs.x0_e);
+    live(regs.x1_e);
+    live(regs.x2_e);
+    live(regs.x3_e);
+    live(regs.x4_e);
     unop("not", regs.x2_e); /* Invert x2_e before the first round */
 
     /* Allocate temporaries */
-    get_temp("t0", &regs.t0);
-    get_temp("t1", &regs.t1);
+    regs.t0 = alloc_temp("t0");
+    regs.t1 = alloc_temp("t1");
+    acquire(regs.t0);
+    acquire(regs.t1);
 
     /* Determine which round is first and jump ahead.  Most of the time,
      * we will be seeing "first round" set to 6, 0, or 4 so we handle
      * those cases first.  But we can do any number of rounds.   If the
      * "first round" value is 12 or higher, then we will do nothing. */
+    flush_pipeline();
 #if INTEL_SYNTAX
     printf(INSNL(cmp) "%s, 6\n", first_round);
     printf("\tje\t.L6\n");
@@ -419,6 +426,7 @@ static void gen_permute(void)
     for (round = 0; round < 12; ++round) {
         printf(".L%d:\n", round);
         gen_round_sliced(&regs, round);
+        flush_pipeline();
     }
 
     /* Store the words back to the state */
@@ -426,25 +434,25 @@ static void gen_permute(void)
 #if X86_64_PLATFORM
     move_direct(REG_RAX, REG_R8);
 #else
-    load(REG_EAX, REG_ESP, 48 + 16 + 4);
+    load_machine(REG_EAX, REG_ESP, 48 + 16 + 4);
 #endif
     unop("not", regs.x2_e); /* Invert x2_e after the last round */
-    spill(&regs.x0_e);
-    spill(&regs.x1_e);
-    spill(&regs.x2_e);
-    spill(&regs.x3_e);
-    spill(&regs.x4_e);
-    live_from_stack(&regs.x0_o);
-    live_from_stack(&regs.x1_o);
-    live_from_stack(&regs.x2_o);
-    live_from_stack(&regs.x3_o);
-    live_from_stack(&regs.x4_o);
+    spill(regs.x0_e);
+    spill(regs.x1_e);
+    spill(regs.x2_e);
+    spill(regs.x3_e);
+    spill(regs.x4_e);
+    live_from_stack(regs.x0_o);
+    live_from_stack(regs.x1_o);
+    live_from_stack(regs.x2_o);
+    live_from_stack(regs.x3_o);
+    live_from_stack(regs.x4_o);
     unop("not", regs.x2_o); /* Invert x2_o after the last round */
-    spill(&regs.x0_o);
-    spill(&regs.x1_o);
-    spill(&regs.x2_o);
-    spill(&regs.x3_o);
-    spill(&regs.x4_o);
+    spill(regs.x0_o);
+    spill(regs.x1_o);
+    spill(regs.x2_o);
+    spill(regs.x3_o);
+    spill(regs.x4_o);
 
     /* Clear sensitive material from scratch registers and the stack.
      * We would like to delay this to ascon_backend_free() but we cannot
@@ -455,15 +463,16 @@ static void gen_permute(void)
     clear_reg(REG_EDX);
     for (round = 0; round < 48; round += 4) {
         if ((round % 12) == 0)
-            store(REG_EAX, REG_ESP, round);
+            store_machine(REG_EAX, REG_ESP, round);
         else if ((round % 12) == 4)
-            store(REG_ECX, REG_ESP, round);
+            store_machine(REG_ECX, REG_ESP, round);
         else
-            store(REG_EDX, REG_ESP, round);
+            store_machine(REG_EDX, REG_ESP, round);
     }
 
     /* Pop the stack frame */
 #if X86_64_PLATFORM
+    flush_pipeline();
 #if INTEL_SYNTAX
     printf(INSNQ(add) "%s, 48\n", REG_ESP);
 #else
@@ -471,7 +480,9 @@ static void gen_permute(void)
 #endif
     pop(REG_RBX);
     pop(REG_RBP);
+    flush_pipeline();
 #else
+    flush_pipeline();
 #if INTEL_SYNTAX
     printf(INSNL(add) "%s, 48\n", REG_ESP);
 #else
@@ -481,6 +492,7 @@ static void gen_permute(void)
     pop(REG_ESI);
     pop(REG_EBX);
     pop(REG_EBP);
+    flush_pipeline();
 #endif
 }
 

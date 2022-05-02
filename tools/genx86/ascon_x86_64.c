@@ -34,22 +34,22 @@
 /* List of all registers that we can work with */
 typedef struct
 {
-    reg_t x0;
-    reg_t x1;
-    reg_t x2;
-    reg_t x3;
-    reg_t x4;
-    reg_t t0;
-    reg_t t1;
-    reg_t t2;
-    reg_t t3;
-    reg_t t4;
-    reg_t t5;
+    reg_t *x0;
+    reg_t *x1;
+    reg_t *x2;
+    reg_t *x3;
+    reg_t *x4;
+    reg_t *t0;
+    reg_t *t1;
+    reg_t *t2;
+    reg_t *t3;
+    reg_t *t4;
+    reg_t *t5;
 
 } reg_names;
 
 /* Applies the S-box to five 64-bit words of the state */
-static void gen_sbox(const reg_names *regs)
+static void gen_sbox(reg_names *regs)
 {
     /* x0 ^= x4;   x4 ^= x3;   x2 ^= x1; */
     binop("xor", regs->x0, regs->x4);
@@ -93,7 +93,7 @@ static void gen_sbox(const reg_names *regs)
 }
 
 /* Generate the code for a single ASCON round */
-static void gen_round(const reg_names *regs, int round)
+static void gen_round(reg_names *regs, int round)
 {
     int rc;
 
@@ -171,45 +171,53 @@ static void gen_permute(void)
     push(REG_RBX);
     push(REG_R12);
     push(REG_R13);
+    flush_pipeline();
 
     /* Load all words of the state into registers */
-    alloc_state("x0", &regs.x0, 0);
-    alloc_state("x1", &regs.x1, 8);
-    alloc_state("x2", &regs.x2, 16);
-    alloc_state("x3", &regs.x3, 24);
-    alloc_state("x4", &regs.x4, 32);
-    live(&regs.x0);
-    live(&regs.x1);
-    live(&regs.x2);
-    live(&regs.x3);
-    live(&regs.x4);
+    regs.x0 = alloc_state("x0", 0);
+    regs.x1 = alloc_state("x1", 8);
+    regs.x2 = alloc_state("x2", 16);
+    regs.x3 = alloc_state("x3", 24);
+    regs.x4 = alloc_state("x4", 32);
+    live(regs.x0);
+    live(regs.x1);
+    live(regs.x2);
+    live(regs.x3);
+    live(regs.x4);
 
     /* Allocate the registers that we need to hold temporary values */
-    get_temp("t0", &regs.t0);
-    get_temp("t1", &regs.t1);
-    get_temp("t2", &regs.t2);
-    get_temp("t3", &regs.t3);
-    get_temp("t4", &regs.t4);
-    get_temp("t5", &regs.t5);
+    regs.t0 = alloc_temp("t0");
+    regs.t1 = alloc_temp("t1");
+    regs.t2 = alloc_temp("t2");
+    regs.t3 = alloc_temp("t3");
+    regs.t4 = alloc_temp("t4");
+    regs.t5 = alloc_temp("t5");
+    acquire(regs.t0);
+    acquire(regs.t1);
+    acquire(regs.t2);
+    acquire(regs.t3);
+    acquire(regs.t4);
+    acquire(regs.t5);
 
     /* Invert x2 before entry to the rounds */
     unop("not", regs.x2);
 
     /* Switch on the "first round" parameter and jump ahead */
+    flush_pipeline();
 #if INTEL_SYNTAX
     printf(INSNQ(cmp) "%s, 12\n", first_round);
     printf("\tjge\t.L13\n");
-    printf(INSNQ(lea) "%s, [rip + .L14]\n", regs.t0.real_reg);
-    printf(INSNQ(movsxd) "%s, [%s + %s*4]\n", regs.t1.real_reg, regs.t0.real_reg, first_round);
-    printf(INSNQ(add) "%s, %s\n", regs.t1.real_reg, regs.t0.real_reg);
-    printf("\tjmp\t%s\n", regs.t1.real_reg);
+    printf(INSNQ(lea) "%s, [rip + .L14]\n", regs.t0->real_reg);
+    printf(INSNQ(movsxd) "%s, [%s + %s*4]\n", regs.t1->real_reg, regs.t0->real_reg, first_round);
+    printf(INSNQ(add) "%s, %s\n", regs.t1->real_reg, regs.t0->real_reg);
+    printf("\tjmp\t%s\n", regs.t1->real_reg);
 #else
     printf(INSNQ(cmp) "$12, %s\n", first_round);
     printf("\tjge\t.L13\n");
-    printf(INSNQ(lea) ".L14(%%rip), %s\n", regs.t0.real_reg);
-    printf(INSNQ(movsl) "(%s,%s,4), %s\n", regs.t0.real_reg, first_round, regs.t1.real_reg);
-    printf(INSNQ(add) "%s, %s\n", regs.t0, regs.t1.real_reg);
-    printf("\tjmp\t*%s\n", regs.t1.real_reg);
+    printf(INSNQ(lea) ".L14(%%rip), %s\n", regs.t0->real_reg);
+    printf(INSNQ(movsl) "(%s,%s,4), %s\n", regs.t0->real_reg, first_round, regs.t1->real_reg);
+    printf(INSNQ(add) "%s, %s\n", regs->t0, regs.t1->real_reg);
+    printf("\tjmp\t*%s\n", regs.t1->real_reg);
 #endif
     printf(".L13:\n");
     printf("\tjmp\t.L12\n");
@@ -227,19 +235,22 @@ static void gen_permute(void)
     for (round = 0; round < 12; ++round) {
         printf(".L%d:\n", round);
         gen_round(&regs, round);
+        flush_pipeline();
     }
 
     /* Store the words back to the state and exit */
     printf(".L12:\n");
     unop("not", regs.x2);
-    spill(&regs.x0);
-    spill(&regs.x1);
-    spill(&regs.x2);
-    spill(&regs.x3);
-    spill(&regs.x4);
+    spill(regs.x0);
+    spill(regs.x1);
+    spill(regs.x2);
+    spill(regs.x3);
+    spill(regs.x4);
+    flush_pipeline();
     pop(REG_R13);
     pop(REG_R12);
     pop(REG_RBX);
+    flush_pipeline();
 }
 
 /* Output the function to free sensitive material in registers */

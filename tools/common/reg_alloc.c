@@ -25,14 +25,18 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX_REGS 64
+#define MAX_MACHINE_REGS 64
+#define MAX_ALLOC_REGS 256
 
 static char **reg_list = 0;
-static int allocated[MAX_REGS];
+static int allocated[MAX_MACHINE_REGS];
 static const char *state_reg = 0;
 static const char *stack_reg = 0;
+static reg_t regs[MAX_ALLOC_REGS];
+static int num_regs = 0;
+static unsigned long age = 0;
 
-static const char *allocate_reg(const char *name)
+static const char *try_allocate_reg(const char *name)
 {
     int index = 0;
     while (reg_list[index]) {
@@ -42,8 +46,17 @@ static const char *allocate_reg(const char *name)
         }
         ++index;
     }
-    fprintf(stderr, "allocate_reg: cannot allocate a register for %s\n", name);
-    exit(1);
+    return 0;
+}
+
+static const char *allocate_reg(const char *name)
+{
+    const char *reg = try_allocate_reg(name);
+    if (!reg) {
+        fprintf(stderr, "allocate_reg: cannot allocate a register for %s\n", name);
+        exit(1);
+    }
+    return reg;
 }
 
 static void release_reg(const char *name, const char *real_reg)
@@ -65,24 +78,29 @@ static void release_reg(const char *name, const char *real_reg)
     exit(1);
 }
 
-static void allocate_fixed(const char *real_reg)
+/* Reclaim the oldest register that we can spill */
+static void reclaim(void)
 {
-    int index = 0;
-    while (reg_list[index]) {
-        if (!strcmp(reg_list[index], real_reg)) {
-            if (allocated[index]) {
-                fprintf(stderr, "allocate_fixed: %s is already allocated\n",
-                        real_reg);
-                exit(1);
-            }
-            allocated[index] = 1;
-            return;
+    int index;
+    int oldest_index = -1;
+    unsigned long oldest_age = ~((unsigned long)0);
+    for (index = 0; index < num_regs; ++index) {
+        reg_t *reg = &(regs[index]);
+        if (!reg->real_reg)
+            continue; /* Nothing allocated to this register */
+        if (reg->pinned)
+            continue; /* Pinned registers can never be spilled */
+        if (reg->is_temp)
+            continue; /* Temporaries must be explicitly released */
+        if (reg->age < oldest_age) {
+            oldest_age = reg->age;
+            oldest_index = index;
         }
-        ++index;
     }
-    fprintf(stderr, "allocate_fixed: %s is not a valid register name\n",
-            real_reg);
-    exit(1);
+    if (oldest_index >= 0) {
+        /* We have found something that we can spill */
+        spill(&(regs[oldest_index]));
+    }
 }
 
 void start_allocator(char **regs, const char *st_reg, const char *stk_reg)
@@ -91,58 +109,125 @@ void start_allocator(char **regs, const char *st_reg, const char *stk_reg)
     stack_reg = stk_reg;
     reg_list = regs;
     memset(allocated, 0, sizeof(allocated));
+    num_regs = 0;
 }
 
-void alloc_state(const char *name, reg_t *reg, int offset)
+reg_t *alloc_state(const char *name, int offset)
 {
+    reg_t *reg;
+    if (num_regs >= MAX_ALLOC_REGS) {
+        fprintf(stderr, "alloc_state: too many logical registers\n");
+        exit(1);
+    }
+    reg = &(regs[num_regs++]);
     reg->name = name;
     reg->real_reg = 0;
     reg->state_offset = offset;
     reg->stack_offset = -1;
     reg->is_temp = 0;
+    reg->is_dirty = 0;
+    reg->pinned = 0;
+    reg->age = age++;
+    return reg;
 }
 
-void alloc_state_fixed(const char *name, reg_t *reg, int offset, const char *real_reg)
+reg_t *alloc_stack(const char *name, int offset)
 {
-    allocate_fixed(real_reg);
-    reg->name = name;
-    reg->real_reg = real_reg;
-    reg->state_offset = offset;
-    reg->stack_offset = -1;
-    reg->is_temp = 0;
-    load(real_reg, state_reg, offset);
-}
-
-void alloc_stack(const char *name, reg_t *reg, int offset)
-{
+    reg_t *reg;
+    if (num_regs >= MAX_ALLOC_REGS) {
+        fprintf(stderr, "alloc_stack: too many logical registers\n");
+        exit(1);
+    }
+    reg = &(regs[num_regs++]);
     reg->name = name;
     reg->real_reg = 0;
     reg->state_offset = -1;
     reg->stack_offset = offset;
     reg->is_temp = 0;
+    reg->is_dirty = 0;
+    reg->pinned = 0;
+    reg->age = age++;
+    return reg;
+}
+
+reg_t *alloc_temp(const char *name)
+{
+    reg_t *reg;
+    if (num_regs >= MAX_ALLOC_REGS) {
+        fprintf(stderr, "alloc_temp: too many logical registers\n");
+        exit(1);
+    }
+    reg = &(regs[num_regs++]);
+    reg->name = name;
+    reg->real_reg = 0;
+    reg->state_offset = -1;
+    reg->stack_offset = -1;
+    reg->is_temp = 1;
+    reg->is_dirty = 0;
+    reg->pinned = 0;
+    reg->age = age++;
+    return reg;
+}
+
+void dirty(reg_t *reg)
+{
+    reg->is_dirty = 1;
+    reg->age = age++;
+}
+
+void clean(reg_t *reg)
+{
+    reg->is_dirty = 0;
+    reg->age = age++;
+}
+
+void touch(reg_t *reg)
+{
+    reg->age = age++;
+}
+
+void pin(reg_t *reg)
+{
+    reg->pinned = 1;
+}
+
+void unpin(reg_t *reg)
+{
+    reg->pinned = 0;
 }
 
 void live(reg_t *reg)
 {
-    live_noload(reg);
-    if (reg->state_offset >= 0)
-        load(reg->real_reg, state_reg, reg->state_offset);
-    else
-        load(reg->real_reg, stack_reg, reg->stack_offset);
+    if (live_noload(reg)) {
+        if (reg->state_offset >= 0)
+            load_machine(reg->real_reg, state_reg, reg->state_offset);
+        else
+            load_machine(reg->real_reg, stack_reg, reg->stack_offset);
+        reg->is_dirty = 0;
+    }
+    reg->age = age++;
 }
 
-void live_noload(reg_t *reg)
+int live_noload(reg_t *reg)
 {
     if (reg->real_reg) {
         /* The value is already live in a register */
-        return;
+        reg->age = age++;
+        return 0;
     }
     if (reg->state_offset < 0 && reg->stack_offset < 0) {
         fprintf(stderr, "live: nowhere to load the value for %s from\n",
                 reg->name);
         exit(1);
     }
-    reg->real_reg = allocate_reg(reg->name);
+    reg->real_reg = try_allocate_reg(reg->name);
+    if (!reg->real_reg) {
+        /* We have run out of registers, so reclaim something and try again */
+        reclaim();
+        reg->real_reg = allocate_reg(reg->name);
+    }
+    reg->age = age++;
+    return 1;
 }
 
 void live_from_stack(reg_t *reg)
@@ -152,8 +237,10 @@ void live_from_stack(reg_t *reg)
                 reg->name);
         exit(1);
     }
-    live_noload(reg);
-    load(reg->real_reg, stack_reg, reg->state_offset);
+    if (live_noload(reg))
+        load_machine(reg->real_reg, stack_reg, reg->state_offset);
+    reg->is_dirty = 1;
+    reg->age = age++;
 }
 
 void spill(reg_t *reg)
@@ -163,14 +250,23 @@ void spill(reg_t *reg)
                 reg->name);
         exit(1);
     }
+    if (reg->pinned) {
+        /* Cannot spill this register */
+        reg->age = age++;
+        return;
+    }
     if (reg->real_reg) {
-        if (reg->state_offset >= 0)
-            store(reg->real_reg, state_reg, reg->state_offset);
-        else
-            store(reg->real_reg, stack_reg, reg->stack_offset);
+        if (reg->is_dirty) {
+            /* Spill the value back to the state or stack if dirty */
+            if (reg->state_offset >= 0)
+                store_machine(reg->real_reg, state_reg, reg->state_offset);
+            else
+                store_machine(reg->real_reg, stack_reg, reg->stack_offset);
+        }
         release_reg(reg->name, reg->real_reg);
         reg->real_reg = 0;
     }
+    reg->is_dirty = 0;
 }
 
 void spill_to_stack(reg_t *reg)
@@ -180,20 +276,50 @@ void spill_to_stack(reg_t *reg)
                 reg->name);
         exit(1);
     }
+    if (reg->pinned) {
+        /* Cannot spill this register */
+        reg->age = age++;
+        return;
+    }
     if (reg->real_reg) {
-        store(reg->real_reg, stack_reg, reg->state_offset);
+        store_machine(reg->real_reg, stack_reg, reg->state_offset);
         release_reg(reg->name, reg->real_reg);
         reg->real_reg = 0;
     }
+    reg->is_dirty = 0;
 }
 
-void get_temp(const char *name, reg_t *reg)
+void transfer(reg_t *dest, reg_t *src)
 {
-    reg->name = name;
-    reg->real_reg = allocate_reg(name);
-    reg->state_offset = -1;
-    reg->stack_offset = -1;
-    reg->is_temp = 1;
+    if (!src->real_reg) {
+        fprintf(stderr, "transfer: %s is not allocated\n", src->name);
+        exit(1);
+    }
+    if (dest->real_reg) {
+        fprintf(stderr, "transfer: %s is already allocated\n", dest->name);
+        exit(1);
+    }
+    dest->real_reg = src->real_reg;
+    src->real_reg = 0;
+    dest->age = age++;
+}
+
+void acquire(reg_t *reg)
+{
+    if (!reg->is_temp) {
+        fprintf(stderr, "acquire: %s is not a temporary\n", reg->name);
+        exit(1);
+    }
+    if (!reg->real_reg) {
+        reg->real_reg = try_allocate_reg(reg->name);
+        if (!reg->real_reg) {
+            /* We have run out of registers; reclaim something and try again */
+            reclaim();
+            reg->real_reg = allocate_reg(reg->name);
+        }
+    }
+    reg->is_dirty = 1; /* Assume we are about to write to the temporary */
+    reg->age = age++;
 }
 
 void release(reg_t *reg)
@@ -206,6 +332,11 @@ void release(reg_t *reg)
         release_reg(reg->name, reg->real_reg);
         reg->real_reg = 0;
     }
+
+    /* Move the age of the temporary back a bit to make it more likely
+     * to be allocated for the next temporary value that we need rather
+     * than spilling part of the state. */
+    reg->age = age - 8;
 }
 
 const char *get_real(const reg_t *reg)

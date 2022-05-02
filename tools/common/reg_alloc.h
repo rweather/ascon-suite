@@ -43,7 +43,20 @@ typedef struct
     int stack_offset;
 
     /* Non-zero if this is a temporary register */
-    int is_temp;
+    unsigned char is_temp;
+
+    /* Non-zero if the register is dirty and its value needs to be
+     * spilled back to the state or stack unless explicitly discarded
+     * because its value is temporary. */
+    unsigned char is_dirty;
+
+    /* Non-zero if this logical register is pinned to its real register
+     * and cannot be spilled by a live() call to reuse an old register. */
+    unsigned char pinned;
+
+    /* Age of the register for determining which register to spill
+     * using a least-recently used algorithm */
+    unsigned long age;
 
 } reg_t;
 
@@ -54,26 +67,40 @@ void start_allocator(char **regs, const char *state_reg, const char *stack_reg);
 
 /* Allocates a register to represent a word in the permutation state.
  * The word is not loaded from the state until live() is called. */
-void alloc_state(const char *name, reg_t *reg, int offset);
-
-/* Allocates a fixed real register to a word in the permutation state.
- * The word is made live immediately by loading it from the state. */
-void alloc_state_fixed
-    (const char *name, reg_t *reg, int offset, const char *real_reg);
+reg_t *alloc_state(const char *name, int offset);
 
 /* Allocates a register to represent a word in the stack.
  * The word is not loaded from the stack until live() or
  * live_noload() is called. */
-void alloc_stack(const char *name, reg_t *reg, int offset);
+reg_t *alloc_stack(const char *name, int offset);
+
+/* Allocates a temporary register but does not allocate a real register yet. */
+reg_t *alloc_temp(const char *name);
+
+/* Marks a register as dirty.  The value it contains must be spilled
+ * or explicitly discarded if it is in a temporary. */
+void dirty(reg_t *reg);
+
+/* Marks a register as clean.  The value it contains can be discarded. */
+void clean(reg_t *reg);
+
+/* Touch a register to make it more recently used. */
+void touch(reg_t *reg);
+
+/* Pins a logical register to its real register and prevents spilling. */
+void pin(reg_t *reg);
+
+/* Unpins a logical register so that it can be spilled. */
+void unpin(reg_t *reg);
 
 /* Makes the value of a state or stack word live in a real register.
  * Does nothing if the value is already live. */
 void live(reg_t *reg);
 
-/* Makes the value of a register live but does not load it from the stack.
+/* Makes the value of a register live but does not load it from the state.
  * Used when allocating a temporary stack location that hasn't been
  * written to yet. */
-void live_noload(reg_t *reg);
+int live_noload(reg_t *reg);
 
 /* Makes the value of a state word live, loaded from a stack location */
 void live_from_stack(reg_t *reg);
@@ -86,8 +113,11 @@ void spill(reg_t *reg);
 /* Spills a state word to the same-numbered stack position */
 void spill_to_stack(reg_t *reg);
 
-/* Gets a temporary register from the unallocated real registers. */
-void get_temp(const char *name, reg_t *reg);
+/* Transfers the register allocation from one logical register to another */
+void transfer(reg_t *dest, reg_t *src);
+
+/* Acquires a temporary register by allocating a real register for it. */
+void acquire(reg_t *reg);
 
 /* Releases a temporary register, forgetting its value and releasing
  * the real register back to the allocation pool.  Will fail if an
@@ -98,9 +128,9 @@ void release(reg_t *reg);
 const char *get_real(const reg_t *reg);
 
 /* Loads a register from a memory location (machine-specific) */
-void load(const char *reg, const char *ptr, int offset);
+void load_machine(const char *reg, const char *ptr, int offset);
 
 /* Stores a register to a memory location (machine-specific) */
-void store(const char *reg, const char *ptr, int offset);
+void store_machine(const char *reg, const char *ptr, int offset);
 
 #endif /* REG_ALLOC_H */

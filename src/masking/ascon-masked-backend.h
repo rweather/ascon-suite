@@ -28,7 +28,16 @@
 /* Select the default back end to use for the masked ASCON permutation,
  * and any properties we can use to optimize use of the permutation. */
 
-#if defined(ASCON_BACKEND_SLICED32)
+#if defined(ASCON_BACKEND_X86_64)
+
+/* Masked backend for x86-64 based systems */
+#define ASCON_MASKED_X2_BACKEND_X86_64 1
+#define ASCON_MASKED_X3_BACKEND_X86_64 1
+#define ASCON_MASKED_X4_BACKEND_X86_64 1
+#define ASCON_MASKED_WORD_BACKEND_C64 1
+#define ASCON_MASKED_BACKEND_SLICED64 1
+
+#elif defined(ASCON_BACKEND_SLICED32)
 
 /* Use the 32-bit sliced backend for masking if we were using the
  * 32-bit sliced backend for the regular permutation as then it is

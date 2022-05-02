@@ -126,16 +126,28 @@ void function_header(const char *name);
 void function_footer(const char *name);
 
 /* Generates a binary operator */
-void binop(const char *name, reg_t reg1, reg_t reg2);
+void binop(const char *name, reg_t *reg1, reg_t *reg2);
 
 /* Generates a unary operator */
-void unop(const char *name, reg_t reg);
+void unop(const char *name, reg_t *reg);
 
 /* Generates a rotate-right of a register */
-void ror(reg_t dest, int shift);
+void ror(reg_t *dest, int shift);
 
 /* XOR's a round constant with a register */
-void xor_rc(reg_t reg, int rc);
+void xor_rc(reg_t *reg, int rc);
+
+/* XOR's a directly named register with a logical register */
+void xor_direct(reg_t *reg1, const char *reg2);
+
+/* Moves a value from a source register to a destination register */
+void move(reg_t *dest, reg_t *src);
+
+/* Loads a register from a memory location */
+void load(reg_t *reg, const char *ptr, int offset);
+
+/* Stores a register to a memory location */
+void store(reg_t *reg, const char *ptr, int offset);
 
 /* Clears the contents of a register to zero */
 void clear_reg(const char *reg);
@@ -148,5 +160,8 @@ void pop(const char *reg);
 
 /* Moves a register directly */
 void move_direct(const char *dest, const char *src);
+
+/* Flush the instruction pipeline */
+void flush_pipeline(void);
 
 #endif /* X86_COMMON_H */
