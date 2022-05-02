@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['s',['S',['../unionascon__state__t.html#ac772b498028f0dab4cf8a460bd81ef6f',1,'ascon_state_t']]],
+  ['s',['S',['../unionascon__masked__word__t.html#abe6b3959c1441f46102942c29a382f92',1,'ascon_masked_word_t::S()'],['../unionascon__state__t.html#ac772b498028f0dab4cf8a460bd81ef6f',1,'ascon_state_t::S()']]],
   ['synthetic_20initialization_20vector_20_28siv_29_20mode_20for_20ascon',['Synthetic Initialization Vector (SIV) mode for ASCON',['../siv.html',1,'']]],
   ['siv_2edox',['siv.dox',['../siv_8dox.html',1,'']]],
   ['siv_2eh',['siv.h',['../siv_8h.html',1,'']]],

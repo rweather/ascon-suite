@@ -184,23 +184,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;uint32_t <a class="code" href="ascon-trng_8h.html#a1f6cd78f3b8b840a53e71616764d0f98">ascon_trng_generate_32</a>(<a class="code" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;{</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    (void)state;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordflow">return</span> ascon_trng_generate_word();</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;}</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;uint64_t <a class="code" href="ascon-trng_8h.html#ab1dea3c48686092616b052aef452f946">ascon_trng_generate_64</a>(<a class="code" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;{</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    (void)state;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">return</span> ((uint64_t)ascon_trng_generate_word()) |</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;          (((uint64_t)ascon_trng_generate_word()) &lt;&lt; 32);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng_8h.html#ad7ebee9831efe41233f13989e76dfd0a">ascon_trng_reseed</a>(<a class="code" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;{</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="ascon-trng_8h.html#abfa435f9eb6f9c364a131efe5a1cf9b2">ascon_trng_init</a>(state);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ASCON_TRNG_DUE */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    uint32_t word;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    (void)state;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    ascon_trng_generate_word(&amp;word);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">return</span> word;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;uint64_t <a class="code" href="ascon-trng_8h.html#ab1dea3c48686092616b052aef452f946">ascon_trng_generate_64</a>(<a class="code" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;{</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    uint32_t low, high;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    (void)state;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    ascon_trng_generate_word(&amp;low);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    ascon_trng_generate_word(&amp;high);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordflow">return</span> ((uint64_t)low) | (((uint64_t)high) &lt;&lt; 32);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng_8h.html#ad7ebee9831efe41233f13989e76dfd0a">ascon_trng_reseed</a>(<a class="code" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;{</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="ascon-trng_8h.html#abfa435f9eb6f9c364a131efe5a1cf9b2">ascon_trng_init</a>(state);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ASCON_TRNG_DUE */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="ascon-trng_8h_html_abfa435f9eb6f9c364a131efe5a1cf9b2"><div class="ttname"><a href="ascon-trng_8h.html#abfa435f9eb6f9c364a131efe5a1cf9b2">ascon_trng_init</a></div><div class="ttdeci">int ascon_trng_init(ascon_trng_state_t *state)</div><div class="ttdoc">Initializes the random number source for generating a sequence of masking material at high speed...</div><div class="ttdef"><b>Definition:</b> <a href="ascon-trng-none_8c_source.html#l00228">ascon-trng-none.c:228</a></div></div>
 <div class="ttc" id="structascon__trng__state__t_html"><div class="ttname"><a href="structascon__trng__state__t.html">ascon_trng_state_t</a></div><div class="ttdoc">State of the random number source. </div><div class="ttdef"><b>Definition:</b> <a href="ascon-trng_8h_source.html#l00063">ascon-trng.h:63</a></div></div>
 <div class="ttc" id="ascon-trng_8h_html_ae9cdf0973ca1098e50274490e5575821"><div class="ttname"><a href="ascon-trng_8h.html#ae9cdf0973ca1098e50274490e5575821">ascon_trng_free</a></div><div class="ttdeci">void ascon_trng_free(ascon_trng_state_t *state)</div><div class="ttdoc">Frees the random number source and destroys any sensitive material. </div><div class="ttdef"><b>Definition:</b> <a href="ascon-trng-none_8c_source.html#l00260">ascon-trng-none.c:260</a></div></div>
@@ -212,7 +216,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 24 2022 11:51:26 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 2 2022 12:52:55 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

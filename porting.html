@@ -81,42 +81,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock"><p>Most of ASCON Suite is written in C and provides high-level API's for encryption, hashing, and other modes. The main exception is the core ASCON permutation which is implemented in C or assembly code depending on the platform.</p>
 <p>The backend permutation implementations are located in the <code>src/core</code> directory. Each backend provides a "state and permutation" (SnP) interface to the rest of the library and user applications. See the <a class="el" href="permutation.html">Permutation</a> page for more information on using the SnP API directly in your own code.</p>
-<p>With the assembly code backends, the core permutation is implemented in assembly code but some of the SnP utility functions may still be in C.</p>
+<p>With the assembly code backends, the core permutation is implemented in assembly code but some of the SnP utility functions may still be in C. Only some of the backends have masked versions for side channel protection at present.</p>
 <table class="doxtable">
 <tr>
-<td><b>Backend</b></td><td><b>Language</b></td><td><b>Word Representation</b></td><td><b>Platforms</b> </td></tr>
+<td><b>Backend</b></td><td><b>Language</b></td><td><b>Word Representation</b></td><td><b>Masked<br/>
+Version?</b></td><td><b>Platforms</b> </td></tr>
 <tr>
-<td>c32</td><td>C</td><td>Sliced 32-bit</td><td>Default plain C implementation for 32-bit systems </td></tr>
+<td>c32</td><td>C</td><td>Sliced 32-bit</td><td>Yes</td><td>Default plain C implementation for 32-bit systems </td></tr>
 <tr>
-<td>c64</td><td>C</td><td>Host 64-bit</td><td>Default plain C implementation for 64-bit systems </td></tr>
+<td>c64</td><td>C</td><td>Host 64-bit</td><td>Yes</td><td>Default plain C implementation for 64-bit systems </td></tr>
 <tr>
-<td>armv6</td><td>ASM</td><td>Sliced 32-bit</td><td>ARMv6, e.g. Raspberry Pi 3 running the 32-bit Raspberry Pi OS </td></tr>
+<td>armv6</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>ARMv6, e.g. Raspberry Pi 3 running the 32-bit Raspberry Pi OS </td></tr>
 <tr>
-<td>armv6m</td><td>ASM</td><td>Sliced 32-bit</td><td>ARM Cortex M0 and M0+ </td></tr>
+<td>armv6m</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>ARM Cortex M0 and M0+ </td></tr>
 <tr>
-<td>armv7m</td><td>ASM</td><td>Sliced 32-bit</td><td>ARM Cortex M3, M4, and M7 </td></tr>
+<td>armv7m</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>ARM Cortex M3, M4, and M7 </td></tr>
 <tr>
-<td>armv7a</td><td>ASM</td><td>Sliced 32-bit</td><td>ARM Cortex A7 (uses armv7m backend) </td></tr>
+<td>armv7a</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>ARM Cortex A7 (uses armv7m backend) </td></tr>
 <tr>
-<td>armv8m</td><td>ASM</td><td>Sliced 32-bit</td><td>ARM Cortex M33 (uses armv7m backend) </td></tr>
+<td>armv8m</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>ARM Cortex M33 (uses armv7m backend) </td></tr>
 <tr>
-<td>armv8a-64</td><td>ASM</td><td>Host 64-bit</td><td>64-bit ARMv8-A; e.g. Raspberry Pi 4 running the 64-bit Raspberry Pi OS </td></tr>
+<td>armv8a-64</td><td>ASM</td><td>Host 64-bit</td><td></td><td>64-bit ARMv8-A; e.g. Raspberry Pi 4 running the 64-bit Raspberry Pi OS </td></tr>
 <tr>
-<td>avr5</td><td>ASM</td><td>8-bit</td><td>AVR5 and higher; e.g. ATmega328P (Arduino Uno), ATmega2560 (Arduino Mega 2560), ... </td></tr>
+<td>avr5</td><td>ASM</td><td>8-bit</td><td></td><td>AVR5 and higher; e.g. ATmega328P (Arduino Uno), ATmega2560 (Arduino Mega 2560), ... </td></tr>
 <tr>
-<td>i386</td><td>ASM</td><td>Sliced 32-bit</td><td>32-bit x86 systems (i386/i486/i586/i686) </td></tr>
+<td>i386</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>32-bit x86 systems (i386/i486/i586/i686) </td></tr>
 <tr>
-<td>m68k</td><td>ASM</td><td>Sliced 32-bit</td><td>32-bit 680x0 and ColdFire systems </td></tr>
+<td>m68k</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>32-bit 680x0 and ColdFire systems </td></tr>
 <tr>
-<td>riscv32e</td><td>ASM</td><td>Sliced 32-bit</td><td>32-bit RISC-V systems, RV32E base integer instruction set </td></tr>
+<td>riscv32e</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>32-bit RISC-V systems, RV32E base integer instruction set </td></tr>
 <tr>
-<td>riscv32i</td><td>ASM</td><td>Sliced 32-bit</td><td>32-bit RISC-V systems, RV32I base integer instruction set </td></tr>
+<td>riscv32i</td><td>ASM</td><td>Sliced 32-bit</td><td></td><td>32-bit RISC-V systems, RV32I base integer instruction set </td></tr>
 <tr>
-<td>riscv64i</td><td>ASM</td><td>Host 64-bit</td><td>64-bit RISC-V systems, RV64I base integer instruction set </td></tr>
+<td>riscv64i</td><td>ASM</td><td>Host 64-bit</td><td></td><td>64-bit RISC-V systems, RV64I base integer instruction set </td></tr>
 <tr>
-<td>x86-64</td><td>ASM</td><td>Host 64-bit</td><td>64-bit x86-64 systems </td></tr>
+<td>x86-64</td><td>ASM</td><td>Host 64-bit</td><td>Yes</td><td>64-bit x86-64 systems </td></tr>
 <tr>
-<td>xtensa</td><td>ASM</td><td>Host 64-bit</td><td>Xtensa, as used on ESP32 and ESP8266 modules, using funnel shifts for 64-bit word rotations </td></tr>
+<td>xtensa</td><td>ASM</td><td>Host 64-bit</td><td></td><td>Xtensa, as used on ESP32 and ESP8266 modules, using funnel shifts for 64-bit word rotations </td></tr>
 </table>
 <p>The "armv7m" backend can run unmodified on many higher-spec'ed 32-bit ARM processors. In fact, the "armv7a" and "armv8m" backends are just the "armv7m" backend compiled for a different architecture. This may change in the future if there are advantages in creating specific optimised backends for ARMv7-A and ARMv8-M.</p>
 <p>If the "armv7m" backend does not work on an unsupported 32-bit ARM processor, then it is possible that "armv6" or "armv6m" will work instead (the "armv6" backend is faster). Performance may not be as good as writing a tailored backend for the new processor.</p>
@@ -140,7 +141,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 24 2022 11:51:27 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 2 2022 12:52:55 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
