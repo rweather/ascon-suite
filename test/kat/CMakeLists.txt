@@ -76,6 +76,8 @@ kat_test(ASCON-80pq-masked ASCON-80pq.txt "")
 kat_test(ASCON-Prf ASCON-Prf.txt "")
 kat_test(ASCON-PrfShort ASCON-PrfShort.txt "--max-msg=16")
 kat_test(ASCON-Mac ASCON-Mac.txt "")
+kat_test(ASCON-HMAC ASCON-HMAC.txt "")
+kat_test(ASCON-HMACA ASCON-HMACA.txt "")
 
 # Add a custom 'perf' target to run all performance tests.
 add_custom_target(perf DEPENDS ${PERF_RULES})

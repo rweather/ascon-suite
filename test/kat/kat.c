@@ -1022,13 +1022,14 @@ static int test_auth_inner
     state = malloc(alg->state_size);
     if (!state)
         exit(2);
-    if ((alg->init || alg->init_fixed) && alg->absorb && alg->squeeze) {
+    if ((alg->init || alg->init_fixed) && alg->absorb &&
+            (alg->squeeze || alg->hmac_finalize)) {
         /* Incremental absorb with single squeeze step */
         for (inc = 1; inc <= msg->size; ADVANCE_INC(inc)) {
             if (alg->init_fixed)
-                (*(alg->init_fixed))(state, key->data, alg->tag_len);
+                (*(alg->init_fixed))(state, key->data, key->size, alg->tag_len);
             else
-                (*(alg->init))(state, key->data);
+                (*(alg->init))(state, key->data, key->size);
             for (index = 0; index < msg->size; index += inc) {
                 size_t temp = msg->size - index;
                 if (temp > inc)
@@ -1036,7 +1037,10 @@ static int test_auth_inner
                 (*(alg->absorb))(state, msg->data + index, temp);
             }
             memset(out, 0xAA, alg->tag_len);
-            (*(alg->squeeze))(state, out, alg->tag_len);
+            if (alg->hmac_finalize)
+                (*(alg->hmac_finalize))(state, key->data, key->size, out);
+            else
+                (*(alg->squeeze))(state, out, alg->tag_len);
             if (!test_compare(out, tag->data, tag->size)) {
                 test_print_error(alg->name, vec, "incremental absorb failed");
                 free(state);
@@ -1045,11 +1049,11 @@ static int test_auth_inner
         }
 
         /* All-in-one absorb with incremental squeeze output */
-        for (inc = 1; inc <= alg->tag_len; ADVANCE_INC(inc)) {
+        for (inc = 1; inc <= alg->tag_len && alg->squeeze; ADVANCE_INC(inc)) {
             if (alg->init_fixed)
-                (*(alg->init_fixed))(state, key->data, alg->tag_len);
+                (*(alg->init_fixed))(state, key->data, key->size, alg->tag_len);
             else
-                (*(alg->init))(state, key->data);
+                (*(alg->init))(state, key->data, key->size);
             (*(alg->absorb))(state, msg->data, msg->size);
             memset(out, 0xAA, alg->tag_len);
             for (index = 0; index < alg->tag_len; index += inc) {

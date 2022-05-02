@@ -28,6 +28,7 @@
 #include <ascon/hash.h>
 #include <ascon/xof.h>
 #include <ascon/prf.h>
+#include <ascon/hmac.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -340,6 +341,38 @@ static int ascon_mac_verify_wrapper
     return ascon_mac_verify(tag, in, inlen, key);
 }
 
+static void ascon_prf_init_wrapper
+    (void *state, const unsigned char *key, size_t keylen)
+{
+    (void)keylen;
+    ascon_prf_init(state, key);
+}
+
+static void ascon_prf_fixed_init_wrapper
+    (void *state, const unsigned char *key, size_t keylen, size_t length)
+{
+    (void)keylen;
+    ascon_prf_fixed_init(state, key, length);
+}
+
+static void ascon_hmac_compute_wrapper
+    (unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen)
+{
+    (void)taglen;
+    ascon_hmac(tag, key, keylen, in, inlen);
+}
+
+static void ascon_hmaca_compute_wrapper
+    (unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen)
+{
+    (void)taglen;
+    ascon_hmaca(tag, key, keylen, in, inlen);
+}
+
 aead_auth_algorithm_t const ascon_prf_auth = {
     "ASCON-Prf",
     sizeof(ascon_prf_state_t),
@@ -348,10 +381,11 @@ aead_auth_algorithm_t const ascon_prf_auth = {
     AEAD_FLAG_NONE,
     ascon_prf_compute_wrapper,
     0,
-    (auth_init_t)ascon_prf_init,
+    (auth_init_t)ascon_prf_init_wrapper,
     0,
     (aead_xof_absorb_t)ascon_prf_absorb,
-    (aead_xof_squeeze_t)ascon_prf_squeeze
+    (aead_xof_squeeze_t)ascon_prf_squeeze,
+    0
 };
 
 aead_auth_algorithm_t const ascon_prf_short_auth = {
@@ -361,7 +395,7 @@ aead_auth_algorithm_t const ascon_prf_short_auth = {
     ASCON_PRF_SHORT_TAG_SIZE,
     AEAD_FLAG_NONE,
     ascon_prf_short_compute_wrapper,
-    0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0
 };
 
 aead_auth_algorithm_t const ascon_mac_auth = {
@@ -373,9 +407,40 @@ aead_auth_algorithm_t const ascon_mac_auth = {
     ascon_mac_compute_wrapper,
     ascon_mac_verify_wrapper,
     0,
-    (auth_init_fixed_t)ascon_prf_fixed_init,
+    (auth_init_fixed_t)ascon_prf_fixed_init_wrapper,
     (aead_xof_absorb_t)ascon_prf_absorb,
-    (aead_xof_squeeze_t)ascon_prf_squeeze
+    (aead_xof_squeeze_t)ascon_prf_squeeze,
+    0
+};
+
+aead_auth_algorithm_t const ascon_hmac_auth = {
+    "ASCON-HMAC",
+    sizeof(ascon_hmac_state_t),
+    ASCON_HMAC_SIZE,
+    ASCON_HMAC_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_hmac_compute_wrapper,
+    0,
+    (auth_init_t)ascon_hmac_init,
+    0,
+    (aead_xof_absorb_t)ascon_hmac_update,
+    0,
+    (auth_hmac_finalize_t)ascon_hmac_finalize
+};
+
+aead_auth_algorithm_t const ascon_hmaca_auth = {
+    "ASCON-HMACA",
+    sizeof(ascon_hmaca_state_t),
+    ASCON_HMACA_SIZE,
+    ASCON_HMACA_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_hmaca_compute_wrapper,
+    0,
+    (auth_init_t)ascon_hmaca_init,
+    0,
+    (aead_xof_absorb_t)ascon_hmaca_update,
+    0,
+    (auth_hmac_finalize_t)ascon_hmaca_finalize
 };
 
 /* List of all AEAD ciphers that we can run KAT tests for */
@@ -413,6 +478,8 @@ static const aead_auth_algorithm_t *const auths[] = {
     &ascon_prf_auth,
     &ascon_prf_short_auth,
     &ascon_mac_auth,
+    &ascon_hmac_auth,
+    &ascon_hmaca_auth,
     0
 };
 

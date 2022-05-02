@@ -262,8 +262,10 @@ typedef int (*auth_verify_t)
  *
  * \param state PRF state to be initialized.
  * \param key Points to the key.
+ * \param keylen Length of the key in bytes.
  */
-typedef void (*auth_init_t)(void *state, const unsigned char *key);
+typedef void (*auth_init_t)
+    (void *state, const unsigned char *key, size_t keylen);
 
 /**
  * \brief Initializes the state for an incremental PRF operation with a
@@ -271,10 +273,22 @@ typedef void (*auth_init_t)(void *state, const unsigned char *key);
  *
  * \param state PRF state to be initialized.
  * \param key Points to the key.
+ * \param keylen Length of the key in bytes.
  * \param length Desired output length.
  */
 typedef void (*auth_init_fixed_t)
-    (void *state, const unsigned char *key, size_t length);
+    (void *state, const unsigned char *key, size_t keylen, size_t length);
+
+/**
+ * \brief Returns the final tag value from an incremental HMAC operation.
+ *
+ * \param state HMAC state to be finalized.
+ * \param key Points to the key.
+ * \param keylen Length of the key in bytes.
+ * \param out Points to the output buffer to receive the tag value.
+ */
+typedef void (*auth_hmac_finalize_t)
+    (void *state, const unsigned char *key, size_t keylen, unsigned char *out);
 
 /**
  * \brief No special AEAD features.
@@ -378,6 +392,7 @@ typedef struct
     auth_init_fixed_t init_fixed; /**< Incremental with fixed output length */
     aead_xof_absorb_t absorb;   /**< Incremental absorb function */
     aead_xof_squeeze_t squeeze; /**< Incremental squeeze function */
+    auth_hmac_finalize_t hmac_finalize; /**< HMAC finalize function */
 
 } aead_auth_algorithm_t;
 
