@@ -30,6 +30,7 @@ MAIN_SOURCES = \
 	$(SOURCE_DIR)/mac/ascon-hmaca.c \
 	$(SOURCE_DIR)/mac/ascon-kmac.c \
 	$(SOURCE_DIR)/mac/ascon-kmaca.c \
+	$(SOURCE_DIR)/mac/ascon-prf.c \
 	$(SOURCE_DIR)/random/ascon-prng.c \
 	$(SOURCE_DIR)/random/ascon-random.c \
 	$(SOURCE_DIR)/siv/ascon-siv-128.c \
@@ -77,7 +78,6 @@ UTIL_INCLUDES = \
 	$(SOURCE_DIR)/kdf/ascon-hkdf-common.h \
 	$(SOURCE_DIR)/mac/ascon-hmac-common.h \
 	$(SOURCE_DIR)/mac/ascon-kmac-common.h \
-	$(SOURCE_DIR)/masking/ascon-masked-backend.h \
 	$(SOURCE_DIR)/masking/ascon-masked-config.h \
 	$(SOURCE_DIR)/masking/ascon-masked-word.h \
 	$(SOURCE_DIR)/masking/ascon-masked-state.h \

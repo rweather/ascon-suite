@@ -27,6 +27,7 @@
 #include <ascon/siv.h>
 #include <ascon/hash.h>
 #include <ascon/xof.h>
+#include <ascon/prf.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -301,6 +302,82 @@ aead_cipher_t const ascon80pq_masked_cipher = {
     0, 0, 0, 0, 0, 0
 };
 
+static void ascon_prf_compute_wrapper
+    (unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen)
+{
+    (void)keylen;
+    ascon_prf(tag, taglen, in, inlen, key);
+}
+
+static void ascon_prf_short_compute_wrapper
+    (unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen)
+{
+    (void)keylen;
+    ascon_prf_short(tag, taglen, in, inlen, key);
+}
+
+static void ascon_mac_compute_wrapper
+    (unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen)
+{
+    (void)keylen;
+    (void)taglen;
+    ascon_mac(tag, in, inlen, key);
+}
+
+static int ascon_mac_verify_wrapper
+    (const unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen)
+{
+    (void)keylen;
+    (void)taglen;
+    return ascon_mac_verify(tag, in, inlen, key);
+}
+
+aead_auth_algorithm_t const ascon_prf_auth = {
+    "ASCON-Prf",
+    sizeof(ascon_prf_state_t),
+    ASCON_PRF_KEY_SIZE,
+    ASCON_PRF_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_prf_compute_wrapper,
+    0,
+    (auth_init_t)ascon_prf_init,
+    0,
+    (aead_xof_absorb_t)ascon_prf_absorb,
+    (aead_xof_squeeze_t)ascon_prf_squeeze
+};
+
+aead_auth_algorithm_t const ascon_prf_short_auth = {
+    "ASCON-PrfShort",
+    sizeof(ascon_prf_state_t),
+    ASCON_PRF_SHORT_KEY_SIZE,
+    ASCON_PRF_SHORT_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_prf_short_compute_wrapper,
+    0, 0, 0, 0, 0
+};
+
+aead_auth_algorithm_t const ascon_mac_auth = {
+    "ASCON-Mac",
+    sizeof(ascon_prf_state_t),
+    ASCON_MAC_KEY_SIZE,
+    ASCON_MAC_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_mac_compute_wrapper,
+    ascon_mac_verify_wrapper,
+    0,
+    (auth_init_fixed_t)ascon_prf_fixed_init,
+    (aead_xof_absorb_t)ascon_prf_absorb,
+    (aead_xof_squeeze_t)ascon_prf_squeeze
+};
+
 /* List of all AEAD ciphers that we can run KAT tests for */
 static const aead_cipher_t *const ciphers[] = {
     &ascon128_cipher,
@@ -331,6 +408,14 @@ static const aead_hash_algorithm_t *const hashes[] = {
     0
 };
 
+/* List of all authentication algorithms that we can run KAT tests for */
+static const aead_auth_algorithm_t *const auths[] = {
+    &ascon_prf_auth,
+    &ascon_prf_short_auth,
+    &ascon_mac_auth,
+    0
+};
+
 const aead_cipher_t *find_cipher(const char *name)
 {
     int index;
@@ -351,6 +436,16 @@ const aead_hash_algorithm_t *find_hash_algorithm(const char *name)
     return 0;
 }
 
+const aead_auth_algorithm_t *find_auth_algorithm(const char *name)
+{
+    int index;
+    for (index = 0; auths[index] != 0; ++index) {
+        if (!strcmp(auths[index]->name, name))
+            return auths[index];
+    }
+    return 0;
+}
+
 static void print_cipher_details(const aead_cipher_t *cipher)
 {
     printf("%-30s %8u   %8u   %8u\n",
@@ -365,6 +460,12 @@ static void print_hash_details(const aead_hash_algorithm_t *hash)
     printf("%-30s %8u\n", hash->name, hash->hash_len * 8);
 }
 
+static void print_auth_details(const aead_auth_algorithm_t *auth)
+{
+    printf("%-30s %8u   %8u\n",
+           auth->name, auth->key_len * 8, auth->tag_len * 8);
+}
+
 void print_algorithm_names(void)
 {
     int index;
@@ -375,4 +476,8 @@ void print_algorithm_names(void)
     printf("\nHash Algorithm                   Hash Bits\n");
     for (index = 0; hashes[index] != 0; ++index)
         print_hash_details(hashes[index]);
+    printf("\nAuthentication Algorithm         Key Bits");
+    printf("   Tag Bits\n");
+    for (index = 0; auths[index] != 0; ++index)
+        print_auth_details(auths[index]);
 }

@@ -226,6 +226,57 @@ typedef void (*aead_xof_squeeze_t)
     (void *state, unsigned char *out, size_t outlen);
 
 /**
+ * \brief All-in-one computation for authentication functions.
+ *
+ * \param tag Output buffer for the tag.
+ * \param taglen Length of the output tag in bytes.
+ * \param key Points to the key.
+ * \param keylen Length of the key in bytes.
+ * \param in Points to the input data.
+ * \param inlen Length of the input data in bytes.
+ */
+typedef void (*auth_compute_t)
+    (unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen);
+
+/**
+ * \brief All-in-one verification for authentication functions.
+ *
+ * \param tag Points to the tag to be checked.
+ * \param taglen Length of the output tag in bytes.
+ * \param key Points to the key.
+ * \param keylen Length of the key in bytes.
+ * \param in Points to the input data.
+ * \param inlen Length of the input data in bytes.
+ *
+ * \return 0 on success, -1 for a verification failure.
+ */
+typedef int (*auth_verify_t)
+    (const unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen);
+
+/**
+ * \brief Initializes the state for an incremental PRF operation.
+ *
+ * \param state PRF state to be initialized.
+ * \param key Points to the key.
+ */
+typedef void (*auth_init_t)(void *state, const unsigned char *key);
+
+/**
+ * \brief Initializes the state for an incremental PRF operation with a
+ * fixed output length.
+ *
+ * \param state PRF state to be initialized.
+ * \param key Points to the key.
+ * \param length Desired output length.
+ */
+typedef void (*auth_init_fixed_t)
+    (void *state, const unsigned char *key, size_t length);
+
+/**
  * \brief No special AEAD features.
  */
 #define AEAD_FLAG_NONE              0x0000
@@ -311,7 +362,24 @@ typedef struct
 
 } aead_hash_algorithm_t;
 
-/*------------------------- ASCON -------------------------*/
+/**
+ * \brief Meta-information about a keyed authentication algorithm.
+ */
+typedef struct
+{
+    const char *name;           /**< Name of the authentication algorithm */
+    size_t state_size;          /**< Size of the incremental state structure */
+    unsigned key_len;           /**< Length of the key in bytes */
+    unsigned tag_len;           /**< Length of the output tag in bytes */
+    unsigned flags;             /**< Flags for extra features */
+    auth_compute_t compute;     /**< All in one computation function */
+    auth_verify_t verify;       /**< All in one verification function */
+    auth_init_t init;           /**< Initialize incremental operation */
+    auth_init_fixed_t init_fixed; /**< Incremental with fixed output length */
+    aead_xof_absorb_t absorb;   /**< Incremental absorb function */
+    aead_xof_squeeze_t squeeze; /**< Incremental squeeze function */
+
+} aead_auth_algorithm_t;
 
 /**
  * \brief Meta-information block for the ASCON-128 cipher.
@@ -377,6 +445,21 @@ extern aead_cipher_t const ascon128a_siv_cipher;
  * \brief Meta-information block for the ASCON-80pq-SIV cipher.
  */
 extern aead_cipher_t const ascon80pq_siv_cipher;
+
+/**
+ * \brief Meta-information block for the ASCON-Prf pseudorandom function.
+ */
+extern aead_auth_algorithm_t const ascon_prf_auth;
+
+/**
+ * \brief Meta-information block for the ASCON-PrfShort pseudorandom function.
+ */
+extern aead_auth_algorithm_t const ascon_prf_short_auth;
+
+/**
+ * \brief Meta-information block for the ASCON-Mac authentication function.
+ */
+extern aead_auth_algorithm_t const ascon_mac_auth;
 
 #ifdef __cplusplus
 }

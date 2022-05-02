@@ -39,6 +39,7 @@ static const char *alg_name = 0;
 static const char *output_filename = 0;
 static const aead_cipher_t *alg_cipher = 0;
 static const aead_hash_algorithm_t *alg_hash = 0;
+static const aead_auth_algorithm_t *alg_auth = 0;
 
 /* State of the RNG for generating input vectors */
 static int rng_active = 0;
@@ -178,8 +179,11 @@ static int parse_command_line(int argc, char **argv)
     if (!alg_cipher) {
         alg_hash = find_hash_algorithm(alg_name);
         if (!alg_hash) {
-            fprintf(stderr, "Unknown algorithm name '%s'\n", alg_name);
-            return 0;
+            alg_auth = find_auth_algorithm(alg_name);
+            if (!alg_auth) {
+                fprintf(stderr, "Unknown algorithm name '%s'\n", alg_name);
+                return 0;
+            }
         }
     }
 
@@ -360,6 +364,51 @@ static void generate_kats_for_hash(const aead_hash_algorithm_t *alg, FILE *file)
     free(hash);
 }
 
+/**
+ * \brief Generate Known Answer Tests for an authentication algorithm.
+ *
+ * \param alg Meta-information about the algorithm.
+ * \param file Output file to write the test vectors to.
+ */
+static void generate_kats_for_auth(const aead_auth_algorithm_t *alg, FILE *file)
+{
+    int count = 1;
+    int msg_len;
+
+    /* Allocate space for the temporary buffers we will need */
+    unsigned char *state = (unsigned char *)malloc(alg->state_size);
+    unsigned char *msg = (unsigned char *)malloc(max_msg);
+    unsigned char *tag = (unsigned char *)malloc(alg->tag_len);
+    unsigned char *key = (unsigned char *)malloc(alg->key_len);
+    if (!state || !msg || !tag || !key) {
+        fprintf(stderr, "Out of memory\n");
+        exit(1);
+    }
+
+    /* Generate the KAT vectors */
+    for (msg_len = min_msg; msg_len <= max_msg; ++msg_len) {
+        /* Generate the vectors for this test */
+        rng_generate(key, alg->key_len);
+        rng_generate(msg, msg_len);
+
+        /* Produce the authentication output */
+        (*(alg->compute))(tag, alg->tag_len, key, alg->key_len, msg, msg_len);
+
+        /* Write out the results */
+        fprintf(file, "Count = %d\n", count++);
+        write_hex(file, "Key", key, alg->key_len);
+        write_hex(file, "Msg", msg, msg_len);
+        write_hex(file, "Tag", tag, alg->tag_len);
+        fprintf(file, "\n");
+    }
+
+    /* Clean up */
+    free(state);
+    free(msg);
+    free(tag);
+    free(key);
+}
+
 int main(int argc, char *argv[])
 {
     FILE *file;
@@ -391,6 +440,8 @@ int main(int argc, char *argv[])
         generate_kats_for_cipher(alg_cipher, file);
     else if (alg_hash)
         generate_kats_for_hash(alg_hash, file);
+    else if (alg_auth)
+        generate_kats_for_auth(alg_auth, file);
 
     /* Clean up and exit */
     if (strcmp(output_filename, "-") != 0)

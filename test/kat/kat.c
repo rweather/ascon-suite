@@ -967,11 +967,142 @@ static int perf_hash(const aead_hash_algorithm_t *alg)
     return 0;
 }
 
+/* Test an authentication algorithm on a specific test vector */
+static int test_auth_inner
+    (const aead_auth_algorithm_t *alg, const test_vector_t *vec)
+{
+    unsigned char out[alg->tag_len];
+    void *state;
+    const test_string_t *key;
+    const test_string_t *msg;
+    const test_string_t *tag;
+    size_t index;
+    size_t inc;
+
+    /* Get the parameters for the test */
+    key = get_test_string(vec, "Key");
+    msg = get_test_string(vec, "Msg");
+    tag = get_test_string(vec, "Tag");
+    if (key->size != alg->key_len) {
+        test_print_error(alg->name, vec, "incorrect key size in test data");
+        return 0;
+    }
+    if (tag->size != alg->tag_len) {
+        test_print_error(alg->name, vec, "incorrect tag size in test data");
+        return 0;
+    }
+
+    /* Compute the result with the all-in-one function */
+    memset(out, 0xAA, alg->tag_len);
+    (*(alg->compute))
+        (out, tag->size, key->data, key->size, msg->data, msg->size);
+    if (!test_compare(out, tag->data, tag->size)) {
+        test_print_error(alg->name, vec, "all-in-one auth failed");
+        return 0;
+    }
+
+    /* Verify the result with the all-in-one function */
+    if (alg->verify) {
+        if ((*(alg->verify))
+                (out, tag->size, key->data, key->size,
+                 msg->data, msg->size) != 0) {
+            test_print_error(alg->name, vec, "all-in-one auth verify failed");
+            return 0;
+        }
+        out[2] ^= 0x01; /* Deliberately corrupt the tag */
+        if ((*(alg->verify))
+                (out, tag->size, key->data, key->size,
+                 msg->data, msg->size) == 0) {
+            test_print_error(alg->name, vec, "all-in-one auth verify succeeded when it should not have");
+            return 0;
+        }
+    }
+
+    /* Do we have incremental PRF functions? */
+    state = malloc(alg->state_size);
+    if (!state)
+        exit(2);
+    if ((alg->init || alg->init_fixed) && alg->absorb && alg->squeeze) {
+        /* Incremental absorb with single squeeze step */
+        for (inc = 1; inc <= msg->size; ADVANCE_INC(inc)) {
+            if (alg->init_fixed)
+                (*(alg->init_fixed))(state, key->data, alg->tag_len);
+            else
+                (*(alg->init))(state, key->data);
+            for (index = 0; index < msg->size; index += inc) {
+                size_t temp = msg->size - index;
+                if (temp > inc)
+                    temp = inc;
+                (*(alg->absorb))(state, msg->data + index, temp);
+            }
+            memset(out, 0xAA, alg->tag_len);
+            (*(alg->squeeze))(state, out, alg->tag_len);
+            if (!test_compare(out, tag->data, tag->size)) {
+                test_print_error(alg->name, vec, "incremental absorb failed");
+                free(state);
+                return 0;
+            }
+        }
+
+        /* All-in-one absorb with incremental squeeze output */
+        for (inc = 1; inc <= alg->tag_len; ADVANCE_INC(inc)) {
+            if (alg->init_fixed)
+                (*(alg->init_fixed))(state, key->data, alg->tag_len);
+            else
+                (*(alg->init))(state, key->data);
+            (*(alg->absorb))(state, msg->data, msg->size);
+            memset(out, 0xAA, alg->tag_len);
+            for (index = 0; index < alg->tag_len; index += inc) {
+                size_t temp = tag->size - index;
+                if (temp > inc)
+                    temp = inc;
+                (*(alg->squeeze))(state, out + index, temp);
+            }
+            if (!test_compare(out, tag->data, tag->size)) {
+                test_print_error(alg->name, vec, "incremental squeeze failed");
+                free(state);
+                return 0;
+            }
+        }
+    }
+    free(state);
+
+    /* All tests passed for this test vector */
+    return 1;
+}
+
+/* Test an authentication algorithm */
+static int test_auth(const aead_auth_algorithm_t *alg, FILE *file)
+{
+    test_vector_t vec;
+    int success = 0;
+    int fail = 0;
+    while (test_vector_read(&vec, file)) {
+        if (test_auth_inner(alg, &vec))
+            ++success;
+        else
+            ++fail;
+        test_vector_free(&vec);
+    }
+    printf("%s: %d tests succeeded, %d tests failed\n",
+           alg->name, success, fail);
+    return fail != 0;
+}
+
+/* Generate performance metrics for an authentication algorithm */
+static int perf_auth(const aead_auth_algorithm_t *alg)
+{
+    /* TODO */
+    (void)alg;
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
     const char *progname = argv[0];
     const aead_cipher_t *cipher;
     const aead_hash_algorithm_t *hash;
+    const aead_auth_algorithm_t *auth;
     int exit_val;
     int performance = 0;
     FILE *file;
@@ -1024,6 +1155,19 @@ int main(int argc, char *argv[])
             exit_val = perf_hash(hash);
         } else {
             exit_val = test_hash(hash, file);
+            fclose(file);
+        }
+        return exit_val;
+    }
+
+    /* Look for an authentication algorithm with the specified name */
+    auth = find_auth_algorithm(argv[1]);
+    if (auth) {
+        if (performance) {
+            fclose(file);
+            exit_val = perf_auth(auth);
+        } else {
+            exit_val = test_auth(auth, file);
             fclose(file);
         }
         return exit_val;

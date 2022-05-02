@@ -51,6 +51,8 @@ Patches are welcome to provide new permutation and TRNG backends.
 
 \li \ref aead.h "Authenticated Encryption with Associated Data (AEAD)"
 \li \ref hash.h "Hashing"
+\li \ref prf.h "Pseudorandom Function (PRF)"
+\li \ref prf.h "Message Authentication Code (MAC)"
 \li \ref hkdf.h "HMAC-based Key Derivation Function (HKDF)"
 \li \ref hmac.h "Hashed Message Authentication Code (HMAC)"
 \li \ref isap.h "ISAP AEAD Mode with Side Channel Protections"
@@ -116,6 +118,8 @@ The following ASCON primitives are provided:
 \li ASCON-HASH and ASCON-HASHA hash algorithms with a 256-bit output.
 \li ASCON-XOF and ASCON-XOFA extendable output functions (XOF) with an
 arbitrary-length output.
+\li ASCON-Prf and ASCON-PrfShort pseudorandom functions.
+\li ASCON-Mac message authentication code.
 \li Direct access to the \ref permutation "ASCON permutation itself" to
 build custom application modes.
 

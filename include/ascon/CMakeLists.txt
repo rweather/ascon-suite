@@ -10,6 +10,7 @@ list(APPEND ASCON_HEADERS
     masking.h
     pbkdf2.h
     permutation.h
+    prf.h
     random.h
     siv.h
     utility.h

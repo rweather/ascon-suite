@@ -8,6 +8,8 @@ API's are provided for the following areas:
 
 * Authenticated Encryption with Associated Data (AEAD)
 * Hashing
+* Pseudorandom Function (PRF)
+* Message Authentication Code (MAC)
 * HMAC-based Key Derivation Function (HKDF)
 * Hashed Message Authentication Code (HMAC)
 * ISAP AEAD Mode with Side Channel Protections

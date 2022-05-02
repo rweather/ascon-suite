@@ -27,6 +27,7 @@
 
 const aead_cipher_t *find_cipher(const char *name);
 const aead_hash_algorithm_t *find_hash_algorithm(const char *name);
+const aead_auth_algorithm_t *find_auth_algorithm(const char *name);
 void print_algorithm_names(void);
 
 #endif
