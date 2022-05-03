@@ -35,6 +35,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <errno.h>
 #define USE_WINDOWS_FDS 1
 #define USE_POSIX_FDS 1
 #elif defined(HAVE_OPEN) && defined(HAVE_UNISTD_H) && defined(HAVE_FCNTL_H)

@@ -1133,7 +1133,9 @@ int main(int argc, char *argv[])
     }
 
     /* Open the KAT input file */
-    if ((file = fopen(argv[2], "r")) == NULL) {
+    if (!strcmp(argv[2], "-")) {
+        file = stdin;
+    } else if ((file = fopen(argv[2], "r")) == NULL) {
         perror(argv[2]);
         return 1;
     }
@@ -1142,11 +1144,13 @@ int main(int argc, char *argv[])
     cipher = find_cipher(argv[1]);
     if (cipher) {
         if (performance) {
-            fclose(file);
+            if (file != stdin)
+                fclose(file);
             exit_val = perf_cipher(cipher);
         } else {
             exit_val = test_cipher(cipher, file);
-            fclose(file);
+            if (file != stdin)
+                fclose(file);
         }
         return exit_val;
     }
@@ -1155,11 +1159,13 @@ int main(int argc, char *argv[])
     hash = find_hash_algorithm(argv[1]);
     if (hash) {
         if (performance) {
-            fclose(file);
+            if (file != stdin)
+                fclose(file);
             exit_val = perf_hash(hash);
         } else {
             exit_val = test_hash(hash, file);
-            fclose(file);
+            if (file != stdin)
+                fclose(file);
         }
         return exit_val;
     }
@@ -1168,17 +1174,20 @@ int main(int argc, char *argv[])
     auth = find_auth_algorithm(argv[1]);
     if (auth) {
         if (performance) {
-            fclose(file);
+            if (file != stdin)
+                fclose(file);
             exit_val = perf_auth(auth);
         } else {
             exit_val = test_auth(auth, file);
-            fclose(file);
+            if (file != stdin)
+                fclose(file);
         }
         return exit_val;
     }
 
     /* Unknown algorithm name */
-    fclose(file);
+    if (file != stdin)
+        fclose(file);
     fprintf(stderr, "Unknown algorithm '%s'\n", argv[1]);
     print_algorithm_names();
     return 1;

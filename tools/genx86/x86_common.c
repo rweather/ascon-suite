@@ -75,10 +75,17 @@ void function_header(const char *name)
         printf("#endif\n");
     } else {
         printf("\t.p2align 4,,15\n");
+        printf("#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)\n");
+        printf("\t.globl\t%s\n", name);
+        printf("\t.def\t%s;\t.scl\t3;\t.type\t32;\t.endef\n", name);
+        printf("\t.seh_proc\t%s\n", name);
+        printf("%s:\n", name);
+        printf("#else\n");
         printf("\t.globl\t%s\n", name);
         printf("\t.type\t%s, @function\n", name);
         printf("%s:\n", name);
         printf("\t.cfi_startproc\n");
+        printf("#endif\n");
     }
 }
 
@@ -92,8 +99,12 @@ void function_footer(const char *name)
         printf("#endif\n");
     } else {
         printf("\tret\n");
+        printf("#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)\n");
+        printf("\t.seh_endproc\n");
+        printf("#else\n");
         printf("\t.cfi_endproc\n");
         printf("\t.size\t%s, .-%s\n", name, name);
+        printf("#endif\n");
     }
 }
 

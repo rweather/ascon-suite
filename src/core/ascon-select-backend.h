@@ -93,9 +93,10 @@
 #define ASCON_BACKEND_FREE 1
 #endif
 
-#elif defined(__x86_64) || defined(__x86_64__)
+#elif (defined(__x86_64) || defined(__x86_64__)) && !defined(__CYGWIN__) && !defined(_WIN64)
 
-/* Assembly backend for x86-64 based systems */
+/* Assembly backend for x86-64 based systems.  It currently has some
+ * issues when used on Windows platforms so disabled for now. */
 #define ASCON_BACKEND_X86_64 1
 #define ASCON_BACKEND_SLICED64 1
 #define ASCON_BACKEND_FREE 1

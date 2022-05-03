@@ -219,7 +219,7 @@ void ascon_x3_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng);
  * operation, or fresh random words if randomness should not be preserved.
  */
 void ascon_x3_permute
-    (ascon_masked_state_t *state, uint8_t first_round, uint64_t preserve[2]);
+    (ascon_masked_state_t *state, uint8_t first_round, uint64_t *preserve);
 
 /**
  * \brief Copies the entire ASCON-x3 permutation state from a regular
@@ -302,7 +302,7 @@ void ascon_x4_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng);
  * operation, or fresh random words if randomness should not be preserved.
  */
 void ascon_x4_permute
-    (ascon_masked_state_t *state, uint8_t first_round, uint64_t preserve[3]);
+    (ascon_masked_state_t *state, uint8_t first_round, uint64_t *preserve);
 
 /**
  * \brief Copies the entire ASCON-x4 permutation state from a regular

@@ -25,10 +25,17 @@
 	.intel_syntax noprefix
 	.text
 	.p2align 4,,15
+#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
+	.globl	ascon_permute
+	.def	ascon_permute;	.scl	3;	.type	32;	.endef
+	.seh_proc	ascon_permute
+ascon_permute:
+#else
 	.globl	ascon_permute
 	.type	ascon_permute, @function
 ascon_permute:
 	.cfi_startproc
+#endif
 	push	rbx
 	push	r12
 	push	r13
@@ -771,13 +778,24 @@ ascon_permute:
 	pop	r12
 	pop	rbx
 	ret
+#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
+	.seh_endproc
+#else
 	.cfi_endproc
 	.size	ascon_permute, .-ascon_permute
+#endif
 	.p2align 4,,15
+#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
+	.globl	ascon_backend_free
+	.def	ascon_backend_free;	.scl	3;	.type	32;	.endef
+	.seh_proc	ascon_backend_free
+ascon_backend_free:
+#else
 	.globl	ascon_backend_free
 	.type	ascon_backend_free, @function
 ascon_backend_free:
 	.cfi_startproc
+#endif
 	mov	rax, 0
 	mov	rcx, 0
 	mov	rsi, 0
@@ -786,7 +804,11 @@ ascon_backend_free:
 	mov	r10, 0
 	mov	r11, 0
 	ret
+#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
+	.seh_endproc
+#else
 	.cfi_endproc
 	.size	ascon_backend_free, .-ascon_backend_free
+#endif
 
 #endif

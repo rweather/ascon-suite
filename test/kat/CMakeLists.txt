@@ -22,6 +22,9 @@ target_include_directories(kat
 if(HAVE_LIBRT)
     target_link_libraries(kat PRIVATE -lrt)
 endif()
+if(MINGW)
+    target_link_options(kat PUBLIC --static)
+endif()
 
 # Program for generating KAT tests.
 add_executable(kat-gen
@@ -34,11 +37,14 @@ target_link_libraries(kat-gen PUBLIC ascon_static)
 if(HAVE_LIBRT)
     target_link_libraries(kat-gen PRIVATE -lrt)
 endif()
+if(MINGW)
+    target_link_options(kat-gen PUBLIC --static)
+endif()
 
 # Function to perform KAT tests on a specific algorithm.
 function(kat_test algorithm kat_file gen_opts)
     # Add a unit test to run the KAT test.
-    add_test(NAME kat-run-${algorithm} COMMAND kat ${algorithm} ${CMAKE_CURRENT_LIST_DIR}/${kat_file})
+    add_test(NAME kat-run-${algorithm} COMMAND bash -c "${CMAKE_CURRENT_BINARY_DIR}/kat ${algorithm} - <${CMAKE_CURRENT_LIST_DIR}/${kat_file}")
 
     # Add a unit test to generate the KAT output and cross-check.
     add_test(NAME kat-gen-${algorithm} COMMAND bash -c "${CMAKE_CURRENT_BINARY_DIR}/kat-gen ${gen_opts} ${algorithm} - | diff --strip-trailing-cr -q - ${CMAKE_CURRENT_LIST_DIR}/${kat_file}")
@@ -46,7 +52,7 @@ function(kat_test algorithm kat_file gen_opts)
     # Add a custom command to run performance tests on the algorithm.
     add_custom_command(
         OUTPUT kat-perf-${algorithm}
-        COMMAND kat --performance ${algorithm} ${CMAKE_CURRENT_LIST_DIR}/${kat_file}
+        COMMAND bash -c "${CMAKE_CURRENT_BINARY_DIR}/kat --performance ${algorithm} - <${CMAKE_CURRENT_LIST_DIR}/${kat_file}"
     )
     list(APPEND PERF_RULES kat-perf-${algorithm})
     set(PERF_RULES ${PERF_RULES} PARENT_SCOPE)

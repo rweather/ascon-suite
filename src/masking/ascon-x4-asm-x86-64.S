@@ -25,10 +25,17 @@
 	.intel_syntax noprefix
 	.text
 	.p2align 4,,15
+#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
+	.globl	ascon_x4_permute
+	.def	ascon_x4_permute;	.scl	3;	.type	32;	.endef
+	.seh_proc	ascon_x4_permute
+ascon_x4_permute:
+#else
 	.globl	ascon_x4_permute
 	.type	ascon_x4_permute, @function
 ascon_x4_permute:
 	.cfi_startproc
+#endif
 	push	rbp
 	push	rbx
 	push	r12
@@ -812,7 +819,11 @@ ascon_x4_permute:
 	pop	rbx
 	pop	rbp
 	ret
+#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
+	.seh_endproc
+#else
 	.cfi_endproc
 	.size	ascon_x4_permute, .-ascon_x4_permute
+#endif
 
 #endif

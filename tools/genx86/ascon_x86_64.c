@@ -216,7 +216,7 @@ static void gen_permute(void)
     printf("\tjge\t.L13\n");
     printf(INSNQ(lea) ".L14(%%rip), %s\n", regs.t0->real_reg);
     printf(INSNQ(movsl) "(%s,%s,4), %s\n", regs.t0->real_reg, first_round, regs.t1->real_reg);
-    printf(INSNQ(add) "%s, %s\n", regs->t0, regs.t1->real_reg);
+    printf(INSNQ(add) "%s, %s\n", regs.t0->real_reg, regs.t1->real_reg);
     printf("\tjmp\t*%s\n", regs.t1->real_reg);
 #endif
     printf(".L13:\n");
