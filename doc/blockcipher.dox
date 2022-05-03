@@ -81,4 +81,67 @@ California, USA, August 17-21, 2003, Proceedings, volume 2729 of Lecture
 Notes in Computer Science, pages 513–529. Springer, 2003.
 https://iacr.org/archive/crypto2003/27290510/27290510.pdf
 
+\section blockcipher_motivation Motivation
+
+The motivation for turning ASCON into a block cipher is on-the-fly
+encryption of data on memory buses inside a CPU.  Existing microcontrollers
+typically do this with AES operating in a tweaked block cipher mode
+where the address in memory is the tweak.
+
+XOR-based stream ciphers like ASCON-128 don't work for this situation.
+Using the nonce to hold the tweak would involve reusing the same nonce
+with the same key.  Reuse of the nonce allows a stream cipher to be
+trivially broken.
+
+Tweakable block ciphers operating in ECB mode don't have the same problem.
+If the plaintext is different in even a single bit, the resulting ciphertext
+will be very different under the same key and tweak.  If the same
+plaintext is written again to the same block, then the scheme will only
+leak that the same plaintext has been written.  It will not leak the
+plaintext itself as a stream cipher might.
+
+So how would we do memory encryption in a hypothetical low-power embedded
+microcontroller that uses ASCON permutation as its main encryption and
+hashing primitive?  Luby-Rackoff allows us to turn the ASCON permutation
+into a tweakable block cipher and memory encryption becomes possible.
+Without this the microcontroller would have to embed a second encryption
+core, such as AES, for the memory encryption case.
+
+\section blockcipher_design Motivation of design choices
+
+Other than the structure of the Luby-Rackoff construction itself, the other
+design choices were largely arbitrary.
+
+The same key could have been used every round but that made me uneasy.
+Other LWC submissions like COMET, GIFT-COFB, HYENA, ORANGE, and
+Pyjamask use doubling in a GF field to adjust values from block to block to
+avoid using the same value repeatedly.  So doubling in GF(128) seemed a
+reasonable choice.
+
+Other methods could be used to modify the key from one round to
+the next.  The round schedule of SKINNY-128 permutes the key bytes from
+round to round in a manner that is simple to fast-forward to the end
+of the schedule and reverse for decryption in low memory environments.
+
+Even though the key changes every round there is still a problem with
+slide attacks.  Without round constants, round n of encrypting with the
+key K uses the same key as round n-1 of encrypting with the key
+<i>dbl</i>(K).  The SHA-256 round constants were added to mitigate the
+potential for slide attacks.  Other round constants could be used instead.
+
+The tweak could have been modified from round to round but it makes
+decryption harder to implement.  The tweak must first be fast-forwarded
+to the end of the schedule, and then wound backwards round by round.
+This may not be a problem if the block operation is only used in the
+forward direction, but that is not the case for memory encryption.
+
+\section blockcipher_other_uses Other uses for ASCON as a block cipher
+
+Disk encryption and other forms of data-at-rest can also benefit from a
+tweakable block cipher.
+
+If the storage for the data-at-rest has space for a 128-bit authentication
+tag for each block, then an ASCON AEAD in \ref siv "SIV mode" may be a
+better option.
+
 */
