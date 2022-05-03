@@ -26,6 +26,13 @@ function build_config()
         echo "FAILED: test $*"
         exit 1
     fi
+    cd examples
+    make
+    if test "$?" != "0" ; then
+        echo "FAILED: examples $*"
+        exit 1
+    fi
+    cd ..
     echo "SUCCESS: $*"
     cd ..
     rm -rf build
