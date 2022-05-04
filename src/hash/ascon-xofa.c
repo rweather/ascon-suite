@@ -283,3 +283,14 @@ void ascon_xofa_clear_rate(ascon_xofa_state_t *state)
     ascon_permute(&(state->state), 4);
     ascon_release(&(state->state));
 }
+
+void ascon_xofa_copy(ascon_xofa_state_t *dest, const ascon_xofa_state_t *src)
+{
+    if (dest != src) {
+        ascon_init(&(dest->state));
+        ascon_copy(&(dest->state), &(src->state));
+        ascon_release(&(dest->state));
+        dest->count = src->count;
+        dest->mode = src->mode;
+    }
+}

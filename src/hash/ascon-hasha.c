@@ -96,3 +96,8 @@ void ascon_hasha_finalize(ascon_hasha_state_t *state, unsigned char *out)
 {
     ascon_xofa_squeeze(&(state->xof), out, ASCON_HASH_SIZE);
 }
+
+void ascon_hasha_copy(ascon_hasha_state_t *dest, const ascon_hasha_state_t *src)
+{
+    ascon_xofa_copy(&(dest->xof), &(src->xof));
+}

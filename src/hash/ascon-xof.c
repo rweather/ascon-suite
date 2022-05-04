@@ -282,3 +282,14 @@ void ascon_xof_clear_rate(ascon_xof_state_t *state)
     ascon_permute(&(state->state), 0);
     ascon_release(&(state->state));
 }
+
+void ascon_xof_copy(ascon_xof_state_t *dest, const ascon_xof_state_t *src)
+{
+    if (dest != src) {
+        ascon_init(&(dest->state));
+        ascon_copy(&(dest->state), &(src->state));
+        ascon_release(&(dest->state));
+        dest->count = src->count;
+        dest->mode = src->mode;
+    }
+}

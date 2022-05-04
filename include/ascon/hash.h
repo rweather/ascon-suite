@@ -117,6 +117,19 @@ void ascon_hash_update
 void ascon_hash_finalize(ascon_hash_state_t *state, unsigned char *out);
 
 /**
+ * \brief Clones a copy of an ASCON-HASH state.
+ *
+ * \param dest Destination hash state to copy into.
+ * \param src Source hash state to copy from.
+ *
+ * The destination will be initialized by this operation, so it must
+ * not previously have been initialized or it has already been freed.
+ * The source must be already initialized.
+ */
+void ascon_hash_copy
+    (ascon_hash_state_t *dest, const ascon_hash_state_t *src);
+
+/**
  * \brief Hashes a block of input data with ASCON-HASHA.
  *
  * \param out Buffer to receive the hash output which must be at least
@@ -177,6 +190,19 @@ void ascon_hasha_update
  * \sa ascon_hasha_init(), ascon_hasha_update()
  */
 void ascon_hasha_finalize(ascon_hasha_state_t *state, unsigned char *out);
+
+/**
+ * \brief Clones a copy of an ASCON-HASHA state.
+ *
+ * \param dest Destination hash state to copy into.
+ * \param src Source hash state to copy from.
+ *
+ * The destination will be initialized by this operation, so it must
+ * not previously have been initialized or it has already been freed.
+ * The source must be already initialized.
+ */
+void ascon_hasha_copy
+    (ascon_hasha_state_t *dest, const ascon_hasha_state_t *src);
 
 #ifdef __cplusplus
 }

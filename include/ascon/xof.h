@@ -201,6 +201,18 @@ void ascon_xof_pad(ascon_xof_state_t *state);
 void ascon_xof_clear_rate(ascon_xof_state_t *state);
 
 /**
+ * \brief Clones a copy of an ASCON-XOF state.
+ *
+ * \param dest Destination XOF state to copy into.
+ * \param src Source XOF state to copy from.
+ *
+ * The destination will be initialized by this operation, so it must
+ * not previously have been initialized or it has already been freed.
+ * The source must be already initialized.
+ */
+void ascon_xof_copy(ascon_xof_state_t *dest, const ascon_xof_state_t *src);
+
+/**
  * \brief Hashes a block of input data with ASCON-XOFA and generates a
  * fixed-length 32 byte output.
  *
@@ -323,6 +335,18 @@ void ascon_xofa_pad(ascon_xofa_state_t *state);
  * ensure that the XOF is in absorb mode and aligned on a block boundary.
  */
 void ascon_xofa_clear_rate(ascon_xofa_state_t *state);
+
+/**
+ * \brief Clones a copy of an ASCON-XOFA state.
+ *
+ * \param dest Destination XOF state to copy into.
+ * \param src Source XOF state to copy from.
+ *
+ * The destination will be initialized by this operation, so it must
+ * not previously have been initialized or it has already been freed.
+ * The source must be already initialized.
+ */
+void ascon_xofa_copy(ascon_xofa_state_t *dest, const ascon_xofa_state_t *src);
 
 #ifdef __cplusplus
 }
