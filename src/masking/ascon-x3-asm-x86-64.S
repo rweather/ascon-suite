@@ -55,10 +55,10 @@ ascon_x3_permute:
 	jmp	.L1
 .L0:
 	push	rsi
-	xor	r8, rsi
 	mov	r9, [rdi]
 	mov	r10, [rdi + 128]
 	xor	r9, r10
+	xor	r8, rsi
 	mov	r11, [rdi + 96]
 	xor	r10, r11
 	mov	r12, [rdi + 32]

@@ -43,6 +43,7 @@ typedef struct
     const char *src1;       /* Source register 1 */
     const char *src2;       /* Source register 2 or NULL */
     int imm;                /* Immediate or shift count */
+    int reschedule;         /* Offset to reschedule by during codegen */
 
 } insn_t;
 
@@ -342,6 +343,12 @@ void move_direct(const char *dest, const char *src)
     add_insn(&insn);
 }
 
+void reschedule(int offset)
+{
+    if (num_insns > 0)
+        insns[num_insns - 1].reschedule = offset;
+}
+
 static void flush_load(const insn_t *insn)
 {
 #if INTEL_SYNTAX
@@ -397,10 +404,26 @@ static void flush_unary(const insn_t *insn)
 
 void flush_pipeline(void)
 {
-    int index;
+    int index, offset;
 
-    /* Rearrange the code slightly to better schedule the instructions */
-    // TODO
+    /* Apply re-schedule requests to the final code */
+    for (index = 0; index < num_insns; ++index) {
+        insn_t insn = insns[index];
+        offset = insn.reschedule;
+        if (offset != 0) {
+            insn.reschedule = 0;
+            if (offset > 0 && (index + offset) < num_insns) {
+                memmove(&(insns[index]), &(insns[index + 1]),
+                        offset * sizeof(insn_t));
+                insns[index + offset] = insn;
+            } else if (offset < 0 && (index + offset) >= 0) {
+                memmove(&(insns[index + offset + 1]),
+                        &(insns[index + offset]),
+                        offset * sizeof(insn_t));
+                insns[index + offset] = insn;
+            }
+        }
+    }
 
     /* Write out all of the instructions */
     for (index = 0; index < num_insns; ++index) {

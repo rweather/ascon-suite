@@ -329,6 +329,7 @@ static void gen_round(reg_names *regs, const char *rc)
 {
     /* XOR the round constant with x2 */
     xor_direct(regs->x2[0], rc);
+    reschedule(3); /* Move the rc XOR down a bit in the final code */
 
     /* Apply the S-box to the words of the state */
     gen_sbox(regs);

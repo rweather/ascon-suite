@@ -74,9 +74,9 @@ ascon_permute:
 .L0:
 	xor	rdx, -241
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -112,29 +112,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L1:
 	xor	rdx, -226
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -170,29 +170,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L2:
 	xor	rdx, -211
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -228,29 +228,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L3:
 	xor	rdx, -196
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -286,29 +286,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L4:
 	xor	rdx, -181
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -344,29 +344,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L5:
 	xor	rdx, -166
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -402,29 +402,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L6:
 	xor	rdx, -151
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -460,29 +460,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L7:
 	xor	rdx, -136
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -518,29 +518,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L8:
 	xor	rdx, -121
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -576,29 +576,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L9:
 	xor	rdx, -106
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -634,29 +634,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L10:
 	xor	rdx, -91
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -692,29 +692,29 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L11:
 	xor	rdx, -76
 	xor	rax, r9
-	xor	r9, r8
 	xor	rdx, rcx
 	mov	rbx, rax
+	xor	r9, r8
 	mov	r10, rcx
 	mov	r11, rdx
 	mov	r12, r8
@@ -750,22 +750,22 @@ ascon_permute:
 	ror	r13, 1
 	ror	rsi, 6
 	xor	rax, rbx
-	xor	rax, r10
 	xor	rcx, r11
-	xor	rcx, r12
 	xor	rdx, r13
-	xor	rdx, rsi
+	xor	rax, r10
 	mov	rbx, r8
-	mov	r10, r8
 	mov	r11, r9
+	xor	rcx, r12
+	xor	rdx, rsi
+	mov	r10, r8
 	mov	r12, r9
 	ror	rbx, 10
-	ror	r10, 17
 	ror	r11, 7
-	ror	r12, 41
+	ror	r10, 17
 	xor	r8, rbx
-	xor	r8, r10
+	ror	r12, 41
 	xor	r9, r11
+	xor	r8, r10
 	xor	r9, r12
 .L12:
 	not	rdx

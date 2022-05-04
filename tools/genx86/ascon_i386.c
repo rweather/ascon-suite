@@ -72,6 +72,7 @@ static void gen_sbox(reg_names *regs)
     /* x0 ^= x4;   x4 ^= x3;   x2 ^= x1; */
     binop("xor", regs->x0, regs->x4);
     binop("xor", regs->x4, regs->x3);
+    reschedule(2); /* Improve scheduling of x4 ^= x3 */
     binop("xor", regs->x2, regs->x1);
 
     /* We are low on registers, so we save t0/t1 on the stack until later */
@@ -113,8 +114,8 @@ static void gen_sbox(reg_names *regs)
 
     /* x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   x2 = ~x2; */
     binop("xor", regs->x1, regs->x0);
-    binop("xor", regs->x0, regs->x4);
     binop("xor", regs->x3, regs->x2);
+    binop("xor", regs->x0, regs->x4);
 #if 0
     /* Inverting x2 is integrated into the round constant for the next round */
     unop("not", regs->x2);
@@ -145,9 +146,9 @@ static void gen_round_sliced(reg_names *regs, int round)
     gen_sbox(regs);
 
     /* Store the even half to the stack and load the odd half into registers */
-    spill_to_stack(regs->x0_e);
-    spill_to_stack(regs->x1_e);
+    spill_to_stack(regs->x1_e); /* Re-ordered to improve scheduling */
     spill_to_stack(regs->x2_e);
+    spill_to_stack(regs->x0_e);
     spill_to_stack(regs->x3_e);
     spill_to_stack(regs->x4_e);
     live_from_stack(regs->x0_o);

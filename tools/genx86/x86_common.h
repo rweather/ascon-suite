@@ -161,6 +161,9 @@ void pop(const char *reg);
 /* Moves a register directly */
 void move_direct(const char *dest, const char *src);
 
+/* Reschedules the previous instruction by an offset */
+void reschedule(int offset);
+
 /* Flush the instruction pipeline */
 void flush_pipeline(void);
 

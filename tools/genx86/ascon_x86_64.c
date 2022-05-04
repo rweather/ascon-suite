@@ -54,6 +54,7 @@ static void gen_sbox(reg_names *regs)
     /* x0 ^= x4;   x4 ^= x3;   x2 ^= x1; */
     binop("xor", regs->x0, regs->x4);
     binop("xor", regs->x4, regs->x3);
+    reschedule(2); /* Improve scheduling of x4 ^= x3 */
     binop("xor", regs->x2, regs->x1);
 
     /* t0 = ~x0;   t1 = ~x1;   t2 = ~x2;   t3 = ~x3;   t4 = ~x4; */
@@ -123,22 +124,22 @@ static void gen_round(reg_names *regs, int round)
     ror(regs->t4, 1);
     ror(regs->t5, 6);
     binop("xor", regs->x0, regs->t0);
-    binop("xor", regs->x0, regs->t1);
     binop("xor", regs->x1, regs->t2);
-    binop("xor", regs->x1, regs->t3);
     binop("xor", regs->x2, regs->t4);
-    binop("xor", regs->x2, regs->t5);
+    binop("xor", regs->x0, regs->t1);
     binop("mov", regs->t0, regs->x3);
-    binop("mov", regs->t1, regs->x3);
     binop("mov", regs->t2, regs->x4);
+    binop("xor", regs->x1, regs->t3);
+    binop("xor", regs->x2, regs->t5);
+    binop("mov", regs->t1, regs->x3);
     binop("mov", regs->t3, regs->x4);
     ror(regs->t0, 10);
-    ror(regs->t1, 17);
     ror(regs->t2, 7);
-    ror(regs->t3, 41);
+    ror(regs->t1, 17);
     binop("xor", regs->x3, regs->t0);
-    binop("xor", regs->x3, regs->t1);
+    ror(regs->t3, 41);
     binop("xor", regs->x4, regs->t2);
+    binop("xor", regs->x3, regs->t1);
     binop("xor", regs->x4, regs->t3);
 }
 

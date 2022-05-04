@@ -86,9 +86,9 @@ ascon_permute:
 .L0:
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -113,11 +113,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -127,9 +127,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -154,8 +154,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -227,9 +227,9 @@ ascon_permute:
 .L1:
 	xorl	$-10, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -254,11 +254,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -268,9 +268,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -295,8 +295,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -368,9 +368,9 @@ ascon_permute:
 .L2:
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -395,11 +395,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -409,9 +409,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-10, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -436,8 +436,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -509,9 +509,9 @@ ascon_permute:
 .L3:
 	xorl	$-10, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -536,11 +536,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -550,9 +550,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-10, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -577,8 +577,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -650,9 +650,9 @@ ascon_permute:
 .L4:
 	xorl	$-7, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -677,11 +677,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -691,9 +691,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -718,8 +718,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -791,9 +791,9 @@ ascon_permute:
 .L5:
 	xorl	$-4, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -818,11 +818,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -832,9 +832,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -859,8 +859,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -932,9 +932,9 @@ ascon_permute:
 .L6:
 	xorl	$-7, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -959,11 +959,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -973,9 +973,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-10, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1000,8 +1000,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -1073,9 +1073,9 @@ ascon_permute:
 .L7:
 	xorl	$-4, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1100,11 +1100,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -1114,9 +1114,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-10, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1141,8 +1141,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -1214,9 +1214,9 @@ ascon_permute:
 .L8:
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1241,11 +1241,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -1255,9 +1255,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-7, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1282,8 +1282,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -1355,9 +1355,9 @@ ascon_permute:
 .L9:
 	xorl	$-10, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1382,11 +1382,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -1396,9 +1396,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-7, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1423,8 +1423,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -1496,9 +1496,9 @@ ascon_permute:
 .L10:
 	xorl	$-13, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1523,11 +1523,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -1537,9 +1537,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-4, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1564,8 +1564,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
@@ -1637,9 +1637,9 @@ ascon_permute:
 .L11:
 	xorl	$-10, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1664,11 +1664,11 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
-	movl	%ebx, (%esp)
+	xorl	%edi, %ebx
 	movl	%ecx, 8(%esp)
 	movl	%edx, 16(%esp)
+	movl	%ebx, (%esp)
 	movl	%esi, 24(%esp)
 	movl	%edi, 32(%esp)
 	movl	4(%esp), %ebx
@@ -1678,9 +1678,9 @@ ascon_permute:
 	movl	36(%esp), %edi
 	xorl	$-4, %edx
 	xorl	%edi, %ebx
-	xorl	%esi, %edi
 	xorl	%ecx, %edx
 	movl	%ebx, 44(%esp)
+	xorl	%esi, %edi
 	movl	%ebx, %eax
 	notl	%eax
 	andl	%ecx, %eax
@@ -1705,8 +1705,8 @@ ascon_permute:
 	movl	40(%esp), %eax
 	xorl	%eax, %edi
 	xorl	%ebx, %ecx
-	xorl	%edi, %ebx
 	xorl	%edx, %esi
+	xorl	%edi, %ebx
 	movl	%edi, 40(%esp)
 	movl	(%esp), %edi
 	movl	%ebx, %eax
