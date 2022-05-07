@@ -22,7 +22,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-	.intel_syntax noprefix
 	.text
 	.p2align 4,,15
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
@@ -36,21 +35,21 @@ ascon_permute:
 ascon_permute:
 	.cfi_startproc
 #endif
-	push	rbx
-	push	r12
-	push	r13
-	mov	rax, [rdi]
-	mov	rcx, [rdi + 8]
-	mov	rdx, [rdi + 16]
-	mov	r8, [rdi + 24]
-	mov	r9, [rdi + 32]
-	not	rdx
-	cmp	rsi, 12
+	pushq	%rbx
+	pushq	%r12
+	pushq	%r13
+	movq	(%rdi), %rax
+	movq	8(%rdi), %rcx
+	movq	16(%rdi), %rdx
+	movq	24(%rdi), %r8
+	movq	32(%rdi), %r9
+	notq	%rdx
+	cmpq	$12, %rsi
 	jge	.L13
-	lea	rbx, [rip + .L14]
-	movsxd	r10, [rbx + rsi*4]
-	add	r10, rbx
-	jmp	r10
+	leaq	.L14(%rip), %rbx
+	movslq	(%rbx,%rsi,4), %r10
+	addq	%rbx, %r10
+	jmp	*%r10
 .L13:
 	jmp	.L12
 	.section	.rodata
@@ -72,711 +71,711 @@ ascon_permute:
 	.p2align	4,,10
 	.p2align	3
 .L0:
-	xor	rdx, -241
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-241, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L1:
-	xor	rdx, -226
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-226, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L2:
-	xor	rdx, -211
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-211, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L3:
-	xor	rdx, -196
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-196, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L4:
-	xor	rdx, -181
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-181, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L5:
-	xor	rdx, -166
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-166, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L6:
-	xor	rdx, -151
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-151, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L7:
-	xor	rdx, -136
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-136, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L8:
-	xor	rdx, -121
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-121, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L9:
-	xor	rdx, -106
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-106, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L10:
-	xor	rdx, -91
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-91, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L11:
-	xor	rdx, -76
-	xor	rax, r9
-	xor	rdx, rcx
-	mov	rbx, rax
-	xor	r9, r8
-	mov	r10, rcx
-	mov	r11, rdx
-	mov	r12, r8
-	mov	r13, r9
-	not	rbx
-	not	r10
-	not	r11
-	not	r12
-	not	r13
-	and	rbx, rcx
-	and	r10, rdx
-	and	r11, r8
-	and	r12, r9
-	and	r13, rax
-	xor	rax, r10
-	xor	rcx, r11
-	xor	rdx, r12
-	xor	r8, r13
-	xor	r9, rbx
-	xor	rcx, rax
-	xor	rax, r9
-	xor	r8, rdx
-	mov	rbx, rax
-	mov	r10, rax
-	mov	r11, rcx
-	mov	r12, rcx
-	mov	r13, rdx
-	mov	rsi, rdx
-	ror	rbx, 19
-	ror	r10, 28
-	ror	r11, 61
-	ror	r12, 39
-	ror	r13, 1
-	ror	rsi, 6
-	xor	rax, rbx
-	xor	rcx, r11
-	xor	rdx, r13
-	xor	rax, r10
-	mov	rbx, r8
-	mov	r11, r9
-	xor	rcx, r12
-	xor	rdx, rsi
-	mov	r10, r8
-	mov	r12, r9
-	ror	rbx, 10
-	ror	r11, 7
-	ror	r10, 17
-	xor	r8, rbx
-	ror	r12, 41
-	xor	r9, r11
-	xor	r8, r10
-	xor	r9, r12
+	xorq	$-76, %rdx
+	xorq	%r9, %rax
+	xorq	%rcx, %rdx
+	movq	%rax, %rbx
+	xorq	%r8, %r9
+	movq	%rcx, %r10
+	movq	%rdx, %r11
+	movq	%r8, %r12
+	movq	%r9, %r13
+	notq	%rbx
+	notq	%r10
+	notq	%r11
+	notq	%r12
+	notq	%r13
+	andq	%rcx, %rbx
+	andq	%rdx, %r10
+	andq	%r8, %r11
+	andq	%r9, %r12
+	andq	%rax, %r13
+	xorq	%r10, %rax
+	xorq	%r11, %rcx
+	xorq	%r12, %rdx
+	xorq	%r13, %r8
+	xorq	%rbx, %r9
+	xorq	%rax, %rcx
+	xorq	%r9, %rax
+	xorq	%rdx, %r8
+	movq	%rax, %rbx
+	movq	%rax, %r10
+	movq	%rcx, %r11
+	movq	%rcx, %r12
+	movq	%rdx, %r13
+	movq	%rdx, %rsi
+	rorq	$19, %rbx
+	rorq	$28, %r10
+	rorq	$61, %r11
+	rorq	$39, %r12
+	rorq	$1, %r13
+	rorq	$6, %rsi
+	xorq	%rbx, %rax
+	xorq	%r11, %rcx
+	xorq	%r13, %rdx
+	xorq	%r10, %rax
+	movq	%r8, %rbx
+	movq	%r9, %r11
+	xorq	%r12, %rcx
+	xorq	%rsi, %rdx
+	movq	%r8, %r10
+	movq	%r9, %r12
+	rorq	$10, %rbx
+	rorq	$7, %r11
+	rorq	$17, %r10
+	xorq	%rbx, %r8
+	rorq	$41, %r12
+	xorq	%r11, %r9
+	xorq	%r10, %r8
+	xorq	%r12, %r9
 .L12:
-	not	rdx
-	mov	[rdi], rax
-	mov	[rdi + 8], rcx
-	mov	[rdi + 16], rdx
-	mov	[rdi + 24], r8
-	mov	[rdi + 32], r9
-	pop	r13
-	pop	r12
-	pop	rbx
+	notq	%rdx
+	movq	%rax, (%rdi)
+	movq	%rcx, 8(%rdi)
+	movq	%rdx, 16(%rdi)
+	movq	%r8, 24(%rdi)
+	movq	%r9, 32(%rdi)
+	popq	%r13
+	popq	%r12
+	popq	%rbx
 	ret
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
@@ -796,13 +795,13 @@ ascon_backend_free:
 ascon_backend_free:
 	.cfi_startproc
 #endif
-	mov	rax, 0
-	mov	rcx, 0
-	mov	rsi, 0
-	mov	r8, 0
-	mov	r9, 0
-	mov	r10, 0
-	mov	r11, 0
+	movq	$0, %rax
+	movq	$0, %rcx
+	movq	$0, %rsi
+	movq	$0, %r8
+	movq	$0, %r9
+	movq	$0, %r10
+	movq	$0, %r11
 	ret
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc

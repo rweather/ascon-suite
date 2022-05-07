@@ -27,7 +27,7 @@ all: $(TARGETS)
 
 bin/ascon_i386: ascon_i386.c $(COMMON_DEPS)
 	@mkdir -p bin
-	$(CC) -DINTEL_SYNTAX=0 $(CFLAGS) -o $@ $< $(COMMON_SRCS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(COMMON_SRCS) $(LDFLAGS)
 
 bin/ascon_x86_64: ascon_x86_64.c $(COMMON_DEPS)
 	@mkdir -p bin
@@ -39,7 +39,7 @@ bin/ascon_x86_64_masked: ascon_x86_64_masked.c $(COMMON_DEPS)
 
 bin/ascon_x86_64_masked_word: ascon_x86_64_masked_word.c $(COMMON_DEPS)
 	@mkdir -p bin
-	$(CC) -DINTEL_SYNTAX=0 $(CFLAGS) -o $@ $< $(COMMON_SRCS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $< $(COMMON_SRCS) $(LDFLAGS)
 
 clean:
 	rm -rf $(TARGETS) bin

@@ -27,7 +27,7 @@
 
 /* Should we output Intel syntax (1) or AT&T syntax (0)? */
 #ifndef INTEL_SYNTAX
-#define INTEL_SYNTAX 1
+#define INTEL_SYNTAX 0
 #endif
 
 /* Special hack for testing the i386 backend on x86-64 platforms if 1.
