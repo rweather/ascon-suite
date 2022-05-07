@@ -351,25 +351,6 @@ void ascon_masked_word_x2_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
 
 /**
- * \brief Masks a 64-bit word and loads it into a x2 masked word.
- *
- * \param word The x2 masked word to write to.
- * \param data The 64-bit word to be masked.
- * \param trng TRNG to use to generate masking material.
- */
-void ascon_masked_word_x2_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
-
-/**
- * \brief Unmasks the contents of a x2 masked word.
- *
- * \param word The x2 masked word to unmask.
- *
- * \return The unmasked version of the word.
- */
-uint64_t ascon_masked_word_x2_unmask(const ascon_masked_word_t *word);
-
-/**
  * \brief Randomizes a x2 masked word by incorporating fresh randomness.
  *
  * \param dest Points to the destination for the randomized version.
@@ -499,25 +480,6 @@ void ascon_masked_word_x3_store
  */
 void ascon_masked_word_x3_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
-
-/**
- * \brief Masks a 64-bit word and loads it into a x3 masked word.
- *
- * \param word The x3 masked word to write to.
- * \param data The 64-bit word to be masked.
- * \param trng TRNG to use to generate masking material.
- */
-void ascon_masked_word_x3_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
-
-/**
- * \brief Unmasks the contents of a x3 masked word.
- *
- * \param word The x3 masked word to unmask.
- *
- * \return The unmasked version of the word.
- */
-uint64_t ascon_masked_word_x3_unmask(const ascon_masked_word_t *word);
 
 /**
  * \brief Randomizes a x3 masked word by incorporating fresh randomness.
@@ -651,25 +613,6 @@ void ascon_masked_word_x4_store
  */
 void ascon_masked_word_x4_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
-
-/**
- * \brief Masks a 64-bit word and loads it into a x4 masked word.
- *
- * \param word The x4 masked word to write to.
- * \param data The 64-bit word to be masked.
- * \param trng TRNG to use to generate masking material.
- */
-void ascon_masked_word_x4_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
-
-/**
- * \brief Unmasks the contents of a x4 masked word.
- *
- * \param word The x4 masked word to unmask.
- *
- * \return The unmasked version of the word.
- */
-uint64_t ascon_masked_word_x4_unmask(const ascon_masked_word_t *word);
 
 /**
  * \brief Randomizes a x4 masked word by incorporating fresh randomness.

@@ -123,21 +123,6 @@ void ascon_masked_word_x2_store_partial
     }
 }
 
-void ascon_masked_word_x2_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng)
-{
-    uint64_t random = ascon_trng_generate_64(trng);
-    word->S[0] = random ^ data;
-    word->S[1] = ascon_mask64_rotate_share1_0(random);
-    word->S[2] = 0;
-    word->S[3] = 0;
-}
-
-uint64_t ascon_masked_word_x2_unmask(const ascon_masked_word_t *word)
-{
-    return word->S[0] ^ ascon_mask64_unrotate_share1_0(word->S[1]);
-}
-
 void ascon_masked_word_x2_randomize
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
      ascon_trng_state_t *trng)
@@ -292,23 +277,6 @@ void ascon_masked_word_x3_store_partial
         masked3 = leftRotate8_64(masked3);
         data[0] = (uint8_t)(masked1 ^ masked2 ^ masked3);
     }
-}
-
-void ascon_masked_word_x3_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng)
-{
-    uint64_t random1 = ascon_trng_generate_64(trng);
-    uint64_t random2 = ascon_trng_generate_64(trng);
-    word->S[0] = random1 ^ random2 ^ data;
-    word->S[1] = ascon_mask64_rotate_share1_0(random1);
-    word->S[2] = ascon_mask64_rotate_share2_0(random2);
-    word->S[3] = 0;
-}
-
-uint64_t ascon_masked_word_x3_unmask(const ascon_masked_word_t *word)
-{
-    return word->S[0] ^ ascon_mask64_unrotate_share1_0(word->S[1]) ^
-           ascon_mask64_unrotate_share2_0(word->S[2]);
 }
 
 void ascon_masked_word_x3_randomize
@@ -479,25 +447,6 @@ void ascon_masked_word_x4_store_partial
         masked4 = leftRotate8_64(masked4);
         data[0] = (uint8_t)(masked1 ^ masked2 ^ masked3 ^ masked4);
     }
-}
-
-void ascon_masked_word_x4_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng)
-{
-    uint64_t random1 = ascon_trng_generate_64(trng);
-    uint64_t random2 = ascon_trng_generate_64(trng);
-    uint64_t random3 = ascon_trng_generate_64(trng);
-    word->S[0] = random1 ^ random2 ^ random3 ^ data;
-    word->S[1] = ascon_mask64_rotate_share1_0(random1);
-    word->S[2] = ascon_mask64_rotate_share2_0(random2);
-    word->S[3] = ascon_mask64_rotate_share3_0(random3);
-}
-
-uint64_t ascon_masked_word_x4_unmask(const ascon_masked_word_t *word)
-{
-    return word->S[0] ^ ascon_mask64_unrotate_share1_0(word->S[1]) ^
-           ascon_mask64_unrotate_share2_0(word->S[2]) ^
-           ascon_mask64_unrotate_share3_0(word->S[3]);
 }
 
 void ascon_masked_word_x4_randomize

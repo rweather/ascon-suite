@@ -20,7 +20,8 @@ COMMON_SRCS = \
 TARGETS = \
 	bin/ascon_i386 \
 	bin/ascon_x86_64 \
-	bin/ascon_x86_64_masked
+	bin/ascon_x86_64_masked \
+	bin/ascon_x86_64_masked_word
 
 all: $(TARGETS)
 
@@ -36,6 +37,10 @@ bin/ascon_x86_64_masked: ascon_x86_64_masked.c $(COMMON_DEPS)
 	@mkdir -p bin
 	$(CC) $(CFLAGS) -o $@ $< $(COMMON_SRCS) $(LDFLAGS)
 
+bin/ascon_x86_64_masked_word: ascon_x86_64_masked_word.c $(COMMON_DEPS)
+	@mkdir -p bin
+	$(CC) -DINTEL_SYNTAX=0 $(CFLAGS) -o $@ $< $(COMMON_SRCS) $(LDFLAGS)
+
 clean:
 	rm -rf $(TARGETS) bin
 
@@ -47,3 +52,4 @@ generate: all
 	bin/ascon_x86_64_masked 2  >../../src/masking/ascon-x2-asm-x86-64.S
 	bin/ascon_x86_64_masked 3  >../../src/masking/ascon-x3-asm-x86-64.S
 	bin/ascon_x86_64_masked 4  >../../src/masking/ascon-x4-asm-x86-64.S
+	bin/ascon_x86_64_masked_word  >../../src/masking/ascon-word-asm-x86-64.S

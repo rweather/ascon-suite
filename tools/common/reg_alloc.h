@@ -77,6 +77,9 @@ reg_t *alloc_stack(const char *name, int offset);
 /* Allocates a temporary register but does not allocate a real register yet. */
 reg_t *alloc_temp(const char *name);
 
+/* Allocate a specific named register */
+reg_t *alloc_named_register(const char *name);
+
 /* Marks a register as dirty.  The value it contains must be spilled
  * or explicitly discarded if it is in a temporary. */
 void dirty(reg_t *reg);

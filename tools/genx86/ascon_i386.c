@@ -70,55 +70,55 @@ typedef struct
 static void gen_sbox(reg_names *regs)
 {
     /* x0 ^= x4;   x4 ^= x3;   x2 ^= x1; */
-    binop("xor", regs->x0, regs->x4);
-    binop("xor", regs->x4, regs->x3);
+    binop(IN_XOR, regs->x0, regs->x4);
+    binop(IN_XOR, regs->x4, regs->x3);
     reschedule(2); /* Improve scheduling of x4 ^= x3 */
-    binop("xor", regs->x2, regs->x1);
+    binop(IN_XOR, regs->x2, regs->x1);
 
     /* We are low on registers, so we save t0/t1 on the stack until later */
     /* t1 = x0; */
     /* t0 = (~x0) & x1; */
     store(regs->x0, REG_ESP, 44);
     move(regs->t0, regs->x0);
-    unop("not", regs->t0);
-    binop("and", regs->t0, regs->x1);
+    unop(IN_NOT, regs->t0);
+    binop(IN_AND, regs->t0, regs->x1);
     store(regs->t0, REG_ESP, 40);
 
     /* x0 ^= (~x1) & x2; */
     /* x1 ^= (~x2) & x3; */
     move(regs->t1, regs->x1);
     move(regs->t0, regs->x2);
-    unop("not", regs->t1);
-    unop("not", regs->t0);
-    binop("and", regs->t1, regs->x2);
-    binop("and", regs->t0, regs->x3);
-    binop("xor", regs->x0, regs->t1);
-    binop("xor", regs->x1, regs->t0);
+    unop(IN_NOT, regs->t1);
+    unop(IN_NOT, regs->t0);
+    binop(IN_AND, regs->t1, regs->x2);
+    binop(IN_AND, regs->t0, regs->x3);
+    binop(IN_XOR, regs->x0, regs->t1);
+    binop(IN_XOR, regs->x1, regs->t0);
 
     /* x3 ^= (~x4) & t1; */
     move(regs->t0, regs->x4);
     load(regs->t1, REG_ESP, 44);
-    unop("not", regs->t0);
-    binop("and", regs->t0, regs->t1);
-    binop("xor", regs->x3, regs->t0);
+    unop(IN_NOT, regs->t0);
+    binop(IN_AND, regs->t0, regs->t1);
+    binop(IN_XOR, regs->x3, regs->t0);
 
     /* x2 ^= (~x3) & x4; */
     move(regs->t1, regs->x3);
-    unop("not", regs->t1);
-    binop("and", regs->t1, regs->x4);
-    binop("xor", regs->x2, regs->t1);
+    unop(IN_NOT, regs->t1);
+    binop(IN_AND, regs->t1, regs->x4);
+    binop(IN_XOR, regs->x2, regs->t1);
 
     /* x4 ^= t0; */
     load(regs->t0, REG_ESP, 40);
-    binop("xor", regs->x4, regs->t0);
+    binop(IN_XOR, regs->x4, regs->t0);
 
     /* x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   x2 = ~x2; */
-    binop("xor", regs->x1, regs->x0);
-    binop("xor", regs->x3, regs->x2);
-    binop("xor", regs->x0, regs->x4);
+    binop(IN_XOR, regs->x1, regs->x0);
+    binop(IN_XOR, regs->x3, regs->x2);
+    binop(IN_XOR, regs->x0, regs->x4);
 #if 0
     /* Inverting x2 is integrated into the round constant for the next round */
-    unop("not", regs->x2);
+    unop(IN_NOT, regs->x2);
 #endif
 }
 
@@ -190,12 +190,12 @@ static void gen_round_sliced(reg_names *regs, int round)
     move(regs->t1, t2);
     ror(regs->t0, 4);
     ror(regs->t1, 5);
-    binop("xor", regs->t0, t2);
-    binop("xor", regs->t1, regs->x0);
+    binop(IN_XOR, regs->t0, t2);
+    binop(IN_XOR, regs->t1, regs->x0);
     ror(regs->t0, 10);
     ror(regs->t1, 9);
-    binop("xor", regs->t0, regs->x0);
-    binop("xor", t2, regs->t1);
+    binop(IN_XOR, regs->t0, regs->x0);
+    binop(IN_XOR, t2, regs->t1);
     store(regs->t0, REG_ESP, X0_O);
     move(regs->x0, t2);
 
@@ -209,12 +209,12 @@ static void gen_round_sliced(reg_names *regs, int round)
     move(regs->t0, t2);
     ror(regs->t1, 11);
     ror(regs->t0, 11);
-    binop("xor", regs->t1, regs->x1);
-    binop("xor", regs->t0, t2);
+    binop(IN_XOR, regs->t1, regs->x1);
+    binop(IN_XOR, regs->t0, t2);
     ror(regs->t1, 19);
     ror(regs->t0, 20);
-    binop("xor", t2, regs->t1);
-    binop("xor", regs->t0, regs->x1);
+    binop(IN_XOR, t2, regs->t1);
+    binop(IN_XOR, regs->t0, regs->x1);
     move(regs->x1, t2);
     store(regs->t0, REG_ESP, X1_O);
 
@@ -228,11 +228,11 @@ static void gen_round_sliced(reg_names *regs, int round)
     move(regs->t1, t2);
     ror(regs->t0, 2);
     ror(regs->t1, 3);
-    binop("xor", regs->t0, t2);
-    binop("xor", regs->t1, regs->x2);
+    binop(IN_XOR, regs->t0, t2);
+    binop(IN_XOR, regs->t1, regs->x2);
     ror(regs->t0, 1);
-    binop("xor", t2, regs->t1);
-    binop("xor", regs->t0, regs->x2);
+    binop(IN_XOR, t2, regs->t1);
+    binop(IN_XOR, regs->t0, regs->x2);
     move(regs->x2, t2);
     store(regs->t0, REG_ESP, X2_O);
 
@@ -246,12 +246,12 @@ static void gen_round_sliced(reg_names *regs, int round)
     move(regs->t1, t2);
     ror(regs->t0, 3);
     ror(regs->t1, 4);
-    binop("xor", regs->t0, t2);
-    binop("xor", regs->t1, regs->x3);
+    binop(IN_XOR, regs->t0, t2);
+    binop(IN_XOR, regs->t1, regs->x3);
     ror(regs->t0, 5);
     ror(regs->t1, 5);
-    binop("xor", t2, regs->t0);
-    binop("xor", regs->t1, regs->x3);
+    binop(IN_XOR, t2, regs->t0);
+    binop(IN_XOR, regs->t1, regs->x3);
     move(regs->x3, t2);
     store(regs->t1, REG_ESP, X3_O);
 
@@ -270,12 +270,12 @@ static void gen_round_sliced(reg_names *regs, int round)
     move(regs->t0, t2);
     ror(regs->t1, 17);
     ror(regs->t0, 17);
-    binop("xor", regs->t1, regs->x4);
-    binop("xor", regs->t0, t2);
+    binop(IN_XOR, regs->t1, regs->x4);
+    binop(IN_XOR, regs->t0, t2);
     ror(regs->t1, 3);
     ror(regs->t0, 4);
-    binop("xor", t2, regs->t1);
-    binop("xor", regs->t0, regs->x4);
+    binop(IN_XOR, t2, regs->t1);
+    binop(IN_XOR, regs->t0, regs->x4);
     move(regs->x4, t2);
     store(regs->t0, REG_ESP, X4_O);
 
@@ -364,7 +364,7 @@ static void gen_permute(void)
     live(regs.x2_o);
     live(regs.x3_o);
     live(regs.x4_o);
-    unop("not", regs.x2_o); /* Invert x2_o before the first round */
+    unop(IN_NOT, regs.x2_o); /* Invert x2_o before the first round */
     spill_to_stack(regs.x0_o);
     spill_to_stack(regs.x1_o);
     spill_to_stack(regs.x2_o);
@@ -380,7 +380,7 @@ static void gen_permute(void)
     live(regs.x2_e);
     live(regs.x3_e);
     live(regs.x4_e);
-    unop("not", regs.x2_e); /* Invert x2_e before the first round */
+    unop(IN_NOT, regs.x2_e); /* Invert x2_e before the first round */
 
     /* Allocate temporaries */
     regs.t0 = alloc_temp("t0");
@@ -437,7 +437,7 @@ static void gen_permute(void)
 #else
     load_machine(REG_EAX, REG_ESP, 48 + 16 + 4);
 #endif
-    unop("not", regs.x2_e); /* Invert x2_e after the last round */
+    unop(IN_NOT, regs.x2_e); /* Invert x2_e after the last round */
     spill(regs.x0_e);
     spill(regs.x1_e);
     spill(regs.x2_e);
@@ -448,7 +448,7 @@ static void gen_permute(void)
     live_from_stack(regs.x2_o);
     live_from_stack(regs.x3_o);
     live_from_stack(regs.x4_o);
-    unop("not", regs.x2_o); /* Invert x2_o after the last round */
+    unop(IN_NOT, regs.x2_o); /* Invert x2_o after the last round */
     spill(regs.x0_o);
     spill(regs.x1_o);
     spill(regs.x2_o);

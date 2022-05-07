@@ -52,44 +52,44 @@ typedef struct
 static void gen_sbox(reg_names *regs)
 {
     /* x0 ^= x4;   x4 ^= x3;   x2 ^= x1; */
-    binop("xor", regs->x0, regs->x4);
-    binop("xor", regs->x4, regs->x3);
+    binop(IN_XOR, regs->x0, regs->x4);
+    binop(IN_XOR, regs->x4, regs->x3);
     reschedule(2); /* Improve scheduling of x4 ^= x3 */
-    binop("xor", regs->x2, regs->x1);
+    binop(IN_XOR, regs->x2, regs->x1);
 
     /* t0 = ~x0;   t1 = ~x1;   t2 = ~x2;   t3 = ~x3;   t4 = ~x4; */
-    binop("mov", regs->t0, regs->x0);
-    binop("mov", regs->t1, regs->x1);
-    binop("mov", regs->t2, regs->x2);
-    binop("mov", regs->t3, regs->x3);
-    binop("mov", regs->t4, regs->x4);
-    unop("not", regs->t0);
-    unop("not", regs->t1);
-    unop("not", regs->t2);
-    unop("not", regs->t3);
-    unop("not", regs->t4);
+    move(regs->t0, regs->x0);
+    move(regs->t1, regs->x1);
+    move(regs->t2, regs->x2);
+    move(regs->t3, regs->x3);
+    move(regs->t4, regs->x4);
+    unop(IN_NOT, regs->t0);
+    unop(IN_NOT, regs->t1);
+    unop(IN_NOT, regs->t2);
+    unop(IN_NOT, regs->t3);
+    unop(IN_NOT, regs->t4);
 
     /* t0 &= x1;   t1 &= x2;   t2 &= x3;   t3 &= x4;   t4 &= x0; */
-    binop("and", regs->t0, regs->x1);
-    binop("and", regs->t1, regs->x2);
-    binop("and", regs->t2, regs->x3);
-    binop("and", regs->t3, regs->x4);
-    binop("and", regs->t4, regs->x0);
+    binop(IN_AND, regs->t0, regs->x1);
+    binop(IN_AND, regs->t1, regs->x2);
+    binop(IN_AND, regs->t2, regs->x3);
+    binop(IN_AND, regs->t3, regs->x4);
+    binop(IN_AND, regs->t4, regs->x0);
 
     /* x0 ^= t1;   x1 ^= t2;   x2 ^= t3;   x3 ^= t4;   x4 ^= t0; */
-    binop("xor", regs->x0, regs->t1);
-    binop("xor", regs->x1, regs->t2);
-    binop("xor", regs->x2, regs->t3);
-    binop("xor", regs->x3, regs->t4);
-    binop("xor", regs->x4, regs->t0);
+    binop(IN_XOR, regs->x0, regs->t1);
+    binop(IN_XOR, regs->x1, regs->t2);
+    binop(IN_XOR, regs->x2, regs->t3);
+    binop(IN_XOR, regs->x3, regs->t4);
+    binop(IN_XOR, regs->x4, regs->t0);
 
     /* x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   x2 = ~x2; */
-    binop("xor", regs->x1, regs->x0);
-    binop("xor", regs->x0, regs->x4);
-    binop("xor", regs->x3, regs->x2);
+    binop(IN_XOR, regs->x1, regs->x0);
+    binop(IN_XOR, regs->x0, regs->x4);
+    binop(IN_XOR, regs->x3, regs->x2);
 #if 0
     /* Inverting x2 is integrated into the round constant for the next round */
-    unop("not", regs->x2);
+    unop(IN_NOT, regs->x2);
 #endif
 }
 
@@ -111,36 +111,36 @@ static void gen_round(reg_names *regs, int round)
     /* x2 ^= rightRotate1_64(x2)  ^ rightRotate6_64(x2); */
     /* x3 ^= rightRotate10_64(x3) ^ rightRotate17_64(x3); */
     /* x4 ^= rightRotate7_64(x4)  ^ rightRotate41_64(x4); */
-    binop("mov", regs->t0, regs->x0);
-    binop("mov", regs->t1, regs->x0);
-    binop("mov", regs->t2, regs->x1);
-    binop("mov", regs->t3, regs->x1);
-    binop("mov", regs->t4, regs->x2);
-    binop("mov", regs->t5, regs->x2);
+    move(regs->t0, regs->x0);
+    move(regs->t1, regs->x0);
+    move(regs->t2, regs->x1);
+    move(regs->t3, regs->x1);
+    move(regs->t4, regs->x2);
+    move(regs->t5, regs->x2);
     ror(regs->t0, 19);
     ror(regs->t1, 28);
     ror(regs->t2, 61);
     ror(regs->t3, 39);
     ror(regs->t4, 1);
     ror(regs->t5, 6);
-    binop("xor", regs->x0, regs->t0);
-    binop("xor", regs->x1, regs->t2);
-    binop("xor", regs->x2, regs->t4);
-    binop("xor", regs->x0, regs->t1);
-    binop("mov", regs->t0, regs->x3);
-    binop("mov", regs->t2, regs->x4);
-    binop("xor", regs->x1, regs->t3);
-    binop("xor", regs->x2, regs->t5);
-    binop("mov", regs->t1, regs->x3);
-    binop("mov", regs->t3, regs->x4);
+    binop(IN_XOR, regs->x0, regs->t0);
+    binop(IN_XOR, regs->x1, regs->t2);
+    binop(IN_XOR, regs->x2, regs->t4);
+    binop(IN_XOR, regs->x0, regs->t1);
+    move(regs->t0, regs->x3);
+    move(regs->t2, regs->x4);
+    binop(IN_XOR, regs->x1, regs->t3);
+    binop(IN_XOR, regs->x2, regs->t5);
+    move(regs->t1, regs->x3);
+    move(regs->t3, regs->x4);
     ror(regs->t0, 10);
     ror(regs->t2, 7);
     ror(regs->t1, 17);
-    binop("xor", regs->x3, regs->t0);
+    binop(IN_XOR, regs->x3, regs->t0);
     ror(regs->t3, 41);
-    binop("xor", regs->x4, regs->t2);
-    binop("xor", regs->x3, regs->t1);
-    binop("xor", regs->x4, regs->t3);
+    binop(IN_XOR, regs->x4, regs->t2);
+    binop(IN_XOR, regs->x3, regs->t1);
+    binop(IN_XOR, regs->x4, regs->t3);
 }
 
 /* Generate the body of the ASCON permutation function */
@@ -201,7 +201,7 @@ static void gen_permute(void)
     acquire(regs.t5);
 
     /* Invert x2 before entry to the rounds */
-    unop("not", regs.x2);
+    unop(IN_NOT, regs.x2);
 
     /* Switch on the "first round" parameter and jump ahead */
     flush_pipeline();
@@ -241,7 +241,7 @@ static void gen_permute(void)
 
     /* Store the words back to the state and exit */
     printf(".L12:\n");
-    unop("not", regs.x2);
+    unop(IN_NOT, regs.x2);
     spill(regs.x0);
     spill(regs.x1);
     spill(regs.x2);

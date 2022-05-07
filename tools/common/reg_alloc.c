@@ -169,6 +169,37 @@ reg_t *alloc_temp(const char *name)
     return reg;
 }
 
+reg_t *alloc_named_register(const char *name)
+{
+    reg_t *reg;
+    int index = 0;
+    while (reg_list[index]) {
+        if (!strcmp(reg_list[index], name)) {
+            if (allocated[index])
+                break;
+            name = reg_list[index];
+            if (num_regs >= MAX_ALLOC_REGS) {
+                fprintf(stderr, "alloc_named_register: too many logical registers\n");
+                exit(1);
+            }
+            allocated[index] = 1;
+            reg = &(regs[num_regs++]);
+            reg->name = name;
+            reg->real_reg = name;
+            reg->state_offset = -1;
+            reg->stack_offset = -1;
+            reg->is_temp = 1;
+            reg->is_dirty = 0;
+            reg->pinned = 1;
+            reg->age = age++;
+            return reg;
+        }
+        ++index;
+    }
+    fprintf(stderr, "alloc_named_register: %s is already allocated\n", name);
+    return 0;
+}
+
 void dirty(reg_t *reg)
 {
     reg->is_dirty = 1;

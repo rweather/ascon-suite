@@ -61,6 +61,7 @@ list(APPEND ASCON_SOURCES
     masking/ascon-masked-word-c64.c
     masking/ascon-masked-state.h
     masking/ascon-masked-state.c
+    masking/ascon-word-asm-x86-64.S
     masking/ascon-x2-asm-x86-64.S
     masking/ascon-x3-asm-x86-64.S
     masking/ascon-x4-asm-x86-64.S

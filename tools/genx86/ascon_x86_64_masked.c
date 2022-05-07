@@ -64,24 +64,24 @@ static void and_not_xor
         /* x_a ^= ((~y_a) & ascon_mask64_unrotate_share1_0(z_b)); */
         move(regs->t2, y[0]);
         move(regs->t3, z[1]);
-        unop("not", regs->t2);
+        unop(IN_NOT, regs->t2);
         ror(regs->t3, UNROT(1));
-        binop("and", regs->t3, regs->t2);
-        binop("xor", x[0], regs->t3);
+        binop(IN_AND, regs->t3, regs->t2);
+        binop(IN_XOR, x[0], regs->t3);
 
         /* x_a ^= ((~y_a) & z_a); */
-        binop("and", regs->t2, z[0]);
-        binop("xor", x[0], regs->t2);
+        binop(IN_AND, regs->t2, z[0]);
+        binop(IN_XOR, x[0], regs->t2);
 
         /* x_b ^= (y_b & z_b); */
         /* x_b ^= (y_b & ascon_mask64_rotate_share1_0(z_a)); */
         move(regs->t3, y[1]);
         move(regs->t2, z[0]);
-        binop("and", regs->t3, z[1]);
+        binop(IN_AND, regs->t3, z[1]);
         ror(regs->t2, ROT(1));
-        binop("xor", x[1], regs->t3);
-        binop("and", regs->t2, y[1]);
-        binop("xor", x[1], regs->t2);
+        binop(IN_XOR, x[1], regs->t3);
+        binop(IN_AND, regs->t2, y[1]);
+        binop(IN_XOR, x[1], regs->t2);
     } else if (num_shares == 3) {
         /* x_a ^= (~(y_a) & z_a); */
         /* x_a ^= (y_a & ascon_mask64_unrotate_share1_0(z_b)); */
@@ -90,15 +90,15 @@ static void and_not_xor
         move(regs->t2, y[0]);
         move(regs->t3, z[1]);
         move(regs->t4, z[2]);
-        unop("not", regs->t2);
+        unop(IN_NOT, regs->t2);
         ror(regs->t3, UNROT(1));
         ror(regs->t4, UNROT(2));
-        binop("and", regs->t2, z[0]);
-        binop("and", regs->t3, y[0]);
-        binop("and", regs->t4, y[0]);
-        binop("xor", x[0], regs->t2);
-        binop("xor", x[0], regs->t3);
-        binop("xor", x[0], regs->t4);
+        binop(IN_AND, regs->t2, z[0]);
+        binop(IN_AND, regs->t3, y[0]);
+        binop(IN_AND, regs->t4, y[0]);
+        binop(IN_XOR, x[0], regs->t2);
+        binop(IN_XOR, x[0], regs->t3);
+        binop(IN_XOR, x[0], regs->t4);
 
         /* x_b ^= (y_b & ascon_mask64_rotate_share1_0(z_a)); */
         /* x_b ^= ((~y_b) & z_b); */
@@ -106,15 +106,15 @@ static void and_not_xor
         move(regs->t2, y[1]);
         move(regs->t3, z[0]);
         move(regs->t4, z[2]);
-        unop("not", regs->t2);
+        unop(IN_NOT, regs->t2);
         ror(regs->t3, ROT(1));
         ror(regs->t4, UNROT(1));
-        binop("and", regs->t2, z[1]);
-        binop("and", regs->t3, y[1]);
-        binop("and", regs->t4, y[1]);
-        binop("xor", x[1], regs->t2);
-        binop("xor", x[1], regs->t3);
-        binop("xor", x[1], regs->t4);
+        binop(IN_AND, regs->t2, z[1]);
+        binop(IN_AND, regs->t3, y[1]);
+        binop(IN_AND, regs->t4, y[1]);
+        binop(IN_XOR, x[1], regs->t2);
+        binop(IN_XOR, x[1], regs->t3);
+        binop(IN_XOR, x[1], regs->t4);
 
         /* x_c ^= (y_c & ascon_mask64_rotate_share2_0(~z_a)); */
         /* x_c ^= (y_c & ascon_mask64_rotate_share2_1(z_b)); */
@@ -122,15 +122,15 @@ static void and_not_xor
         move(regs->t2, z[0]);
         move(regs->t3, z[1]);
         move(regs->t4, z[2]);
-        unop("not", regs->t2);
+        unop(IN_NOT, regs->t2);
         ror(regs->t2, ROT(2));
         ror(regs->t3, ROT(1));
-        binop("and", regs->t2, y[2]);
-        binop("and", regs->t3, y[2]);
-        binop("or", regs->t4, y[2]);
-        binop("xor", x[2], regs->t2);
-        binop("xor", x[2], regs->t3);
-        binop("xor", x[2], regs->t4);
+        binop(IN_AND, regs->t2, y[2]);
+        binop(IN_AND, regs->t3, y[2]);
+        binop(IN_OR, regs->t4, y[2]);
+        binop(IN_XOR, x[2], regs->t2);
+        binop(IN_XOR, x[2], regs->t3);
+        binop(IN_XOR, x[2], regs->t4);
         release(regs->t4);
     } else if (num_shares == 4) {
         /* x##_a ^= (~(y##_a) & z##_a); */
@@ -140,15 +140,15 @@ static void and_not_xor
         move(regs->t2, y[0]);
         move(regs->t3, y[1]);
         move(regs->t4, y[2]);
-        unop("not", regs->t2);
+        unop(IN_NOT, regs->t2);
         ror(regs->t3, UNROT(1));
         ror(regs->t4, UNROT(2));
-        binop("and", regs->t2, z[0]);
-        binop("and", regs->t3, z[0]);
-        binop("and", regs->t4, z[0]);
-        binop("xor", x[0], regs->t2);
-        binop("xor", x[0], regs->t3);
-        binop("xor", x[0], regs->t4);
+        binop(IN_AND, regs->t2, z[0]);
+        binop(IN_AND, regs->t3, z[0]);
+        binop(IN_AND, regs->t4, z[0]);
+        binop(IN_XOR, x[0], regs->t2);
+        binop(IN_XOR, x[0], regs->t3);
+        binop(IN_XOR, x[0], regs->t4);
 
         /* x##_a ^= (ascon_mask64_unrotate_share3_0(y##_d) & z##_a); */
         /* x##_b ^= (ascon_mask64_rotate_share1_0(~(y##_a)) & z##_b); */
@@ -157,14 +157,14 @@ static void and_not_xor
         move(regs->t3, y[0]);
         move(regs->t4, y[1]);
         ror(regs->t2, UNROT(3));
-        unop("not", regs->t3);
-        binop("and", regs->t2, z[0]);
+        unop(IN_NOT, regs->t3);
+        binop(IN_AND, regs->t2, z[0]);
         ror(regs->t3, ROT(1));
-        binop("and", regs->t4, z[1]);
-        binop("and", regs->t3, z[1]);
-        binop("xor", x[0], regs->t2);
-        binop("xor", x[1], regs->t3);
-        binop("xor", x[1], regs->t4);
+        binop(IN_AND, regs->t4, z[1]);
+        binop(IN_AND, regs->t3, z[1]);
+        binop(IN_XOR, x[0], regs->t2);
+        binop(IN_XOR, x[1], regs->t3);
+        binop(IN_XOR, x[1], regs->t4);
 
         /* x##_b ^= (ascon_mask64_unrotate_share2_1(y##_c) & z##_b); */
         /* x##_b ^= (ascon_mask64_unrotate_share3_1(y##_d) & z##_b); */
@@ -173,15 +173,15 @@ static void and_not_xor
         move(regs->t3, y[3]);
         move(regs->t4, y[0]);
         ror(regs->t2, UNROT(1));
-        unop("not", regs->t4);
+        unop(IN_NOT, regs->t4);
         ror(regs->t3, UNROT(2));
         ror(regs->t4, ROT(2));
-        binop("and", regs->t2, z[1]);
-        binop("and", regs->t3, z[1]);
-        binop("and", regs->t4, z[2]);
-        binop("xor", x[1], regs->t2);
-        binop("xor", x[1], regs->t3);
-        binop("xor", x[2], regs->t4);
+        binop(IN_AND, regs->t2, z[1]);
+        binop(IN_AND, regs->t3, z[1]);
+        binop(IN_AND, regs->t4, z[2]);
+        binop(IN_XOR, x[1], regs->t2);
+        binop(IN_XOR, x[1], regs->t3);
+        binop(IN_XOR, x[2], regs->t4);
 
         /* x##_c ^= (ascon_mask64_rotate_share2_1(y##_b) & z##_c); */
         /* x##_c ^= (y##_c & z##_c); */
@@ -191,12 +191,12 @@ static void and_not_xor
         move(regs->t4, y[3]);
         ror(regs->t2, ROT(1));
         ror(regs->t4, UNROT(1));
-        binop("and", regs->t2, z[2]);
-        binop("and", regs->t3, z[2]);
-        binop("and", regs->t4, z[2]);
-        binop("xor", x[2], regs->t2);
-        binop("xor", x[2], regs->t3);
-        binop("xor", x[2], regs->t4);
+        binop(IN_AND, regs->t2, z[2]);
+        binop(IN_AND, regs->t3, z[2]);
+        binop(IN_AND, regs->t4, z[2]);
+        binop(IN_XOR, x[2], regs->t2);
+        binop(IN_XOR, x[2], regs->t3);
+        binop(IN_XOR, x[2], regs->t4);
 
         /* x##_d ^= (ascon_mask64_rotate_share3_0(~(y##_a)) & z##_d); */
         /* x##_d ^= (ascon_mask64_rotate_share3_1(y##_b) & z##_d); */
@@ -204,21 +204,21 @@ static void and_not_xor
         move(regs->t2, y[0]);
         move(regs->t3, y[1]);
         move(regs->t4, y[2]);
-        unop("not", regs->t2);
+        unop(IN_NOT, regs->t2);
         ror(regs->t3, ROT(2));
         ror(regs->t4, ROT(1));
         ror(regs->t2, ROT(3));
-        binop("and", regs->t3, z[3]);
-        binop("and", regs->t4, z[3]);
-        binop("and", regs->t2, z[3]);
-        binop("xor", x[3], regs->t3);
-        binop("xor", x[3], regs->t4);
-        binop("xor", x[3], regs->t2);
+        binop(IN_AND, regs->t3, z[3]);
+        binop(IN_AND, regs->t4, z[3]);
+        binop(IN_AND, regs->t2, z[3]);
+        binop(IN_XOR, x[3], regs->t3);
+        binop(IN_XOR, x[3], regs->t4);
+        binop(IN_XOR, x[3], regs->t2);
 
         /* x##_d ^= (y##_d & z##_d); */
         move(regs->t3, y[3]);
-        binop("and", regs->t3, z[3]);
-        binop("xor", x[3], regs->t3);
+        binop(IN_AND, regs->t3, z[3]);
+        binop(IN_XOR, x[3], regs->t3);
         release(regs->t4);
     }
 }
@@ -232,9 +232,9 @@ static void gen_sbox(reg_names *regs)
     /* Affine step at the start of the substitution layer */
     /* x0 ^= x4; x4 ^= x3; x2 ^= x1; t1 = x0; */
     for (share = 0; share < num_shares; ++share) {
-        binop("xor", regs->x0[share], regs->x4[share]);
-        binop("xor", regs->x4[share], regs->x3[share]);
-        binop("xor", regs->x2[share], regs->x1[share]);
+        binop(IN_XOR, regs->x0[share], regs->x4[share]);
+        binop(IN_XOR, regs->x4[share], regs->x3[share]);
+        binop(IN_XOR, regs->x2[share], regs->x1[share]);
         acquire(regs->t1[share]);
         move(regs->t1[share], regs->x0[share]);
     }
@@ -252,7 +252,7 @@ static void gen_sbox(reg_names *regs)
         move(regs->t2, regs->t0[1]);
         ror(t0_end, ROT_SHARE * 2);
         ror(regs->t2, ROT_SHARE);
-        binop("xor", t0_end, regs->t2);
+        binop(IN_XOR, t0_end, regs->t2);
     } else {
         acquire(regs->t2);
         acquire(regs->t3);
@@ -262,8 +262,8 @@ static void gen_sbox(reg_names *regs)
         ror(t0_end, ROT_SHARE * 3);
         ror(regs->t2, ROT_SHARE * 2);
         ror(regs->t3, ROT_SHARE);
-        binop("xor", t0_end, regs->t2);
-        binop("xor", t0_end, regs->t3);
+        binop(IN_XOR, t0_end, regs->t2);
+        binop(IN_XOR, t0_end, regs->t3);
     }
 
     /* Toffoli gates in the middle of the subsitution layer */
@@ -283,10 +283,10 @@ static void gen_sbox(reg_names *regs)
     /* Affine step at the end of the substitution layer */
     /* x4 ^= t0; x1 ^= x0; x0 ^= x4; x3 ^= x2; */
     for (share = 0; share < num_shares; ++share) {
-        binop("xor", regs->x4[share], regs->t0[share]);
-        binop("xor", regs->x1[share], regs->x0[share]);
-        binop("xor", regs->x0[share], regs->x4[share]);
-        binop("xor", regs->x3[share], regs->x2[share]);
+        binop(IN_XOR, regs->x4[share], regs->t0[share]);
+        binop(IN_XOR, regs->x1[share], regs->x0[share]);
+        binop(IN_XOR, regs->x0[share], regs->x4[share]);
+        binop(IN_XOR, regs->x3[share], regs->x2[share]);
     }
 
     /* Release the temporary share t0[num_shares - 1] */
@@ -300,8 +300,8 @@ static void gen_linear(reg_names *regs, reg_t *x, int shift1, int shift2)
     move(regs->t3, x);
     ror(regs->t2, shift1);
     ror(regs->t3, shift2);
-    binop("xor", x, regs->t2);
-    binop("xor", x, regs->t3);
+    binop(IN_XOR, x, regs->t2);
+    binop(IN_XOR, x, regs->t3);
 }
 
 /* Generate code for two steps of the linear layer to try to
@@ -318,10 +318,10 @@ static void gen_linear_two
     ror(regs->t1[0], shift1b);
     ror(regs->t3, shift2a);
     ror(regs->t1[1], shift2b);
-    binop("xor", xa, regs->t2);
-    binop("xor", xb, regs->t1[0]);
-    binop("xor", xa, regs->t3);
-    binop("xor", xb, regs->t1[1]);
+    binop(IN_XOR, xa, regs->t2);
+    binop(IN_XOR, xb, regs->t1[0]);
+    binop(IN_XOR, xa, regs->t3);
+    binop(IN_XOR, xb, regs->t1[1]);
 }
 
 /* Generate the code for a single ASCON round */
@@ -457,7 +457,7 @@ static void gen_permute(void)
      * Also invert it before the first round. */
     live(regs.x2[0]);
     pin(regs.x2[0]);
-    unop("not", regs.x2[0]);
+    unop(IN_NOT, regs.x2[0]);
 
     /*
      * Compute the round constant for the first round:
@@ -524,7 +524,7 @@ static void gen_permute(void)
     }
 
     /* Store the unspilled words back to the state */
-    unop("not", regs.x2[0]);
+    unop(IN_NOT, regs.x2[0]);
     unpin(regs.x2[0]);
     spill(regs.x2[0]);
 
