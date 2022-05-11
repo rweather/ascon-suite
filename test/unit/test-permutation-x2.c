@@ -334,6 +334,7 @@ void test_ascon_permutation_x2(void)
         printf("ok\n");
     }
 
+#if ASCON_MASKED_MAX_SHARES >= 3
     printf("Convert Masked Words ... ");
     fflush(stdout);
     ok = 1;
@@ -343,18 +344,21 @@ void test_ascon_permutation_x2(void)
     ascon_masked_word_x2_store(buffer, &word2);
     if (memcmp(buffer, ascon_output_12, 8) != 0)
         ok = 0;
+#if ASCON_MASKED_MAX_SHARES >= 4
     memset(&word2, 0, sizeof(word2));
     ascon_masked_word_x4_load(&word, ascon_output_8, &trng);
     ascon_masked_word_x2_from_x4(&word2, &word, &trng);
     ascon_masked_word_x2_store(buffer, &word2);
     if (memcmp(buffer, ascon_output_8, 8) != 0)
         ok = 0;
+#endif
     if (!ok) {
         printf("failed\n");
         test_exit_result = 1;
     } else {
         printf("ok\n");
     }
+#endif
 
     printf("Replace Word ... ");
     fflush(stdout);

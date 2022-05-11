@@ -26,12 +26,22 @@
 #include <stdio.h>
 #include <string.h>
 
-static void ascon_x4_extract_bytes_all
+static void ascon_xn_extract_bytes_all
     (const ascon_masked_state_t *state, uint8_t *data)
 {
+#if ASCON_MASKED_MAX_SHARES >= 4
     unsigned offset;
     for (offset = 0; offset < 40; offset += 8)
         ascon_masked_word_x4_store(data + offset, &(state->M[offset / 8]));
+#elif ASCON_MASKED_MAX_SHARES >= 3
+    unsigned offset;
+    for (offset = 0; offset < 40; offset += 8)
+        ascon_masked_word_x3_store(data + offset, &(state->M[offset / 8]));
+#else
+    unsigned offset;
+    for (offset = 0; offset < 40; offset += 8)
+        ascon_masked_word_x2_store(data + offset, &(state->M[offset / 8]));
+#endif
 }
 
 int main(int argc, char *argv[])
@@ -45,10 +55,10 @@ int main(int argc, char *argv[])
     ascon_masked_key_128_t masked_128;
     ascon_masked_key_160_t masked_160;
     ascon_state_t state_x1;
-    ascon_masked_state_t state_x4;
+    ascon_masked_state_t state_xn;
     unsigned char state_x1_out[40];
-    unsigned char state_x4_out[40];
-    uint64_t preserve[3];
+    unsigned char state_xn_out[40];
+    uint64_t preserve[ASCON_MASKED_MAX_SHARES - 1];
     int ok;
 
     (void)argc;
@@ -129,18 +139,39 @@ int main(int argc, char *argv[])
     ascon_permute(&state_x1, 0);
     ascon_extract_bytes(&state_x1, state_x1_out, 0, 40);
     ascon_free(&state_x1);
-    ascon_masked_state_init(&state_x4);
-    ascon_x4_randomize(&state_x4, &trng);
-    ascon_masked_word_x4_xor(&(state_x4.M[1]), &(masked_128.k[0]));
-    ascon_masked_word_x4_xor(&(state_x4.M[2]), &(masked_128.k[1]));
+    ascon_masked_state_init(&state_xn);
+#if ASCON_MASKED_MAX_SHARES >= 4
+    ascon_x4_randomize(&state_xn, &trng);
+    ascon_masked_word_x4_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_128.k[0]));
+    ascon_masked_word_x4_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_128.k[1]));
     preserve[0] = ascon_trng_generate_64(&trng);
     preserve[1] = ascon_trng_generate_64(&trng);
     preserve[2] = ascon_trng_generate_64(&trng);
-    ascon_x4_permute(&state_x4, 0, preserve);
-    ascon_x4_extract_bytes_all(&state_x4, state_x4_out);
+    ascon_x4_permute(&state_xn, 0, preserve);
+#elif ASCON_MASKED_MAX_SHARES >= 3
+    ascon_x3_randomize(&state_xn, &trng);
+    ascon_masked_word_x3_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_128.k[0]));
+    ascon_masked_word_x3_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_128.k[1]));
+    preserve[0] = ascon_trng_generate_64(&trng);
+    preserve[1] = ascon_trng_generate_64(&trng);
+    ascon_x3_permute(&state_xn, 0, preserve);
+#else
+    ascon_x2_randomize(&state_xn, &trng);
+    ascon_masked_word_x2_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_128.k[0]));
+    ascon_masked_word_x2_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_128.k[1]));
+    preserve[0] = ascon_trng_generate_64(&trng);
+    ascon_x2_permute(&state_xn, 0, preserve);
+#endif
+    ascon_xn_extract_bytes_all(&state_xn, state_xn_out);
     ascon_masked_key_128_free(&masked_128);
-    ascon_masked_state_free(&state_x4);
-    if (memcmp(state_x4_out, state_x1_out, sizeof(state_x1_out)) != 0) {
+    ascon_masked_state_free(&state_xn);
+    if (memcmp(state_xn_out, state_x1_out, sizeof(state_x1_out)) != 0) {
         printf("failed\n");
         test_exit_result = 1;
     } else {
@@ -157,19 +188,45 @@ int main(int argc, char *argv[])
     ascon_permute(&state_x1, 0);
     ascon_extract_bytes(&state_x1, state_x1_out, 0, 40);
     ascon_free(&state_x1);
-    ascon_masked_state_init(&state_x4);
-    ascon_x4_randomize(&state_x4, &trng);
-    ascon_masked_word_x4_xor(&(state_x4.M[0]), &(masked_160.k[3]));
-    ascon_masked_word_x4_xor(&(state_x4.M[1]), &(masked_160.k[4]));
-    ascon_masked_word_x4_xor(&(state_x4.M[2]), &(masked_160.k[5]));
+    ascon_masked_state_init(&state_xn);
+#if ASCON_MASKED_MAX_SHARES >= 4
+    ascon_x4_randomize(&state_xn, &trng);
+    ascon_masked_word_x4_xor
+        (&(state_xn.M[0]), (const ascon_masked_word_t *)&(masked_160.k[3]));
+    ascon_masked_word_x4_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_160.k[4]));
+    ascon_masked_word_x4_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_160.k[5]));
     preserve[0] = ascon_trng_generate_64(&trng);
     preserve[1] = ascon_trng_generate_64(&trng);
     preserve[2] = ascon_trng_generate_64(&trng);
-    ascon_x4_permute(&state_x4, 0, preserve);
-    ascon_x4_extract_bytes_all(&state_x4, state_x4_out);
+    ascon_x4_permute(&state_xn, 0, preserve);
+#elif ASCON_MASKED_MAX_SHARES >= 3
+    ascon_x3_randomize(&state_xn, &trng);
+    ascon_masked_word_x3_xor
+        (&(state_xn.M[0]), (const ascon_masked_word_t *)&(masked_160.k[3]));
+    ascon_masked_word_x3_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_160.k[4]));
+    ascon_masked_word_x3_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_160.k[5]));
+    preserve[0] = ascon_trng_generate_64(&trng);
+    preserve[1] = ascon_trng_generate_64(&trng);
+    ascon_x3_permute(&state_xn, 0, preserve);
+#else
+    ascon_x2_randomize(&state_xn, &trng);
+    ascon_masked_word_x2_xor
+        (&(state_xn.M[0]), (const ascon_masked_word_t *)&(masked_160.k[3]));
+    ascon_masked_word_x2_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_160.k[4]));
+    ascon_masked_word_x2_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_160.k[5]));
+    preserve[0] = ascon_trng_generate_64(&trng);
+    ascon_x2_permute(&state_xn, 0, preserve);
+#endif
+    ascon_xn_extract_bytes_all(&state_xn, state_xn_out);
     ascon_masked_key_160_free(&masked_160);
-    ascon_masked_state_free(&state_x4);
-    if (memcmp(state_x4_out, state_x1_out, sizeof(state_x1_out)) != 0) {
+    ascon_masked_state_free(&state_xn);
+    if (memcmp(state_xn_out, state_x1_out, sizeof(state_x1_out)) != 0) {
         printf("failed\n");
         test_exit_result = 1;
     } else {
@@ -184,16 +241,39 @@ int main(int argc, char *argv[])
     ascon_permute(&state_x1, 0);
     ascon_extract_bytes(&state_x1, state_x1_out, 0, 40);
     ascon_free(&state_x1);
-    ascon_masked_state_init(&state_x4);
-    ascon_x4_randomize(&state_x4, &trng);
-    ascon_masked_word_x4_xor(&(state_x4.M[1]), &(masked_160.k[0]));
-    ascon_masked_word_x4_xor(&(state_x4.M[2]), &(masked_160.k[1]));
-    ascon_masked_word_x4_xor(&(state_x4.M[3]), &(masked_160.k[2]));
-    ascon_x4_permute(&state_x4, 0, preserve);
-    ascon_x4_extract_bytes_all(&state_x4, state_x4_out);
+    ascon_masked_state_init(&state_xn);
+#if ASCON_MASKED_MAX_SHARES >= 4
+    ascon_x4_randomize(&state_xn, &trng);
+    ascon_masked_word_x4_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_160.k[0]));
+    ascon_masked_word_x4_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_160.k[1]));
+    ascon_masked_word_x4_xor
+        (&(state_xn.M[3]), (const ascon_masked_word_t *)&(masked_160.k[2]));
+    ascon_x4_permute(&state_xn, 0, preserve);
+#elif ASCON_MASKED_MAX_SHARES >= 3
+    ascon_x3_randomize(&state_xn, &trng);
+    ascon_masked_word_x3_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_160.k[0]));
+    ascon_masked_word_x3_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_160.k[1]));
+    ascon_masked_word_x3_xor
+        (&(state_xn.M[3]), (const ascon_masked_word_t *)&(masked_160.k[2]));
+    ascon_x3_permute(&state_xn, 0, preserve);
+#else
+    ascon_x2_randomize(&state_xn, &trng);
+    ascon_masked_word_x2_xor
+        (&(state_xn.M[1]), (const ascon_masked_word_t *)&(masked_160.k[0]));
+    ascon_masked_word_x2_xor
+        (&(state_xn.M[2]), (const ascon_masked_word_t *)&(masked_160.k[1]));
+    ascon_masked_word_x2_xor
+        (&(state_xn.M[3]), (const ascon_masked_word_t *)&(masked_160.k[2]));
+    ascon_x2_permute(&state_xn, 0, preserve);
+#endif
+    ascon_xn_extract_bytes_all(&state_xn, state_xn_out);
     ascon_masked_key_160_free(&masked_160);
-    ascon_masked_state_free(&state_x4);
-    if (memcmp(state_x4_out, state_x1_out, sizeof(state_x1_out)) != 0) {
+    ascon_masked_state_free(&state_xn);
+    if (memcmp(state_xn_out, state_x1_out, sizeof(state_x1_out)) != 0) {
         printf("failed\n");
         test_exit_result = 1;
     } else {

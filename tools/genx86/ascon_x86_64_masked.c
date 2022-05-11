@@ -378,7 +378,7 @@ static void gen_round(reg_names *regs, const char *rc)
 }
 
 /* Generate the body of the ASCON permutation function */
-static void gen_permute(void)
+static void gen_permute(int max_shares)
 {
     /*
      * %rdi holds the pointer to the ASCON state on entry and exit.
@@ -429,15 +429,15 @@ static void gen_permute(void)
     /* Allocate the state registers and temporaries */
     for (share = 0; share < num_shares; ++share) {
         regs.x0[share] = alloc_state
-            (reg_names[0][share], 0 * MAX_SHARES * 8 + share * 8);
+            (reg_names[0][share], 0 * max_shares * 8 + share * 8);
         regs.x1[share] = alloc_state
-            (reg_names[1][share], 1 * MAX_SHARES * 8 + share * 8);
+            (reg_names[1][share], 1 * max_shares * 8 + share * 8);
         regs.x2[share] = alloc_state
-            (reg_names[2][share], 2 * MAX_SHARES * 8 + share * 8);
+            (reg_names[2][share], 2 * max_shares * 8 + share * 8);
         regs.x3[share] = alloc_state
-            (reg_names[3][share], 3 * MAX_SHARES * 8 + share * 8);
+            (reg_names[3][share], 3 * max_shares * 8 + share * 8);
         regs.x4[share] = alloc_state
-            (reg_names[4][share], 4 * MAX_SHARES * 8 + share * 8);
+            (reg_names[4][share], 4 * max_shares * 8 + share * 8);
         regs.t0[share] = alloc_temp(reg_names[5][share]);
         regs.t1[share] = alloc_temp(reg_names[6][share]);
     }
@@ -549,6 +549,8 @@ static void gen_permute(void)
 int main(int argc, char *argv[])
 {
     char function_name[64];
+    int share_count;
+    int need_elif;
 
     /* Get the number of shares from the command-line */
     if (argc < 2) {
@@ -563,19 +565,31 @@ int main(int argc, char *argv[])
 
     /* Output the file header */
     printf("#include \"ascon-masked-backend.h\"\n");
-    printf("#if defined(ASCON_MASKED_X%d_BACKEND_X86_64)\n", num_shares);
+    printf("#if defined(ASCON_MASKED_X%d_BACKEND_X86_64) && ASCON_MASKED_MAX_SHARES >= %d\n", num_shares, num_shares);
     fputs(copyright_message, stdout);
 #if INTEL_SYNTAX
     printf("\t.intel_syntax noprefix\n");
 #endif
     printf("\t.text\n");
 
-    /* Output the permutation function */
-    snprintf(function_name, sizeof(function_name),
-             "ascon_x%d_permute", num_shares);
-    function_header(function_name);
-    gen_permute();
-    function_footer(function_name);
+    /* Output several versions of the permutation function depending
+     * upon the value of ASCON_MASKED_MAX_SHARES because the offsets into the
+     * state will change with different configurations. */
+    need_elif = 0;
+    for (share_count = MAX_SHARES; share_count >= num_shares; --share_count) {
+        if (need_elif) {
+            printf("#elif ASCON_MASKED_MAX_SHARES >= %d\n", share_count);
+        } else {
+            printf("#if ASCON_MASKED_MAX_SHARES >= %d\n", share_count);
+            need_elif = 1;
+        }
+        snprintf(function_name, sizeof(function_name),
+                 "ascon_x%d_permute", num_shares);
+        function_header(function_name);
+        gen_permute(share_count);
+        function_footer(function_name);
+    }
+    printf("#endif\n");
 
     /* Output the file footer */
     printf("\n");

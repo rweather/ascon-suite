@@ -56,6 +56,7 @@ static void masked_word_load(int num_shares, int type)
     util_frame_t frame;
     int posn;
     int label, label2;
+    reg_t *temp;
 
     /* Function header */
     if (type == LOAD_ZERO) {
@@ -143,13 +144,25 @@ static void masked_word_load(int num_shares, int type)
     }
 
     /* Fill the unused shares with zeroes */
-    if (num_shares < MAX_SHARES) {
-        reg_t *temp = alloc_temp("zero");
-        acquire(temp);
+    temp = alloc_temp("zero");
+    acquire(temp);
+    flush_pipeline();
+    if (num_shares == 2) {
+        printf("#if ASCON_MASKED_MAX_SHARES >= 3\n");
         clear_reg(temp->real_reg);
-        for (posn = num_shares; posn < MAX_SHARES; ++posn) {
-            store(temp, frame.state_reg, posn * 8);
-        }
+        store(temp, frame.state_reg, 16);
+        flush_pipeline();
+        printf("#endif\n");
+        printf("#if ASCON_MASKED_MAX_SHARES >= 4\n");
+        store(temp, frame.state_reg, 24);
+        flush_pipeline();
+        printf("#endif\n");
+    } else if (num_shares == 3) {
+        printf("#if ASCON_MASKED_MAX_SHARES >= 4\n");
+        clear_reg(temp->real_reg);
+        store(temp, frame.state_reg, 24);
+        flush_pipeline();
+        printf("#endif\n");
     }
 
     /* Function footer */
@@ -490,9 +503,21 @@ static void masked_word_convert
 
     /* Set the unused shares to zero */
     clear_reg(temp1->real_reg);
-    while (share < MAX_SHARES) {
-        store(temp1, frame.arg[0]->real_reg, share * 8);
-        ++share;
+    flush_pipeline();
+    if (to_shares == 2) {
+        printf("#if ASCON_MASKED_MAX_SHARES >= 3\n");
+        store(temp1, frame.state_reg, 16);
+        flush_pipeline();
+        printf("#endif\n");
+        printf("#if ASCON_MASKED_MAX_SHARES >= 4\n");
+        store(temp1, frame.state_reg, 24);
+        flush_pipeline();
+        printf("#endif\n");
+    } else if (to_shares == 3) {
+        printf("#if ASCON_MASKED_MAX_SHARES >= 4\n");
+        store(temp1, frame.state_reg, 24);
+        flush_pipeline();
+        printf("#endif\n");
     }
 
     /* Function footer */
@@ -551,6 +576,16 @@ static void masked_word_separator(void)
     function_footer(function_name);
 }
 
+static void if_shares(int num_shares)
+{
+    printf("#if ASCON_MASKED_MAX_SHARES >= %d\n", num_shares);
+}
+
+static void endif_shares(void)
+{
+    printf("#endif\n");
+}
+
 int main(int argc, char *argv[])
 {
     /* Output the file header */
@@ -577,10 +612,15 @@ int main(int argc, char *argv[])
     masked_word_randomize(2);
     masked_word_xor(2);
     masked_word_replace(2);
+    if_shares(3);
     masked_word_convert(2, 3, convert_x2_from_x3);
+    endif_shares();
+    if_shares(4);
     masked_word_convert(2, 4, convert_x2_from_x4);
+    endif_shares();
 
     /* Output word operations for 3-share words */
+    if_shares(3);
     masked_word_load(3, LOAD_ZERO);
     masked_word_load(3, LOAD_WORD64);
     masked_word_load(3, LOAD_PARTIAL);
@@ -591,9 +631,13 @@ int main(int argc, char *argv[])
     masked_word_xor(3);
     masked_word_replace(3);
     masked_word_convert(3, 2, convert_x3_from_x2);
+    if_shares(4);
     masked_word_convert(3, 4, convert_x3_from_x4);
+    endif_shares();
+    endif_shares();
 
     /* Output word operations for 4-share words */
+    if_shares(4);
     masked_word_load(4, LOAD_ZERO);
     masked_word_load(4, LOAD_WORD64);
     masked_word_load(4, LOAD_PARTIAL);
@@ -605,6 +649,7 @@ int main(int argc, char *argv[])
     masked_word_replace(4);
     masked_word_convert(4, 2, convert_x4_from_x2);
     masked_word_convert(4, 3, convert_x4_from_x3);
+    endif_shares();
 
     /* Some common utility functions */
     masked_word_pad();

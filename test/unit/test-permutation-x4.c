@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#if ASCON_MASKED_MAX_SHARES >= 4
+
 /* Test vectors generated with the reference code */
 static uint8_t const ascon_input[40] = {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -533,3 +535,15 @@ int main(int argc, char *argv[])
 
     return test_exit_result;
 }
+
+#else /* ASCON_MASKED_MAX_SHARES < 4 */
+
+int main(int argc, char *argv[])
+{
+    /* Nothing to test if the library does not support 4 or more shares */
+    (void)argc;
+    (void)argv;
+    return 0;
+}
+
+#endif /* ASCON_MASKED_MAX_SHARES < 4 */

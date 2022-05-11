@@ -59,6 +59,21 @@ extern "C" {
 #endif
 
 /**
+ * \brief Masked 64-bit word with up to ASCON_MASKED_MAX_SHARES shares.
+ *
+ * This structure should be treated as opaque.
+ */
+typedef union
+{
+    /** 64-bit version of the masked shares */
+    uint64_t S[ASCON_MASKED_MAX_SHARES];
+
+    /** 32-bit version of the masked shares */
+    uint32_t W[ASCON_MASKED_MAX_SHARES * 2];
+
+} ascon_masked_word_t;
+
+/**
  * \brief Rotates 64-bit masked share 1 with respect to share 0.
  *
  * \param x Value of share 1 in the same bit positions as share 0.

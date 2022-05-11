@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#if ASCON_MASKED_MAX_SHARES >= 3
+
 /* Test vectors generated with the reference code */
 static uint8_t const ascon_input[40] = {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -395,12 +397,14 @@ void test_ascon_permutation_x3(void)
     ascon_masked_word_x3_store(buffer, &word2);
     if (memcmp(buffer, ascon_output_12, 8) != 0)
         ok = 0;
+#if ASCON_MASKED_MAX_SHARES >= 4
     memset(&word2, 0, sizeof(word2));
     ascon_masked_word_x4_load(&word, ascon_output_8, &trng);
     ascon_masked_word_x3_from_x4(&word2, &word, &trng);
     ascon_masked_word_x3_store(buffer, &word2);
     if (memcmp(buffer, ascon_output_8, 8) != 0)
         ok = 0;
+#endif
     if (!ok) {
         printf("failed\n");
         test_exit_result = 1;
@@ -480,3 +484,15 @@ int main(int argc, char *argv[])
 
     return test_exit_result;
 }
+
+#else /* ASCON_MASKED_MAX_SHARES < 3 */
+
+int main(int argc, char *argv[])
+{
+    /* Nothing to test if the library does not support 3 or more shares */
+    (void)argc;
+    (void)argv;
+    return 0;
+}
+
+#endif /* ASCON_MASKED_MAX_SHARES < 3 */

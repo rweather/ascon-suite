@@ -1,5 +1,5 @@
 #include "ascon-masked-backend.h"
-#if defined(ASCON_MASKED_X4_BACKEND_X86_64)
+#if defined(ASCON_MASKED_X4_BACKEND_X86_64) && ASCON_MASKED_MAX_SHARES >= 4
 /*
  * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
  *
@@ -23,6 +23,7 @@
  */
 
 	.text
+#if ASCON_MASKED_MAX_SHARES >= 4
 	.p2align 4,,15
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_x4_permute
@@ -823,6 +824,7 @@ ascon_x4_permute:
 #else
 	.cfi_endproc
 	.size	ascon_x4_permute, .-ascon_x4_permute
+#endif
 #endif
 
 #endif

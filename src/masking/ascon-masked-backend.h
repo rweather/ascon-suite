@@ -24,6 +24,7 @@
 #define ASCON_MASKED_BACKEND_H
 
 #include "core/ascon-select-backend.h"
+#include "masking/ascon-masked-config.h"
 
 /* Select the default back end to use for the masked ASCON permutation,
  * and any properties we can use to optimize use of the permutation. */

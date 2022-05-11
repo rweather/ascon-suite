@@ -93,6 +93,8 @@ void ascon_x2_copy_from_x2
     }
 }
 
+#if ASCON_MASKED_MAX_SHARES >= 3
+
 void ascon_x2_copy_from_x3
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng)
@@ -102,6 +104,10 @@ void ascon_x2_copy_from_x3
         ascon_masked_word_x2_from_x3(&(dest->M[index]), &(src->M[index]), trng);
 }
 
+#endif /* ASCON_MASKED_MAX_SHARES >= 3 */
+
+#if ASCON_MASKED_MAX_SHARES >= 4
+
 void ascon_x2_copy_from_x4
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng)
@@ -110,6 +116,10 @@ void ascon_x2_copy_from_x4
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x2_from_x4(&(dest->M[index]), &(src->M[index]), trng);
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */
+
+#if ASCON_MASKED_MAX_SHARES >= 3
 
 void ascon_x3_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng)
 {
@@ -176,6 +186,8 @@ void ascon_x3_copy_from_x3
     }
 }
 
+#if ASCON_MASKED_MAX_SHARES >= 4
+
 void ascon_x3_copy_from_x4
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng)
@@ -184,6 +196,12 @@ void ascon_x3_copy_from_x4
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x3_from_x4(&(dest->M[index]), &(src->M[index]), trng);
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 3 */
+
+#if ASCON_MASKED_MAX_SHARES >= 4
 
 void ascon_x4_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng)
 {
@@ -258,3 +276,5 @@ void ascon_x4_copy_from_x4
             (&(dest->M[index]), &(src->M[index]), trng);
     }
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */

@@ -141,7 +141,7 @@ void ascon_masked_aead_decrypt_16
 #define ascon_masked_key_store(data, word) \
     ascon_masked_word_x2_store((data), (word))
 #define ascon_masked_key_xor(dest, src) \
-    ascon_masked_word_x2_xor((dest), (src))
+    ascon_masked_word_x2_xor((dest), (const ascon_masked_word_t *)(src))
 #define ascon_masked_key_permute(state, first_round, preserve) \
     ascon_x2_permute((state), (first_round), (preserve))
 #define ascon_masked_key_randomize(state, trng) \
@@ -161,7 +161,7 @@ void ascon_masked_aead_decrypt_16
 #define ascon_masked_key_store(data, word) \
     ascon_masked_word_x3_store((data), (word))
 #define ascon_masked_key_xor(dest, src) \
-    ascon_masked_word_x3_xor((dest), (src))
+    ascon_masked_word_x3_xor((dest), (const ascon_masked_word_t *)(src))
 #define ascon_masked_key_permute(state, first_round, preserve) \
     ascon_x3_permute((state), (first_round), (preserve))
 #define ascon_masked_key_randomize(state, trng) \
@@ -185,7 +185,7 @@ void ascon_masked_aead_decrypt_16
 #define ascon_masked_key_store(data, word) \
     ascon_masked_word_x4_store((data), (word))
 #define ascon_masked_key_xor(dest, src) \
-    ascon_masked_word_x4_xor((dest), (src))
+    ascon_masked_word_x4_xor((dest), (const ascon_masked_word_t *)(src))
 #define ascon_masked_key_permute(state, first_round, preserve) \
     ascon_x4_permute((state), (first_round), (preserve))
 #define ascon_masked_key_randomize(state, trng) \

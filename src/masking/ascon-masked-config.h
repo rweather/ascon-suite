@@ -37,6 +37,13 @@ extern "C" {
 #endif
 
 /**
+ * \def ASCON_MASKED_MAX_SHARES
+ * \brief Maximum number of shares to use in the library.
+ *
+ * This will clamp ASCON_MASKED_KEY_SHARES and ASCON_MASKED_DATA_SHARES.
+ */
+
+/**
  * \def ASCON_MASKED_KEY_SHARES
  * \brief Number of shares to use for key material, between 2 and 4
  * with the default being 4.
@@ -49,11 +56,20 @@ extern "C" {
  */
 
 /* Set the defaults if not selected in the build configuration */
+#ifndef ASCON_MASKED_MAX_SHARES
+#define ASCON_MASKED_MAX_SHARES 4
+#endif
 #ifndef ASCON_MASKED_KEY_SHARES
 #define ASCON_MASKED_KEY_SHARES 4
 #endif
 #ifndef ASCON_MASKED_DATA_SHARES
 #define ASCON_MASKED_DATA_SHARES 2
+#endif
+
+/* AVR is limited to no more than 2 shares at present */
+#if defined(__AVR__)
+#undef ASCON_MASKED_MAX_SHARES
+#define ASCON_MASKED_MAX_SHARES 2
 #endif
 
 /* Check that the values are in the correct range */
@@ -62,6 +78,17 @@ extern "C" {
 #endif
 #if ASCON_MASKED_DATA_SHARES < 1 || ASCON_MASKED_DATA_SHARES > ASCON_MASKED_KEY_SHARES
 #error "ASCON_MASKED_DATA_SHARES must be between 1 and ASCON_MASKED_KEY_SHARES"
+#endif
+
+/* Clamp the number of key and data shares to no more than
+ * ASCON_MASKED_MAX_SHARES */
+#if ASCON_MASKED_KEY_SHARES > ASCON_MASKED_MAX_SHARES
+#undef ASCON_MASKED_KEY_SHARES
+#define ASCON_MASKED_KEY_SHARES ASCON_MASKED_MAX_SHARES
+#endif
+#if ASCON_MASKED_DATA_SHARES > ASCON_MASKED_MAX_SHARES
+#undef ASCON_MASKED_DATA_SHARES
+#define ASCON_MASKED_DATA_SHARES ASCON_MASKED_MAX_SHARES
 #endif
 
 #ifdef __cplusplus

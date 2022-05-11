@@ -33,8 +33,12 @@ void ascon_masked_word_x2_zero
     uint64_t random = ascon_trng_generate_64(trng);
     word->S[0] = random;
     word->S[1] = ascon_mask64_rotate_share1_0(random);
+#if ASCON_MASKED_MAX_SHARES >= 3
     word->S[2] = 0;
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
     word->S[3] = 0;
+#endif
 }
 
 void ascon_masked_word_x2_load
@@ -44,8 +48,12 @@ void ascon_masked_word_x2_load
     uint64_t random = ascon_trng_generate_64(trng);
     word->S[0] = random ^ be_load_word64(data);
     word->S[1] = ascon_mask64_rotate_share1_0(random);
+#if ASCON_MASKED_MAX_SHARES >= 3
     word->S[2] = 0;
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
     word->S[3] = 0;
+#endif
 }
 
 void ascon_masked_word_x2_load_partial
@@ -74,8 +82,12 @@ void ascon_masked_word_x2_load_partial
     }
     word->S[0] = masked;
     word->S[1] = random;
+#if ASCON_MASKED_MAX_SHARES >= 3
     word->S[2] = 0;
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
     word->S[3] = 0;
+#endif
 }
 
 void ascon_masked_word_x2_load_32
@@ -86,8 +98,12 @@ void ascon_masked_word_x2_load_32
     word->S[0] = random ^ ((uint64_t)be_load_word32(data1)) << 32;
     word->S[0] ^= be_load_word32(data2);
     word->S[1] = ascon_mask64_rotate_share1_0(random);
+#if ASCON_MASKED_MAX_SHARES >= 3
     word->S[2] = 0;
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
     word->S[3] = 0;
+#endif
 }
 
 void ascon_masked_word_x2_store
@@ -149,6 +165,8 @@ void ascon_masked_word_x2_replace
                  ( src->S[1] & ascon_mask64_rotate_share1_0(mask2));
 }
 
+#if ASCON_MASKED_MAX_SHARES >= 3
+
 void ascon_masked_word_x2_from_x3
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
      ascon_trng_state_t *trng)
@@ -158,8 +176,14 @@ void ascon_masked_word_x2_from_x3
     dest->S[1] = (ascon_mask64_rotate_share1_0(random) ^ src->S[1]) ^
                  ascon_mask64_unrotate_share2_1(src->S[2]);
     dest->S[2] = 0;
+#if ASCON_MASKED_MAX_SHARES >= 4
     dest->S[3] = 0;
+#endif
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 3 */
+
+#if ASCON_MASKED_MAX_SHARES >= 4
 
 void ascon_masked_word_x2_from_x4
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
@@ -174,6 +198,10 @@ void ascon_masked_word_x2_from_x4
     dest->S[3] = 0;
 }
 
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */
+
+#if ASCON_MASKED_MAX_SHARES >= 3
+
 void ascon_masked_word_x3_zero
     (ascon_masked_word_t *word, ascon_trng_state_t *trng)
 {
@@ -183,6 +211,9 @@ void ascon_masked_word_x3_zero
     word->S[1] = ascon_mask64_rotate_share1_0(random1);
     word->S[2] = ascon_mask64_rotate_share2_0(random2);
     word->S[3] = 0;
+#if ASCON_MASKED_MAX_SHARES >= 4
+    word->S[3] = 0;
+#endif
 }
 
 void ascon_masked_word_x3_load
@@ -194,7 +225,9 @@ void ascon_masked_word_x3_load
     word->S[0] = random1 ^ random2 ^ be_load_word64(data);
     word->S[1] = ascon_mask64_rotate_share1_0(random1);
     word->S[2] = ascon_mask64_rotate_share2_0(random2);
+#if ASCON_MASKED_MAX_SHARES >= 4
     word->S[3] = 0;
+#endif
 }
 
 void ascon_masked_word_x3_load_partial
@@ -225,7 +258,9 @@ void ascon_masked_word_x3_load_partial
     word->S[0] = masked ^ random2;
     word->S[1] = random1;
     word->S[2] = ascon_mask64_rotate_share2_0(random2);
+#if ASCON_MASKED_MAX_SHARES >= 4
     word->S[3] = 0;
+#endif
 }
 
 void ascon_masked_word_x3_load_32
@@ -238,7 +273,9 @@ void ascon_masked_word_x3_load_32
     word->S[0] ^= random2 ^ be_load_word32(data2);
     word->S[1] = ascon_mask64_rotate_share1_0(random1);
     word->S[2] = ascon_mask64_rotate_share2_0(random2);
+#if ASCON_MASKED_MAX_SHARES >= 4
     word->S[3] = 0;
+#endif
 }
 
 void ascon_masked_word_x3_store
@@ -319,8 +356,12 @@ void ascon_masked_word_x3_from_x2
     dest->S[0] = random1 ^ random2 ^ src->S[0];
     dest->S[1] = ascon_mask64_rotate_share1_0(random1) ^ src->S[1];
     dest->S[2] = ascon_mask64_rotate_share2_0(random2);
+#if ASCON_MASKED_MAX_SHARES >= 4
     dest->S[3] = 0;
+#endif
 }
+
+#if ASCON_MASKED_MAX_SHARES >= 4
 
 void ascon_masked_word_x3_from_x4
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src,
@@ -334,6 +375,12 @@ void ascon_masked_word_x3_from_x4
     dest->S[2] = ascon_mask64_rotate_share2_0(random2) ^ src->S[2];
     dest->S[3] = 0;
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 3 */
+
+#if ASCON_MASKED_MAX_SHARES >= 4
 
 void ascon_masked_word_x4_zero
     (ascon_masked_word_t *word, ascon_trng_state_t *trng)
@@ -510,6 +557,8 @@ void ascon_masked_word_x4_from_x3
     dest->S[2] = ascon_mask64_rotate_share2_0(random2) ^ src->S[2];
     dest->S[3] = ascon_mask64_rotate_share3_0(random3);
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */
 
 void ascon_masked_word_pad(ascon_masked_word_t *word, unsigned offset)
 {

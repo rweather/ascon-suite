@@ -24,7 +24,7 @@
 #include "ascon-masked-backend.h"
 #include "core/ascon-util.h"
 
-#if defined(ASCON_MASKED_X3_BACKEND_C32)
+#if defined(ASCON_MASKED_X3_BACKEND_C32) && ASCON_MASKED_MAX_SHARES >= 3
 
 /**
  * \brief Computes x ^= (~y & z) with a 3-share masked representation.

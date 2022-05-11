@@ -35,16 +35,16 @@ extern "C" {
 #endif
 
 /**
- * \brief Masked 64-bit word with up to four shares.
+ * \brief Masked 64-bit key word with up to four shares.
  *
  * This structure should be treated as opaque.
  */
 typedef union
 {
-    uint64_t S[4];      /**< 64-bit version of the masked shares */
-    uint32_t W[8];      /**< 32-bit version of the masked shares */
+    uint64_t S[4];      /** 64-bit version of the masked shares */
+    uint32_t W[8];      /** 32-bit version of the masked shares */
 
-} ascon_masked_word_t;
+} ascon_masked_key_word_t;
 
 /**
  * \brief 128-bit key that has been masked to hide its value when the
@@ -60,7 +60,7 @@ typedef union
  */
 typedef struct
 {
-    ascon_masked_word_t k[2]; /**< Masked words of the key */
+    ascon_masked_key_word_t k[2]; /**< Masked words of the key */
 
 } ascon_masked_key_128_t;
 
@@ -82,7 +82,7 @@ typedef struct
  */
 typedef struct
 {
-    ascon_masked_word_t k[6]; /**< Masked words of the key */
+    ascon_masked_key_word_t k[6]; /**< Masked words of the key */
 
 } ascon_masked_key_160_t;
 

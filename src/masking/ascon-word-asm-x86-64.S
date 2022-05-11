@@ -47,9 +47,13 @@ ascon_masked_word_x2_zero:
 	movq	%rax, (%rbx)
 	rorq	$11, %rax
 	movq	%rax, 8(%rbx)
+#if ASCON_MASKED_MAX_SHARES >= 3
 	movq	$0, %rcx
 	movq	%rcx, 16(%rbx)
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%rbx
 	ret
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
@@ -83,9 +87,13 @@ ascon_masked_word_x2_load:
 	rorq	$11, %rax
 	movq	%rcx, (%rbx)
 	movq	%rax, 8(%rbx)
+#if ASCON_MASKED_MAX_SHARES >= 3
 	movq	$0, %rcx
 	movq	%rcx, 16(%rbx)
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%rbp
 	popq	%rbx
 	ret
@@ -130,9 +138,13 @@ ascon_masked_word_x2_load_partial:
 	rorq	$11, %rax
 	movq	%rcx, (%rbx)
 	movq	%rax, 8(%rbx)
+#if ASCON_MASKED_MAX_SHARES >= 3
 	movq	$0, %rcx
 	movq	%rcx, 16(%rbx)
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
@@ -174,9 +186,13 @@ ascon_masked_word_x2_load_32:
 	rorq	$11, %rax
 	movq	%rcx, (%rbx)
 	movq	%rax, 8(%rbx)
+#if ASCON_MASKED_MAX_SHARES >= 3
 	movq	$0, %rcx
 	movq	%rcx, 16(%rbx)
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
@@ -341,6 +357,7 @@ ascon_masked_word_x2_replace:
 	.cfi_endproc
 	.size	ascon_masked_word_x2_replace, .-ascon_masked_word_x2_replace
 #endif
+#if ASCON_MASKED_MAX_SHARES >= 3
 	.p2align 4,,15
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_from_x3
@@ -371,8 +388,12 @@ ascon_masked_word_x2_from_x3:
 	xorq	%rdx, %rcx
 	movq	%rcx, 8(%rbx)
 	movq	$0, %rcx
+#if ASCON_MASKED_MAX_SHARES >= 3
 	movq	%rcx, 16(%rbx)
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%rbp
 	popq	%rbx
 	ret
@@ -382,6 +403,8 @@ ascon_masked_word_x2_from_x3:
 	.cfi_endproc
 	.size	ascon_masked_word_x2_from_x3, .-ascon_masked_word_x2_from_x3
 #endif
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	.p2align 4,,15
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_from_x4
@@ -415,8 +438,12 @@ ascon_masked_word_x2_from_x4:
 	xorq	%rdx, %rcx
 	movq	%rcx, 8(%rbx)
 	movq	$0, %rcx
+#if ASCON_MASKED_MAX_SHARES >= 3
 	movq	%rcx, 16(%rbx)
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%rbp
 	popq	%rbx
 	ret
@@ -426,6 +453,8 @@ ascon_masked_word_x2_from_x4:
 	.cfi_endproc
 	.size	ascon_masked_word_x2_from_x4, .-ascon_masked_word_x2_from_x4
 #endif
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 3
 	.p2align 4,,15
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_zero
@@ -455,8 +484,10 @@ ascon_masked_word_x3_zero:
 	movq	%rcx, (%rbx)
 	movq	%r12, 8(%rbx)
 	movq	%rax, 16(%rbx)
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	$0, %rcx
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
@@ -501,8 +532,10 @@ ascon_masked_word_x3_load:
 	movq	%rcx, (%rbx)
 	movq	%r13, 8(%rbx)
 	movq	%rax, 16(%rbx)
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	$0, %rcx
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%r13
 	popq	%r12
 	popq	%rbp
@@ -558,8 +591,10 @@ ascon_masked_word_x3_load_partial:
 	movq	%rcx, (%rbx)
 	movq	%r14, 8(%rbx)
 	movq	%rax, 16(%rbx)
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	$0, %rcx
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%r14
 	popq	%r13
 	popq	%r12
@@ -612,8 +647,10 @@ ascon_masked_word_x3_load_32:
 	movq	%rcx, (%rbx)
 	movq	%r14, 8(%rbx)
 	movq	%rax, 16(%rbx)
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	$0, %rcx
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%r14
 	popq	%r13
 	popq	%r12
@@ -847,7 +884,9 @@ ascon_masked_word_x3_from_x2:
 	rorq	$22, %rcx
 	movq	%rcx, 16(%rbx)
 	movq	$0, %rcx
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%r13
 	popq	%r12
 	popq	%rbp
@@ -859,6 +898,7 @@ ascon_masked_word_x3_from_x2:
 	.cfi_endproc
 	.size	ascon_masked_word_x3_from_x2, .-ascon_masked_word_x3_from_x2
 #endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	.p2align 4,,15
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_from_x4
@@ -901,7 +941,9 @@ ascon_masked_word_x3_from_x4:
 	xorq	%rdx, %rcx
 	movq	%rcx, 16(%rbx)
 	movq	$0, %rcx
+#if ASCON_MASKED_MAX_SHARES >= 4
 	movq	%rcx, 24(%rbx)
+#endif
 	popq	%r13
 	popq	%r12
 	popq	%rbp
@@ -913,6 +955,9 @@ ascon_masked_word_x3_from_x4:
 	.cfi_endproc
 	.size	ascon_masked_word_x3_from_x4, .-ascon_masked_word_x3_from_x4
 #endif
+#endif
+#endif
+#if ASCON_MASKED_MAX_SHARES >= 4
 	.p2align 4,,15
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_zero
@@ -1463,6 +1508,7 @@ ascon_masked_word_x4_from_x3:
 #else
 	.cfi_endproc
 	.size	ascon_masked_word_x4_from_x3, .-ascon_masked_word_x4_from_x3
+#endif
 #endif
 	.p2align 4,,15
 #if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)

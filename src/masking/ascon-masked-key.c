@@ -22,23 +22,32 @@
 
 #include <ascon/masking.h>
 #include <ascon/utility.h>
-#include "ascon-masked-config.h"
 #include "ascon-masked-word.h"
+#include <string.h>
 
 void ascon_masked_key_128_init
     (ascon_masked_key_128_t *masked, const unsigned char *key)
 {
     ascon_trng_state_t trng;
+#if ASCON_MASKED_MAX_SHARES < 4
+    memset(masked, 0, sizeof(ascon_masked_key_128_t));
+#endif
     ascon_trng_init(&trng);
 #if ASCON_MASKED_KEY_SHARES == 2
-    ascon_masked_word_x2_load(&(masked->k[0]), key, &trng);
-    ascon_masked_word_x2_load(&(masked->k[1]), key + 8, &trng);
+    ascon_masked_word_x2_load
+        ((ascon_masked_word_t *)&(masked->k[0]), key, &trng);
+    ascon_masked_word_x2_load
+        ((ascon_masked_word_t *)&(masked->k[1]), key + 8, &trng);
 #elif ASCON_MASKED_KEY_SHARES == 3
-    ascon_masked_word_x3_load(&(masked->k[0]), key, &trng);
-    ascon_masked_word_x3_load(&(masked->k[1]), key + 8, &trng);
+    ascon_masked_word_x3_load
+        ((ascon_masked_word_t *)&(masked->k[0]), key, &trng);
+    ascon_masked_word_x3_load
+        ((ascon_masked_word_t *)&(masked->k[1]), key + 8, &trng);
 #else
-    ascon_masked_word_x4_load(&(masked->k[0]), key, &trng);
-    ascon_masked_word_x4_load(&(masked->k[1]), key + 8, &trng);
+    ascon_masked_word_x4_load
+        ((ascon_masked_word_t *)&(masked->k[0]), key, &trng);
+    ascon_masked_word_x4_load
+        ((ascon_masked_word_t *)&(masked->k[1]), key + 8, &trng);
 #endif
     ascon_trng_free(&trng);
 }
@@ -53,14 +62,26 @@ void ascon_masked_key_128_randomize_with_trng
     (ascon_masked_key_128_t *masked, ascon_trng_state_t *trng)
 {
 #if ASCON_MASKED_KEY_SHARES == 2
-    ascon_masked_word_x2_randomize(&(masked->k[0]), &(masked->k[0]), trng);
-    ascon_masked_word_x2_randomize(&(masked->k[1]), &(masked->k[1]), trng);
+    ascon_masked_word_x2_randomize
+        ((ascon_masked_word_t *)&(masked->k[0]),
+         (ascon_masked_word_t *)&(masked->k[0]), trng);
+    ascon_masked_word_x2_randomize
+        ((ascon_masked_word_t *)&(masked->k[1]),
+         (ascon_masked_word_t *)&(masked->k[1]), trng);
 #elif ASCON_MASKED_KEY_SHARES == 3
-    ascon_masked_word_x3_randomize(&(masked->k[0]), &(masked->k[0]), trng);
-    ascon_masked_word_x3_randomize(&(masked->k[1]), &(masked->k[1]), trng);
+    ascon_masked_word_x3_randomize
+        ((ascon_masked_word_t *)&(masked->k[0]),
+         (ascon_masked_word_t *)&(masked->k[0]), trng);
+    ascon_masked_word_x3_randomize
+        ((ascon_masked_word_t *)&(masked->k[1]),
+         (ascon_masked_word_t *)&(masked->k[1]), trng);
 #else
-    ascon_masked_word_x4_randomize(&(masked->k[0]), &(masked->k[0]), trng);
-    ascon_masked_word_x4_randomize(&(masked->k[1]), &(masked->k[1]), trng);
+    ascon_masked_word_x4_randomize
+        ((ascon_masked_word_t *)&(masked->k[0]),
+         (ascon_masked_word_t *)&(masked->k[0]), trng);
+    ascon_masked_word_x4_randomize
+        ((ascon_masked_word_t *)&(masked->k[1]),
+         (ascon_masked_word_t *)&(masked->k[1]), trng);
 #endif
 }
 
@@ -76,14 +97,20 @@ void ascon_masked_key_128_extract
     (const ascon_masked_key_128_t *masked, unsigned char *key)
 {
 #if ASCON_MASKED_KEY_SHARES == 2
-    ascon_masked_word_x2_store(key, &(masked->k[0]));
-    ascon_masked_word_x2_store(key + 8, &(masked->k[1]));
+    ascon_masked_word_x2_store
+        (key, (const ascon_masked_word_t *)&(masked->k[0]));
+    ascon_masked_word_x2_store
+        (key + 8, (const ascon_masked_word_t *)&(masked->k[1]));
 #elif ASCON_MASKED_KEY_SHARES == 3
-    ascon_masked_word_x3_store(key, &(masked->k[0]));
-    ascon_masked_word_x3_store(key + 8, &(masked->k[1]));
+    ascon_masked_word_x3_store
+        (key, (const ascon_masked_word_t *)&(masked->k[0]));
+    ascon_masked_word_x3_store
+        (key + 8, (const ascon_masked_word_t *)&(masked->k[1]));
 #else
-    ascon_masked_word_x4_store(key, &(masked->k[0]));
-    ascon_masked_word_x4_store(key + 8, &(masked->k[1]));
+    ascon_masked_word_x4_store
+        (key, (const ascon_masked_word_t *)&(masked->k[0]));
+    ascon_masked_word_x4_store
+        (key + 8, (const ascon_masked_word_t *)&(masked->k[1]));
 #endif
 }
 
@@ -92,29 +119,50 @@ void ascon_masked_key_160_init
 {
     static unsigned char const zeroes[4] = {0, 0, 0, 0};
     ascon_trng_state_t trng;
+#if ASCON_MASKED_MAX_SHARES < 4
+    memset(masked, 0, sizeof(ascon_masked_key_160_t));
+#endif
     ascon_trng_init(&trng);
 #if ASCON_MASKED_KEY_SHARES == 2
     /* ASCON-80pq absorbs keys in two places so we need to mask it twice */
-    ascon_masked_word_x2_load(&(masked->k[0]), key, &trng);
-    ascon_masked_word_x2_load(&(masked->k[1]), key + 8, &trng);
-    ascon_masked_word_x2_load_32(&(masked->k[2]), key + 16, zeroes, &trng);
-    ascon_masked_word_x2_load_32(&(masked->k[3]), zeroes, key, &trng);
-    ascon_masked_word_x2_load(&(masked->k[4]), key + 4, &trng);
-    ascon_masked_word_x2_load(&(masked->k[5]), key + 12, &trng);
+    ascon_masked_word_x2_load
+        ((ascon_masked_word_t *)&(masked->k[0]), key, &trng);
+    ascon_masked_word_x2_load
+        ((ascon_masked_word_t *)&(masked->k[1]), key + 8, &trng);
+    ascon_masked_word_x2_load_32
+        ((ascon_masked_word_t *)&(masked->k[2]), key + 16, zeroes, &trng);
+    ascon_masked_word_x2_load_32
+        ((ascon_masked_word_t *)&(masked->k[3]), zeroes, key, &trng);
+    ascon_masked_word_x2_load
+        ((ascon_masked_word_t *)&(masked->k[4]), key + 4, &trng);
+    ascon_masked_word_x2_load
+        ((ascon_masked_word_t *)&(masked->k[5]), key + 12, &trng);
 #elif ASCON_MASKED_KEY_SHARES == 3
-    ascon_masked_word_x3_load(&(masked->k[0]), key, &trng);
-    ascon_masked_word_x3_load(&(masked->k[1]), key + 8, &trng);
-    ascon_masked_word_x3_load_32(&(masked->k[2]), key + 16, zeroes, &trng);
-    ascon_masked_word_x3_load_32(&(masked->k[3]), zeroes, key, &trng);
-    ascon_masked_word_x3_load(&(masked->k[4]), key + 4, &trng);
-    ascon_masked_word_x3_load(&(masked->k[5]), key + 12, &trng);
+    ascon_masked_word_x3_load
+        ((ascon_masked_word_t *)&(masked->k[0]), key, &trng);
+    ascon_masked_word_x3_load
+        ((ascon_masked_word_t *)&(masked->k[1]), key + 8, &trng);
+    ascon_masked_word_x3_load_32
+        ((ascon_masked_word_t *)&(masked->k[2]), key + 16, zeroes, &trng);
+    ascon_masked_word_x3_load_32
+        ((ascon_masked_word_t *)&(masked->k[3]), zeroes, key, &trng);
+    ascon_masked_word_x3_load
+        ((ascon_masked_word_t *)&(masked->k[4]), key + 4, &trng);
+    ascon_masked_word_x3_load
+        ((ascon_masked_word_t *)&(masked->k[5]), key + 12, &trng);
 #else
-    ascon_masked_word_x4_load(&(masked->k[0]), key, &trng);
-    ascon_masked_word_x4_load(&(masked->k[1]), key + 8, &trng);
-    ascon_masked_word_x4_load_32(&(masked->k[2]), key + 16, zeroes, &trng);
-    ascon_masked_word_x4_load_32(&(masked->k[3]), zeroes, key, &trng);
-    ascon_masked_word_x4_load(&(masked->k[4]), key + 4, &trng);
-    ascon_masked_word_x4_load(&(masked->k[5]), key + 12, &trng);
+    ascon_masked_word_x4_load
+        ((ascon_masked_word_t *)&(masked->k[0]), key, &trng);
+    ascon_masked_word_x4_load
+        ((ascon_masked_word_t *)&(masked->k[1]), key + 8, &trng);
+    ascon_masked_word_x4_load_32
+        ((ascon_masked_word_t *)&(masked->k[2]), key + 16, zeroes, &trng);
+    ascon_masked_word_x4_load_32
+        ((ascon_masked_word_t *)&(masked->k[3]), zeroes, key, &trng);
+    ascon_masked_word_x4_load
+        ((ascon_masked_word_t *)&(masked->k[4]), key + 4, &trng);
+    ascon_masked_word_x4_load
+        ((ascon_masked_word_t *)&(masked->k[5]), key + 12, &trng);
 #endif
     ascon_trng_free(&trng);
 }
@@ -132,17 +180,20 @@ void ascon_masked_key_160_randomize_with_trng
 #if ASCON_MASKED_KEY_SHARES == 2
     for (index = 0; index < 6; ++index) {
         ascon_masked_word_x2_randomize
-            (&(masked->k[index]), &(masked->k[index]), trng);
+            ((ascon_masked_word_t *)&(masked->k[index]),
+             (ascon_masked_word_t *)&(masked->k[index]), trng);
     }
 #elif ASCON_MASKED_KEY_SHARES == 3
     for (index = 0; index < 6; ++index) {
         ascon_masked_word_x2_randomize
-            (&(masked->k[index]), &(masked->k[index]), trng);
+            ((ascon_masked_word_t *)&(masked->k[index]),
+             (ascon_masked_word_t *)&(masked->k[index]), trng);
     }
 #else
     for (index = 0; index < 6; ++index) {
         ascon_masked_word_x2_randomize
-            (&(masked->k[index]), &(masked->k[index]), trng);
+            ((ascon_masked_word_t *)&(masked->k[index]),
+             (ascon_masked_word_t *)&(masked->k[index]), trng);
     }
 #endif
 }
@@ -159,16 +210,25 @@ void ascon_masked_key_160_extract
     (const ascon_masked_key_160_t *masked, unsigned char *key)
 {
 #if ASCON_MASKED_KEY_SHARES == 2
-    ascon_masked_word_x2_store(key, &(masked->k[0]));
-    ascon_masked_word_x2_store(key + 8, &(masked->k[1]));
-    ascon_masked_word_x2_store_partial(key + 16, 4, &(masked->k[2]));
+    ascon_masked_word_x2_store
+        (key, (const ascon_masked_word_t *)&(masked->k[0]));
+    ascon_masked_word_x2_store
+        (key + 8, (const ascon_masked_word_t *)&(masked->k[1]));
+    ascon_masked_word_x2_store_partial
+        (key + 16, 4, (const ascon_masked_word_t *)&(masked->k[2]));
 #elif ASCON_MASKED_KEY_SHARES == 3
-    ascon_masked_word_x3_store(key, &(masked->k[0]));
-    ascon_masked_word_x3_store(key + 8, &(masked->k[1]));
-    ascon_masked_word_x3_store_partial(key + 16, 4, &(masked->k[2]));
+    ascon_masked_word_x3_store
+        (key, (const ascon_masked_word_t *)&(masked->k[0]));
+    ascon_masked_word_x3_store
+        (key + 8, (const ascon_masked_word_t *)&(masked->k[1]));
+    ascon_masked_word_x3_store_partial
+        (key + 16, 4, (const ascon_masked_word_t *)&(masked->k[2]));
 #else
-    ascon_masked_word_x4_store(key, &(masked->k[0]));
-    ascon_masked_word_x4_store(key + 8, &(masked->k[1]));
-    ascon_masked_word_x4_store_partial(key + 16, 4, &(masked->k[2]));
+    ascon_masked_word_x4_store
+        (key, (const ascon_masked_word_t *)&(masked->k[0]));
+    ascon_masked_word_x4_store
+        (key + 8, (const ascon_masked_word_t *)&(masked->k[1]));
+    ascon_masked_word_x4_store_partial
+        (key + 16, 4, (const ascon_masked_word_t *)&(masked->k[2]));
 #endif
 }
