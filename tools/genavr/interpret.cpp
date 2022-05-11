@@ -606,6 +606,44 @@ void Code::exec_permutation
 }
 
 /**
+ * \brief Executes the code in this object as a masked permutation function.
+ *
+ * \param state Points to the buffer containing the state on input and output.
+ * \param state_len Length of the state buffer.
+ * \param count Count parameter for the number of rounds to perform.
+ * \param preserve Points to the buffer with the preserved randomness.
+ * \param preserve_len Length of the preserved randomness.
+ */
+void Code::exec_masked_permutation
+    (void *state, unsigned state_len, unsigned count,
+     void *preserve, unsigned preserve_len)
+{
+    AVRState s;
+    unsigned state_address = s.alloc_buffer(state, state_len);
+    unsigned preserve_address = s.alloc_buffer(preserve, preserve_len);
+    s.setPair(30, state_address);   // Z = state
+    s.setPair(26, preserve_address);// X = preserve
+    s.push16(0xFFFF);               // return address
+    s.push16(preserve_address);     // save the preserve address for later
+    unsigned fp = s.pair(32) - m_localsSize - 1;
+    s.setPair(28, fp);              // Y = frame pointer
+    s.setPair(32, fp);
+    s.setPair(22, count);           // Pass the count parameter in r22:r23
+    while (s.pc != (int)m_insns.size()) {
+        if (s.pc < 0 || s.pc > (int)m_insns.size())
+            throw std::invalid_argument("program counter out of range");
+        Insn insn = m_insns[(s.pc)++];
+        exec_insn(s, *this, insn);
+    }
+    if (s.r[1] != 0x00 && !hasFlag(TempR1))
+        throw std::invalid_argument("r1 is non-zero at the end of the code");
+    if (s.pair(32) != fp)
+        throw std::invalid_argument("stack size is incorrect on code exit");
+    memcpy(state, &(s.memory[state_address]), state_len);
+    memcpy(preserve, &(s.memory[preserve_address]), preserve_len);
+}
+
+/**
  * \brief Executes the code in this object as a TinyJAMBU keyed permutation.
  *
  * \param state Points to the buffer containing the state on input and output.

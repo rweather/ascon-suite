@@ -606,6 +606,7 @@ public:
         { prologue_encrypt_block_key2(name, size_locals); }
     void prologue_permutation(const char *name, unsigned size_locals);
     Reg prologue_permutation_with_count(const char *name, unsigned size_locals);
+    Reg prologue_masked_permutation(const char *name, unsigned size_locals);
     void prologue_tinyjambu(const char *name, Reg &rounds);
     void load_output_ptr();
 
@@ -641,6 +642,9 @@ public:
     void exec_permutation
         (void *state, unsigned state_len, unsigned count = 0,
          unsigned arg2 = 0, unsigned arg3 = 0, unsigned arg4 = 0);
+    void exec_masked_permutation
+        (void *state, unsigned state_len, unsigned count,
+         void *preserve, unsigned preserve_len);
     void exec_tinyjambu
         (void *state, unsigned state_len, const void *key,
          unsigned key_len, unsigned rounds);
@@ -688,6 +692,7 @@ private:
         KeySetup,
         KeySetupReversed,
         Permutation,
+        PermutationMasked,
         TinyJAMBU
     };
     std::vector<Insn> m_insns;

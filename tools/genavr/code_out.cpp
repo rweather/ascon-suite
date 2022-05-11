@@ -482,6 +482,21 @@ void Code::write(std::ostream &ostream) const
         }
         break;
 
+    case PermutationMasked:
+        ostream << "\tpush r21" << std::endl;
+        ostream << "\tpush r20" << std::endl;
+        extras = 2;
+        if (hasFlag(MoveWord)) {
+            ostream << "\tmovw r30,r24" << std::endl;
+            ostream << "\tmovw r26,r20" << std::endl;
+        } else {
+            ostream << "\tmov r30,r24" << std::endl;
+            ostream << "\tmov r31,r25" << std::endl;
+            ostream << "\tmov r26,r20" << std::endl;
+            ostream << "\tmov r27,r21" << std::endl;
+        }
+        break;
+
     case TinyJAMBU:
         if (hasFlag(MoveWord)) {
             ostream << "\tmovw r26,r24" << std::endl;

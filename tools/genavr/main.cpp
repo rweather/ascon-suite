@@ -31,10 +31,10 @@ enum Mode
     Test
 };
 
-static void header(std::ostream &ostream)
+static void header(std::ostream &ostream, const char *define)
 {
     ostream << "#include \"ascon-select-backend.h\"" << std::endl;
-    ostream << "#if defined(ASCON_BACKEND_AVR5)" << std::endl;
+    ostream << "#if defined(" << define << ")" << std::endl;
     ostream << copyright_message;
     ostream << "#include <avr/io.h>" << std::endl;
     ostream << "/* Automatically generated - do not edit */" << std::endl;
@@ -67,6 +67,23 @@ static bool ascon(enum Mode mode)
     return true;
 }
 
+static bool ascon_x2(enum Mode mode)
+{
+    Code code;
+    gen_ascon_x2_permutation(code);
+    if (mode == Generate) {
+        code.write(std::cout);
+    } else {
+        if (!test_ascon_x2_permutation(code)) {
+            std::cout << "ASCON x2 tests FAILED" << std::endl;
+            return false;
+        } else {
+            std::cout << "ASCON x2 tests succeeded" << std::endl;
+        }
+    }
+    return true;
+}
+
 typedef bool (*gen_code)(enum Mode mode);
 
 int main(int argc, char *argv[])
@@ -76,6 +93,7 @@ int main(int argc, char *argv[])
     gen_code gen1 = 0;
     gen_code gen2 = 0;
     gen_code gen3 = 0;
+    const char *define = "xyzzy";
 
     if (argc > 1 && !strcmp(argv[1], "--test")) {
         generate = false;
@@ -85,12 +103,16 @@ int main(int argc, char *argv[])
             return 1;
         }
         if (!strcmp(argv[1], "ASCON")) {
-                gen1 = ascon;
+            gen1 = ascon;
+            define = "ASCON_BACKEND_AVR5";
+        } else if (!strcmp(argv[1], "ASCON-x2")) {
+            gen1 = ascon_x2;
+            define = "ASCON_MASKED_X2_BACKEND_AVR5";
         }
     }
 
     if (generate) {
-        header(std::cout);
+        header(std::cout, define);
         if (gen1)
             gen1(Generate);
         if (gen2)
@@ -100,6 +122,8 @@ int main(int argc, char *argv[])
         footer(std::cout);
     } else {
         if (!ascon(Test))
+            exit_val = 1;
+        if (!ascon_x2(Test))
             exit_val = 1;
     }
 

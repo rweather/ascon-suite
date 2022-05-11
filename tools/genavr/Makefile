@@ -9,6 +9,7 @@ TARGET = genavr
 
 OBJS = \
 	algorithm_ascon.o \
+	algorithm_ascon_x2.o \
 	code.o \
 	code_out.o \
 	interpret.o \
@@ -32,3 +33,4 @@ interpret.o: code.h
 
 generate: $(TARGET)
 	./$(TARGET) ASCON >../../src/core/ascon-asm-avr5.S
+	./$(TARGET) ASCON-x2 >../../src/masking/ascon-x2-asm-avr5.S

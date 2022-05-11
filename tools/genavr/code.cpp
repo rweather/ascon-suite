@@ -2277,6 +2277,44 @@ Reg Code::prologue_permutation_with_count
 }
 
 /**
+ * \brief Sets up the function prologue for a masked permutation function.
+ *
+ * \param name Name of the permutation function.
+ * \param size_locals Number of bytes of local variables that are needed.
+ *
+ * \return A register reference to the count parameter.
+ *
+ * The generated function will have the following prototype:
+ *
+ * \code
+ * void name(void *state, unsigned char count, uint64_t *preserve)
+ * \endcode
+ *
+ * Where "state" points to the state to be permuted by the function
+ * and "count" is the number of rounds to perform or some other parameter
+ * that controls the number of rounds.  The "preserve" pointer points
+ * to the randomness that is preserved from round to round.
+ *
+ * In the generated code, Z will point to "state" and X will point to
+ * "preserve".  X can be reclaimed and reloaded later with load_output_ptr().
+ */
+Reg Code::prologue_masked_permutation
+    (const char *name, unsigned size_locals)
+{
+    // Set up the prologue for the code generator.
+    m_prologueType = PermutationMasked;
+    m_name = name;
+    m_localsSize = size_locals;
+
+    // r22 will contain the "count" parameter on entry, so allocate it.
+    m_allocated |= (1 << 22);
+    m_usedRegs |= (1 << 22);
+    Reg reg;
+    reg.m_regs.push_back(22);
+    return reg;
+}
+
+/**
  * \brief Sets up the function prologue for TinyJAMBU.
  *
  * \param name Name of the permutation function.
@@ -2332,6 +2370,7 @@ Reg Code::arg(unsigned size)
     switch (m_prologueType) {
     case EncryptBlock:
     case EncryptBlockKey2:
+    case PermutationMasked:
         first_reg -= 6;
         break;
     case KeySetup:
