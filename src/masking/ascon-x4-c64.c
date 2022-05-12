@@ -91,6 +91,28 @@ void ascon_x4_permute
     t0_c = preserve[2];
 
     /* Load the state into local variables */
+#if defined(ASCON_MASKED_WORD_BACKEND_DIRECT_XOR)
+    x0_a = be_load_word64(&(state->M[0].B[ 0]));
+    x0_b = be_load_word64(&(state->M[0].B[ 8]));
+    x0_c = be_load_word64(&(state->M[0].B[16]));
+    x0_d = be_load_word64(&(state->M[0].B[24]));
+    x1_a = be_load_word64(&(state->M[1].B[ 0]));
+    x1_b = be_load_word64(&(state->M[1].B[ 8]));
+    x1_c = be_load_word64(&(state->M[1].B[16]));
+    x1_d = be_load_word64(&(state->M[1].B[24]));
+    x2_a = be_load_word64(&(state->M[2].B[ 0]));
+    x2_b = be_load_word64(&(state->M[2].B[ 8]));
+    x2_c = be_load_word64(&(state->M[2].B[16]));
+    x2_d = be_load_word64(&(state->M[2].B[24]));
+    x3_a = be_load_word64(&(state->M[3].B[ 0]));
+    x3_b = be_load_word64(&(state->M[3].B[ 8]));
+    x3_c = be_load_word64(&(state->M[3].B[16]));
+    x3_d = be_load_word64(&(state->M[3].B[24]));
+    x4_a = be_load_word64(&(state->M[4].B[ 0]));
+    x4_b = be_load_word64(&(state->M[4].B[ 8]));
+    x4_c = be_load_word64(&(state->M[4].B[16]));
+    x4_d = be_load_word64(&(state->M[4].B[24]));
+#else
     x0_a = state->M[0].S[0];
     x0_b = state->M[0].S[1];
     x0_c = state->M[0].S[2];
@@ -111,6 +133,7 @@ void ascon_x4_permute
     x4_b = state->M[4].S[1];
     x4_c = state->M[4].S[2];
     x4_d = state->M[4].S[3];
+#endif
 
     /* The round constants invert x2 as part of the rounds so that we
      * don't need an explicit "x2 = ~x2" step in the S-box.  Pre-invert
@@ -217,6 +240,28 @@ void ascon_x4_permute
     preserve[2] = t0_c;
 
     /* Store the local variables back to the state with a final invert of x2 */
+#if defined(ASCON_MASKED_WORD_BACKEND_DIRECT_XOR)
+    be_store_word64(&(state->M[0].B[ 0]), x0_a);
+    be_store_word64(&(state->M[0].B[ 8]), x0_b);
+    be_store_word64(&(state->M[0].B[16]), x0_c);
+    be_store_word64(&(state->M[0].B[24]), x0_d);
+    be_store_word64(&(state->M[1].B[ 0]), x1_a);
+    be_store_word64(&(state->M[1].B[ 8]), x1_b);
+    be_store_word64(&(state->M[1].B[16]), x1_c);
+    be_store_word64(&(state->M[1].B[24]), x1_d);
+    be_store_word64(&(state->M[2].B[ 0]), ~x2_a);
+    be_store_word64(&(state->M[2].B[ 8]), x2_b);
+    be_store_word64(&(state->M[2].B[16]), x2_c);
+    be_store_word64(&(state->M[2].B[24]), x2_d);
+    be_store_word64(&(state->M[3].B[ 0]), x3_a);
+    be_store_word64(&(state->M[3].B[ 8]), x3_b);
+    be_store_word64(&(state->M[3].B[16]), x3_c);
+    be_store_word64(&(state->M[3].B[24]), x3_d);
+    be_store_word64(&(state->M[4].B[ 0]), x4_a);
+    be_store_word64(&(state->M[4].B[ 8]), x4_b);
+    be_store_word64(&(state->M[4].B[16]), x4_c);
+    be_store_word64(&(state->M[4].B[24]), x4_d);
+#else
     state->M[0].S[0] = x0_a;
     state->M[0].S[1] = x0_b;
     state->M[0].S[2] = x0_c;
@@ -237,6 +282,7 @@ void ascon_x4_permute
     state->M[4].S[1] = x4_b;
     state->M[4].S[2] = x4_c;
     state->M[4].S[3] = x4_d;
+#endif
 }
 
 #endif /* ASCON_MASKED_X4_BACKEND_C64 */

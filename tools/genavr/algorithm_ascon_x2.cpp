@@ -89,22 +89,23 @@ static void ascon_substitute(Code &code, int offset, Reg &x2_a)
     // We need some temporary registers as well to hold the t0 shares.
     Reg t0_a = code.allocateReg(1);
     Reg t0_b = code.allocateReg(1);
+    Reg t1_a = code.allocateReg(1);
+    Reg t1_b = code.allocateReg(1);
 
     // Start of the substitution layer, first share.
     code.logxor(x0_a, x4_a);        // x0_a ^= x4_a;
     code.logxor(x4_a, x3_a);        // x4_a ^= x3_a;
     code.logxor(x2_a, x1_a);        // x2_a ^= x1_a;
-    code.stlocal(x0_a, 24);         // t1_a  = x0_a;
+    code.move(t1_a, x0_a);          // t1_a  = x0_a;
 
     // Start of the substitution layer, second share.
     code.logxor(x0_b, x4_b);        // x0_b ^= x4_b;
     code.logxor(x4_b, x3_b);        // x4_b ^= x3_b;
     code.logxor(x2_b, x1_b);        // x2_b ^= x1_b;
-    code.stlocal(x0_b, 25);         // t1_b  = x0_b;
+    code.move(t1_b, x0_b);          // t1_b  = x0_b;
 
     // Create zero as a pair of random shares, t0_b = t0_a.
-    //code.ldlocal(t0_a, 16 + offset);
-    code.move(t0_a, 0);
+    code.ldlocal(t0_a, 16 + offset);
     code.move(t0_b, t0_a);
 
     // Middle part of the substitution layer, Chi5.
@@ -112,25 +113,16 @@ static void ascon_substitute(Code &code, int offset, Reg &x2_a)
     bic_xor(code, x0_a, x0_b, x1_a, x1_b, x2_a, x2_b);  // x0 ^= (~x1) & x2;
     bic_xor(code, x1_a, x1_b, x2_a, x2_b, x3_a, x3_b);  // x1 ^= (~x2) & x3;
     bic_xor(code, x2_a, x2_b, x3_a, x3_b, x4_a, x4_b);  // x2 ^= (~x3) & x4;
-
-    // We need some registers to load t1.a and t1.b from the stack.
-    // We can do the final XOR on x1 and store it now to free things up.
-    code.logxor(x1_a, x0_a);        // x1_a ^= x0_a;
-    code.logxor(x1_b, x0_b);        // x1_b ^= x0_b;
-    code.stz(x1_a, ASCON_BYTE(1, 0, offset));
-    code.stz(x1_b, ASCON_BYTE(1, 1, offset));
-
-    // Continue with Chi5.
-    code.ldlocal(x1_a, 24);
-    code.ldlocal(x1_b, 25);
-    bic_xor(code, x3_a, x3_b, x4_a, x4_b, x1_a, x1_b);  // x3 ^= (~x4) & t1;
+    bic_xor(code, x3_a, x3_b, x4_a, x4_b, t1_a, t1_b);  // x3 ^= (~x4) & t1;
     code.logxor(x4_a, t0_a);        // x4_a ^= t0_a;
     code.logxor(x4_b, t0_b);        // x4_b ^= t0_b;
 
     // End of the substitution layer.
+    code.logxor(x1_a, x0_a);        // x1_a ^= x0_a;
     code.logxor(x0_a, x4_a);        // x0_a ^= x4_a;
     code.logxor(x3_a, x2_a);        // x3_a ^= x2_a;
     code.lognot(x2_a);              // x2_a = ~x2_a;
+    code.logxor(x1_b, x0_b);        // x1_b ^= x0_b;
     code.logxor(x0_b, x4_b);        // x0_b ^= x4_b;
     code.logxor(x3_b, x2_b);        // x3_b ^= x2_b;
 
@@ -138,6 +130,8 @@ static void ascon_substitute(Code &code, int offset, Reg &x2_a)
     // keep in registers between rounds.
     code.stz(x0_a, ASCON_BYTE(0, 0, offset));
     code.stz(x0_b, ASCON_BYTE(0, 1, offset));
+    code.stz(x1_a, ASCON_BYTE(1, 0, offset));
+    code.stz(x1_b, ASCON_BYTE(1, 1, offset));
     code.stz(x2_b, ASCON_BYTE(2, 1, offset));
     code.stz(x3_a, ASCON_BYTE(3, 0, offset));
     code.stz(x3_b, ASCON_BYTE(3, 1, offset));
@@ -157,6 +151,8 @@ static void ascon_substitute(Code &code, int offset, Reg &x2_a)
     code.releaseReg(x4_b);
     code.releaseReg(t0_a);
     code.releaseReg(t0_b);
+    code.releaseReg(t1_a);
+    code.releaseReg(t1_b);
 }
 
 static void ascon_diffuse
@@ -182,7 +178,7 @@ static void ascon_diffuse
 
 void gen_ascon_x2_permutation(Code &code)
 {
-    // Set up the function prologue with 26 bytes of local variable storage.
+    // Set up the function prologue with 24 bytes of local variable storage.
     //
     // Z points to the permutation state on input and output.
     // X points to the preserved randomness on input.
@@ -190,8 +186,10 @@ void gen_ascon_x2_permutation(Code &code)
     // Local stack frame:
     //      16 bytes for a copy of the x4.a and x4.b shares.
     //      8 bytes for t0.a to hold the randomness from round to round.
-    //      2 bytes to hold t1.a and t1.b temporarily during the S-box.
-    Reg round = code.prologue_masked_permutation("ascon_x2_permute", 26);
+    Reg round = code.prologue_masked_permutation("ascon_x2_permute", 24);
+
+    // We are short on registers, so allow r0 to be used as a temporary.
+    code.setFlag(Code::TempR0);
 
     // Compute "round = ((0x0F - round) << 4) | round" to convert the
     // first round number into a round constant.

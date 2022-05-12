@@ -89,4 +89,12 @@ build_config -DKEY_SHARES=2 -DDATA_SHARES=1
 build_config -DKEY_SHARES=2 -DDATA_SHARES=1 -DBACKEND_C32=ON
 build_config -DKEY_SHARES=2 -DDATA_SHARES=1 -DBACKEND_C64=ON
 
+build_config -DMAX_SHARES=2
+build_config -DMAX_SHARES=2 -DBACKEND_C32=ON
+build_config -DMAX_SHARES=2 -DBACKEND_C64=ON
+
+build_config -DMAX_SHARES=3
+build_config -DMAX_SHARES=3 -DBACKEND_C32=ON
+build_config -DMAX_SHARES=3 -DBACKEND_C64=ON
+
 exit 0

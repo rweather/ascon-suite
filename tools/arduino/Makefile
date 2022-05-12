@@ -57,7 +57,9 @@ UTIL_SOURCES = \
 	$(SOURCE_DIR)/masking/ascon-masked-key.c \
 	$(SOURCE_DIR)/masking/ascon-masked-word-c32.c \
 	$(SOURCE_DIR)/masking/ascon-masked-word-c64.c \
+	$(SOURCE_DIR)/masking/ascon-masked-word-direct.c \
 	$(SOURCE_DIR)/masking/ascon-masked-state.c \
+	$(SOURCE_DIR)/masking/ascon-x2-asm-avr5.S \
 	$(SOURCE_DIR)/masking/ascon-x2-c32.c \
 	$(SOURCE_DIR)/masking/ascon-x2-c64.c \
 	$(SOURCE_DIR)/masking/ascon-x3-c32.c \

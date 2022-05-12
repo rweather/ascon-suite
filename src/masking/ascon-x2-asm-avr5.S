@@ -53,13 +53,13 @@ ascon_x2_permute:
 	movw r26,r20
 	in r28,0x3d
 	in r29,0x3e
-	sbiw r28,26
+	sbiw r28,24
 	in r0,0x3f
 	cli
 	out 0x3e,r29
 	out 0x3f,r0
 	out 0x3d,r28
-.L__stack_usage = 46
+.L__stack_usage = 44
 	ldi r18,15
 	sub r18,r22
 	swap r18
@@ -138,93 +138,91 @@ ascon_x2_permute:
 	eor r23,r6
 	eor r6,r27
 	eor r18,r26
-	std Y+25,r23
+	mov r14,r23
 	eor r7,r11
 	eor r11,r10
 	eor r9,r8
-	std Y+26,r7
-	mov r12,r1
-	mov r13,r12
-	mov r14,r23
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r12,r14
-	eor r12,r15
-	mov r14,r7
 	mov r15,r7
-	and r14,r26
-	and r15,r8
-	eor r13,r14
-	eor r13,r15
-	mov r14,r26
-	com r14
-	mov r15,r14
-	and r14,r18
-	and r15,r9
-	eor r23,r14
-	eor r23,r15
-	mov r14,r8
-	mov r15,r8
-	and r14,r18
-	and r15,r9
-	eor r7,r14
-	eor r7,r15
-	mov r14,r18
-	com r14
-	mov r15,r14
-	and r14,r27
-	and r15,r10
-	eor r26,r14
-	eor r26,r15
-	mov r14,r9
-	mov r15,r9
-	and r14,r27
-	and r15,r10
-	eor r8,r14
-	eor r8,r15
-	mov r14,r27
-	com r14
-	mov r15,r14
-	and r14,r6
-	and r15,r11
-	eor r18,r14
-	eor r18,r15
-	mov r14,r10
-	mov r15,r10
-	and r14,r6
-	and r15,r11
-	eor r9,r14
-	eor r9,r15
-	eor r26,r23
-	eor r8,r7
-	std Z+23,r26
-	std Z+31,r8
-	ldd r26,Y+25
-	ldd r8,Y+26
-	mov r14,r6
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r27,r14
-	eor r27,r15
-	mov r14,r11
-	mov r15,r11
-	and r14,r26
-	and r15,r8
-	eor r10,r14
-	eor r10,r15
+	ldd r12,Y+17
+	mov r13,r12
+	mov r24,r23
+	com r24
+	mov r25,r24
+	and r24,r26
+	and r25,r8
+	eor r12,r24
+	eor r12,r25
+	mov r24,r7
+	mov r25,r7
+	and r24,r26
+	and r25,r8
+	eor r13,r24
+	eor r13,r25
+	mov r24,r26
+	com r24
+	mov r25,r24
+	and r24,r18
+	and r25,r9
+	eor r23,r24
+	eor r23,r25
+	mov r24,r8
+	mov r25,r8
+	and r24,r18
+	and r25,r9
+	eor r7,r24
+	eor r7,r25
+	mov r24,r18
+	com r24
+	mov r25,r24
+	and r24,r27
+	and r25,r10
+	eor r26,r24
+	eor r26,r25
+	mov r24,r9
+	mov r25,r9
+	and r24,r27
+	and r25,r10
+	eor r8,r24
+	eor r8,r25
+	mov r24,r27
+	com r24
+	mov r25,r24
+	and r24,r6
+	and r25,r11
+	eor r18,r24
+	eor r18,r25
+	mov r24,r10
+	mov r25,r10
+	and r24,r6
+	and r25,r11
+	eor r9,r24
+	eor r9,r25
+	mov r24,r6
+	com r24
+	mov r25,r24
+	and r24,r14
+	and r25,r15
+	eor r27,r24
+	eor r27,r25
+	mov r24,r11
+	mov r25,r11
+	and r24,r14
+	and r25,r15
+	eor r10,r24
+	eor r10,r25
 	eor r6,r12
 	eor r11,r13
+	eor r26,r23
 	eor r23,r6
 	eor r27,r18
 	com r18
+	eor r8,r7
 	eor r7,r11
 	eor r10,r9
 	std Z+7,r23
 	std Z+15,r7
+	std Z+23,r26
+	std Z+31,r8
 	std Z+47,r9
 	std Z+55,r27
 	std Z+63,r10
@@ -243,93 +241,91 @@ ascon_x2_permute:
 	eor r23,r6
 	eor r6,r27
 	eor r19,r26
-	std Y+25,r23
+	mov r14,r23
 	eor r7,r11
 	eor r11,r10
 	eor r9,r8
-	std Y+26,r7
-	mov r12,r1
-	mov r13,r12
-	mov r14,r23
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r12,r14
-	eor r12,r15
-	mov r14,r7
 	mov r15,r7
-	and r14,r26
-	and r15,r8
-	eor r13,r14
-	eor r13,r15
-	mov r14,r26
-	com r14
-	mov r15,r14
-	and r14,r19
-	and r15,r9
-	eor r23,r14
-	eor r23,r15
-	mov r14,r8
-	mov r15,r8
-	and r14,r19
-	and r15,r9
-	eor r7,r14
-	eor r7,r15
-	mov r14,r19
-	com r14
-	mov r15,r14
-	and r14,r27
-	and r15,r10
-	eor r26,r14
-	eor r26,r15
-	mov r14,r9
-	mov r15,r9
-	and r14,r27
-	and r15,r10
-	eor r8,r14
-	eor r8,r15
-	mov r14,r27
-	com r14
-	mov r15,r14
-	and r14,r6
-	and r15,r11
-	eor r19,r14
-	eor r19,r15
-	mov r14,r10
-	mov r15,r10
-	and r14,r6
-	and r15,r11
-	eor r9,r14
-	eor r9,r15
-	eor r26,r23
-	eor r8,r7
-	std Z+22,r26
-	std Z+30,r8
-	ldd r26,Y+25
-	ldd r8,Y+26
-	mov r14,r6
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r27,r14
-	eor r27,r15
-	mov r14,r11
-	mov r15,r11
-	and r14,r26
-	and r15,r8
-	eor r10,r14
-	eor r10,r15
+	ldd r12,Y+18
+	mov r13,r12
+	mov r24,r23
+	com r24
+	mov r25,r24
+	and r24,r26
+	and r25,r8
+	eor r12,r24
+	eor r12,r25
+	mov r24,r7
+	mov r25,r7
+	and r24,r26
+	and r25,r8
+	eor r13,r24
+	eor r13,r25
+	mov r24,r26
+	com r24
+	mov r25,r24
+	and r24,r19
+	and r25,r9
+	eor r23,r24
+	eor r23,r25
+	mov r24,r8
+	mov r25,r8
+	and r24,r19
+	and r25,r9
+	eor r7,r24
+	eor r7,r25
+	mov r24,r19
+	com r24
+	mov r25,r24
+	and r24,r27
+	and r25,r10
+	eor r26,r24
+	eor r26,r25
+	mov r24,r9
+	mov r25,r9
+	and r24,r27
+	and r25,r10
+	eor r8,r24
+	eor r8,r25
+	mov r24,r27
+	com r24
+	mov r25,r24
+	and r24,r6
+	and r25,r11
+	eor r19,r24
+	eor r19,r25
+	mov r24,r10
+	mov r25,r10
+	and r24,r6
+	and r25,r11
+	eor r9,r24
+	eor r9,r25
+	mov r24,r6
+	com r24
+	mov r25,r24
+	and r24,r14
+	and r25,r15
+	eor r27,r24
+	eor r27,r25
+	mov r24,r11
+	mov r25,r11
+	and r24,r14
+	and r25,r15
+	eor r10,r24
+	eor r10,r25
 	eor r6,r12
 	eor r11,r13
+	eor r26,r23
 	eor r23,r6
 	eor r27,r19
 	com r19
+	eor r8,r7
 	eor r7,r11
 	eor r10,r9
 	std Z+6,r23
 	std Z+14,r7
+	std Z+22,r26
+	std Z+30,r8
 	std Z+46,r9
 	std Z+54,r27
 	std Z+62,r10
@@ -348,93 +344,91 @@ ascon_x2_permute:
 	eor r23,r6
 	eor r6,r27
 	eor r20,r26
-	std Y+25,r23
+	mov r14,r23
 	eor r7,r11
 	eor r11,r10
 	eor r9,r8
-	std Y+26,r7
-	mov r12,r1
-	mov r13,r12
-	mov r14,r23
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r12,r14
-	eor r12,r15
-	mov r14,r7
 	mov r15,r7
-	and r14,r26
-	and r15,r8
-	eor r13,r14
-	eor r13,r15
-	mov r14,r26
-	com r14
-	mov r15,r14
-	and r14,r20
-	and r15,r9
-	eor r23,r14
-	eor r23,r15
-	mov r14,r8
-	mov r15,r8
-	and r14,r20
-	and r15,r9
-	eor r7,r14
-	eor r7,r15
-	mov r14,r20
-	com r14
-	mov r15,r14
-	and r14,r27
-	and r15,r10
-	eor r26,r14
-	eor r26,r15
-	mov r14,r9
-	mov r15,r9
-	and r14,r27
-	and r15,r10
-	eor r8,r14
-	eor r8,r15
-	mov r14,r27
-	com r14
-	mov r15,r14
-	and r14,r6
-	and r15,r11
-	eor r20,r14
-	eor r20,r15
-	mov r14,r10
-	mov r15,r10
-	and r14,r6
-	and r15,r11
-	eor r9,r14
-	eor r9,r15
-	eor r26,r23
-	eor r8,r7
-	std Z+21,r26
-	std Z+29,r8
-	ldd r26,Y+25
-	ldd r8,Y+26
-	mov r14,r6
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r27,r14
-	eor r27,r15
-	mov r14,r11
-	mov r15,r11
-	and r14,r26
-	and r15,r8
-	eor r10,r14
-	eor r10,r15
+	ldd r12,Y+19
+	mov r13,r12
+	mov r24,r23
+	com r24
+	mov r25,r24
+	and r24,r26
+	and r25,r8
+	eor r12,r24
+	eor r12,r25
+	mov r24,r7
+	mov r25,r7
+	and r24,r26
+	and r25,r8
+	eor r13,r24
+	eor r13,r25
+	mov r24,r26
+	com r24
+	mov r25,r24
+	and r24,r20
+	and r25,r9
+	eor r23,r24
+	eor r23,r25
+	mov r24,r8
+	mov r25,r8
+	and r24,r20
+	and r25,r9
+	eor r7,r24
+	eor r7,r25
+	mov r24,r20
+	com r24
+	mov r25,r24
+	and r24,r27
+	and r25,r10
+	eor r26,r24
+	eor r26,r25
+	mov r24,r9
+	mov r25,r9
+	and r24,r27
+	and r25,r10
+	eor r8,r24
+	eor r8,r25
+	mov r24,r27
+	com r24
+	mov r25,r24
+	and r24,r6
+	and r25,r11
+	eor r20,r24
+	eor r20,r25
+	mov r24,r10
+	mov r25,r10
+	and r24,r6
+	and r25,r11
+	eor r9,r24
+	eor r9,r25
+	mov r24,r6
+	com r24
+	mov r25,r24
+	and r24,r14
+	and r25,r15
+	eor r27,r24
+	eor r27,r25
+	mov r24,r11
+	mov r25,r11
+	and r24,r14
+	and r25,r15
+	eor r10,r24
+	eor r10,r25
 	eor r6,r12
 	eor r11,r13
+	eor r26,r23
 	eor r23,r6
 	eor r27,r20
 	com r20
+	eor r8,r7
 	eor r7,r11
 	eor r10,r9
 	std Z+5,r23
 	std Z+13,r7
+	std Z+21,r26
+	std Z+29,r8
 	std Z+45,r9
 	std Z+53,r27
 	std Z+61,r10
@@ -453,93 +447,91 @@ ascon_x2_permute:
 	eor r23,r6
 	eor r6,r27
 	eor r21,r26
-	std Y+25,r23
+	mov r14,r23
 	eor r7,r11
 	eor r11,r10
 	eor r9,r8
-	std Y+26,r7
-	mov r12,r1
-	mov r13,r12
-	mov r14,r23
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r12,r14
-	eor r12,r15
-	mov r14,r7
 	mov r15,r7
-	and r14,r26
-	and r15,r8
-	eor r13,r14
-	eor r13,r15
-	mov r14,r26
-	com r14
-	mov r15,r14
-	and r14,r21
-	and r15,r9
-	eor r23,r14
-	eor r23,r15
-	mov r14,r8
-	mov r15,r8
-	and r14,r21
-	and r15,r9
-	eor r7,r14
-	eor r7,r15
-	mov r14,r21
-	com r14
-	mov r15,r14
-	and r14,r27
-	and r15,r10
-	eor r26,r14
-	eor r26,r15
-	mov r14,r9
-	mov r15,r9
-	and r14,r27
-	and r15,r10
-	eor r8,r14
-	eor r8,r15
-	mov r14,r27
-	com r14
-	mov r15,r14
-	and r14,r6
-	and r15,r11
-	eor r21,r14
-	eor r21,r15
-	mov r14,r10
-	mov r15,r10
-	and r14,r6
-	and r15,r11
-	eor r9,r14
-	eor r9,r15
-	eor r26,r23
-	eor r8,r7
-	std Z+20,r26
-	std Z+28,r8
-	ldd r26,Y+25
-	ldd r8,Y+26
-	mov r14,r6
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r27,r14
-	eor r27,r15
-	mov r14,r11
-	mov r15,r11
-	and r14,r26
-	and r15,r8
-	eor r10,r14
-	eor r10,r15
+	ldd r12,Y+20
+	mov r13,r12
+	mov r24,r23
+	com r24
+	mov r25,r24
+	and r24,r26
+	and r25,r8
+	eor r12,r24
+	eor r12,r25
+	mov r24,r7
+	mov r25,r7
+	and r24,r26
+	and r25,r8
+	eor r13,r24
+	eor r13,r25
+	mov r24,r26
+	com r24
+	mov r25,r24
+	and r24,r21
+	and r25,r9
+	eor r23,r24
+	eor r23,r25
+	mov r24,r8
+	mov r25,r8
+	and r24,r21
+	and r25,r9
+	eor r7,r24
+	eor r7,r25
+	mov r24,r21
+	com r24
+	mov r25,r24
+	and r24,r27
+	and r25,r10
+	eor r26,r24
+	eor r26,r25
+	mov r24,r9
+	mov r25,r9
+	and r24,r27
+	and r25,r10
+	eor r8,r24
+	eor r8,r25
+	mov r24,r27
+	com r24
+	mov r25,r24
+	and r24,r6
+	and r25,r11
+	eor r21,r24
+	eor r21,r25
+	mov r24,r10
+	mov r25,r10
+	and r24,r6
+	and r25,r11
+	eor r9,r24
+	eor r9,r25
+	mov r24,r6
+	com r24
+	mov r25,r24
+	and r24,r14
+	and r25,r15
+	eor r27,r24
+	eor r27,r25
+	mov r24,r11
+	mov r25,r11
+	and r24,r14
+	and r25,r15
+	eor r10,r24
+	eor r10,r25
 	eor r6,r12
 	eor r11,r13
+	eor r26,r23
 	eor r23,r6
 	eor r27,r21
 	com r21
+	eor r8,r7
 	eor r7,r11
 	eor r10,r9
 	std Z+4,r23
 	std Z+12,r7
+	std Z+20,r26
+	std Z+28,r8
 	std Z+44,r9
 	std Z+52,r27
 	std Z+60,r10
@@ -558,93 +550,91 @@ ascon_x2_permute:
 	eor r23,r6
 	eor r6,r27
 	eor r2,r26
-	std Y+25,r23
+	mov r14,r23
 	eor r7,r11
 	eor r11,r10
 	eor r9,r8
-	std Y+26,r7
-	mov r12,r1
-	mov r13,r12
-	mov r14,r23
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r12,r14
-	eor r12,r15
-	mov r14,r7
 	mov r15,r7
-	and r14,r26
-	and r15,r8
-	eor r13,r14
-	eor r13,r15
-	mov r14,r26
-	com r14
-	mov r15,r14
-	and r14,r2
-	and r15,r9
-	eor r23,r14
-	eor r23,r15
-	mov r14,r8
-	mov r15,r8
-	and r14,r2
-	and r15,r9
-	eor r7,r14
-	eor r7,r15
-	mov r14,r2
-	com r14
-	mov r15,r14
-	and r14,r27
-	and r15,r10
-	eor r26,r14
-	eor r26,r15
-	mov r14,r9
-	mov r15,r9
-	and r14,r27
-	and r15,r10
-	eor r8,r14
-	eor r8,r15
-	mov r14,r27
-	com r14
-	mov r15,r14
-	and r14,r6
-	and r15,r11
-	eor r2,r14
-	eor r2,r15
-	mov r14,r10
-	mov r15,r10
-	and r14,r6
-	and r15,r11
-	eor r9,r14
-	eor r9,r15
-	eor r26,r23
-	eor r8,r7
-	std Z+19,r26
-	std Z+27,r8
-	ldd r26,Y+25
-	ldd r8,Y+26
-	mov r14,r6
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r27,r14
-	eor r27,r15
-	mov r14,r11
-	mov r15,r11
-	and r14,r26
-	and r15,r8
-	eor r10,r14
-	eor r10,r15
+	ldd r12,Y+21
+	mov r13,r12
+	mov r24,r23
+	com r24
+	mov r25,r24
+	and r24,r26
+	and r25,r8
+	eor r12,r24
+	eor r12,r25
+	mov r24,r7
+	mov r25,r7
+	and r24,r26
+	and r25,r8
+	eor r13,r24
+	eor r13,r25
+	mov r24,r26
+	com r24
+	mov r25,r24
+	and r24,r2
+	and r25,r9
+	eor r23,r24
+	eor r23,r25
+	mov r24,r8
+	mov r25,r8
+	and r24,r2
+	and r25,r9
+	eor r7,r24
+	eor r7,r25
+	mov r24,r2
+	com r24
+	mov r25,r24
+	and r24,r27
+	and r25,r10
+	eor r26,r24
+	eor r26,r25
+	mov r24,r9
+	mov r25,r9
+	and r24,r27
+	and r25,r10
+	eor r8,r24
+	eor r8,r25
+	mov r24,r27
+	com r24
+	mov r25,r24
+	and r24,r6
+	and r25,r11
+	eor r2,r24
+	eor r2,r25
+	mov r24,r10
+	mov r25,r10
+	and r24,r6
+	and r25,r11
+	eor r9,r24
+	eor r9,r25
+	mov r24,r6
+	com r24
+	mov r25,r24
+	and r24,r14
+	and r25,r15
+	eor r27,r24
+	eor r27,r25
+	mov r24,r11
+	mov r25,r11
+	and r24,r14
+	and r25,r15
+	eor r10,r24
+	eor r10,r25
 	eor r6,r12
 	eor r11,r13
+	eor r26,r23
 	eor r23,r6
 	eor r27,r2
 	com r2
+	eor r8,r7
 	eor r7,r11
 	eor r10,r9
 	std Z+3,r23
 	std Z+11,r7
+	std Z+19,r26
+	std Z+27,r8
 	std Z+43,r9
 	std Z+51,r27
 	std Z+59,r10
@@ -663,93 +653,91 @@ ascon_x2_permute:
 	eor r23,r6
 	eor r6,r27
 	eor r3,r26
-	std Y+25,r23
+	mov r14,r23
 	eor r7,r11
 	eor r11,r10
 	eor r9,r8
-	std Y+26,r7
-	mov r12,r1
-	mov r13,r12
-	mov r14,r23
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r12,r14
-	eor r12,r15
-	mov r14,r7
 	mov r15,r7
-	and r14,r26
-	and r15,r8
-	eor r13,r14
-	eor r13,r15
-	mov r14,r26
-	com r14
-	mov r15,r14
-	and r14,r3
-	and r15,r9
-	eor r23,r14
-	eor r23,r15
-	mov r14,r8
-	mov r15,r8
-	and r14,r3
-	and r15,r9
-	eor r7,r14
-	eor r7,r15
-	mov r14,r3
-	com r14
-	mov r15,r14
-	and r14,r27
-	and r15,r10
-	eor r26,r14
-	eor r26,r15
-	mov r14,r9
-	mov r15,r9
-	and r14,r27
-	and r15,r10
-	eor r8,r14
-	eor r8,r15
-	mov r14,r27
-	com r14
-	mov r15,r14
-	and r14,r6
-	and r15,r11
-	eor r3,r14
-	eor r3,r15
-	mov r14,r10
-	mov r15,r10
-	and r14,r6
-	and r15,r11
-	eor r9,r14
-	eor r9,r15
-	eor r26,r23
-	eor r8,r7
-	std Z+18,r26
-	std Z+26,r8
-	ldd r26,Y+25
-	ldd r8,Y+26
-	mov r14,r6
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r27,r14
-	eor r27,r15
-	mov r14,r11
-	mov r15,r11
-	and r14,r26
-	and r15,r8
-	eor r10,r14
-	eor r10,r15
+	ldd r12,Y+22
+	mov r13,r12
+	mov r24,r23
+	com r24
+	mov r25,r24
+	and r24,r26
+	and r25,r8
+	eor r12,r24
+	eor r12,r25
+	mov r24,r7
+	mov r25,r7
+	and r24,r26
+	and r25,r8
+	eor r13,r24
+	eor r13,r25
+	mov r24,r26
+	com r24
+	mov r25,r24
+	and r24,r3
+	and r25,r9
+	eor r23,r24
+	eor r23,r25
+	mov r24,r8
+	mov r25,r8
+	and r24,r3
+	and r25,r9
+	eor r7,r24
+	eor r7,r25
+	mov r24,r3
+	com r24
+	mov r25,r24
+	and r24,r27
+	and r25,r10
+	eor r26,r24
+	eor r26,r25
+	mov r24,r9
+	mov r25,r9
+	and r24,r27
+	and r25,r10
+	eor r8,r24
+	eor r8,r25
+	mov r24,r27
+	com r24
+	mov r25,r24
+	and r24,r6
+	and r25,r11
+	eor r3,r24
+	eor r3,r25
+	mov r24,r10
+	mov r25,r10
+	and r24,r6
+	and r25,r11
+	eor r9,r24
+	eor r9,r25
+	mov r24,r6
+	com r24
+	mov r25,r24
+	and r24,r14
+	and r25,r15
+	eor r27,r24
+	eor r27,r25
+	mov r24,r11
+	mov r25,r11
+	and r24,r14
+	and r25,r15
+	eor r10,r24
+	eor r10,r25
 	eor r6,r12
 	eor r11,r13
+	eor r26,r23
 	eor r23,r6
 	eor r27,r3
 	com r3
+	eor r8,r7
 	eor r7,r11
 	eor r10,r9
 	std Z+2,r23
 	std Z+10,r7
+	std Z+18,r26
+	std Z+26,r8
 	std Z+42,r9
 	std Z+50,r27
 	std Z+58,r10
@@ -768,93 +756,91 @@ ascon_x2_permute:
 	eor r23,r6
 	eor r6,r27
 	eor r4,r26
-	std Y+25,r23
+	mov r14,r23
 	eor r7,r11
 	eor r11,r10
 	eor r9,r8
-	std Y+26,r7
-	mov r12,r1
-	mov r13,r12
-	mov r14,r23
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r12,r14
-	eor r12,r15
-	mov r14,r7
 	mov r15,r7
-	and r14,r26
-	and r15,r8
-	eor r13,r14
-	eor r13,r15
-	mov r14,r26
-	com r14
-	mov r15,r14
-	and r14,r4
-	and r15,r9
-	eor r23,r14
-	eor r23,r15
-	mov r14,r8
-	mov r15,r8
-	and r14,r4
-	and r15,r9
-	eor r7,r14
-	eor r7,r15
-	mov r14,r4
-	com r14
-	mov r15,r14
-	and r14,r27
-	and r15,r10
-	eor r26,r14
-	eor r26,r15
-	mov r14,r9
-	mov r15,r9
-	and r14,r27
-	and r15,r10
-	eor r8,r14
-	eor r8,r15
-	mov r14,r27
-	com r14
-	mov r15,r14
-	and r14,r6
-	and r15,r11
-	eor r4,r14
-	eor r4,r15
-	mov r14,r10
-	mov r15,r10
-	and r14,r6
-	and r15,r11
-	eor r9,r14
-	eor r9,r15
-	eor r26,r23
-	eor r8,r7
-	std Z+17,r26
-	std Z+25,r8
-	ldd r26,Y+25
-	ldd r8,Y+26
-	mov r14,r6
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r27,r14
-	eor r27,r15
-	mov r14,r11
-	mov r15,r11
-	and r14,r26
-	and r15,r8
-	eor r10,r14
-	eor r10,r15
+	ldd r12,Y+23
+	mov r13,r12
+	mov r24,r23
+	com r24
+	mov r25,r24
+	and r24,r26
+	and r25,r8
+	eor r12,r24
+	eor r12,r25
+	mov r24,r7
+	mov r25,r7
+	and r24,r26
+	and r25,r8
+	eor r13,r24
+	eor r13,r25
+	mov r24,r26
+	com r24
+	mov r25,r24
+	and r24,r4
+	and r25,r9
+	eor r23,r24
+	eor r23,r25
+	mov r24,r8
+	mov r25,r8
+	and r24,r4
+	and r25,r9
+	eor r7,r24
+	eor r7,r25
+	mov r24,r4
+	com r24
+	mov r25,r24
+	and r24,r27
+	and r25,r10
+	eor r26,r24
+	eor r26,r25
+	mov r24,r9
+	mov r25,r9
+	and r24,r27
+	and r25,r10
+	eor r8,r24
+	eor r8,r25
+	mov r24,r27
+	com r24
+	mov r25,r24
+	and r24,r6
+	and r25,r11
+	eor r4,r24
+	eor r4,r25
+	mov r24,r10
+	mov r25,r10
+	and r24,r6
+	and r25,r11
+	eor r9,r24
+	eor r9,r25
+	mov r24,r6
+	com r24
+	mov r25,r24
+	and r24,r14
+	and r25,r15
+	eor r27,r24
+	eor r27,r25
+	mov r24,r11
+	mov r25,r11
+	and r24,r14
+	and r25,r15
+	eor r10,r24
+	eor r10,r25
 	eor r6,r12
 	eor r11,r13
+	eor r26,r23
 	eor r23,r6
 	eor r27,r4
 	com r4
+	eor r8,r7
 	eor r7,r11
 	eor r10,r9
 	std Z+1,r23
 	std Z+9,r7
+	std Z+17,r26
+	std Z+25,r8
 	std Z+41,r9
 	std Z+49,r27
 	std Z+57,r10
@@ -873,93 +859,91 @@ ascon_x2_permute:
 	eor r23,r6
 	eor r6,r27
 	eor r5,r26
-	std Y+25,r23
+	mov r14,r23
 	eor r7,r11
 	eor r11,r10
 	eor r9,r8
-	std Y+26,r7
-	mov r12,r1
-	mov r13,r12
-	mov r14,r23
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r12,r14
-	eor r12,r15
-	mov r14,r7
 	mov r15,r7
-	and r14,r26
-	and r15,r8
-	eor r13,r14
-	eor r13,r15
-	mov r14,r26
-	com r14
-	mov r15,r14
-	and r14,r5
-	and r15,r9
-	eor r23,r14
-	eor r23,r15
-	mov r14,r8
-	mov r15,r8
-	and r14,r5
-	and r15,r9
-	eor r7,r14
-	eor r7,r15
-	mov r14,r5
-	com r14
-	mov r15,r14
-	and r14,r27
-	and r15,r10
-	eor r26,r14
-	eor r26,r15
-	mov r14,r9
-	mov r15,r9
-	and r14,r27
-	and r15,r10
-	eor r8,r14
-	eor r8,r15
-	mov r14,r27
-	com r14
-	mov r15,r14
-	and r14,r6
-	and r15,r11
-	eor r5,r14
-	eor r5,r15
-	mov r14,r10
-	mov r15,r10
-	and r14,r6
-	and r15,r11
-	eor r9,r14
-	eor r9,r15
-	eor r26,r23
-	eor r8,r7
-	std Z+16,r26
-	std Z+24,r8
-	ldd r26,Y+25
-	ldd r8,Y+26
-	mov r14,r6
-	com r14
-	mov r15,r14
-	and r14,r26
-	and r15,r8
-	eor r27,r14
-	eor r27,r15
-	mov r14,r11
-	mov r15,r11
-	and r14,r26
-	and r15,r8
-	eor r10,r14
-	eor r10,r15
+	ldd r12,Y+24
+	mov r13,r12
+	mov r24,r23
+	com r24
+	mov r25,r24
+	and r24,r26
+	and r25,r8
+	eor r12,r24
+	eor r12,r25
+	mov r24,r7
+	mov r25,r7
+	and r24,r26
+	and r25,r8
+	eor r13,r24
+	eor r13,r25
+	mov r24,r26
+	com r24
+	mov r25,r24
+	and r24,r5
+	and r25,r9
+	eor r23,r24
+	eor r23,r25
+	mov r24,r8
+	mov r25,r8
+	and r24,r5
+	and r25,r9
+	eor r7,r24
+	eor r7,r25
+	mov r24,r5
+	com r24
+	mov r25,r24
+	and r24,r27
+	and r25,r10
+	eor r26,r24
+	eor r26,r25
+	mov r24,r9
+	mov r25,r9
+	and r24,r27
+	and r25,r10
+	eor r8,r24
+	eor r8,r25
+	mov r24,r27
+	com r24
+	mov r25,r24
+	and r24,r6
+	and r25,r11
+	eor r5,r24
+	eor r5,r25
+	mov r24,r10
+	mov r25,r10
+	and r24,r6
+	and r25,r11
+	eor r9,r24
+	eor r9,r25
+	mov r24,r6
+	com r24
+	mov r25,r24
+	and r24,r14
+	and r25,r15
+	eor r27,r24
+	eor r27,r25
+	mov r24,r11
+	mov r25,r11
+	and r24,r14
+	and r25,r15
+	eor r10,r24
+	eor r10,r25
 	eor r6,r12
 	eor r11,r13
+	eor r26,r23
 	eor r23,r6
 	eor r27,r5
 	com r5
+	eor r8,r7
 	eor r7,r11
 	eor r10,r9
 	st Z,r23
 	std Z+8,r7
+	std Z+16,r26
+	std Z+24,r8
 	std Z+40,r9
 	std Z+48,r27
 	std Z+56,r10
@@ -1923,8 +1907,8 @@ ascon_x2_permute:
 	std Z+13,r20
 	std Z+14,r19
 	std Z+15,r18
-	ldd r26,Y+27
-	ldd r27,Y+28
+	ldd r26,Y+25
+	ldd r27,Y+26
 	ldd r5,Y+17
 	ldd r4,Y+18
 	ldd r3,Y+19
@@ -1941,7 +1925,7 @@ ascon_x2_permute:
 	st X+,r3
 	st X+,r4
 	st X+,r5
-	adiw r28,28
+	adiw r28,26
 	in r0,0x3f
 	cli
 	out 0x3e,r29

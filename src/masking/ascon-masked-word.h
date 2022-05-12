@@ -71,7 +71,12 @@ typedef union
     /** 32-bit version of the masked shares */
     uint32_t W[ASCON_MASKED_MAX_SHARES * 2];
 
+    /** 8-bit version of the masked shares */
+    uint8_t B[ASCON_MASKED_MAX_SHARES * 8];
+
 } ascon_masked_word_t;
+
+#if !defined(ASCON_MASKED_WORD_BACKEND_DIRECT_XOR)
 
 /**
  * \brief Rotates 64-bit masked share 1 with respect to share 0.
@@ -288,6 +293,36 @@ typedef union
  * \return Value of share 3 in the same bit positions as share 2.
  */
 #define ascon_mask32_unrotate_share3_2(x) (rightRotate27((x)))
+
+#else /* ASCON_MASKED_WORD_BACKEND_DIRECT_XOR */
+
+/* Direct XOR masking method does not rotate the shares */
+#define ascon_mask64_rotate_share1_0(x)   (x)
+#define ascon_mask64_rotate_share2_0(x)   (x)
+#define ascon_mask64_rotate_share2_1(x)   (x)
+#define ascon_mask64_rotate_share3_0(x)   (x)
+#define ascon_mask64_rotate_share3_1(x)   (x)
+#define ascon_mask64_rotate_share3_2(x)   (x)
+#define ascon_mask64_unrotate_share1_0(x) (x)
+#define ascon_mask64_unrotate_share2_0(x) (x)
+#define ascon_mask64_unrotate_share2_1(x) (x)
+#define ascon_mask64_unrotate_share3_0(x) (x)
+#define ascon_mask64_unrotate_share3_1(x) (x)
+#define ascon_mask64_unrotate_share3_2(x) (x)
+#define ascon_mask32_rotate_share1_0(x)   (x)
+#define ascon_mask32_rotate_share2_0(x)   (x)
+#define ascon_mask32_rotate_share2_1(x)   (x)
+#define ascon_mask32_rotate_share3_0(x)   (x)
+#define ascon_mask32_rotate_share3_1(x)   (x)
+#define ascon_mask32_rotate_share3_2(x)   (x)
+#define ascon_mask32_unrotate_share1_0(x) (x)
+#define ascon_mask32_unrotate_share2_0(x) (x)
+#define ascon_mask32_unrotate_share2_1(x) (x)
+#define ascon_mask32_unrotate_share3_0(x) (x)
+#define ascon_mask32_unrotate_share3_1(x) (x)
+#define ascon_mask32_unrotate_share3_2(x) (x)
+
+#endif /* ASCON_MASKED_WORD_BACKEND_DIRECT_XOR */
 
 /**
  * \brief Sets a x2 masked word to zero.

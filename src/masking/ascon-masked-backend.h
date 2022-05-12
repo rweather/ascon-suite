@@ -24,12 +24,18 @@
 #define ASCON_MASKED_BACKEND_H
 
 #include "core/ascon-select-backend.h"
-#include "masking/ascon-masked-config.h"
+#include "ascon-masked-config.h"
 
 /* Select the default back end to use for the masked ASCON permutation,
  * and any properties we can use to optimize use of the permutation. */
 
-#if defined(ASCON_BACKEND_X86_64)
+#if defined(ASCON_BACKEND_AVR5)
+
+/* Masked backend for AVR5 based systems */
+#define ASCON_MASKED_X2_BACKEND_ARM5 1
+#define ASCON_MASKED_WORD_BACKEND_DIRECT_XOR 1
+
+#elif defined(ASCON_BACKEND_X86_64)
 
 /* Masked backend for x86-64 based systems */
 #define ASCON_MASKED_X2_BACKEND_X86_64 1
