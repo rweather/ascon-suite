@@ -51,7 +51,7 @@ protection at present.
 <tr><td>armv7a</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>ARM Cortex A7 (uses armv7m backend)</td></tr>
 <tr><td>armv8m</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>ARM Cortex M33 (uses armv7m backend)</td></tr>
 <tr><td>armv8a-64</td><td>ASM</td><td>Host 64-bit</td><td> </td><td>64-bit ARMv8-A; e.g. Raspberry Pi 4 running the 64-bit Raspberry Pi OS</td></tr>
-<tr><td>avr5</td><td>ASM</td><td>8-bit</td><td> </td><td>AVR5 and higher; e.g. ATmega328P (Arduino Uno), ATmega2560 (Arduino Mega 2560), ...</td></tr>
+<tr><td>avr5</td><td>ASM</td><td>8-bit</td><td>2 shares only</td><td>AVR5 and higher; e.g. ATmega328P (Arduino Uno), ATmega2560 (Arduino Mega 2560), etc.  The masked version only supports 2 shares at present.</td></tr>
 <tr><td>i386</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>32-bit x86 systems (i386/i486/i586/i686)</td></tr>
 <tr><td>m68k</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>32-bit 680x0 and ColdFire systems</td></tr>
 <tr><td>riscv32e</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>32-bit RISC-V systems, RV32E base integer instruction set</td></tr>

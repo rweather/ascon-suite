@@ -41,9 +41,9 @@ extern "C" {
  */
 typedef union
 {
-    uint64_t S[4];      /** 64-bit version of the masked shares */
-    uint32_t W[8];      /** 32-bit version of the masked shares */
-    uint8_t B[32];      /** 8-bit version of the masked shares */
+    uint64_t S[4];      /**< 64-bit version of the masked shares */
+    uint32_t W[8];      /**< 32-bit version of the masked shares */
+    uint8_t B[32];      /**< 8-bit version of the masked shares */
 
 } ascon_masked_key_word_t;
 

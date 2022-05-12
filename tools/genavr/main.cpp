@@ -31,9 +31,9 @@ enum Mode
     Test
 };
 
-static void header(std::ostream &ostream, const char *define)
+static void header(std::ostream &ostream, const char *include, const char *define)
 {
-    ostream << "#include \"ascon-select-backend.h\"" << std::endl;
+    ostream << "#include \"" << include << "\"" << std::endl;
     ostream << "#if defined(" << define << ")" << std::endl;
     ostream << copyright_message;
     ostream << "#include <avr/io.h>" << std::endl;
@@ -94,6 +94,7 @@ int main(int argc, char *argv[])
     gen_code gen2 = 0;
     gen_code gen3 = 0;
     const char *define = "xyzzy";
+    const char *include = "xyzzy";
 
     if (argc > 1 && !strcmp(argv[1], "--test")) {
         generate = false;
@@ -104,15 +105,17 @@ int main(int argc, char *argv[])
         }
         if (!strcmp(argv[1], "ASCON")) {
             gen1 = ascon;
+            include = "ascon-select-backend.h";
             define = "ASCON_BACKEND_AVR5";
         } else if (!strcmp(argv[1], "ASCON-x2")) {
             gen1 = ascon_x2;
+            include = "ascon-masked-backend.h";
             define = "ASCON_MASKED_X2_BACKEND_AVR5";
         }
     }
 
     if (generate) {
-        header(std::cout, define);
+        header(std::cout, include, define);
         if (gen1)
             gen1(Generate);
         if (gen2)
