@@ -66,10 +66,10 @@ extern "C" {
 #define ASCON_MASKED_DATA_SHARES 2
 #endif
 
-/* AVR is limited to no more than 2 shares at present */
-#if defined(__AVR__)
+/* AVR is limited to no more than 3 shares at present */
+#if defined(__AVR__) && ASCON_MASKED_MAX_SHARES > 3
 #undef ASCON_MASKED_MAX_SHARES
-#define ASCON_MASKED_MAX_SHARES 2
+#define ASCON_MASKED_MAX_SHARES 3
 #endif
 
 /* Check that the values are in the correct range */

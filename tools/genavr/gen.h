@@ -45,4 +45,8 @@ bool test_ascon_permutation(Code &code);
 void gen_ascon_x2_permutation(Code &code, int max_shares);
 bool test_ascon_x2_permutation(Code &code, int max_shares);
 
+// 3-share version of the ASCON permutation.
+void gen_ascon_x3_permutation(Code &code);
+bool test_ascon_x3_permutation(Code &code);
+
 #endif

@@ -34,7 +34,7 @@ enum Mode
 static void header(std::ostream &ostream, const char *include, const char *define)
 {
     ostream << "#include \"" << include << "\"" << std::endl;
-    ostream << "#if defined(" << define << ")" << std::endl;
+    ostream << "#if " << define << std::endl;
     ostream << copyright_message;
     ostream << "#include <avr/io.h>" << std::endl;
     ostream << "/* Automatically generated - do not edit */" << std::endl;
@@ -104,6 +104,23 @@ static bool ascon_x2_3(enum Mode mode)
     return true;
 }
 
+static bool ascon_x3(enum Mode mode)
+{
+    Code code;
+    gen_ascon_x3_permutation(code);
+    if (mode == Generate) {
+        code.write(std::cout);
+    } else {
+        if (!test_ascon_x3_permutation(code)) {
+            std::cout << "ASCON x3 tests FAILED" << std::endl;
+            return false;
+        } else {
+            std::cout << "ASCON x3 tests succeeded" << std::endl;
+        }
+    }
+    return true;
+}
+
 typedef bool (*gen_code)(enum Mode mode);
 
 int main(int argc, char *argv[])
@@ -126,12 +143,16 @@ int main(int argc, char *argv[])
         if (!strcmp(argv[1], "ASCON")) {
             gen1 = ascon;
             include = "ascon-select-backend.h";
-            define = "ASCON_BACKEND_AVR5";
+            define = "defined(ASCON_BACKEND_AVR5)";
         } else if (!strcmp(argv[1], "ASCON-x2")) {
             gen1 = ascon_x2_2;
             gen2 = ascon_x2_3;
             include = "ascon-masked-backend.h";
-            define = "ASCON_MASKED_X2_BACKEND_AVR5";
+            define = "defined(ASCON_MASKED_X2_BACKEND_AVR5)";
+        } else if (!strcmp(argv[1], "ASCON-x3")) {
+            gen1 = ascon_x3;
+            include = "ascon-masked-backend.h";
+            define = "defined(ASCON_MASKED_X3_BACKEND_AVR5) && ASCON_MASKED_MAX_SHARES >= 3";
         }
     }
 
@@ -150,6 +171,8 @@ int main(int argc, char *argv[])
         if (!ascon_x2_2(Test))
             exit_val = 1;
         if (!ascon_x2_3(Test))
+            exit_val = 1;
+        if (!ascon_x3(Test))
             exit_val = 1;
     }
 

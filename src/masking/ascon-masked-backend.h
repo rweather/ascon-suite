@@ -33,6 +33,7 @@
 
 /* Masked backend for AVR5 based systems */
 #define ASCON_MASKED_X2_BACKEND_AVR5 1
+#define ASCON_MASKED_X3_BACKEND_AVR5 1
 #define ASCON_MASKED_WORD_BACKEND_DIRECT_XOR 1
 
 #elif defined(ASCON_BACKEND_X86_64)
