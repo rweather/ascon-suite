@@ -67,18 +67,38 @@ static bool ascon(enum Mode mode)
     return true;
 }
 
-static bool ascon_x2(enum Mode mode)
+static bool ascon_x2_2(enum Mode mode)
 {
     Code code;
-    gen_ascon_x2_permutation(code);
+    gen_ascon_x2_permutation(code, 2);
     if (mode == Generate) {
+        printf("#if ASCON_MASKED_MAX_SHARES < 3\n");
         code.write(std::cout);
     } else {
-        if (!test_ascon_x2_permutation(code)) {
-            std::cout << "ASCON x2 tests FAILED" << std::endl;
+        if (!test_ascon_x2_permutation(code, 2)) {
+            std::cout << "ASCON x2/2 tests FAILED" << std::endl;
             return false;
         } else {
-            std::cout << "ASCON x2 tests succeeded" << std::endl;
+            std::cout << "ASCON x2/2 tests succeeded" << std::endl;
+        }
+    }
+    return true;
+}
+
+static bool ascon_x2_3(enum Mode mode)
+{
+    Code code;
+    gen_ascon_x2_permutation(code, 3);
+    if (mode == Generate) {
+        printf("#else\n");
+        code.write(std::cout);
+        printf("#endif\n");
+    } else {
+        if (!test_ascon_x2_permutation(code, 3)) {
+            std::cout << "ASCON x2/3 tests FAILED" << std::endl;
+            return false;
+        } else {
+            std::cout << "ASCON x2/3 tests succeeded" << std::endl;
         }
     }
     return true;
@@ -108,7 +128,8 @@ int main(int argc, char *argv[])
             include = "ascon-select-backend.h";
             define = "ASCON_BACKEND_AVR5";
         } else if (!strcmp(argv[1], "ASCON-x2")) {
-            gen1 = ascon_x2;
+            gen1 = ascon_x2_2;
+            gen2 = ascon_x2_3;
             include = "ascon-masked-backend.h";
             define = "ASCON_MASKED_X2_BACKEND_AVR5";
         }
@@ -126,7 +147,9 @@ int main(int argc, char *argv[])
     } else {
         if (!ascon(Test))
             exit_val = 1;
-        if (!ascon_x2(Test))
+        if (!ascon_x2_2(Test))
+            exit_val = 1;
+        if (!ascon_x2_3(Test))
             exit_val = 1;
     }
 
