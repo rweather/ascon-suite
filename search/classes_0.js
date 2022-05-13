@@ -15,6 +15,7 @@ var searchData=
   ['ascon_5fkmaca_5fstate_5ft',['ascon_kmaca_state_t',['../structascon__kmaca__state__t.html',1,'']]],
   ['ascon_5fmasked_5fkey_5f128_5ft',['ascon_masked_key_128_t',['../structascon__masked__key__128__t.html',1,'']]],
   ['ascon_5fmasked_5fkey_5f160_5ft',['ascon_masked_key_160_t',['../structascon__masked__key__160__t.html',1,'']]],
+  ['ascon_5fmasked_5fkey_5fword_5ft',['ascon_masked_key_word_t',['../unionascon__masked__key__word__t.html',1,'']]],
   ['ascon_5fmasked_5fstate_5ft',['ascon_masked_state_t',['../structascon__masked__state__t.html',1,'']]],
   ['ascon_5fmasked_5fword_5ft',['ascon_masked_word_t',['../unionascon__masked__word__t.html',1,'']]],
   ['ascon_5fprf_5fstate_5ft',['ascon_prf_state_t',['../structascon__prf__state__t.html',1,'']]],

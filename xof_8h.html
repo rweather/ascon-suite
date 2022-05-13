@@ -156,6 +156,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aa85c8abde2af905b21184e8083f8df3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#aa85c8abde2af905b21184e8083f8df3e">ascon_xof_clear_rate</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state)</td></tr>
 <tr class="memdesc:aa85c8abde2af905b21184e8083f8df3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the rate portion of an ASCON-XOF state to all-zeroes and runs the permutation.  <a href="#aa85c8abde2af905b21184e8083f8df3e">More...</a><br/></td></tr>
 <tr class="separator:aa85c8abde2af905b21184e8083f8df3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca2e0cbf9af91920521089b920c9ceae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#aca2e0cbf9af91920521089b920c9ceae">ascon_xof_copy</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *dest, const <a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *src)</td></tr>
+<tr class="memdesc:aca2e0cbf9af91920521089b920c9ceae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clones a copy of an ASCON-XOF state.  <a href="#aca2e0cbf9af91920521089b920c9ceae">More...</a><br/></td></tr>
+<tr class="separator:aca2e0cbf9af91920521089b920c9ceae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38bc64f8fbca3fe5639a69117ff2d216"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a38bc64f8fbca3fe5639a69117ff2d216">ascon_xofa</a> (unsigned char *out, const unsigned char *in, size_t inlen)</td></tr>
 <tr class="memdesc:a38bc64f8fbca3fe5639a69117ff2d216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes a block of input data with ASCON-XOFA and generates a fixed-length 32 byte output.  <a href="#a38bc64f8fbca3fe5639a69117ff2d216">More...</a><br/></td></tr>
 <tr class="separator:a38bc64f8fbca3fe5639a69117ff2d216"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -186,6 +189,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a98a3a68fc069f0834ccb408e52c79348"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a98a3a68fc069f0834ccb408e52c79348">ascon_xofa_clear_rate</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state)</td></tr>
 <tr class="memdesc:a98a3a68fc069f0834ccb408e52c79348"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the rate portion of an ASCON-XOFA state to all-zeroes and runs the permutation.  <a href="#a98a3a68fc069f0834ccb408e52c79348">More...</a><br/></td></tr>
 <tr class="separator:a98a3a68fc069f0834ccb408e52c79348"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af76efb08d7f382ba06511190c1e3bcbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#af76efb08d7f382ba06511190c1e3bcbd">ascon_xofa_copy</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *dest, const <a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *src)</td></tr>
+<tr class="memdesc:af76efb08d7f382ba06511190c1e3bcbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clones a copy of an ASCON-XOFA state.  <a href="#af76efb08d7f382ba06511190c1e3bcbd">More...</a><br/></td></tr>
+<tr class="separator:af76efb08d7f382ba06511190c1e3bcbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ASCON-XOF and ASCON-XOFA extensible output functions (XOF's). </p>
@@ -309,6 +315,44 @@ Functions</h2></td></tr>
 <p>This function calls <a class="el" href="xof_8h.html#a1618f0fd2b920de6fad9865b33106c06" title="Absorbs enough zeroes into an ASCON-XOF state to pad the input to the next multiple of the block rate...">ascon_xof_pad()</a> before clearing the rate to ensure that the XOF is in absorb mode and aligned on a block boundary. </p>
 
 <p>Definition at line <a class="el" href="ascon-xof_8c_source.html#l00277">277</a> of file <a class="el" href="ascon-xof_8c_source.html">ascon-xof.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aca2e0cbf9af91920521089b920c9ceae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon_xof_copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *&#160;</td>
+          <td class="paramname"><em>src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clones a copy of an ASCON-XOF state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>Destination XOF state to copy into. </td></tr>
+    <tr><td class="paramname">src</td><td>Source XOF state to copy from.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The destination will be initialized by this operation, so it must not previously have been initialized or it has already been freed. The source must be already initialized. </p>
+
+<p>Definition at line <a class="el" href="ascon-xof_8c_source.html#l00286">286</a> of file <a class="el" href="ascon-xof_8c_source.html">ascon-xof.c</a>.</p>
 
 </div>
 </div>
@@ -662,6 +706,44 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af76efb08d7f382ba06511190c1e3bcbd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon_xofa_copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *&#160;</td>
+          <td class="paramname"><em>src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clones a copy of an ASCON-XOFA state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>Destination XOF state to copy into. </td></tr>
+    <tr><td class="paramname">src</td><td>Source XOF state to copy from.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The destination will be initialized by this operation, so it must not previously have been initialized or it has already been freed. The source must be already initialized. </p>
+
+<p>Definition at line <a class="el" href="ascon-xofa_8c_source.html#l00287">287</a> of file <a class="el" href="ascon-xofa_8c_source.html">ascon-xofa.c</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="af79d56267775b9ffeb0a29931ee6d1a4"></a>
 <div class="memitem">
 <div class="memproto">
@@ -896,7 +978,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 3 2022 16:33:53 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2022 08:17:55 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

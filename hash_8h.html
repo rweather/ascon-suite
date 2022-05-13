@@ -128,6 +128,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6acc6df761756d14f1b58ea25645c0f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a6acc6df761756d14f1b58ea25645c0f7">ascon_hash_finalize</a> (<a class="el" href="structascon__hash__state__t.html">ascon_hash_state_t</a> *state, unsigned char *out)</td></tr>
 <tr class="memdesc:a6acc6df761756d14f1b58ea25645c0f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the final hash value from an ASCON-HASH hashing operation.  <a href="#a6acc6df761756d14f1b58ea25645c0f7">More...</a><br/></td></tr>
 <tr class="separator:a6acc6df761756d14f1b58ea25645c0f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4ec5011ca5615053d43354ae22aa3fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#ac4ec5011ca5615053d43354ae22aa3fa">ascon_hash_copy</a> (<a class="el" href="structascon__hash__state__t.html">ascon_hash_state_t</a> *dest, const <a class="el" href="structascon__hash__state__t.html">ascon_hash_state_t</a> *src)</td></tr>
+<tr class="memdesc:ac4ec5011ca5615053d43354ae22aa3fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clones a copy of an ASCON-HASH state.  <a href="#ac4ec5011ca5615053d43354ae22aa3fa">More...</a><br/></td></tr>
+<tr class="separator:ac4ec5011ca5615053d43354ae22aa3fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8792540643afad247c190e4fc170cd73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a8792540643afad247c190e4fc170cd73">ascon_hasha</a> (unsigned char *out, const unsigned char *in, size_t inlen)</td></tr>
 <tr class="memdesc:a8792540643afad247c190e4fc170cd73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes a block of input data with ASCON-HASHA.  <a href="#a8792540643afad247c190e4fc170cd73">More...</a><br/></td></tr>
 <tr class="separator:a8792540643afad247c190e4fc170cd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,6 +149,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a257e0993332bc304043f73b74a0825f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#a257e0993332bc304043f73b74a0825f2">ascon_hasha_finalize</a> (<a class="el" href="structascon__hasha__state__t.html">ascon_hasha_state_t</a> *state, unsigned char *out)</td></tr>
 <tr class="memdesc:a257e0993332bc304043f73b74a0825f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the final hash value from an ASCON-HASHA hashing operation.  <a href="#a257e0993332bc304043f73b74a0825f2">More...</a><br/></td></tr>
 <tr class="separator:a257e0993332bc304043f73b74a0825f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab27e674d75b1bb7f36dd9a1a104cf1f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hash_8h.html#ab27e674d75b1bb7f36dd9a1a104cf1f8">ascon_hasha_copy</a> (<a class="el" href="structascon__hasha__state__t.html">ascon_hasha_state_t</a> *dest, const <a class="el" href="structascon__hasha__state__t.html">ascon_hasha_state_t</a> *src)</td></tr>
+<tr class="memdesc:ab27e674d75b1bb7f36dd9a1a104cf1f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clones a copy of an ASCON-HASHA state.  <a href="#ab27e674d75b1bb7f36dd9a1a104cf1f8">More...</a><br/></td></tr>
+<tr class="separator:ab27e674d75b1bb7f36dd9a1a104cf1f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ASCON-HASH and ASCON-HASHA hash algorithms. </p>
@@ -196,6 +202,44 @@ Functions</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="permutation_2encrypt_2main_8c-example.html#a5">permutation/encrypt/main.c</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="ascon-hash_8c_source.html#l00027">27</a> of file <a class="el" href="ascon-hash_8c_source.html">ascon-hash.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac4ec5011ca5615053d43354ae22aa3fa"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon_hash_copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structascon__hash__state__t.html">ascon_hash_state_t</a> *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structascon__hash__state__t.html">ascon_hash_state_t</a> *&#160;</td>
+          <td class="paramname"><em>src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clones a copy of an ASCON-HASH state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>Destination hash state to copy into. </td></tr>
+    <tr><td class="paramname">src</td><td>Source hash state to copy from.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The destination will be initialized by this operation, so it must not previously have been initialized or it has already been freed. The source must be already initialized. </p>
+
+<p>Definition at line <a class="el" href="ascon-hash_8c_source.html#l00100">100</a> of file <a class="el" href="ascon-hash_8c_source.html">ascon-hash.c</a>.</p>
 
 </div>
 </div>
@@ -413,6 +457,44 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ab27e674d75b1bb7f36dd9a1a104cf1f8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon_hasha_copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structascon__hasha__state__t.html">ascon_hasha_state_t</a> *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structascon__hasha__state__t.html">ascon_hasha_state_t</a> *&#160;</td>
+          <td class="paramname"><em>src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clones a copy of an ASCON-HASHA state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>Destination hash state to copy into. </td></tr>
+    <tr><td class="paramname">src</td><td>Source hash state to copy from.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The destination will be initialized by this operation, so it must not previously have been initialized or it has already been freed. The source must be already initialized. </p>
+
+<p>Definition at line <a class="el" href="ascon-hasha_8c_source.html#l00100">100</a> of file <a class="el" href="ascon-hasha_8c_source.html">ascon-hasha.c</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a257e0993332bc304043f73b74a0825f2"></a>
 <div class="memitem">
 <div class="memproto">
@@ -584,7 +666,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 3 2022 16:33:53 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2022 08:17:55 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

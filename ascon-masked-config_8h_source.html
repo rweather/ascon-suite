@@ -122,31 +122,51 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor"></span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">/* Set the defaults if not selected in the build configuration */</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#ifndef ASCON_MASKED_KEY_SHARES</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="ascon-masked-config_8h.html#a92754281cec29bf292492db0a34b8d29">   53</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define ASCON_MASKED_KEY_SHARES 4</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#ifndef ASCON_MASKED_DATA_SHARES</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="ascon-masked-config_8h.html#a485cef3deb08fe9b62f281be40b3bd57">   56</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define ASCON_MASKED_DATA_SHARES 2</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">/* Check that the values are in the correct range */</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#if ASCON_MASKED_KEY_SHARES &lt; 2 || ASCON_MASKED_KEY_SHARES &gt; 4</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#error &quot;ASCON_MASKED_KEY_SHARES must be between 2 and 4&quot;</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#if ASCON_MASKED_DATA_SHARES &lt; 1 || ASCON_MASKED_DATA_SHARES &gt; ASCON_MASKED_KEY_SHARES</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#error &quot;ASCON_MASKED_DATA_SHARES must be between 1 and ASCON_MASKED_KEY_SHARES&quot;</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor"></span>}</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">/* Set the defaults if not selected in the build configuration */</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#ifndef ASCON_MASKED_MAX_SHARES</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="ascon-masked-config_8h.html#abde20816d1ad5b5f65c19df2d0646cab">   60</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define ASCON_MASKED_MAX_SHARES 4</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#ifndef ASCON_MASKED_KEY_SHARES</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="ascon-masked-config_8h.html#a92754281cec29bf292492db0a34b8d29">   63</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define ASCON_MASKED_KEY_SHARES 4</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#ifndef ASCON_MASKED_DATA_SHARES</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="ascon-masked-config_8h.html#a485cef3deb08fe9b62f281be40b3bd57">   66</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define ASCON_MASKED_DATA_SHARES 2</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">/* AVR is limited to no more than 3 shares at present */</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#if defined(__AVR__) &amp;&amp; ASCON_MASKED_MAX_SHARES &gt; 3</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#undef ASCON_MASKED_MAX_SHARES</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define ASCON_MASKED_MAX_SHARES 3</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">/* Check that the values are in the correct range */</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#if ASCON_MASKED_KEY_SHARES &lt; 2 || ASCON_MASKED_KEY_SHARES &gt; 4</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#error &quot;ASCON_MASKED_KEY_SHARES must be between 2 and 4&quot;</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#if ASCON_MASKED_DATA_SHARES &lt; 1 || ASCON_MASKED_DATA_SHARES &gt; ASCON_MASKED_KEY_SHARES</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#error &quot;ASCON_MASKED_DATA_SHARES must be between 1 and ASCON_MASKED_KEY_SHARES&quot;</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">/* Clamp the number of key and data shares to no more than</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment"> * ASCON_MASKED_MAX_SHARES */</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#if ASCON_MASKED_KEY_SHARES &gt; ASCON_MASKED_MAX_SHARES</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#undef ASCON_MASKED_KEY_SHARES</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define ASCON_MASKED_KEY_SHARES ASCON_MASKED_MAX_SHARES</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#if ASCON_MASKED_DATA_SHARES &gt; ASCON_MASKED_MAX_SHARES</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#undef ASCON_MASKED_DATA_SHARES</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define ASCON_MASKED_DATA_SHARES ASCON_MASKED_MAX_SHARES</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 3 2022 16:33:52 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2022 08:17:55 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

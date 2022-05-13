@@ -48,6 +48,7 @@ var searchData=
   ['ascon_5fmask64_5funrotate_5fshare3_5f2',['ascon_mask64_unrotate_share3_2',['../ascon-masked-word_8h.html#a9ff33544f1798aa7000137309f4b5eb3',1,'ascon-masked-word.h']]],
   ['ascon_5fmasked_5fdata_5fshares',['ASCON_MASKED_DATA_SHARES',['../ascon-masked-config_8h.html#a485cef3deb08fe9b62f281be40b3bd57',1,'ascon-masked-config.h']]],
   ['ascon_5fmasked_5fkey_5fshares',['ASCON_MASKED_KEY_SHARES',['../ascon-masked-config_8h.html#a92754281cec29bf292492db0a34b8d29',1,'ascon-masked-config.h']]],
+  ['ascon_5fmasked_5fmax_5fshares',['ASCON_MASKED_MAX_SHARES',['../ascon-masked-config_8h.html#abde20816d1ad5b5f65c19df2d0646cab',1,'ascon-masked-config.h']]],
   ['ascon_5fpbkdf2_5fsize',['ASCON_PBKDF2_SIZE',['../pbkdf2_8h.html#a2cb8fad60be665c0be7a218fd4100bc6',1,'pbkdf2.h']]],
   ['ascon_5fpermute12',['ascon_permute12',['../permutation_8h.html#a132695890e3130dd42ba6eaf3f545aec',1,'permutation.h']]],
   ['ascon_5fpermute6',['ascon_permute6',['../permutation_8h.html#adea77da266b81944a3fb25826ac08dd6',1,'permutation.h']]],

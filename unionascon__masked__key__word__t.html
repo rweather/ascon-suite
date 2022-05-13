@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>ASCON Suite: ascon_masked_key_128_t Struct Reference</title>
+<title>ASCON Suite: ascon_masked_key_word_t Union Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -85,43 +85,76 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
-<div class="title">ascon_masked_key_128_t Struct Reference</div>  </div>
+<div class="title">ascon_masked_key_word_t Union Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>128-bit key that has been masked to hide its value when the code is operating on it.  
- <a href="structascon__masked__key__128__t.html#details">More...</a></p>
+<p>Masked 64-bit key word with up to four shares.  
+ <a href="unionascon__masked__key__word__t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="masking_8h_source.html">masking.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a817851e6d463293fc3704ea7b79b921a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="unionascon__masked__key__word__t.html">ascon_masked_key_word_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__masked__key__128__t.html#a817851e6d463293fc3704ea7b79b921a">k</a> [2]</td></tr>
-<tr class="separator:a817851e6d463293fc3704ea7b79b921a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdee1d9a2930a4eca84feaa721e953f1"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionascon__masked__key__word__t.html#acdee1d9a2930a4eca84feaa721e953f1">S</a> [4]</td></tr>
+<tr class="separator:acdee1d9a2930a4eca84feaa721e953f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e5ea45171ba3bfc83bc202364b55163"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionascon__masked__key__word__t.html#a8e5ea45171ba3bfc83bc202364b55163">W</a> [8]</td></tr>
+<tr class="separator:a8e5ea45171ba3bfc83bc202364b55163"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90ec153afc49bd0e4ee3eea3321e6b2d"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionascon__masked__key__word__t.html#a90ec153afc49bd0e4ee3eea3321e6b2d">B</a> [32]</td></tr>
+<tr class="separator:a90ec153afc49bd0e4ee3eea3321e6b2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>128-bit key that has been masked to hide its value when the code is operating on it. </p>
-<p>This structure should be treated as opaque. The number of shares used, the bit ordering, and the method of masking is determined by the library.</p>
-<p>The application can copy the entire contents of this structure as-is to non-volatile memory to preserve the masked form of the key. It is not possible to transport such keys between systems because of different numbers of shares and bit ordering issues. </p>
+<div class="textblock"><p>Masked 64-bit key word with up to four shares. </p>
+<p>This structure should be treated as opaque. </p>
 
-<p>Definition at line <a class="el" href="masking_8h_source.html#l00062">62</a> of file <a class="el" href="masking_8h_source.html">masking.h</a>.</p>
+<p>Definition at line <a class="el" href="masking_8h_source.html#l00042">42</a> of file <a class="el" href="masking_8h_source.html">masking.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="a817851e6d463293fc3704ea7b79b921a"></a>
+<a class="anchor" id="a90ec153afc49bd0e4ee3eea3321e6b2d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="unionascon__masked__key__word__t.html">ascon_masked_key_word_t</a> ascon_masked_key_128_t::k[2]</td>
+          <td class="memname">uint8_t ascon_masked_key_word_t::B[32]</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Masked words of the key </p>
+<p>8-bit version of the masked shares </p>
 
-<p>Definition at line <a class="el" href="masking_8h_source.html#l00064">64</a> of file <a class="el" href="masking_8h_source.html">masking.h</a>.</p>
+<p>Definition at line <a class="el" href="masking_8h_source.html#l00046">46</a> of file <a class="el" href="masking_8h_source.html">masking.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<a class="anchor" id="acdee1d9a2930a4eca84feaa721e953f1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint64_t ascon_masked_key_word_t::S[4]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>64-bit version of the masked shares </p>
+
+<p>Definition at line <a class="el" href="masking_8h_source.html#l00044">44</a> of file <a class="el" href="masking_8h_source.html">masking.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8e5ea45171ba3bfc83bc202364b55163"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t ascon_masked_key_word_t::W[8]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>32-bit version of the masked shares </p>
+
+<p>Definition at line <a class="el" href="masking_8h_source.html#l00045">45</a> of file <a class="el" href="masking_8h_source.html">masking.h</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this union was generated from the following file:<ul>
 <li><a class="el" href="masking_8h_source.html">masking.h</a></li>
 </ul>
 </div><!-- contents -->

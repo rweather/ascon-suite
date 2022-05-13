@@ -86,6 +86,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -102,6 +103,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <p><a href="ascon-masked-word_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">union &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Masked 64-bit word with up to ASCON_MASKED_MAX_SHARES shares.  <a href="unionascon__masked__word__t.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a88201323f9bb83b7c8409f69959c71dd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a88201323f9bb83b7c8409f69959c71dd">ascon_mask64_rotate_share1_0</a>(x)&#160;&#160;&#160;(rightRotate11_64((x)))</td></tr>
@@ -197,12 +204,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a0fa7f8ebe1fe22d2594fe525c068f845"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a0fa7f8ebe1fe22d2594fe525c068f845">ascon_masked_word_x2_store_partial</a> (uint8_t *data, unsigned size, const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word)</td></tr>
 <tr class="memdesc:a0fa7f8ebe1fe22d2594fe525c068f845"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmasks and stores the contents of a x2 masked word structure to a partial buffer.  <a href="#a0fa7f8ebe1fe22d2594fe525c068f845">More...</a><br/></td></tr>
 <tr class="separator:a0fa7f8ebe1fe22d2594fe525c068f845"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61035df157a579ea3c9cd1211427e45c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a61035df157a579ea3c9cd1211427e45c">ascon_masked_word_x2_mask</a> (<a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word, uint64_t data, <a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *trng)</td></tr>
-<tr class="memdesc:a61035df157a579ea3c9cd1211427e45c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Masks a 64-bit word and loads it into a x2 masked word.  <a href="#a61035df157a579ea3c9cd1211427e45c">More...</a><br/></td></tr>
-<tr class="separator:a61035df157a579ea3c9cd1211427e45c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeeff0fb865ea614a2968add39d655656"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#aeeff0fb865ea614a2968add39d655656">ascon_masked_word_x2_unmask</a> (const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word)</td></tr>
-<tr class="memdesc:aeeff0fb865ea614a2968add39d655656"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmasks the contents of a x2 masked word.  <a href="#aeeff0fb865ea614a2968add39d655656">More...</a><br/></td></tr>
-<tr class="separator:aeeff0fb865ea614a2968add39d655656"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affd3f7730bc841c4178c3132893ee2c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#affd3f7730bc841c4178c3132893ee2c2">ascon_masked_word_x2_randomize</a> (<a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *dest, const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *src, <a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *trng)</td></tr>
 <tr class="memdesc:affd3f7730bc841c4178c3132893ee2c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomizes a x2 masked word by incorporating fresh randomness.  <a href="#affd3f7730bc841c4178c3132893ee2c2">More...</a><br/></td></tr>
 <tr class="separator:affd3f7730bc841c4178c3132893ee2c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -236,12 +237,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a2066cf8f32005af32527c5de24f1d8cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a2066cf8f32005af32527c5de24f1d8cc">ascon_masked_word_x3_store_partial</a> (uint8_t *data, unsigned size, const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word)</td></tr>
 <tr class="memdesc:a2066cf8f32005af32527c5de24f1d8cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmasks and stores the contents of a x3 masked word structure to a partial buffer.  <a href="#a2066cf8f32005af32527c5de24f1d8cc">More...</a><br/></td></tr>
 <tr class="separator:a2066cf8f32005af32527c5de24f1d8cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76947a6733e8576521ecf175f77c9f0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a76947a6733e8576521ecf175f77c9f0e">ascon_masked_word_x3_mask</a> (<a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word, uint64_t data, <a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *trng)</td></tr>
-<tr class="memdesc:a76947a6733e8576521ecf175f77c9f0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Masks a 64-bit word and loads it into a x3 masked word.  <a href="#a76947a6733e8576521ecf175f77c9f0e">More...</a><br/></td></tr>
-<tr class="separator:a76947a6733e8576521ecf175f77c9f0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a371f6402f653e33ada336c5dc30e7e7e"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a371f6402f653e33ada336c5dc30e7e7e">ascon_masked_word_x3_unmask</a> (const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word)</td></tr>
-<tr class="memdesc:a371f6402f653e33ada336c5dc30e7e7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmasks the contents of a x3 masked word.  <a href="#a371f6402f653e33ada336c5dc30e7e7e">More...</a><br/></td></tr>
-<tr class="separator:a371f6402f653e33ada336c5dc30e7e7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e5d57ae31cbcfc9648a92bbd6c5ebfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a9e5d57ae31cbcfc9648a92bbd6c5ebfc">ascon_masked_word_x3_randomize</a> (<a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *dest, const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *src, <a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *trng)</td></tr>
 <tr class="memdesc:a9e5d57ae31cbcfc9648a92bbd6c5ebfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomizes a x3 masked word by incorporating fresh randomness.  <a href="#a9e5d57ae31cbcfc9648a92bbd6c5ebfc">More...</a><br/></td></tr>
 <tr class="separator:a9e5d57ae31cbcfc9648a92bbd6c5ebfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -275,12 +270,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a8df23da26580bb06cf86ed39b129d8b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a8df23da26580bb06cf86ed39b129d8b8">ascon_masked_word_x4_store_partial</a> (uint8_t *data, unsigned size, const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word)</td></tr>
 <tr class="memdesc:a8df23da26580bb06cf86ed39b129d8b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmasks and stores the contents of a x4 masked word structure to a partial buffer.  <a href="#a8df23da26580bb06cf86ed39b129d8b8">More...</a><br/></td></tr>
 <tr class="separator:a8df23da26580bb06cf86ed39b129d8b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4c01f6e61d7f2edfd5f688ddcbfb1c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#aa4c01f6e61d7f2edfd5f688ddcbfb1c5">ascon_masked_word_x4_mask</a> (<a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word, uint64_t data, <a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *trng)</td></tr>
-<tr class="memdesc:aa4c01f6e61d7f2edfd5f688ddcbfb1c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Masks a 64-bit word and loads it into a x4 masked word.  <a href="#aa4c01f6e61d7f2edfd5f688ddcbfb1c5">More...</a><br/></td></tr>
-<tr class="separator:aa4c01f6e61d7f2edfd5f688ddcbfb1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a331436a33e74b4b459dace7ab1db1d3e"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#a331436a33e74b4b459dace7ab1db1d3e">ascon_masked_word_x4_unmask</a> (const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *word)</td></tr>
-<tr class="memdesc:a331436a33e74b4b459dace7ab1db1d3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmasks the contents of a x4 masked word.  <a href="#a331436a33e74b4b459dace7ab1db1d3e">More...</a><br/></td></tr>
-<tr class="separator:a331436a33e74b4b459dace7ab1db1d3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0239292a08844798234307ef6a8727f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-masked-word_8h.html#ac0239292a08844798234307ef6a8727f">ascon_masked_word_x4_randomize</a> (<a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *dest, const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *src, <a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *trng)</td></tr>
 <tr class="memdesc:ac0239292a08844798234307ef6a8727f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomizes a x4 masked word by incorporating fresh randomness.  <a href="#ac0239292a08844798234307ef6a8727f">More...</a><br/></td></tr>
 <tr class="separator:ac0239292a08844798234307ef6a8727f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -336,7 +325,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 1 after rotation with respect to share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00176">176</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00196">196</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -363,7 +352,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 2 after rotation with respect to share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00185">185</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00205">205</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -390,7 +379,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 2 after rotation with respect to share 1. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00194">194</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00214">214</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -417,7 +406,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 after rotation with respect to share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00203">203</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00223">223</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -444,7 +433,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 after rotation with respect to share 1. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00212">212</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00232">232</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -471,7 +460,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 after rotation with respect to share 2. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00221">221</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00241">241</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -498,7 +487,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 1 in the same bit positions as share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00230">230</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00250">250</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -525,7 +514,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 2 in the same bit positions as share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00239">239</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00259">259</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -552,7 +541,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 2 in the same bit positions as share 1. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00248">248</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00268">268</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -579,7 +568,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 in the same bit positions as share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00257">257</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00277">277</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -606,7 +595,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 in the same bit positions as share 1. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00266">266</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00286">286</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -633,7 +622,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 in the same bit positions as share 2. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00275">275</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00295">295</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -660,7 +649,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 1 after rotation with respect to share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00068">68</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00088">88</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -687,7 +676,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 2 after rotation with respect to share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00077">77</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00097">97</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -714,7 +703,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 2 after rotation with respect to share 1. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00086">86</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00106">106</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -741,7 +730,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 after rotation with respect to share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00095">95</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00115">115</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -768,7 +757,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 after rotation with respect to share 1. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00104">104</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00124">124</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -795,7 +784,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 after rotation with respect to share 2. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00113">113</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00133">133</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -822,7 +811,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 1 in the same bit positions as share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00122">122</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00142">142</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -849,7 +838,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 2 in the same bit positions as share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00131">131</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00151">151</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -876,7 +865,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 2 in the same bit positions as share 1. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00140">140</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00160">160</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -903,7 +892,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 in the same bit positions as share 0. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00149">149</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00169">169</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -930,7 +919,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 in the same bit positions as share 1. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00158">158</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00178">178</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -957,7 +946,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value of share 3 in the same bit positions as share 2. </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00167">167</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word_8h_source.html#l00187">187</a> of file <a class="el" href="ascon-masked-word_8h_source.html">ascon-masked-word.h</a>.</p>
 
 </div>
 </div>
@@ -995,7 +984,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00565">565</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00563">563</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1021,7 +1010,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00570">570</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00568">568</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1065,7 +1054,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00168">168</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00171">171</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1109,7 +1098,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00180">180</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00189">189</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1154,7 +1143,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#a1b80e8d09fc0fed1e3be487f75bbae41" title="Unmasks and stores the contents of a x2 masked word structure. ">ascon_masked_word_x2_store()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00041">41</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00045">45</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1206,7 +1195,7 @@ Functions</h2></td></tr>
 </dl>
 <p>Normally <a class="el" href="ascon-masked-word_8h.html#a167f124d0f9a90d7020e77d78235c789" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x2 masked word structure...">ascon_masked_word_x2_load()</a> should be used instead of this, but ASCON-80pq mixes IV and key data in the same 64-bit word. </p>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00082">82</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00094">94</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1257,51 +1246,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00052">52</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a61035df157a579ea3c9cd1211427e45c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ascon_masked_word_x2_mask </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *&#160;</td>
-          <td class="paramname"><em>word</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *&#160;</td>
-          <td class="paramname"><em>trng</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Masks a 64-bit word and loads it into a x2 masked word. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">word</td><td>The x2 masked word to write to. </td></tr>
-    <tr><td class="paramname">data</td><td>The 64-bit word to be masked. </td></tr>
-    <tr><td class="paramname">trng</td><td>TRNG to use to generate masking material. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00127">127</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00060">60</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1346,7 +1291,7 @@ Functions</h2></td></tr>
 </dl>
 <p>The word will still have the same effective value, but this function will mix in fresh randomness. </p>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00142">142</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00143">143</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1390,7 +1335,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00158">158</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00159">159</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1428,7 +1373,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#a167f124d0f9a90d7020e77d78235c789" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x2 masked word structure...">ascon_masked_word_x2_load()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00094">94</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00110">110</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1473,34 +1418,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#a167f124d0f9a90d7020e77d78235c789" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x2 masked word structure...">ascon_masked_word_x2_load()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00101">101</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aeeff0fb865ea614a2968add39d655656"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint64_t ascon_masked_word_x2_unmask </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *&#160;</td>
-          <td class="paramname"><em>word</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Unmasks the contents of a x2 masked word. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">word</td><td>The x2 masked word to unmask.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The unmasked version of the word. </dd></dl>
-
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00136">136</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00117">117</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1537,7 +1455,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00151">151</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00152">152</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1618,7 +1536,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00346">346</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00351">351</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1662,7 +1580,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00358">358</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00367">367</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1707,7 +1625,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#ae68d1090b744f51688a913358e3d124c" title="Unmasks and stores the contents of a x3 masked word structure. ">ascon_masked_word_x3_store()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00204">204</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00220">220</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1759,7 +1677,7 @@ Functions</h2></td></tr>
 </dl>
 <p>Normally <a class="el" href="ascon-masked-word_8h.html#a4851973adc48d4e9e344b366c62c4cc3" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x3 masked word structure...">ascon_masked_word_x3_load()</a> should be used instead of this, but ASCON-80pq mixes IV and key data in the same 64-bit word. </p>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00247">247</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00267">267</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1810,51 +1728,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00216">216</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a76947a6733e8576521ecf175f77c9f0e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ascon_masked_word_x3_mask </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *&#160;</td>
-          <td class="paramname"><em>word</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *&#160;</td>
-          <td class="paramname"><em>trng</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Masks a 64-bit word and loads it into a x3 masked word. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">word</td><td>The x3 masked word to write to. </td></tr>
-    <tr><td class="paramname">data</td><td>The 64-bit word to be masked. </td></tr>
-    <tr><td class="paramname">trng</td><td>TRNG to use to generate masking material. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00298">298</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00234">234</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1899,7 +1773,7 @@ Functions</h2></td></tr>
 </dl>
 <p>The word will still have the same effective value, but this function will mix in fresh randomness. </p>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00315">315</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00320">320</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1943,7 +1817,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00334">334</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00339">339</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -1981,7 +1855,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#a4851973adc48d4e9e344b366c62c4cc3" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x3 masked word structure...">ascon_masked_word_x3_load()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00260">260</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00282">282</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2026,34 +1900,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#a4851973adc48d4e9e344b366c62c4cc3" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x3 masked word structure...">ascon_masked_word_x3_load()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00268">268</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a371f6402f653e33ada336c5dc30e7e7e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint64_t ascon_masked_word_x3_unmask </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *&#160;</td>
-          <td class="paramname"><em>word</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Unmasks the contents of a x3 masked word. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">word</td><td>The x3 masked word to unmask.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The unmasked version of the word. </dd></dl>
-
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00308">308</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00290">290</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2090,7 +1937,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00326">326</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00331">331</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2127,7 +1974,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00193">193</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00206">206</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2171,7 +2018,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00540">540</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00536">536</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2215,7 +2062,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00553">553</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00549">549</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2260,7 +2107,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#ad8196e7e968b49970b7be6b8484e87cf" title="Unmasks and stores the contents of a x4 masked word structure. ">ascon_masked_word_x4_store()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00383">383</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00398">398</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2312,7 +2159,7 @@ Functions</h2></td></tr>
 </dl>
 <p>Normally <a class="el" href="ascon-masked-word_8h.html#a33c09d3601f77621481d0d72e2c2f78a" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x4 masked word structure...">ascon_masked_word_x4_load()</a> should be used instead of this, but ASCON-80pq mixes IV and key data in the same 64-bit word. </p>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00428">428</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00443">443</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2364,51 +2211,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#ad8196e7e968b49970b7be6b8484e87cf" title="Unmasks and stores the contents of a x4 masked word structure. ">ascon_masked_word_x4_store()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00396">396</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aa4c01f6e61d7f2edfd5f688ddcbfb1c5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ascon_masked_word_x4_mask </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *&#160;</td>
-          <td class="paramname"><em>word</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *&#160;</td>
-          <td class="paramname"><em>trng</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Masks a 64-bit word and loads it into a x4 masked word. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">word</td><td>The x4 masked word to write to. </td></tr>
-    <tr><td class="paramname">data</td><td>The 64-bit word to be masked. </td></tr>
-    <tr><td class="paramname">trng</td><td>TRNG to use to generate masking material. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00485">485</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00411">411</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2453,7 +2256,7 @@ Functions</h2></td></tr>
 </dl>
 <p>The word will still have the same effective value, but this function will mix in fresh randomness. </p>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00504">504</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00500">500</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2497,7 +2300,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00526">526</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00522">522</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2535,7 +2338,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#a33c09d3601f77621481d0d72e2c2f78a" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x4 masked word structure...">ascon_masked_word_x4_load()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00442">442</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00457">457</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2580,34 +2383,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="ascon-masked-word_8h.html#a33c09d3601f77621481d0d72e2c2f78a" title="Loads a 64-bit big endian value from buffer, masks it, and writes it to a x4 masked word structure...">ascon_masked_word_x4_load()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00451">451</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a331436a33e74b4b459dace7ab1db1d3e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint64_t ascon_masked_word_x4_unmask </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="unionascon__masked__word__t.html">ascon_masked_word_t</a> *&#160;</td>
-          <td class="paramname"><em>word</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Unmasks the contents of a x4 masked word. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">word</td><td>The x4 masked word to unmask.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The unmasked version of the word. </dd></dl>
-
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00496">496</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00466">466</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2644,7 +2420,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00517">517</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00513">513</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
@@ -2681,14 +2457,14 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00371">371</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
+<p>Definition at line <a class="el" href="ascon-masked-word-c64_8c_source.html#l00386">386</a> of file <a class="el" href="ascon-masked-word-c64_8c_source.html">ascon-masked-word-c64.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 3 2022 16:33:53 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2022 08:17:55 for ASCON Suite by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
