@@ -23,6 +23,9 @@ API's are provided for the following areas:
 See the [HTML documentation](https://rweather.github.io/ascon-suite/index.html)
 for more information on the suite.
 
+A version of ASCON Suite is available for Arduino devices in a
+[separate repository](https://github.com/rweather/ascon-arduino).
+
 Building
 --------
 
