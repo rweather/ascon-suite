@@ -80,13 +80,19 @@ void function_header(const char *name)
         printf("%s:\n", name);
         printf("#endif\n");
     } else {
+        printf("#if defined(__APPLE__)\n");
+        printf("\t.p2align 4, 0x90\n");
+        printf("\t.globl\t_%s\n", name);
+        printf("_%s:\n", name);
+        printf("\t.cfi_startproc\n");
+        printf("#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)\n");
         printf("\t.p2align 4,,15\n");
-        printf("#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)\n");
         printf("\t.globl\t%s\n", name);
         printf("\t.def\t%s;\t.scl\t3;\t.type\t32;\t.endef\n", name);
         printf("\t.seh_proc\t%s\n", name);
         printf("%s:\n", name);
         printf("#else\n");
+        printf("\t.p2align 4,,15\n");
         printf("\t.globl\t%s\n", name);
         printf("\t.type\t%s, @function\n", name);
         printf("%s:\n", name);
@@ -104,10 +110,14 @@ void function_footer(const char *name)
         printf("\t.size\t%s, .-%s\n", name, name);
         printf("#endif\n");
     } else {
+        printf("#if defined(__APPLE__)\n");
+        printf("\tretq\n");
+        printf("\t.cfi_endproc\n");
+        printf("#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)\n");
         printf("\tret\n");
-        printf("#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)\n");
         printf("\t.seh_endproc\n");
         printf("#else\n");
+        printf("\tret\n");
         printf("\t.cfi_endproc\n");
         printf("\t.size\t%s, .-%s\n", name, name);
         printf("#endif\n");

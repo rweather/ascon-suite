@@ -570,7 +570,11 @@ int main(int argc, char *argv[])
 #if INTEL_SYNTAX
     printf("\t.intel_syntax noprefix\n");
 #endif
+    printf("#if defined(__APPLE__)\n");
+    printf("\t.section __TEXT,__text,regular,pure_instructions\n");
+    printf("#else\n");
     printf("\t.text\n");
+    printf("#endif\n");
 
     /* Output several versions of the permutation function depending
      * upon the value of ASCON_MASKED_MAX_SHARES because the offsets into the

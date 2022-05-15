@@ -595,11 +595,16 @@ int main(int argc, char *argv[])
 #if INTEL_SYNTAX
     printf("\t.intel_syntax noprefix\n");
 #endif
+    printf("#if defined(__APPLE__)\n");
+    printf("\t.section __TEXT,__text,regular,pure_instructions\n");
+    printf("#define trng_generate_64 _%s_trng_generate_64\n", family);
+    printf("#else\n");
     printf("\t.text\n");
     printf("#if defined(__PIC__)\n");
     printf("#define trng_generate_64 %s_trng_generate_64@PLT\n", family);
     printf("#else\n");
     printf("#define trng_generate_64 %s_trng_generate_64\n", family);
+    printf("#endif\n");
     printf("#endif\n");
 
     /* Output word operations for 2-share words */

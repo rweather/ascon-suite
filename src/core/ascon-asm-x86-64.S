@@ -22,14 +22,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#if defined(__APPLE__)
+	.section __TEXT,__text,regular,pure_instructions
+#else
 	.text
+#endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_permute
+_ascon_permute:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_permute
 	.def	ascon_permute;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_permute
 ascon_permute:
 #else
+	.p2align 4,,15
 	.globl	ascon_permute
 	.type	ascon_permute, @function
 ascon_permute:
@@ -52,8 +62,13 @@ ascon_permute:
 	jmp	*%r10
 .L13:
 	jmp	.L12
+#if defined(__APPLE__)
+	.p2align 2, 0x90
+	.data_region jt32
+#else
 	.section	.rodata
 	.align	4
+#endif
 .L14:
 	.long	.L0-.L14
 	.long	.L1-.L14
@@ -67,9 +82,15 @@ ascon_permute:
 	.long	.L9-.L14
 	.long	.L10-.L14
 	.long	.L11-.L14
+#if defined(__APPLE__)
+	.end_data_region
+	.section __TEXT,__text,regular,pure_instructions
+	.p2align 4, 0x90
+#else
 	.text
 	.p2align	4,,10
 	.p2align	3
+#endif
 .L0:
 	xorq	$-241, %rdx
 	xorq	%r9, %rax
@@ -776,20 +797,30 @@ ascon_permute:
 	popq	%r13
 	popq	%r12
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_permute, .-ascon_permute
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_backend_free
+_ascon_backend_free:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_backend_free
 	.def	ascon_backend_free;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_backend_free
 ascon_backend_free:
 #else
+	.p2align 4,,15
 	.globl	ascon_backend_free
 	.type	ascon_backend_free, @function
 ascon_backend_free:
@@ -802,10 +833,14 @@ ascon_backend_free:
 	movq	$0, %r9
 	movq	$0, %r10
 	movq	$0, %r11
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_backend_free, .-ascon_backend_free
 #endif

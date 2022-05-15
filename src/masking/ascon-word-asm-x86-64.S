@@ -22,19 +22,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#if defined(__APPLE__)
+	.section __TEXT,__text,regular,pure_instructions
+#define trng_generate_64 _ascon_trng_generate_64
+#else
 	.text
 #if defined(__PIC__)
 #define trng_generate_64 ascon_trng_generate_64@PLT
 #else
 #define trng_generate_64 ascon_trng_generate_64
 #endif
+#endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_zero
+_ascon_masked_word_x2_zero:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_zero
 	.def	ascon_masked_word_x2_zero;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_zero
 ascon_masked_word_x2_zero:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_zero
 	.type	ascon_masked_word_x2_zero, @function
 ascon_masked_word_x2_zero:
@@ -55,20 +66,30 @@ ascon_masked_word_x2_zero:
 	movq	%rcx, 24(%rbx)
 #endif
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_zero, .-ascon_masked_word_x2_zero
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_load
+_ascon_masked_word_x2_load:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_load
 	.def	ascon_masked_word_x2_load;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_load
 ascon_masked_word_x2_load:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_load
 	.type	ascon_masked_word_x2_load, @function
 ascon_masked_word_x2_load:
@@ -96,20 +117,30 @@ ascon_masked_word_x2_load:
 #endif
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_load, .-ascon_masked_word_x2_load
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_load_partial
+_ascon_masked_word_x2_load_partial:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_load_partial
 	.def	ascon_masked_word_x2_load_partial;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_load_partial
 ascon_masked_word_x2_load_partial:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_load_partial
 	.type	ascon_masked_word_x2_load_partial, @function
 ascon_masked_word_x2_load_partial:
@@ -148,20 +179,30 @@ ascon_masked_word_x2_load_partial:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_load_partial, .-ascon_masked_word_x2_load_partial
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_load_32
+_ascon_masked_word_x2_load_32:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_load_32
 	.def	ascon_masked_word_x2_load_32;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_load_32
 ascon_masked_word_x2_load_32:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_load_32
 	.type	ascon_masked_word_x2_load_32, @function
 ascon_masked_word_x2_load_32:
@@ -196,20 +237,30 @@ ascon_masked_word_x2_load_32:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_load_32, .-ascon_masked_word_x2_load_32
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_store
+_ascon_masked_word_x2_store:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_store
 	.def	ascon_masked_word_x2_store;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_store
 ascon_masked_word_x2_store:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_store
 	.type	ascon_masked_word_x2_store, @function
 ascon_masked_word_x2_store:
@@ -222,20 +273,30 @@ ascon_masked_word_x2_store:
 	bswapq	%rcx
 	xorq	%rcx, %rax
 	movq	%rax, (%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_store, .-ascon_masked_word_x2_store
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_store_partial
+_ascon_masked_word_x2_store_partial:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_store_partial
 	.def	ascon_masked_word_x2_store_partial;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_store_partial
 ascon_masked_word_x2_store_partial:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_store_partial
 	.type	ascon_masked_word_x2_store_partial, @function
 ascon_masked_word_x2_store_partial:
@@ -254,20 +315,30 @@ ascon_masked_word_x2_store_partial:
 .L102:
 	cmpq	$0, %rsi
 	jg	.L103
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_store_partial, .-ascon_masked_word_x2_store_partial
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_randomize
+_ascon_masked_word_x2_randomize:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_randomize
 	.def	ascon_masked_word_x2_randomize;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_randomize
 ascon_masked_word_x2_randomize:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_randomize
 	.type	ascon_masked_word_x2_randomize, @function
 ascon_masked_word_x2_randomize:
@@ -288,20 +359,30 @@ ascon_masked_word_x2_randomize:
 	movq	%rax, 8(%rbx)
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_randomize, .-ascon_masked_word_x2_randomize
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_xor
+_ascon_masked_word_x2_xor:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_xor
 	.def	ascon_masked_word_x2_xor;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_xor
 ascon_masked_word_x2_xor:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_xor
 	.type	ascon_masked_word_x2_xor, @function
 ascon_masked_word_x2_xor:
@@ -311,20 +392,30 @@ ascon_masked_word_x2_xor:
 	movq	8(%rsi), %rcx
 	xorq	%rax, (%rdi)
 	xorq	%rcx, 8(%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_xor, .-ascon_masked_word_x2_xor
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_replace
+_ascon_masked_word_x2_replace:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_replace
 	.def	ascon_masked_word_x2_replace;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_replace
 ascon_masked_word_x2_replace:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_replace
 	.type	ascon_masked_word_x2_replace, @function
 ascon_masked_word_x2_replace:
@@ -350,21 +441,31 @@ ascon_masked_word_x2_replace:
 	andq	%r8, %r9
 	orq	%r9, %rcx
 	movq	%rcx, 8(%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_replace, .-ascon_masked_word_x2_replace
 #endif
 #if ASCON_MASKED_MAX_SHARES >= 3
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_from_x3
+_ascon_masked_word_x2_from_x3:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_from_x3
 	.def	ascon_masked_word_x2_from_x3;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_from_x3
 ascon_masked_word_x2_from_x3:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_from_x3
 	.type	ascon_masked_word_x2_from_x3, @function
 ascon_masked_word_x2_from_x3:
@@ -396,22 +497,32 @@ ascon_masked_word_x2_from_x3:
 #endif
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_from_x3, .-ascon_masked_word_x2_from_x3
 #endif
 #endif
 #if ASCON_MASKED_MAX_SHARES >= 4
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x2_from_x4
+_ascon_masked_word_x2_from_x4:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x2_from_x4
 	.def	ascon_masked_word_x2_from_x4;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x2_from_x4
 ascon_masked_word_x2_from_x4:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x2_from_x4
 	.type	ascon_masked_word_x2_from_x4, @function
 ascon_masked_word_x2_from_x4:
@@ -446,22 +557,32 @@ ascon_masked_word_x2_from_x4:
 #endif
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x2_from_x4, .-ascon_masked_word_x2_from_x4
 #endif
 #endif
 #if ASCON_MASKED_MAX_SHARES >= 3
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_zero
+_ascon_masked_word_x3_zero:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_zero
 	.def	ascon_masked_word_x3_zero;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_zero
 ascon_masked_word_x3_zero:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_zero
 	.type	ascon_masked_word_x3_zero, @function
 ascon_masked_word_x3_zero:
@@ -491,20 +612,30 @@ ascon_masked_word_x3_zero:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_zero, .-ascon_masked_word_x3_zero
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_load
+_ascon_masked_word_x3_load:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_load
 	.def	ascon_masked_word_x3_load;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_load
 ascon_masked_word_x3_load:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_load
 	.type	ascon_masked_word_x3_load, @function
 ascon_masked_word_x3_load:
@@ -540,20 +671,30 @@ ascon_masked_word_x3_load:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_load, .-ascon_masked_word_x3_load
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_load_partial
+_ascon_masked_word_x3_load_partial:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_load_partial
 	.def	ascon_masked_word_x3_load_partial;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_load_partial
 ascon_masked_word_x3_load_partial:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_load_partial
 	.type	ascon_masked_word_x3_load_partial, @function
 ascon_masked_word_x3_load_partial:
@@ -600,20 +741,30 @@ ascon_masked_word_x3_load_partial:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_load_partial, .-ascon_masked_word_x3_load_partial
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_load_32
+_ascon_masked_word_x3_load_32:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_load_32
 	.def	ascon_masked_word_x3_load_32;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_load_32
 ascon_masked_word_x3_load_32:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_load_32
 	.type	ascon_masked_word_x3_load_32, @function
 ascon_masked_word_x3_load_32:
@@ -656,20 +807,30 @@ ascon_masked_word_x3_load_32:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_load_32, .-ascon_masked_word_x3_load_32
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_store
+_ascon_masked_word_x3_store:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_store
 	.def	ascon_masked_word_x3_store;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_store
 ascon_masked_word_x3_store:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_store
 	.type	ascon_masked_word_x3_store, @function
 ascon_masked_word_x3_store:
@@ -686,20 +847,30 @@ ascon_masked_word_x3_store:
 	xorq	%rcx, %rax
 	xorq	%rdx, %rax
 	movq	%rax, (%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_store, .-ascon_masked_word_x3_store
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_store_partial
+_ascon_masked_word_x3_store_partial:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_store_partial
 	.def	ascon_masked_word_x3_store_partial;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_store_partial
 ascon_masked_word_x3_store_partial:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_store_partial
 	.type	ascon_masked_word_x3_store_partial, @function
 ascon_masked_word_x3_store_partial:
@@ -721,20 +892,30 @@ ascon_masked_word_x3_store_partial:
 .L106:
 	cmpq	$0, %rsi
 	jg	.L107
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_store_partial, .-ascon_masked_word_x3_store_partial
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_randomize
+_ascon_masked_word_x3_randomize:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_randomize
 	.def	ascon_masked_word_x3_randomize;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_randomize
 ascon_masked_word_x3_randomize:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_randomize
 	.type	ascon_masked_word_x3_randomize, @function
 ascon_masked_word_x3_randomize:
@@ -768,20 +949,30 @@ ascon_masked_word_x3_randomize:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_randomize, .-ascon_masked_word_x3_randomize
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_xor
+_ascon_masked_word_x3_xor:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_xor
 	.def	ascon_masked_word_x3_xor;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_xor
 ascon_masked_word_x3_xor:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_xor
 	.type	ascon_masked_word_x3_xor, @function
 ascon_masked_word_x3_xor:
@@ -793,20 +984,30 @@ ascon_masked_word_x3_xor:
 	xorq	%rax, (%rdi)
 	xorq	%rcx, 8(%rdi)
 	xorq	%rdx, 16(%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_xor, .-ascon_masked_word_x3_xor
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_replace
+_ascon_masked_word_x3_replace:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_replace
 	.def	ascon_masked_word_x3_replace;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_replace
 ascon_masked_word_x3_replace:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_replace
 	.type	ascon_masked_word_x3_replace, @function
 ascon_masked_word_x3_replace:
@@ -840,20 +1041,30 @@ ascon_masked_word_x3_replace:
 	andq	%r8, %r9
 	orq	%r9, %rcx
 	movq	%rcx, 16(%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_replace, .-ascon_masked_word_x3_replace
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_from_x2
+_ascon_masked_word_x3_from_x2:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_from_x2
 	.def	ascon_masked_word_x3_from_x2;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_from_x2
 ascon_masked_word_x3_from_x2:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_from_x2
 	.type	ascon_masked_word_x3_from_x2, @function
 ascon_masked_word_x3_from_x2:
@@ -891,21 +1102,31 @@ ascon_masked_word_x3_from_x2:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_from_x2, .-ascon_masked_word_x3_from_x2
 #endif
 #if ASCON_MASKED_MAX_SHARES >= 4
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x3_from_x4
+_ascon_masked_word_x3_from_x4:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x3_from_x4
 	.def	ascon_masked_word_x3_from_x4;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x3_from_x4
 ascon_masked_word_x3_from_x4:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x3_from_x4
 	.type	ascon_masked_word_x3_from_x4, @function
 ascon_masked_word_x3_from_x4:
@@ -948,23 +1169,33 @@ ascon_masked_word_x3_from_x4:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x3_from_x4, .-ascon_masked_word_x3_from_x4
 #endif
 #endif
 #endif
 #if ASCON_MASKED_MAX_SHARES >= 4
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_zero
+_ascon_masked_word_x4_zero:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_zero
 	.def	ascon_masked_word_x4_zero;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_zero
 ascon_masked_word_x4_zero:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_zero
 	.type	ascon_masked_word_x4_zero, @function
 ascon_masked_word_x4_zero:
@@ -998,20 +1229,30 @@ ascon_masked_word_x4_zero:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_zero, .-ascon_masked_word_x4_zero
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_load
+_ascon_masked_word_x4_load:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_load
 	.def	ascon_masked_word_x4_load;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_load
 ascon_masked_word_x4_load:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_load
 	.type	ascon_masked_word_x4_load, @function
 ascon_masked_word_x4_load:
@@ -1051,20 +1292,30 @@ ascon_masked_word_x4_load:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_load, .-ascon_masked_word_x4_load
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_load_partial
+_ascon_masked_word_x4_load_partial:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_load_partial
 	.def	ascon_masked_word_x4_load_partial;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_load_partial
 ascon_masked_word_x4_load_partial:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_load_partial
 	.type	ascon_masked_word_x4_load_partial, @function
 ascon_masked_word_x4_load_partial:
@@ -1115,20 +1366,30 @@ ascon_masked_word_x4_load_partial:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_load_partial, .-ascon_masked_word_x4_load_partial
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_load_32
+_ascon_masked_word_x4_load_32:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_load_32
 	.def	ascon_masked_word_x4_load_32;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_load_32
 ascon_masked_word_x4_load_32:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_load_32
 	.type	ascon_masked_word_x4_load_32, @function
 ascon_masked_word_x4_load_32:
@@ -1175,20 +1436,30 @@ ascon_masked_word_x4_load_32:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_load_32, .-ascon_masked_word_x4_load_32
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_store
+_ascon_masked_word_x4_store:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_store
 	.def	ascon_masked_word_x4_store;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_store
 ascon_masked_word_x4_store:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_store
 	.type	ascon_masked_word_x4_store, @function
 ascon_masked_word_x4_store:
@@ -1209,20 +1480,30 @@ ascon_masked_word_x4_store:
 	xorq	%rdx, %rax
 	xorq	%r8, %rax
 	movq	%rax, (%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_store, .-ascon_masked_word_x4_store
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_store_partial
+_ascon_masked_word_x4_store_partial:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_store_partial
 	.def	ascon_masked_word_x4_store_partial;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_store_partial
 ascon_masked_word_x4_store_partial:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_store_partial
 	.type	ascon_masked_word_x4_store_partial, @function
 ascon_masked_word_x4_store_partial:
@@ -1247,20 +1528,30 @@ ascon_masked_word_x4_store_partial:
 .L110:
 	cmpq	$0, %rsi
 	jg	.L111
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_store_partial, .-ascon_masked_word_x4_store_partial
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_randomize
+_ascon_masked_word_x4_randomize:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_randomize
 	.def	ascon_masked_word_x4_randomize;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_randomize
 ascon_masked_word_x4_randomize:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_randomize
 	.type	ascon_masked_word_x4_randomize, @function
 ascon_masked_word_x4_randomize:
@@ -1304,20 +1595,30 @@ ascon_masked_word_x4_randomize:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_randomize, .-ascon_masked_word_x4_randomize
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_xor
+_ascon_masked_word_x4_xor:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_xor
 	.def	ascon_masked_word_x4_xor;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_xor
 ascon_masked_word_x4_xor:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_xor
 	.type	ascon_masked_word_x4_xor, @function
 ascon_masked_word_x4_xor:
@@ -1331,20 +1632,30 @@ ascon_masked_word_x4_xor:
 	xorq	%rcx, 8(%rdi)
 	xorq	%rdx, 16(%rdi)
 	xorq	%r8, 24(%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_xor, .-ascon_masked_word_x4_xor
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_replace
+_ascon_masked_word_x4_replace:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_replace
 	.def	ascon_masked_word_x4_replace;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_replace
 ascon_masked_word_x4_replace:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_replace
 	.type	ascon_masked_word_x4_replace, @function
 ascon_masked_word_x4_replace:
@@ -1386,20 +1697,30 @@ ascon_masked_word_x4_replace:
 	andq	%r8, %r9
 	orq	%r9, %rcx
 	movq	%rcx, 24(%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_replace, .-ascon_masked_word_x4_replace
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_from_x2
+_ascon_masked_word_x4_from_x2:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_from_x2
 	.def	ascon_masked_word_x4_from_x2;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_from_x2
 ascon_masked_word_x4_from_x2:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_from_x2
 	.type	ascon_masked_word_x4_from_x2, @function
 ascon_masked_word_x4_from_x2:
@@ -1443,20 +1764,30 @@ ascon_masked_word_x4_from_x2:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_from_x2, .-ascon_masked_word_x4_from_x2
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_x4_from_x3
+_ascon_masked_word_x4_from_x3:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_x4_from_x3
 	.def	ascon_masked_word_x4_from_x3;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_x4_from_x3
 ascon_masked_word_x4_from_x3:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_x4_from_x3
 	.type	ascon_masked_word_x4_from_x3, @function
 ascon_masked_word_x4_from_x3:
@@ -1502,21 +1833,31 @@ ascon_masked_word_x4_from_x3:
 	popq	%r12
 	popq	%rbp
 	popq	%rbx
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_x4_from_x3, .-ascon_masked_word_x4_from_x3
 #endif
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_pad
+_ascon_masked_word_pad:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_pad
 	.def	ascon_masked_word_pad;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_pad
 ascon_masked_word_pad:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_pad
 	.type	ascon_masked_word_pad, @function
 ascon_masked_word_pad:
@@ -1527,20 +1868,30 @@ ascon_masked_word_pad:
 	movq	$-9223372036854775808, %rax
 	shrq	%cl, %rax
 	xorq	%rax, (%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_pad, .-ascon_masked_word_pad
 #endif
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_masked_word_separator
+_ascon_masked_word_separator:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_masked_word_separator
 	.def	ascon_masked_word_separator;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_masked_word_separator
 ascon_masked_word_separator:
 #else
+	.p2align 4,,15
 	.globl	ascon_masked_word_separator
 	.type	ascon_masked_word_separator, @function
 ascon_masked_word_separator:
@@ -1548,10 +1899,14 @@ ascon_masked_word_separator:
 #endif
 	movq	$1, %rax
 	xorq	%rax, (%rdi)
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_masked_word_separator, .-ascon_masked_word_separator
 #endif

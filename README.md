@@ -56,6 +56,11 @@ and test programs, which may not compile for embedded microcontrollers due to
 missing libc functions or other platform constraints.  Only the static library
 libascon\_static.a is built in the minimal configuration.
 
+If you are having problems compiling the assembly code backends, then
+I will need some extra information to help diagnose the problem.
+Navigate to the "test/compiler" directory and follow the instructions
+in the README.md file there.
+
 History
 -------
 

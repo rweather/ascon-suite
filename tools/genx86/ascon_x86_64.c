@@ -222,15 +222,26 @@ static void gen_permute(void)
 #endif
     printf(".L13:\n");
     printf("\tjmp\t.L12\n");
+    printf("#if defined(__APPLE__)\n");
+    printf("\t.p2align 2, 0x90\n");
+    printf("\t.data_region jt32\n");
+    printf("#else\n");
     printf("\t.section\t.rodata\n");
     printf("\t.align\t4\n");
+    printf("#endif\n");
     printf(".L14:\n");
     for (round = 0; round < 12; ++round) {
         printf("\t.long\t.L%d-.L14\n", round);
     }
+    printf("#if defined(__APPLE__)\n");
+    printf("\t.end_data_region\n");
+    printf("\t.section __TEXT,__text,regular,pure_instructions\n");
+    printf("\t.p2align 4, 0x90\n");
+    printf("#else\n");
     printf("\t.text\n");
     printf("\t.p2align\t4,,10\n");
     printf("\t.p2align\t3\n");
+    printf("#endif\n");
 
     /* Unroll the rounds */
     for (round = 0; round < 12; ++round) {
@@ -290,7 +301,11 @@ int main(int argc, char *argv[])
 #if INTEL_SYNTAX
     printf("\t.intel_syntax noprefix\n");
 #endif
+    printf("#if defined(__APPLE__)\n");
+    printf("\t.section __TEXT,__text,regular,pure_instructions\n");
+    printf("#else\n");
     printf("\t.text\n");
+    printf("#endif\n");
 
     /* Output the permutation function */
     function_header("ascon_permute");

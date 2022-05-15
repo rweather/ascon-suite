@@ -22,15 +22,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#if defined(__APPLE__)
+	.section __TEXT,__text,regular,pure_instructions
+#else
 	.text
+#endif
 #if ASCON_MASKED_MAX_SHARES >= 4
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_x3_permute
+_ascon_x3_permute:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_x3_permute
 	.def	ascon_x3_permute;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_x3_permute
 ascon_x3_permute:
 #else
+	.p2align 4,,15
 	.globl	ascon_x3_permute
 	.type	ascon_x3_permute, @function
 ascon_x3_permute:
@@ -496,21 +506,31 @@ ascon_x3_permute:
 	popq	%r12
 	popq	%rbx
 	popq	%rbp
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_x3_permute, .-ascon_x3_permute
 #endif
 #elif ASCON_MASKED_MAX_SHARES >= 3
+#if defined(__APPLE__)
+	.p2align 4, 0x90
+	.globl	_ascon_x3_permute
+_ascon_x3_permute:
+	.cfi_startproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.p2align 4,,15
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.globl	ascon_x3_permute
 	.def	ascon_x3_permute;	.scl	3;	.type	32;	.endef
 	.seh_proc	ascon_x3_permute
 ascon_x3_permute:
 #else
+	.p2align 4,,15
 	.globl	ascon_x3_permute
 	.type	ascon_x3_permute, @function
 ascon_x3_permute:
@@ -976,10 +996,14 @@ ascon_x3_permute:
 	popq	%r12
 	popq	%rbx
 	popq	%rbp
+#if defined(__APPLE__)
+	retq
+	.cfi_endproc
+#elif defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	ret
-#if defined(__CYGWIN__) || defined(_WIN32) || defined(_WIN64)
 	.seh_endproc
 #else
+	ret
 	.cfi_endproc
 	.size	ascon_x3_permute, .-ascon_x3_permute
 #endif
