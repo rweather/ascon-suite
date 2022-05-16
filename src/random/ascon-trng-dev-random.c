@@ -43,10 +43,12 @@
 #if defined(HAVE_SYS_RANDOM_H)
 #include <sys/random.h>
 #endif
+#if defined(HAVE_IMMINTRIN_H)
+#include <immintrin.h> /* For _rdrand64_step() */
+#endif
 
-/* We prefer /dev/urandom but non-Linux systems may not have that */
+/* Use /dev/urandom if we don't have getrandom() or getentropy() */
 #define RANDOM_DEVICE "/dev/urandom"
-#define RANDOM_DEVICE_BACKUP "/dev/random"
 
 /* Determine if we have some kind of getrandom() or getentropy() function */
 #if defined(HAVE_GETRANDOM)
@@ -60,10 +62,7 @@
 #if !defined(ascon_getrandom)
 static int ascon_dev_random_open(void)
 {
-    int fd = open(RANDOM_DEVICE, O_RDONLY);
-    if (fd < 0)
-        fd = open(RANDOM_DEVICE_BACKUP, O_RDONLY);
-    return fd;
+    return open(RANDOM_DEVICE, O_RDONLY);
 }
 #else
 #define ascon_dev_random_open() -1
@@ -119,9 +118,8 @@ int ascon_trng_generate(unsigned char *out, size_t outlen)
 #endif
 }
 
-int ascon_trng_init(ascon_trng_state_t *state)
+static int ascon_trng_init_mixer(ascon_trng_state_t *state)
 {
-#if defined(ASCON_TRNG_MIXER)
     unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
     int fd = ascon_dev_random_open();
     int ok = ascon_dev_random_read(fd, seed, sizeof(seed));
@@ -135,21 +133,46 @@ int ascon_trng_init(ascon_trng_state_t *state)
     ascon_clean(seed, sizeof(seed));
     state->posn = 0;
     return ok;
-#else
-    /* Assume that we have "RDRAND" and that it always works */
-    (void)state;
-    return 1;
+}
+
+#if defined(ASCON_TRNG_X86_64_RDRAND)
+
+static int ascon_get_rdrand(unsigned long long *value)
+{
+    int count = 20;
+    while (count-- > 0) {
+        if (_rdrand64_step(value))
+            return 1;
+    }
+    return 0;
+}
+
 #endif
+
+int ascon_trng_init(ascon_trng_state_t *state)
+{
+#if defined(ASCON_TRNG_X86_64_RDRAND)
+    /* Make a test call to RDRAND to see if it is working.  If not,
+     * fall back to using the mixer implementation. */
+    unsigned long long value;
+    state->rdrand_working = ascon_get_rdrand(&value);
+    if (state->rdrand_working)
+        return 1;
+#endif
+    return ascon_trng_init_mixer(state);
 }
 
 void ascon_trng_free(ascon_trng_state_t *state)
 {
-#if defined(ASCON_TRNG_MIXER)
+#if defined(ASCON_TRNG_X86_64_RDRAND)
+    if (state->rdrand_working) {
+        /* We were not using the mixer, so no need to free it */
+        ascon_clean(state, sizeof(ascon_trng_state_t));
+        return;
+    }
+#endif
     ascon_acquire(&(state->prng));
     ascon_free(&(state->prng));
-#else
-    (void)state;
-#endif
 }
 
 uint32_t ascon_trng_generate_32(ascon_trng_state_t *state)
@@ -180,20 +203,20 @@ uint32_t ascon_trng_generate_32(ascon_trng_state_t *state)
 
 uint64_t ascon_trng_generate_64(ascon_trng_state_t *state)
 {
+    uint64_t x;
 #if defined(ASCON_TRNG_X86_64_RDRAND)
     /* RDRAND instruction on x86-64 platforms for fast mask generation */
-    uint64_t temp = 0;
-    uint8_t ok = 0;
-    do {
-        __asm__ __volatile__ (
-            ".byte 0x48,0x0f,0xc7,0xf0 ; setc %1"
-            : "=a"(temp), "=q"(ok) :: "cc"
-        );
-    } while (!ok);
-    (void)state;
-    return temp;
-#else
-    uint64_t x;
+    if (state->rdrand_working) {
+        unsigned long long value;
+        if (ascon_get_rdrand(&value))
+            return (uint64_t)value;
+
+        /* RDRAND appears to have stopped working, so initialize the mixer
+         * and use it from now on to generate masking material. */
+        state->rdrand_working = 0;
+        ascon_trng_init_mixer(state);
+    }
+#endif
     ascon_acquire(&(state->prng));
     if ((state->posn + sizeof(uint64_t)) > ASCON_TRNG_MIXER_RATE ||
             (state->posn % 8U) != 0) {
@@ -212,29 +235,31 @@ uint64_t ascon_trng_generate_64(ascon_trng_state_t *state)
     ascon_release(&(state->prng));
     state->posn += sizeof(uint64_t);
     return x;
-#endif
 }
 
 int ascon_trng_reseed(ascon_trng_state_t *state)
 {
-#if defined(ASCON_TRNG_MIXER)
-    unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
-    int fd = ascon_dev_random_open();
-    int ok = ascon_dev_random_read(fd, seed, sizeof(seed));
-    if (fd >= 0)
-        close(fd);
-    ascon_acquire(&(state->prng));
-    ascon_add_bytes(&(state->prng), seed, 40 - sizeof(seed), sizeof(seed));
-    ascon_overwrite_with_zeroes(&(state->prng), 0, 8); /* Forward security */
-    ascon_permute12(&(state->prng));
-    ascon_release(&(state->prng));
-    ascon_clean(seed, sizeof(seed));
-    state->posn = 0;
-    return ok;
-#else
-    (void)state;
-    return 1;
+#if defined(ASCON_TRNG_X86_64_RDRAND)
+    /* If RDRAND was previously working, then assume that we don't
+     * need to reseed the mixer.  RDRAND should be reseeding itself. */
+    if (state->rdrand_working)
+        return 1;
 #endif
+    {
+        unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
+        int fd = ascon_dev_random_open();
+        int ok = ascon_dev_random_read(fd, seed, sizeof(seed));
+        if (fd >= 0)
+            close(fd);
+        ascon_acquire(&(state->prng));
+        ascon_add_bytes(&(state->prng), seed, 40 - sizeof(seed), sizeof(seed));
+        ascon_overwrite_with_zeroes(&(state->prng), 0, 8); /* Forward security */
+        ascon_permute12(&(state->prng));
+        ascon_release(&(state->prng));
+        ascon_clean(seed, sizeof(seed));
+        state->posn = 0;
+        return ok;
+    }
 }
 
 #endif /* ASCON_TRNG_DEV_RANDOM */

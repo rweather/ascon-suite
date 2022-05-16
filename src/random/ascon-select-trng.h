@@ -25,7 +25,7 @@
 
 /* Detect special RDRAND-like instructions separate from the system TRNG.
  * This may be used to generate masking material, but not for the main RNG. */
-#if defined(__x86_64) || defined(__x86_64__)
+#if (defined(__x86_64) || defined(__x86_64__)) && defined(__RDRND__)
 #define ASCON_TRNG_X86_64_RDRAND 1
 #endif
 
@@ -42,9 +42,7 @@
 
 /* Unix-like system with access to a /dev/urandom or /dev/random device */
 #define ASCON_TRNG_DEV_RANDOM 1
-#if !defined(ASCON_TRNG_X86_64_RDRAND)
 #define ASCON_TRNG_MIXER 1
-#endif
 
 #elif defined(USE_HAL_DRIVER)
 

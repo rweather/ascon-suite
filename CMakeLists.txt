@@ -26,6 +26,7 @@ set_property(CACHE MAX_SHARES PROPERTY STRINGS 2 3 4)
 # Other options.
 option(CHECK_ACQUIRE_RELEASE "Check that acquire/release calls are balanced" OFF)
 option(COVERAGE "Enable the use of gcov for coverage testing" OFF)
+option(RDRAND "Allow use of the RDRAND instruction on x86-64 platforms" OFF)
 
 # Option to compile a minimal configuration with just the static library.
 # This may be needed when cross-compiling for embedded microcontrollers.
@@ -63,6 +64,9 @@ endif()
 if(COVERAGE)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
+if(RDRAND)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mrdrnd")
+endif()
 
 # Require the c99 standard to compile the code.
 set(CMAKE_C_STANDARD 99)
@@ -81,6 +85,7 @@ check_include_files(sys/time.h HAVE_SYS_TIME_H)
 check_include_files(getopt.h HAVE_GETOPT_H)
 check_include_files(unistd.h HAVE_UNISTD_H)
 check_include_files(fcntl.h HAVE_FCNTL_H)
+check_include_files(immintrin.h HAVE_IMMINTRIN_H)
 check_function_exists(explicit_bzero HAVE_EXPLICIT_BZERO)
 check_function_exists(memset_s HAVE_MEMSET_S)
 check_function_exists(getrandom HAVE_GETRANDOM)
