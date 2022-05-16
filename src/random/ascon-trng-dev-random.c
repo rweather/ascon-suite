@@ -75,11 +75,13 @@ static int ascon_dev_random_read(int fd, unsigned char *out, size_t outlen)
     (void)fd;
     for (;;) {
         int ret = ascon_getrandom(out, outlen);
-        if (ret == (int)outlen) {
+        if (ret >= 0) {
+            /* getentropy() returns 0 on success, getrandom() returns
+             * the number of bytes read on success */
             return 1;
-        } else if (ret < 0) {
+        } else {
             if (errno != EINTR && errno != EAGAIN) {
-                /* getrandom() is broken; this is a problem */
+                /* getrandom() or getentropy() is broken; this is a problem */
                 memset(out, 0, outlen);
                 break;
             }
