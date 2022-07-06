@@ -33,6 +33,7 @@
  * HKDF_HMAC_INIT       Name of the HMAC initialization function.
  * HKDF_HMAC_UPDATE     Name of the HMAC update function.
  * HKDF_HMAC_FINALIZE   Name of the HMAC finalization function.
+ * HKDF_HMAC_FREE       Name of the HMAC free function.
  */
 #if defined(HKDF_ALG_NAME)
 
@@ -63,9 +64,9 @@ void HKDF_CONCAT(HKDF_ALG_NAME,_extract)
     HKDF_HMAC_INIT(&hmac, salt, saltlen);
     HKDF_HMAC_UPDATE(&hmac, key, keylen);
     HKDF_HMAC_FINALIZE(&hmac, salt, saltlen, state->prk);
+    HKDF_HMAC_FREE(&hmac);
     state->counter = 1;
     state->posn = HKDF_HMAC_SIZE;
-    ascon_clean(&hmac, sizeof(hmac));
 }
 
 int HKDF_CONCAT(HKDF_ALG_NAME,_expand)
@@ -101,6 +102,7 @@ int HKDF_CONCAT(HKDF_ALG_NAME,_expand)
         HKDF_HMAC_UPDATE(&hmac, info, infolen);
         HKDF_HMAC_UPDATE(&hmac, &(state->counter), 1);
         HKDF_HMAC_FINALIZE(&hmac, state->prk, sizeof(state->prk), state->out);
+        HKDF_HMAC_FREE(&hmac);
         ++(state->counter);
 
         /* Copy the data to the output buffer */
@@ -112,7 +114,6 @@ int HKDF_CONCAT(HKDF_ALG_NAME,_expand)
         out += len;
         outlen -= len;
     }
-    ascon_clean(&hmac, sizeof(hmac));
     return 0;
 }
 
@@ -132,3 +133,4 @@ void HKDF_CONCAT(HKDF_ALG_NAME,_free)(HKDF_STATE *state)
 #undef HKDF_HMAC_INIT
 #undef HKDF_HMAC_UPDATE
 #undef HKDF_HMAC_FINALIZE
+#undef HKDF_HMAC_FREE

@@ -58,6 +58,7 @@ void sha256_hkdf_free(sha256_hkdf_state_t *state);
 #define HKDF_HMAC_INIT sha256_hmac_init
 #define HKDF_HMAC_UPDATE sha256_hmac_update
 #define HKDF_HMAC_FINALIZE sha256_hmac_finalize
+#define HKDF_HMAC_FREE sha256_hmac_free
 #include "kdf/ascon-hkdf-common.h"
 
 #define MAX_KEY_LEN 80

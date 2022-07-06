@@ -36,4 +36,5 @@
 #define HKDF_HMAC_INIT ascon_hmaca_init
 #define HKDF_HMAC_UPDATE ascon_hmaca_update
 #define HKDF_HMAC_FINALIZE ascon_hmaca_finalize
+#define HKDF_HMAC_FREE ascon_hmaca_free
 #include "kdf/ascon-hkdf-common.h"

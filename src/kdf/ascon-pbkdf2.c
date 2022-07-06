@@ -40,18 +40,19 @@ static void ascon_pbkdf2_f
     ascon_hmac_update(state, b, sizeof(b));
     ascon_hmac_finalize(state, password, passwordlen, T);
     if (count > 1) {
-        ascon_hmac_init(state, password, passwordlen);
+        ascon_hmac_reinit(state, password, passwordlen);
         ascon_hmac_update(state, T, ASCON_HMAC_SIZE);
         ascon_hmac_finalize(state, password, passwordlen, U);
         lw_xor_block(T, U, ASCON_HMAC_SIZE);
         while (count > 2) {
-            ascon_hmac_init(state, password, passwordlen);
+            ascon_hmac_reinit(state, password, passwordlen);
             ascon_hmac_update(state, U, ASCON_HMAC_SIZE);
             ascon_hmac_finalize(state, password, passwordlen, U);
             lw_xor_block(T, U, ASCON_HMAC_SIZE);
             --count;
         }
     }
+    ascon_hmac_free(state);
 }
 
 void ascon_pbkdf2
@@ -78,6 +79,5 @@ void ascon_pbkdf2
         }
         ++blocknum;
     }
-    ascon_clean(&state, sizeof(state));
     ascon_clean(U, sizeof(U));
 }
