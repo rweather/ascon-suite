@@ -35,7 +35,7 @@ and can be used as follows:
 \verbatim
 $ asconsum LICENSE README.md
 56b2c81ac3d3b0b10b7e65b5cf717f0feba5176821ae5016d7a297bf061a2839  LICENSE
-ab7d5f934ae968ea5ed1b34f214817b93704611637f7cd57573b5ab92dd055f7  README.md
+c089551069029014c5d241b72d8d5d581d41ce70bea02e6b75624af6260dc563  README.md
 \endverbatim
 
 The checksums can be checked later as follows:
@@ -53,7 +53,19 @@ ASCON-HASHA using the -a option:
 \verbatim
 $ asconsum -a LICENSE README.md
 b9ea1017b2a0fe8a7dfcefb586f71209dd03ec7cb6c9203d8c9122ef73d62b62  LICENSE
-eb56a3477855fd62e159a9ce24de6cb838ed8b0dfc716a9e8c1cd19b12e9b3bb  README.md
+305fafa06d8d892a1f4e57a5b2d91f7695343b7c9caaaae2ea8943deedf696f6  README.md
+\endverbatim
+
+The -x and -y options select ASCON-XOF and ASCON-XOFA respectively:
+
+\verbatim
+$ asconsum -x LICENSE README.md
+574e8590d800c992d8a770cdac51161501124c00a25b4d79f354f743758e034c  LICENSE
+c0e9cdf45101fdd0cf9aaff45826ff7f1ca67d5679ca803fb962adcc8c72b26d  README.md
+
+$ asconsum -y LICENSE README.md
+79d2a716aa6884ca4670603334206d6a95e1733c998ac99424c6ca28783b2feb  LICENSE
+b990ba69fa5e4f8177f11c02c7dafebf6f64c7a8a2a6b8f122b93a53218ffce8  README.md
 \endverbatim
 
 \ref asconsum/asconsum.c "Full source code for the asconsum program"
