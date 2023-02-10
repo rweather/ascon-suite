@@ -23,7 +23,9 @@
 #include "ascon-trng.h"
 #include <string.h>
 
-#if defined(ASCON_TRNG_STM32)
+#if defined(ASCON_TRNG_STM32_ENABLED)
+
+extern RNG_HandleTypeDef ASCON_TRNG_STM32;
 
 int ascon_trng_generate(unsigned char *out, size_t outlen)
 {
@@ -81,4 +83,4 @@ int ascon_trng_reseed(ascon_trng_state_t *state)
     return ascon_trng_init(state);
 }
 
-#endif /* ASCON_TRNG_STM32 */
+#endif /* ASCON_TRNG_STM32_ENABLED */

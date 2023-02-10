@@ -42,14 +42,14 @@
 #include "stm32f2xx_hal.h"
 #define ASCON_TRNG_STM32 hrng
 /* https://github.com/STMicroelectronics/STM32CubeF4/blob/master/Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h */
-#elif defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F415xx) || \
+#elif defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || \
       defined(STM32F417xx) || defined(STM32F427xx) || defined(STM32F437xx) || \
       defined(STM32F429xx) || defined(STM32F439xx) || defined(STM32F401xC) || \
       defined(STM32F401xE) || defined(STM32F410Tx) || defined(STM32F410Cx) || \
       defined(STM32F410Rx) || defined(STM32F411xE) || defined(STM32F446xx) || \
       defined(STM32F469xx) || defined(STM32F479xx) || defined(STM32F412Cx) || \
       defined(STM32F412Zx) || defined(STM32F412Rx) || defined(STM32F412Vx) || \
-      defined(STM32F413xx) || defined(STM32F413xx)
+      defined(STM32F413xx) || defined(STM32F423xx)
 #include "stm32f4xx_hal.h"
 #define ASCON_TRNG_STM32 hrng
 /* https://github.com/STMicroelectronics/STM32CubeF7/blob/master/Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f7xx.h */
@@ -76,12 +76,13 @@
 #define ASCON_TRNG_STM32 hrng
 /* https://github.com/STMicroelectronics/STM32CubeH7/blob/master/Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h */
 #elif defined(STM32H743xx) || defined(STM32H753xx) || defined(STM32H750xx) || \
-      defined(STM32H742xx) || defined(STM32H745xx) || defined(STM32H755xx) || \
-      defined(STM32H747xx) || defined(STM32H757xx) || defined(STM32H7B0xx) || \
-      defined(STM32H7B0xxQ) || defined(STM32H7A3xx) || defined(STM32H7B3xx) || \
-      defined(STM32H7A3xxQ) || defined(STM32H7B3xxQ) || defined(STM32H735xx) || \
-      defined(STM32H733xx) || defined(STM32H730xx) || defined(STM32H730xxQ) || \
-      defined(STM32H725xx) || defined(STM32H723xx)
+      defined(STM32H742xx) || defined(STM32H745xx) || defined(STM32H745xG) || \
+      defined(STM32H755xx) || defined(STM32H747xx) || defined(STM32H747xG) || \
+      defined(STM32H757xx) || defined(STM32H7B0xx) || defined(STM32H7B0xxQ) || \
+      defined(STM32H7A3xx) || defined(STM32H7B3xx) || defined(STM32H7A3xxQ) || \
+      defined(STM32H7B3xxQ) || defined(STM32H735xx) || defined(STM32H733xx) || \
+      defined(STM32H730xx) || defined(STM32H730xxQ) || defined(STM32H725xx) || \
+      defined(STM32H723xx)
 #include "stm32h7xx_hal.h"
 #define ASCON_TRNG_STM32 hrng
 /* https://github.com/STMicroelectronics/STM32CubeL0/blob/master/Drivers/CMSIS/Device/ST/STM32L0xx/Include/stm32l0xx.h */
@@ -115,10 +116,16 @@
       defined(STM32WB35xx) || defined(STM32WB30xx) || defined(STM32WB15xx) || \
       defined(STM32WB10xx)
 #include "stm32wbxx_hal.h"
+#define ASCON_TRNG_STM32 hrng
 /* https://github.com/STMicroelectronics/STM32CubeWL/blob/main/Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h */
 #elif defined(STM32WL55xx) || defined(STM32WLE5xx) || defined(STM32WL54xx) || \
-      defined(STM32WLE4xx)
+      defined(STM32WLE4xx) || defined(STM32WL5Mxx)
 #include "stm32wlxx_hal.h"
+#define ASCON_TRNG_STM32 hrng
+/* https://github.com/STMicroelectronics/STM32CubeU5/blob/main/Drivers/CMSIS/Device/ST/STM32U5xx/Include/stm32u5xx.h */
+#elif defined(STM32U575xx) || defined(STM32U585xx) || defined(STM32U595xx) || \
+      defined(STM32U599xx) || defined(STM32U5A5xx) || defined(STM32U5A9xx)
+#include "stm32u5xx_hal.h"
 #define ASCON_TRNG_STM32 hrng
 /* https://github.com/STMicroelectronics/STM32CubeMP1/blob/master/Drivers/CMSIS/Device/ST/STM32MP1xx/Include/stm32mp1xx.h */
 #elif defined(STM32MP15xx) || defined(STM32MP157Axx) || \
@@ -133,11 +140,10 @@
 #endif
 
 #if defined(HAL_RNG_MODULE_ENABLED)
-#define ASCON_TRNG_STM32 1
+#define ASCON_TRNG_STM32_ENABLED 1
 #else
 /* Using HAL libraries on STM32, but the RNG has not been selected
  * in the configuration.  Use STM32Cube to fix this and recompile. */
-#warning "STM32 HAL configuration has not enabled the RNG"
 #define ASCON_TRNG_NONE 1
 #define ASCON_TRNG_MIXER 1
 #endif
