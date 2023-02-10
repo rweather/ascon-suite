@@ -56,7 +56,6 @@
 #else
 
 /* No idea how to generate random numbers on this device yet */
-#warning "No system random number source found"
 #define ASCON_TRNG_NONE 1
 #define ASCON_TRNG_MIXER 1
 

@@ -81,6 +81,7 @@ list(APPEND ASCON_SOURCES
     random/ascon-trng-dev-random.c
     random/ascon-trng-due.c
     random/ascon-trng-esp.c
+    random/ascon-trng-mixer.c
     random/ascon-trng-none.c
     random/ascon-trng-stm32.c
     random/ascon-trng-stm32.h

@@ -47,7 +47,7 @@ random number generator in the <tt>src/random</tt> subdirectory:
 <table>
 <tr><td><b>Backend</b></td><td><b>Platforms</b></td</tr>
 <tr><td>dev-random</td><td>Linux, FreeBSD, OpenBSD, and other Unix-like
-systems with a /dev/urandom or /dev/random device.</td></tr>
+systems with a /dev/urandom device.</td></tr>
 <tr><td>due</td><td>Arudino Due / SAM3X8E</td></tr>
 <tr><td>esp</td><td>ESP8266 and ESP32 modules</td></tr>
 <tr><td>none</td><td>Default if the platform is not recognised</td></tr>
@@ -104,9 +104,8 @@ operate as fast as possible.  In the case of the "esp" backend, the
 On some platforms, the normal random source is too slow for masking.
 Such backends define <tt>ASCON_TRNG_MIXER</tt> and implement a simple
 PRNG based on the ASCON permutation to stretch an initial seed out into an
-arbitrary amount of masking material.  See the "dev-random" and "windows"
-backends for examples of how to implement a mixer.  Or contact the
-library author for assistance.
+arbitrary amount of masking material.  The mixer is implemented in the
+ascon-trng-mixer.c file.
 
 On systems that use a mixer, the function ascon_trng_reseed() should
 request a new seed using the same method as ascon_trng_generate() and
@@ -118,12 +117,9 @@ being generated.  For the "esp", no re-seeding is required (or possible):
 
 \section trng_escape_hatch Escape hatch
 
-The "none" backend provides two weak functions that allows the application
-to provide its own noise source if the library was unable to find a
-suitable backend.
-
-The ascon_trng_get_bytes() function can be overridden by the application
-to provide custom noise:
+The "none" backend provides a weak function called ascon_trng_get_bytes()
+that allows the application to provide its own noise source if the library
+was unable to find a suitable backend:
 
 \code
 int ascon_trng_get_bytes(unsigned char *out, size_t outlen)
@@ -137,22 +133,10 @@ int ascon_trng_get_bytes(unsigned char *out, size_t outlen)
 }
 \endcode
 
-Normally the "none" backend will not fully trust the data that comes from
-the application and will still use its own strategy to harvest entropy from
-system timers in addition to mixing in the application's noise.
+The "none" backend will mix the noise data that comes from the application
+with system timers just in case the application noise source fails.
 
-If the application is very confident about its noise source, then it
-can override the ascon_trng_get_bytes_is_good() function to signal that
-the "none" backend doesn't need to harvest its own entropy:
-
-\code
-int ascon_trng_get_bytes_is_good(void)
-{
-    return 1;
-}
-\endcode
-
-The escape hatch only works with the "none" backend.  The two functions
+The escape hatch only works with the "none" backend.  The weak function
 will be ignored if some other backend has been selected.
 
 */

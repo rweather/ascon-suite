@@ -39,12 +39,12 @@
 #include <sys/time.h>
 #endif
 
+#warning "No system random number source found"
 #if !defined(ASCON_TRNG_MIXER)
 #error "Mixer is required if there is no known TRNG on the system"
 #endif
 
 int ascon_trng_get_bytes(unsigned char *out, size_t outlen) __attribute__((weak));
-int ascon_trng_get_bytes_is_good(void) __attribute__((weak));
 
 /**
  * \brief Escape hatch that allows applications to provide their
@@ -64,30 +64,20 @@ int ascon_trng_get_bytes(unsigned char *out, size_t outlen)
     return 0;
 }
 
-/**
- * \brief Escape hatch that declares that the application's output
- * from ascon_trng_get_bytes() is good and there is no need to run a
- * global PRNG to mix up the data.
- *
- * \return Non-zero if the data from ascon_trng_get_bytes() is good.
- *
- * This escape hatch should only be used if the application knows
- * that it is getting random data from a good source.
- */
-int ascon_trng_get_bytes_is_good(void)
-{
-    return 0;
-}
+/* Try to make the global_prng state thread-safe */
+#if defined(HAVE_THREAD_KEYWORD)
+#define THREAD_LOCAL __thread
+#elif defined(HAVE_THREAD_LOCAL_KEYWORD)
+#define THREAD_LOCAL _Thread_local
+#else
+#define THREAD_LOCAL
+#endif
 
 /*
  * Global PRNG that collects what little entropy we can get from timers.
- *
- * Note that this is not thread-safe in the current implementation.
- * If the application returns non-zero from ascon_trng_get_bytes_is_good()
- * then the API will become thread-safe.
  */
-static ascon_state_t global_prng;
-static int volatile global_prng_initialized = 0;
+static THREAD_LOCAL ascon_state_t global_prng;
+static THREAD_LOCAL int volatile global_prng_initialized = 0;
 
 #if defined(HAVE_CLOCK_GETTIME) || defined(HAVE_GETTIMEOFDAY) || \
     defined(HAVE_TIME)
@@ -204,15 +194,6 @@ int ascon_trng_generate(unsigned char *out, size_t outlen)
     unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
     int ok;
 
-    /* If the application has declared ascon_trng_get_bytes() to be good,
-     * then use it directly rather than run a global PRNG.  We fall through
-     * if ascon_trng_get_bytes() subsequently fails anyway. */
-    if (ascon_trng_get_bytes_is_good()) {
-        ok = ascon_trng_get_bytes(out, outlen);
-        if (ok)
-            return 1;
-    }
-
     /* Re-seed and squeeze some data out of the global PRNG */
     ok = ascon_trng_global_init(seed);
     ascon_trng_squeeze(&global_prng, out, outlen);
@@ -222,122 +203,6 @@ int ascon_trng_generate(unsigned char *out, size_t outlen)
     ascon_permute6(&global_prng);
     ascon_release(&global_prng);
     ascon_clean(seed, sizeof(seed));
-    return ok;
-}
-
-int ascon_trng_init(ascon_trng_state_t *state)
-{
-    unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
-    int ok = 0;
-
-    /* Try getting the seed from the application first if its data is good */
-    if (ascon_trng_get_bytes_is_good()) {
-        ok = ascon_trng_get_bytes(seed, sizeof(seed));
-    }
-    if (!ok) {
-        /* Intialize and re-seed the global PRNG */
-        ok = ascon_trng_global_init(seed);
-
-        /* Squeeze out a seed value to use to initialize "state" */
-        ascon_trng_squeeze(&global_prng, seed, sizeof(seed));
-
-        /* Re-key the global PRNG to enforce forward security */
-        ascon_overwrite_with_zeroes(&global_prng, 0, 8);
-        ascon_permute6(&global_prng);
-        ascon_release(&global_prng);
-    }
-
-    /* Set up the new TRNG state */
-    ascon_init(&(state->prng));
-    ascon_add_bytes(&(state->prng), seed, 40 - sizeof(seed), sizeof(seed));
-    ascon_permute12(&(state->prng));
-    ascon_release(&(state->prng));
-    ascon_clean(seed, sizeof(seed));
-    state->posn = 0;
-    return ok;
-}
-
-void ascon_trng_free(ascon_trng_state_t *state)
-{
-    ascon_acquire(&(state->prng));
-    ascon_free(&(state->prng));
-}
-
-uint32_t ascon_trng_generate_32(ascon_trng_state_t *state)
-{
-    uint32_t x;
-    ascon_acquire(&(state->prng));
-    if ((state->posn + sizeof(uint32_t)) > ASCON_TRNG_MIXER_RATE) {
-        ascon_permute6(&(state->prng));
-        state->posn = 0;
-    }
-#if defined(ASCON_BACKEND_SLICED32) || defined(ASCON_BACKEND_SLICED64) || \
-        defined(ASCON_BACKEND_DIRECT_XOR)
-    /* Pull a word directly out of the state.  It doesn't matter if the
-     * word is bit-sliced or not because any bit is as good as any other. */
-    x = state->prng.W[state->posn / sizeof(uint32_t)];
-#else
-    ascon_extract_bytes
-        (&(state->prng), (unsigned char *)&x, state->posn, sizeof(x));
-#endif
-    ascon_release(&(state->prng));
-    state->posn += sizeof(uint32_t);
-    return x;
-}
-
-uint64_t ascon_trng_generate_64(ascon_trng_state_t *state)
-{
-    uint64_t x;
-    ascon_acquire(&(state->prng));
-    if ((state->posn + sizeof(uint64_t)) > ASCON_TRNG_MIXER_RATE ||
-            (state->posn % 8U) != 0) {
-        ascon_permute6(&(state->prng));
-        state->posn = 0;
-    }
-#if defined(ASCON_BACKEND_SLICED32) || defined(ASCON_BACKEND_SLICED64) || \
-        defined(ASCON_BACKEND_DIRECT_XOR)
-    /* Pull a word directly out of the state.  It doesn't matter if the
-     * word is bit-sliced or not because any bit is as good as any other. */
-    x = state->prng.S[state->posn / sizeof(uint64_t)];
-#else
-    ascon_extract_bytes
-        (&(state->prng), (unsigned char *)&x, state->posn, sizeof(x));
-#endif
-    ascon_release(&(state->prng));
-    state->posn += sizeof(uint64_t);
-    return x;
-}
-
-int ascon_trng_reseed(ascon_trng_state_t *state)
-{
-    unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
-    int ok = 0;
-
-    /* If the application has declared ascon_trng_get_bytes() to be good,
-     * then use it directly rather than run a global PRNG.  We fall through
-     * if ascon_trng_get_bytes() subsequently fails anyway. */
-    if (ascon_trng_get_bytes_is_good()) {
-        ok = ascon_trng_get_bytes(seed, sizeof(seed));
-    }
-    if (!ok) {
-        /* Get a new key for the local PRNG from the global PRNG */
-        ok = ascon_trng_global_init(seed);
-        ascon_trng_squeeze(&global_prng, seed, ASCON_SYSTEM_SEED_SIZE);
-
-        /* Re-key the global PRNG */
-        ascon_overwrite_with_zeroes(&global_prng, 0, 8);
-        ascon_permute6(&global_prng);
-        ascon_release(&global_prng);
-    }
-
-    /* Re-key the local PRNG with the seed data from the global PRNG */
-    ascon_acquire(&(state->prng));
-    ascon_add_bytes(&(state->prng), seed, 8, ASCON_SYSTEM_SEED_SIZE);
-    ascon_permute6(&(state->prng));
-    ascon_overwrite_with_zeroes(&(state->prng), 0, 8);
-    ascon_permute6(&(state->prng));
-    ascon_clean(seed, sizeof(seed));
-    state->posn = 0;
     return ok;
 }
 

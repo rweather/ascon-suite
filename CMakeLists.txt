@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
 include(CheckLibraryExists)
+include(CheckCSourceCompiles)
 
 # Set the project name and version number.
 project(AsconSuite VERSION 0.1.0 LANGUAGES C ASM)
@@ -75,6 +76,12 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 # Set up the assembler options.
 set(ASM_OPTIONS "-x assembler-with-cpp")
 set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} ${ASM_OPTIONS}")
+
+# Detect thread-local storage support in the compiler.
+check_c_source_compiles("__thread int var; int main() { var = 1; return var; }" HAVE_THREAD_KEYWORD)
+if (NOT HAVE_THREAD_KEYWORD)
+    check_c_source_compiles("_Thread_local int var; int main() { var = 1; return var; }" HAVE_THREAD_LOCAL_KEYWORD)
+endif()
 
 # Check for some system features.
 check_include_files(strings.h HAVE_STRINGS_H)
