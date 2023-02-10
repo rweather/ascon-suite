@@ -65,11 +65,6 @@ typedef struct
     /** Position within the PRNG state to extract the next byte */
     unsigned posn;
 
-#if defined(ASCON_TRNG_X86_64_RDRAND)
-    /** Non-zero if RDRAND is working, zero if it is not returning data */
-    int rdrand_working;
-#endif
-
 #if defined(ASCON_TRNG_MIXER)
     /** PRNG state for whitening poor random number sources.  Also used on
      *  systems without a fast "get random word" operation for masking. */

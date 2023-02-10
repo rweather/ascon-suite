@@ -23,12 +23,6 @@
 #ifndef ASCON_SELECT_TRNG_H
 #define ASCON_SELECT_TRNG_H
 
-/* Detect special RDRAND-like instructions separate from the system TRNG.
- * This may be used to generate masking material, but not for the main RNG. */
-#if (defined(__x86_64) || defined(__x86_64__)) && defined(__RDRND__)
-#define ASCON_TRNG_X86_64_RDRAND 1
-#endif
-
 #if defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || \
     defined(__CYGWIN__) || defined(__CYGWIN32__)
 

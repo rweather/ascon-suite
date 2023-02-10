@@ -43,9 +43,6 @@
 #if defined(HAVE_SYS_RANDOM_H)
 #include <sys/random.h>
 #endif
-#if defined(HAVE_IMMINTRIN_H)
-#include <immintrin.h> /* For _rdrand64_step() */
-#endif
 
 /* Use /dev/urandom if we don't have getrandom() or getentropy() */
 #define RANDOM_DEVICE "/dev/urandom"
@@ -137,51 +134,19 @@ static int ascon_trng_init_mixer(ascon_trng_state_t *state)
     return ok;
 }
 
-#if defined(ASCON_TRNG_X86_64_RDRAND)
-
-static int ascon_get_rdrand(unsigned long long *value)
-{
-    int count = 20;
-    while (count-- > 0) {
-        if (_rdrand64_step(value))
-            return 1;
-    }
-    return 0;
-}
-
-#endif
-
 int ascon_trng_init(ascon_trng_state_t *state)
 {
-#if defined(ASCON_TRNG_X86_64_RDRAND)
-    /* Make a test call to RDRAND to see if it is working.  If not,
-     * fall back to using the mixer implementation. */
-    unsigned long long value;
-    state->rdrand_working = ascon_get_rdrand(&value);
-    if (state->rdrand_working)
-        return 1;
-#endif
     return ascon_trng_init_mixer(state);
 }
 
 void ascon_trng_free(ascon_trng_state_t *state)
 {
-#if defined(ASCON_TRNG_X86_64_RDRAND)
-    if (state->rdrand_working) {
-        /* We were not using the mixer, so no need to free it */
-        ascon_clean(state, sizeof(ascon_trng_state_t));
-        return;
-    }
-#endif
     ascon_acquire(&(state->prng));
     ascon_free(&(state->prng));
 }
 
 uint32_t ascon_trng_generate_32(ascon_trng_state_t *state)
 {
-#if defined(ASCON_TRNG_X86_64_RDRAND)
-    return (uint32_t)ascon_trng_generate_64(state);
-#else
     uint32_t x;
     ascon_acquire(&(state->prng));
     if ((state->posn + sizeof(uint32_t)) > ASCON_TRNG_MIXER_RATE) {
@@ -200,25 +165,11 @@ uint32_t ascon_trng_generate_32(ascon_trng_state_t *state)
     ascon_release(&(state->prng));
     state->posn += sizeof(uint32_t);
     return x;
-#endif
 }
 
 uint64_t ascon_trng_generate_64(ascon_trng_state_t *state)
 {
     uint64_t x;
-#if defined(ASCON_TRNG_X86_64_RDRAND)
-    /* RDRAND instruction on x86-64 platforms for fast mask generation */
-    if (state->rdrand_working) {
-        unsigned long long value;
-        if (ascon_get_rdrand(&value))
-            return (uint64_t)value;
-
-        /* RDRAND appears to have stopped working, so initialize the mixer
-         * and use it from now on to generate masking material. */
-        state->rdrand_working = 0;
-        ascon_trng_init_mixer(state);
-    }
-#endif
     ascon_acquire(&(state->prng));
     if ((state->posn + sizeof(uint64_t)) > ASCON_TRNG_MIXER_RATE ||
             (state->posn % 8U) != 0) {
@@ -241,27 +192,19 @@ uint64_t ascon_trng_generate_64(ascon_trng_state_t *state)
 
 int ascon_trng_reseed(ascon_trng_state_t *state)
 {
-#if defined(ASCON_TRNG_X86_64_RDRAND)
-    /* If RDRAND was previously working, then assume that we don't
-     * need to reseed the mixer.  RDRAND should be reseeding itself. */
-    if (state->rdrand_working)
-        return 1;
-#endif
-    {
-        unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
-        int fd = ascon_dev_random_open();
-        int ok = ascon_dev_random_read(fd, seed, sizeof(seed));
-        if (fd >= 0)
-            close(fd);
-        ascon_acquire(&(state->prng));
-        ascon_add_bytes(&(state->prng), seed, 40 - sizeof(seed), sizeof(seed));
-        ascon_overwrite_with_zeroes(&(state->prng), 0, 8); /* Forward security */
-        ascon_permute12(&(state->prng));
-        ascon_release(&(state->prng));
-        ascon_clean(seed, sizeof(seed));
-        state->posn = 0;
-        return ok;
-    }
+    unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
+    int fd = ascon_dev_random_open();
+    int ok = ascon_dev_random_read(fd, seed, sizeof(seed));
+    if (fd >= 0)
+        close(fd);
+    ascon_acquire(&(state->prng));
+    ascon_add_bytes(&(state->prng), seed, 40 - sizeof(seed), sizeof(seed));
+    ascon_overwrite_with_zeroes(&(state->prng), 0, 8); /* Forward security */
+    ascon_permute12(&(state->prng));
+    ascon_release(&(state->prng));
+    ascon_clean(seed, sizeof(seed));
+    state->posn = 0;
+    return ok;
 }
 
 #endif /* ASCON_TRNG_DEV_RANDOM */

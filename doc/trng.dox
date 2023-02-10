@@ -101,12 +101,6 @@ operate as fast as possible.  In the case of the "esp" backend, the
 
 \snippet ascon-trng-esp.c snippet_trng_generate_32
 
-On x86-64 platforms, the "dev-random" backend uses the "RDRAND" instruction
-to generate random masking material rapidly.  But ascon_trng_generate()
-takes the safer option of using /dev/urandom instead.  While "RDRAND" is
-good enough for masking, it may not be trustworthly enough for general
-application use.
-
 On some platforms, the normal random source is too slow for masking.
 Such backends define <tt>ASCON_TRNG_MIXER</tt> and implement a simple
 PRNG based on the ASCON permutation to stretch an initial seed out into an
