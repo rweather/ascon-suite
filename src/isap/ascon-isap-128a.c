@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2023 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -29,6 +29,10 @@
 /* ISAP-A-128A */
 #define ISAP_ALG_NAME ascon128a_isap
 #define ISAP_KEY_STATE ascon128a_isap_aead_key_t
+#define ISAP_KEY_SIZE ASCON128_ISAP_KEY_SIZE
+#define ISAP_NONCE_SIZE ASCON_ISAP_NONCE_SIZE
+#define ISAP_TAG_SIZE ASCON_ISAP_TAG_SIZE
+#define ISAP_STATE_SIZE 40
 #define ISAP_RATE (64 / 8)
 #define ISAP_sH 12
 #define ISAP_sE 6

@@ -184,7 +184,7 @@ aead_cipher_t const ascon80pq_siv_cipher = {
 
 aead_cipher_t const ascon128a_isap_cipher = {
     "ISAP-A-128A",
-    ASCON_ISAP_KEY_SIZE,
+    ASCON128_ISAP_KEY_SIZE,
     ASCON_ISAP_NONCE_SIZE,
     ASCON_ISAP_TAG_SIZE,
     AEAD_FLAG_SC_PROTECT_KEY | AEAD_FLAG_SLOW,
@@ -198,7 +198,7 @@ aead_cipher_t const ascon128a_isap_cipher = {
 
 aead_cipher_t const ascon128_isap_cipher = {
     "ISAP-A-128",
-    ASCON_ISAP_KEY_SIZE,
+    ASCON128_ISAP_KEY_SIZE,
     ASCON_ISAP_NONCE_SIZE,
     ASCON_ISAP_TAG_SIZE,
     AEAD_FLAG_SC_PROTECT_KEY | AEAD_FLAG_SLOW,
@@ -207,6 +207,20 @@ aead_cipher_t const ascon128_isap_cipher = {
     sizeof(ascon128_isap_aead_key_t),
     (aead_cipher_pk_init_t)ascon128_isap_aead_init,
     (aead_cipher_pk_free_t)ascon128_isap_aead_free,
+    0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon80pq_isap_cipher = {
+    "ISAP-A-80PQ",
+    ASCON80PQ_ISAP_KEY_SIZE,
+    ASCON_ISAP_NONCE_SIZE,
+    ASCON_ISAP_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_KEY | AEAD_FLAG_SLOW,
+    (aead_cipher_encrypt_t)ascon80pq_isap_aead_encrypt,
+    (aead_cipher_decrypt_t)ascon80pq_isap_aead_decrypt,
+    sizeof(ascon80pq_isap_aead_key_t),
+    (aead_cipher_pk_init_t)ascon80pq_isap_aead_init,
+    (aead_cipher_pk_free_t)ascon80pq_isap_aead_free,
     0, 0, 0, 0, 0, 0
 };
 
@@ -453,6 +467,7 @@ static const aead_cipher_t *const ciphers[] = {
     &ascon80pq_siv_cipher,
     &ascon128a_isap_cipher,
     &ascon128_isap_cipher,
+    &ascon80pq_isap_cipher,
     &ascon128_inc_cipher,
     &ascon128a_inc_cipher,
     &ascon80pq_inc_cipher,

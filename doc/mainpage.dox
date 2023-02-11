@@ -134,8 +134,8 @@ The following higher-level extensions are provided:
 \li ASCON-128-SIV, ASCON-128a-SIV, and ASCON-80pq-SIV variants that
 provide Synthetic Initialization Vector (SIV) encryption modes.
 See the \ref siv "SIV page" for more information.
-\li ISAP-A-128 and ISAP-A-128A modes for enhanced protection against
-side channel leakage.
+\li ISAP-A-128, ISAP-A-128A, and ISAP-A-80PQ modes for enhanced
+protection against side channel leakage.
 \li HMAC and KMAC modes for keyed hashing built around ASCON-HASH and
 ASCON-XOF.  See the \ref kmac "KMAC page" for more information on ASCON-KMAC.
 \li ASCON-PRNG for generating an arbitary sequence of random data from
@@ -144,10 +144,10 @@ ASCON-XOF and uses the <a href="https://keccak.team/files/SpongePRNG.pdf">Sponge
 construction.  See the \ref random.h "PRNG page" for more information.
 \li HKDF and PBKDF2 modes built around the ASCON HMAC mode.
 
-Other than ISAP, these extensions have not yet been standardised by a
-public standards body, but I did try to follow general practice when
-creating such modes.  See the individual pages for the design choices
-that I made.  Feedback welcome.
+Other than ISAP-A-128 and ISAP-A-128A, these extensions have not yet
+been standardised by a public standards body, but I did try to follow
+general practice when creating such modes.  See the individual pages
+for the design choices that I made.  Feedback welcome.
 
 \section mainpage_histor History
 

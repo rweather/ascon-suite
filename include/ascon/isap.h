@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2023 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,6 +33,9 @@
  * around the Keccak-p[400] and ASCON permutations.  This API implements
  * the versions that were built around ASCON: ISAP-A-128 and ISAP-A-128A.
  *
+ * This API also provides ISAP-A-80PQ which is almost identical to ISAP-A-128,
+ * except that it uses a 160-bit key instead of the default 128-bit key.
+ *
  * ISAP is designed to provide some protection against adversaries
  * using differential power analysis to determine the key.  The
  * downside is that key setup is very slow.
@@ -55,9 +58,14 @@ extern "C" {
 #endif
 
 /**
- * \brief Size of the key for all ISAP-A family members.
+ * \brief Size of the key for all ISAP-A family members with 128-bit keys.
  */
-#define ASCON_ISAP_KEY_SIZE 16
+#define ASCON128_ISAP_KEY_SIZE 16
+
+/**
+ * \brief Size of the key for all ISAP-A family members with 160-bit keys.
+ */
+#define ASCON80PQ_ISAP_KEY_SIZE 20
 
 /**
  * \brief Size of the authentication tag for all ISAP-A family members.
@@ -93,6 +101,16 @@ typedef struct
     ascon_state_t ka;   /**< Pre-computed key for authentication */
 
 } ascon128_isap_aead_key_t;
+
+/**
+ * \brief Pre-computed key information for ISAP-A-80PQ.
+ */
+typedef struct
+{
+    ascon_state_t ke;   /**< Pre-computed key for encryption */
+    ascon_state_t ka;   /**< Pre-computed key for authentication */
+
+} ascon80pq_isap_aead_key_t;
 
 /**
  * \brief Initializes a pre-computed key for ISAP-A-128A.
@@ -305,6 +323,112 @@ int ascon128_isap_aead_decrypt
      const unsigned char *ad, size_t adlen,
      const unsigned char *npub,
      const ascon128_isap_aead_key_t *pk);
+
+/**
+ * \brief Initializes a pre-computed key for ISAP-A-80PQ.
+ *
+ * \param pk Points to the object to receive the pre-computed key value.
+ * \param k Points to the 20 bytes of the key.
+ *
+ * The ascon80pq_isap_aead_load_key() function can be used to
+ * initialize the pre-computed key from a value that was previously
+ * saved with ascon80pq_isap_aead_save_key().
+ *
+ * \sa ascon80pq_isap_aead_free(), ascon80pq_isap_aead_encrypt(),
+ * ascon80pq_isap_aead_decrypt(), ascon80pq_isap_aead_load_key()
+ */
+void ascon80pq_isap_aead_init
+    (ascon80pq_isap_aead_key_t *pk, const unsigned char *k);
+
+/**
+ * \brief Initializes a pre-computed key for ISAP-A-80PQ from a
+ * previously-saved key value.
+ *
+ * \param pk Points to the object to receive the pre-computed key value.
+ * \param k Points to the bytes of the previously-saved key.
+ *
+ * \sa ascon80pq_isap_aead_free(), ascon80pq_isap_aead_encrypt(),
+ * ascon80pq_isap_aead_decrypt(), ascon80pq_isap_aead_save_key()
+ */
+void ascon80pq_isap_aead_load_key
+    (ascon80pq_isap_aead_key_t *pk,
+     const unsigned char k[ASCON_ISAP_SAVED_KEY_SIZE]);
+
+/**
+ * \brief Saves a previously pre-computed key for ISAP-A-80PQ to a buffer.
+ *
+ * \param pk Points to the object to receive the pre-computed key value.
+ * \param k Points to the buffer to save the pre-computed key in.
+ *
+ * \sa ascon80pq_isap_aead_free(), ascon80pq_isap_aead_encrypt(),
+ * ascon80pq_isap_aead_decrypt(), ascon80pq_isap_aead_load_key()
+ */
+void ascon80pq_isap_aead_save_key
+    (ascon80pq_isap_aead_key_t *pk,
+     unsigned char k[ASCON_ISAP_SAVED_KEY_SIZE]);
+
+/**
+ * \brief Frees a pre-computed key for ISAP-A-80PQ.
+ *
+ * \param pk Points to the pre-computed key value.
+ *
+ * \sa ascon80pq_isap_aead_init()
+ */
+void ascon80pq_isap_aead_free(ascon80pq_isap_aead_key_t *pk);
+
+/**
+ * \brief Encrypts and authenticates a packet with ISAP-A-80PQ and
+ * pre-computed keys.
+ *
+ * \param c Buffer to receive the output.
+ * \param clen On exit, set to the length of the output which includes
+ * the ciphertext and the 16 byte authentication tag.
+ * \param m Buffer that contains the plaintext message to encrypt.
+ * \param mlen Length of the plaintext message in bytes.
+ * \param ad Buffer that contains associated data to authenticate
+ * along with the packet but which does not need to be encrypted.
+ * \param adlen Length of the associated data in bytes.
+ * \param npub Points to the public nonce for the packet which must
+ * be 16 bytes in length.
+ * \param pk Points to the pre-computed key value.
+ *
+ * \sa ascon80pq_isap_aead_decrypt(), ascon80pq_isap_aead_init()
+ */
+void ascon80pq_isap_aead_encrypt
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const ascon80pq_isap_aead_key_t *pk);
+
+/**
+ * \brief Decrypts and authenticates a packet with ISAP-A-80PQ and
+ * pre-computed keys.
+ *
+ * \param m Buffer to receive the plaintext message on output.
+ * \param mlen Receives the length of the plaintext message on output.
+ * \param c Buffer that contains the ciphertext and authentication
+ * tag to decrypt.
+ * \param clen Length of the input data in bytes, which includes the
+ * ciphertext and the 16 byte authentication tag.
+ * \param ad Buffer that contains associated data to authenticate
+ * along with the packet but which does not need to be encrypted.
+ * \param adlen Length of the associated data in bytes.
+ * \param npub Points to the public nonce for the packet which must
+ * be 16 bytes in length.
+ * \param pk Points to the pre-computed key value.
+ *
+ * \return 0 on success, -1 if the authentication tag was incorrect,
+ * or some other negative number if there was an error in the parameters.
+ *
+ * \sa ascon80pq_isap_aead_encrypt(), ascon80pq_isap_aead_init()
+ */
+int ascon80pq_isap_aead_decrypt
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const ascon80pq_isap_aead_key_t *pk);
 
 #ifdef __cplusplus
 }

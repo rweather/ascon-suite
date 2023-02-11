@@ -26,10 +26,10 @@
 #include "aead/ascon-aead-common.h"
 #include <string.h>
 
-/* ISAP-A-128 */
-#define ISAP_ALG_NAME ascon128_isap
-#define ISAP_KEY_STATE ascon128_isap_aead_key_t
-#define ISAP_KEY_SIZE ASCON128_ISAP_KEY_SIZE
+/* ISAP-A-80PQ */
+#define ISAP_ALG_NAME ascon80pq_isap
+#define ISAP_KEY_STATE ascon80pq_isap_aead_key_t
+#define ISAP_KEY_SIZE ASCON80PQ_ISAP_KEY_SIZE
 #define ISAP_NONCE_SIZE ASCON_ISAP_NONCE_SIZE
 #define ISAP_TAG_SIZE ASCON_ISAP_TAG_SIZE
 #define ISAP_STATE_SIZE 40

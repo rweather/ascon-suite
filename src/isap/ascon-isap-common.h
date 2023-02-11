@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2023 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -25,6 +25,10 @@
  *
  * ISAP_ALG_NAME        Name of the ISAP algorithm; e.g. isap_keccak_128
  * ISAP_KEY_STATE       Type for the pre-computed key state
+ * ISAP_KEY_SIZE        Size of the key in bytes.
+ * ISAP_NONCE_SIZE      Size of the nonce in bytes.
+ * ISAP_TAG_SIZE        Size of the authentication tag in bytes.
+ * ISAP_STATE_SIZE      Size of the permutation state in bytes.
  * ISAP_RATE            Number of bytes in the rate for hashing and encryption.
  * ISAP_sH              Number of rounds for hashing.
  * ISAP_sE              Number of rounds for encryption.
@@ -32,15 +36,6 @@
  * ISAP_sK              Number of rounds for keying.
  */
 #if defined(ISAP_ALG_NAME)
-
-#if !defined(ISAP_KEY_SIZE)
-#define ISAP_KEY_SIZE 16
-#define ISAP_NONCE_SIZE 16
-#define ISAP_TAG_SIZE 16
-#endif
-#if !defined(ISAP_STATE_SIZE)
-#define ISAP_STATE_SIZE 40
-#endif
 
 #define ISAP_CONCAT_INNER(name,suffix) name##suffix
 #define ISAP_CONCAT(name,suffix) ISAP_CONCAT_INNER(name,suffix)
@@ -178,7 +173,10 @@ static void ISAP_CONCAT(ISAP_ALG_NAME,_mac)
      const unsigned char *c, size_t clen,
      unsigned char *tag)
 {
-    unsigned char preserve[ISAP_STATE_SIZE - ISAP_TAG_SIZE];
+    unsigned char preserve[ISAP_STATE_SIZE - ISAP_KEY_SIZE];
+#if ISAP_KEY_SIZE != ISAP_TAG_SIZE
+    unsigned char k[ISAP_KEY_SIZE];
+#endif
     unsigned temp;
 
     /* Absorb the associated data */
@@ -214,14 +212,24 @@ static void ISAP_CONCAT(ISAP_ALG_NAME,_mac)
     ascon_permute(state, 12 - ISAP_sH);
 
     /* Re-key the state and generate the authentication tag */
+#if ISAP_KEY_SIZE == ISAP_TAG_SIZE
     ascon_extract_bytes(state, tag, 0, ISAP_TAG_SIZE);
-    ascon_extract_bytes(state, preserve, ISAP_TAG_SIZE, sizeof(preserve));
+    ascon_extract_bytes(state, preserve, ISAP_KEY_SIZE, sizeof(preserve));
     ISAP_CONCAT(ISAP_ALG_NAME,_rekey)
         (state, &(pk->ka), tag, ISAP_TAG_SIZE);
-    ascon_overwrite_bytes(state, preserve, ISAP_TAG_SIZE, sizeof(preserve));
+#else
+    ascon_extract_bytes(state, k, 0, ISAP_KEY_SIZE);
+    ascon_extract_bytes(state, preserve, ISAP_KEY_SIZE, sizeof(preserve));
+    ISAP_CONCAT(ISAP_ALG_NAME,_rekey)
+        (state, &(pk->ka), k, ISAP_KEY_SIZE);
+#endif
+    ascon_overwrite_bytes(state, preserve, ISAP_KEY_SIZE, sizeof(preserve));
     ascon_permute(state, 12 - ISAP_sH);
     ascon_extract_bytes(state, tag, 0, ISAP_TAG_SIZE);
     ascon_clean(preserve, sizeof(preserve));
+#if ISAP_KEY_SIZE != ISAP_TAG_SIZE
+    ascon_clean(k, sizeof(k));
+#endif
 }
 
 void ISAP_CONCAT(ISAP_ALG_NAME,_aead_init)
@@ -341,6 +349,9 @@ int ISAP_CONCAT(ISAP_ALG_NAME,_aead_decrypt)
  * another variant on the ISAP algorithm */
 #undef ISAP_ALG_NAME
 #undef ISAP_KEY_STATE
+#undef ISAP_KEY_SIZE
+#undef ISAP_NONCE_SIZE
+#undef ISAP_TAG_SIZE
 #undef ISAP_RATE
 #undef ISAP_sH
 #undef ISAP_sE
