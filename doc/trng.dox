@@ -53,6 +53,7 @@ systems with a /dev/urandom device.</td></tr>
 <tr><td>none</td><td>Default if the platform is not recognised</td></tr>
 <tr><td>stm32</td><td>STM32 platforms with the HAL_RNG_GenerateRandomNumber() function</td></tr>
 <tr><td>windows</td><td>Windows systems using the CryptGenRandom() function</td></tr>
+<tr><td>zephyr</td><td>Zephyr RTOS systems with either sys_csrand_get() or bt_rand() configured</td></tr>
 </table>
 
 The file \ref ascon-select-trng.h "ascon-select-trng.h" contains

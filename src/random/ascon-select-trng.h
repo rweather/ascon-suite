@@ -38,6 +38,22 @@
 #define ASCON_TRNG_DEV_RANDOM 1
 #define ASCON_TRNG_MIXER 1
 
+#elif defined(__zephyr__)
+
+/* Zephyr RTOS.  Use the sys_csrand_get() function if it is
+ * available, or use bt_rand() if Bluetooth is enabled. */
+#include <zephyr/kernel.h>
+#if defined(CONFIG_CTR_DRBG_CSPRNG_GENERATOR) || \
+    defined(CONFIG_HARDWARE_DEVICE_CS_GENERATOR)
+#define ASCON_TRNG_ZEPHYR_CSRAND 1
+#elif defined(CONFIG_BT)
+#define ASCON_TRNG_ZEPHYR_BTRAND 1
+#else
+/* Zephyr does not have a cryptographically secure RNG enabled */
+#define ASCON_TRNG_NONE 1
+#endif
+#define ASCON_TRNG_MIXER 1
+
 #elif defined(USE_HAL_DRIVER)
 
 /* STM32 platform with HAL libraries.  Detecting the TRNG is complicated. */

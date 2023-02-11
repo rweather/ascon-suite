@@ -87,6 +87,7 @@ list(APPEND ASCON_SOURCES
     random/ascon-trng-stm32.c
     random/ascon-trng-stm32.h
     random/ascon-trng-windows.c
+    random/ascon-trng-zephyr.c
     siv/ascon-siv-128.c
     siv/ascon-siv-128a.c
     siv/ascon-siv-80pq.c
