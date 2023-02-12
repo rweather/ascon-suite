@@ -23,6 +23,7 @@ MAIN_SOURCES = \
 	$(SOURCE_DIR)/hash/ascon-xof.c \
 	$(SOURCE_DIR)/isap/ascon-isap-128.c \
 	$(SOURCE_DIR)/isap/ascon-isap-128a.c \
+	$(SOURCE_DIR)/isap/ascon-isap-80pq.c \
 	$(SOURCE_DIR)/kdf/ascon-hkdf.c \
 	$(SOURCE_DIR)/kdf/ascon-hkdfa.c \
 	$(SOURCE_DIR)/kdf/ascon-pbkdf2.c \
@@ -69,6 +70,7 @@ UTIL_SOURCES = \
 	$(SOURCE_DIR)/masking/ascon-x4-c64.c \
 	$(SOURCE_DIR)/random/ascon-trng-due.c \
 	$(SOURCE_DIR)/random/ascon-trng-esp.c \
+	$(SOURCE_DIR)/random/ascon-trng-mixer.c \
 	$(SOURCE_DIR)/random/ascon-trng-none.c
 
 UTIL_INCLUDES = \
