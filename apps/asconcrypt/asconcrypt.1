@@ -1,0 +1,94 @@
+.\" Manual page for asconcrypt
+.TH ASCONCRYPT "1" "February 2023" "ASCON Suite" "User Commmands"
+.SH NAME
+asconcrypt \- encrypts or decrypts files with ASCON
+.SH SYNOPSIS
+.B asconcrypt
+[\fI\,OPTION\/\fR]... [\fI\,FILE\/\fR]...
+.SH DESCRIPTION
+Encrypts or decrypts files using the ASCON authenticated cipher.
+.TP
+\fB\-e\fR
+Encrypt the specified FILEs.
+.TP
+\fB\-d\fR
+Decrypt the specified FILEs.  If neither \fB\-e\fR or \fB\-d\fR are
+specified, then the mode is detected from the file extension.
+The FILEs will be decrypted if they end in \fB.ascon\fR; otherwise they
+will be encrypted.
+.TP
+\fB\-p\fR PASSWORD
+Use PASSWORD to encrypt or decrypt the FILEs.  If neither this option or the
+\fB\-k\fR option is supplied, then the user will be prompted for the password.
+The \fB\-p\fR option is not recommended because the password will be visible
+to other users on the system in the process list.  The \fB\-k\fR option is
+preferable for supplying passwords without prompting.
+.TP
+\fB\-k\fR KEYFILE
+Use the contents of KEYFILE as the password to encrypt or decrypt the FILEs.
+KEYFILE is expected to be a text file with a single line containing the
+password.
+.TP
+\fB\-g\fR KEYFILE
+Generates a random password and writes it to KEYFILE.  This is a useful way
+to generate a password that is hard to guess and which can be shared with a
+recipient in some out-of-band manner.
+.TP
+\fB\-o\fR OUTFILE
+Writes the encrypted or decrypted content to OUTFILE.  If this option is
+not supplied, then the \fB.ascon\fR extension is added to encrypted filenames,
+or removed from decrypted filenames.
+.SH "SEE ALSO"
+.BR asconsum (1)
+.SH EXAMPLES
+.PP
+The following demonstrates encrypting a document with \fBasconcrypt\fR:
+.PP
+.EX
+$ ls
+MySecretDocument.txt
+$ asconcrypt MySecretDocument.txt
+Password:
+Confirm Password:
+$ ls
+MySecretDocument.txt.ascon MySecretDocument.txt
+.EE
+.PP
+The file can be later decrypted with:
+.PP
+.EX
+$ ls
+MySecretDocument.txt.ascon
+$ asconcrypt MySecretDocument.txt.ascon
+Password:
+$ ls
+MySecretDocument.txt.ascon MySecretDocument.txt
+.EE
+.PP
+An error will occur if the file could not be decrypted, usually because
+the wrong password was supplied or the input is not actually an encrypted
+file in asconcrypt format.
+.PP
+.SH "PASSWORD RECOVERY"
+.PP
+If the password is lost, there is no way to decrypt an encrypted file
+except by trying all likely passwords and hoping that one works.
+.PP
+If the lost password was generated with the \fB\-g\fR
+option, then it will be infeasible to recover the password.
+The search space contains 2^240 candidate passwords.
+.PP
+.SH LIMITATIONS
+.PP
+The program will refuse to encrypt files of more than 1 terabyte (TiB)
+in size.  Encrypting large amounts of data with the same key is unsafe.
+Files larger than 1 TiB in size must be split into smaller pieces first.
+.PP
+The original plaintext file is not deleted or securely overwritten
+when it is encrypted.  If an attacker can recover the plaintext file
+from the originating systen, they will not need a password to decrypt it.
+.SH AUTHOR
+Written by Rhys Weatherley.
+.SH COPYRIGHT
+Copyright \(co 2023 Southern Storm Software, Pty Ltd.
+MIT license.

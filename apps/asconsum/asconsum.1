@@ -1,0 +1,55 @@
+.\" Manual page for asconsum
+.TH ASCONSUM "1" "February 2023" "ASCON Suite" "User Commmands"
+.SH NAME
+asconsum \- compute and check ASCON message digests
+.SH SYNOPSIS
+.B asconsum
+[\fI\,OPTION\/\fR]... [\fI\,FILE\/\fR]...
+.SH DESCRIPTION
+Print or check 256-bit ASCON checksums.
+.PP
+If there is no FILE or FILE is \- then standard input is read.
+.TP
+\fB\-h\fR
+use ASCON-HASH to compute or check the digests (default)
+.TP
+\fB\-a\fR
+use ASCON-HASHA to compute or check the digests
+.TP
+\fB\-x\fR
+use ASCON-XOF to compute or check the digests
+.TP
+\fB\-y\fR
+use ASCON-XOFA to compute or check the digests
+.TP
+\fB\-c\fR
+read ASCON checksums from the FILEs and check them
+.SH "SEE ALSO"
+.BR asconcrypt (1),
+.BR sha256sum (1)
+.SH EXAMPLES
+.PP
+The following command computes the ASCON-HASHA digest of a string:
+.PP
+.EX
+$ echo -n 'Hello, World!' | asconsum -a
+7be799bd1ce0b6ffbd80afd54269019dfea0304a8f859c726c01b297a0b3de45
+.EE
+.PP
+The following command computes the ASCON-HASH digests of two files and
+writes the result to the file "checksums":
+.PP
+.EX
+$ asconsum file1 file2 >checksums
+.EE
+.PP
+The checksums can be later checked with:
+.PP
+.EX
+$ asconsum -c checksums
+.EE
+.SH AUTHOR
+Written by Rhys Weatherley.
+.SH COPYRIGHT
+Copyright \(co 2023 Southern Storm Software, Pty Ltd.
+MIT license.
