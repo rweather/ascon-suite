@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_dcac466869f03cce61fb1229a60b2211.html">ascon</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_895feb7a19ce4626986b0b6028116931.html">ascon</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -88,13 +88,20 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon128__isap__aead__key__t.html">ascon128_isap_aead_key_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pre-computed key information for ISAP-A-128.  <a href="structascon128__isap__aead__key__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pre-computed key information for ISAP-A-80PQ.  <a href="structascon80pq__isap__aead__key__t.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a572567405eb1734995a2bdbb6cd82c54"><td class="memItemLeft" align="right" valign="top"><a id="a572567405eb1734995a2bdbb6cd82c54"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#a572567405eb1734995a2bdbb6cd82c54">ASCON_ISAP_KEY_SIZE</a>&#160;&#160;&#160;16</td></tr>
-<tr class="memdesc:a572567405eb1734995a2bdbb6cd82c54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the key for all ISAP-A family members. <br /></td></tr>
-<tr class="separator:a572567405eb1734995a2bdbb6cd82c54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9409ab9adeaa97fdb9634866e5a5be90"><td class="memItemLeft" align="right" valign="top"><a id="a9409ab9adeaa97fdb9634866e5a5be90"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#a9409ab9adeaa97fdb9634866e5a5be90">ASCON128_ISAP_KEY_SIZE</a>&#160;&#160;&#160;16</td></tr>
+<tr class="memdesc:a9409ab9adeaa97fdb9634866e5a5be90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the key for all ISAP-A family members with 128-bit keys. <br /></td></tr>
+<tr class="separator:a9409ab9adeaa97fdb9634866e5a5be90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c9e8fd1ceb5965d3c7d522b3e22d850"><td class="memItemLeft" align="right" valign="top"><a id="a5c9e8fd1ceb5965d3c7d522b3e22d850"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#a5c9e8fd1ceb5965d3c7d522b3e22d850">ASCON80PQ_ISAP_KEY_SIZE</a>&#160;&#160;&#160;20</td></tr>
+<tr class="memdesc:a5c9e8fd1ceb5965d3c7d522b3e22d850"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the key for all ISAP-A family members with 160-bit keys. <br /></td></tr>
+<tr class="separator:a5c9e8fd1ceb5965d3c7d522b3e22d850"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d8902b3da2cf6a252552ff5c0baa51b"><td class="memItemLeft" align="right" valign="top"><a id="a0d8902b3da2cf6a252552ff5c0baa51b"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#a0d8902b3da2cf6a252552ff5c0baa51b">ASCON_ISAP_TAG_SIZE</a>&#160;&#160;&#160;16</td></tr>
 <tr class="memdesc:a0d8902b3da2cf6a252552ff5c0baa51b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the authentication tag for all ISAP-A family members. <br /></td></tr>
@@ -146,10 +153,29 @@ Functions</h2></td></tr>
 <tr class="memitem:abe2eb71d28ea747dd81a9e7fb53e2ac1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#abe2eb71d28ea747dd81a9e7fb53e2ac1">ascon128_isap_aead_decrypt</a> (unsigned char *m, size_t *mlen, const unsigned char *c, size_t clen, const unsigned char *ad, size_t adlen, const unsigned char *npub, const <a class="el" href="structascon128__isap__aead__key__t.html">ascon128_isap_aead_key_t</a> *pk)</td></tr>
 <tr class="memdesc:abe2eb71d28ea747dd81a9e7fb53e2ac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrypts and authenticates a packet with ISAP-A-128 and pre-computed keys.  <a href="isap_8h.html#abe2eb71d28ea747dd81a9e7fb53e2ac1">More...</a><br /></td></tr>
 <tr class="separator:abe2eb71d28ea747dd81a9e7fb53e2ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87aa173a2c07123f94a25d9a56baf79f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#a87aa173a2c07123f94a25d9a56baf79f">ascon80pq_isap_aead_init</a> (<a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *pk, const unsigned char *k)</td></tr>
+<tr class="memdesc:a87aa173a2c07123f94a25d9a56baf79f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a pre-computed key for ISAP-A-80PQ.  <a href="isap_8h.html#a87aa173a2c07123f94a25d9a56baf79f">More...</a><br /></td></tr>
+<tr class="separator:a87aa173a2c07123f94a25d9a56baf79f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a233a89879d4647e96fddb996a1defc6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#a233a89879d4647e96fddb996a1defc6f">ascon80pq_isap_aead_load_key</a> (<a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *pk, const unsigned char k[<a class="el" href="isap_8h.html#a53963485ed31a1b94c027671bd06d2f5">ASCON_ISAP_SAVED_KEY_SIZE</a>])</td></tr>
+<tr class="memdesc:a233a89879d4647e96fddb996a1defc6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a pre-computed key for ISAP-A-80PQ from a previously-saved key value.  <a href="isap_8h.html#a233a89879d4647e96fddb996a1defc6f">More...</a><br /></td></tr>
+<tr class="separator:a233a89879d4647e96fddb996a1defc6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec1351fb8bd453a2e46e108581a67217"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#aec1351fb8bd453a2e46e108581a67217">ascon80pq_isap_aead_save_key</a> (<a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *pk, unsigned char k[<a class="el" href="isap_8h.html#a53963485ed31a1b94c027671bd06d2f5">ASCON_ISAP_SAVED_KEY_SIZE</a>])</td></tr>
+<tr class="memdesc:aec1351fb8bd453a2e46e108581a67217"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a previously pre-computed key for ISAP-A-80PQ to a buffer.  <a href="isap_8h.html#aec1351fb8bd453a2e46e108581a67217">More...</a><br /></td></tr>
+<tr class="separator:aec1351fb8bd453a2e46e108581a67217"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa767d2a4407bb451f634a91ac556baf3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#aa767d2a4407bb451f634a91ac556baf3">ascon80pq_isap_aead_free</a> (<a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *pk)</td></tr>
+<tr class="memdesc:aa767d2a4407bb451f634a91ac556baf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a pre-computed key for ISAP-A-80PQ.  <a href="isap_8h.html#aa767d2a4407bb451f634a91ac556baf3">More...</a><br /></td></tr>
+<tr class="separator:aa767d2a4407bb451f634a91ac556baf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a67da1379e6291c0060140bf3b774f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#a0a67da1379e6291c0060140bf3b774f2">ascon80pq_isap_aead_encrypt</a> (unsigned char *c, size_t *clen, const unsigned char *m, size_t mlen, const unsigned char *ad, size_t adlen, const unsigned char *npub, const <a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *pk)</td></tr>
+<tr class="memdesc:a0a67da1379e6291c0060140bf3b774f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.  <a href="isap_8h.html#a0a67da1379e6291c0060140bf3b774f2">More...</a><br /></td></tr>
+<tr class="separator:a0a67da1379e6291c0060140bf3b774f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6c0e7c9095710b85701cc74501eef4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="isap_8h.html#ac6c0e7c9095710b85701cc74501eef4a">ascon80pq_isap_aead_decrypt</a> (unsigned char *m, size_t *mlen, const unsigned char *c, size_t clen, const unsigned char *ad, size_t adlen, const unsigned char *npub, const <a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *pk)</td></tr>
+<tr class="memdesc:ac6c0e7c9095710b85701cc74501eef4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.  <a href="isap_8h.html#ac6c0e7c9095710b85701cc74501eef4a">More...</a><br /></td></tr>
+<tr class="separator:ac6c0e7c9095710b85701cc74501eef4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ISAP authenticated encryption algorithm for ASCON. </p>
 <p>ISAP is a family of authenticated encryption algorithms that were built around the Keccak-p[400] and ASCON permutations. This API implements the versions that were built around ASCON: ISAP-A-128 and ISAP-A-128A.</p>
+<p>This API also provides ISAP-A-80PQ which is almost identical to ISAP-A-128, except that it uses a 160-bit key instead of the default 128-bit key.</p>
 <p>ISAP is designed to provide some protection against adversaries using differential power analysis to determine the key. The downside is that key setup is very slow.</p>
 <p>To alleviate slow key setup, the <a class="el" href="isap_8h.html#a4eb32d6263be274c89ed63ea90881233" title="Initializes a pre-computed key for ISAP-A-128.">ascon128_isap_aead_init()</a> and <a class="el" href="isap_8h.html#abde5f8e81cd782faf6cf9dc266149009" title="Initializes a pre-computed key for ISAP-A-128A.">ascon128a_isap_aead_init()</a> functions pre-compute the key setup so that the same pre-computed key can be reused on multiple packets.</p>
 <p>If a device has a long-lived key, then the pre-computed key can be stored in ROM or flash memory using <a class="el" href="isap_8h.html#aa77eac0b8acc0bbde2c74762c4e2ffc9" title="Saves a previously pre-computed key for ISAP-A-128 to a buffer.">ascon128_isap_aead_save_key()</a> or <a class="el" href="isap_8h.html#a06a860a136db98380817a2f403ebcc9d" title="Saves a previously pre-computed key for ISAP-A-128A to a buffer.">ascon128a_isap_aead_save_key()</a>. The long-lived key is reloaded later using <a class="el" href="isap_8h.html#aa0372e63161902687b33dddaac3038db" title="Initializes a pre-computed key for ISAP-A-128 from a previously-saved key value.">ascon128_isap_aead_load_key()</a> or <a class="el" href="isap_8h.html#afe2c35efeb919a8be8402eb2202eafec" title="Initializes a pre-computed key for ISAP-A-128A from a previously-saved key value.">ascon128a_isap_aead_load_key()</a>. This may avoid leakage when loading the key bits at runtime.</p>
@@ -763,10 +789,313 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ac6c0e7c9095710b85701cc74501eef4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6c0e7c9095710b85701cc74501eef4a">&#9670;&nbsp;</a></span>ascon80pq_isap_aead_decrypt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ascon80pq_isap_aead_decrypt </td>
+          <td>(</td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>mlen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>clen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramname"><em>ad</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>adlen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramname"><em>npub</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *&#160;</td>
+          <td class="paramname"><em>pk</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Decrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>Buffer to receive the plaintext message on output. </td></tr>
+    <tr><td class="paramname">mlen</td><td>Receives the length of the plaintext message on output. </td></tr>
+    <tr><td class="paramname">c</td><td>Buffer that contains the ciphertext and authentication tag to decrypt. </td></tr>
+    <tr><td class="paramname">clen</td><td>Length of the input data in bytes, which includes the ciphertext and the 16 byte authentication tag. </td></tr>
+    <tr><td class="paramname">ad</td><td>Buffer that contains associated data to authenticate along with the packet but which does not need to be encrypted. </td></tr>
+    <tr><td class="paramname">adlen</td><td>Length of the associated data in bytes. </td></tr>
+    <tr><td class="paramname">npub</td><td>Points to the public nonce for the packet which must be 16 bytes in length. </td></tr>
+    <tr><td class="paramname">pk</td><td>Points to the pre-computed key value.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 if the authentication tag was incorrect, or some other negative number if there was an error in the parameters.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="isap_8h.html#a0a67da1379e6291c0060140bf3b774f2" title="Encrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.">ascon80pq_isap_aead_encrypt()</a>, <a class="el" href="isap_8h.html#a87aa173a2c07123f94a25d9a56baf79f" title="Initializes a pre-computed key for ISAP-A-80PQ.">ascon80pq_isap_aead_init()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a0a67da1379e6291c0060140bf3b774f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a67da1379e6291c0060140bf3b774f2">&#9670;&nbsp;</a></span>ascon80pq_isap_aead_encrypt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon80pq_isap_aead_encrypt </td>
+          <td>(</td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>clen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramname"><em>m</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>mlen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramname"><em>ad</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>adlen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramname"><em>npub</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *&#160;</td>
+          <td class="paramname"><em>pk</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Encrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>Buffer to receive the output. </td></tr>
+    <tr><td class="paramname">clen</td><td>On exit, set to the length of the output which includes the ciphertext and the 16 byte authentication tag. </td></tr>
+    <tr><td class="paramname">m</td><td>Buffer that contains the plaintext message to encrypt. </td></tr>
+    <tr><td class="paramname">mlen</td><td>Length of the plaintext message in bytes. </td></tr>
+    <tr><td class="paramname">ad</td><td>Buffer that contains associated data to authenticate along with the packet but which does not need to be encrypted. </td></tr>
+    <tr><td class="paramname">adlen</td><td>Length of the associated data in bytes. </td></tr>
+    <tr><td class="paramname">npub</td><td>Points to the public nonce for the packet which must be 16 bytes in length. </td></tr>
+    <tr><td class="paramname">pk</td><td>Points to the pre-computed key value.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="isap_8h.html#ac6c0e7c9095710b85701cc74501eef4a" title="Decrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.">ascon80pq_isap_aead_decrypt()</a>, <a class="el" href="isap_8h.html#a87aa173a2c07123f94a25d9a56baf79f" title="Initializes a pre-computed key for ISAP-A-80PQ.">ascon80pq_isap_aead_init()</a> </dd></dl>
+
+</div>
+</div>
+<a id="aa767d2a4407bb451f634a91ac556baf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa767d2a4407bb451f634a91ac556baf3">&#9670;&nbsp;</a></span>ascon80pq_isap_aead_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon80pq_isap_aead_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *&#160;</td>
+          <td class="paramname"><em>pk</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Frees a pre-computed key for ISAP-A-80PQ. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pk</td><td>Points to the pre-computed key value.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="isap_8h.html#a87aa173a2c07123f94a25d9a56baf79f" title="Initializes a pre-computed key for ISAP-A-80PQ.">ascon80pq_isap_aead_init()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a87aa173a2c07123f94a25d9a56baf79f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87aa173a2c07123f94a25d9a56baf79f">&#9670;&nbsp;</a></span>ascon80pq_isap_aead_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon80pq_isap_aead_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *&#160;</td>
+          <td class="paramname"><em>pk</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned char *&#160;</td>
+          <td class="paramname"><em>k</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes a pre-computed key for ISAP-A-80PQ. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pk</td><td>Points to the object to receive the pre-computed key value. </td></tr>
+    <tr><td class="paramname">k</td><td>Points to the 20 bytes of the key.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The <a class="el" href="isap_8h.html#a233a89879d4647e96fddb996a1defc6f" title="Initializes a pre-computed key for ISAP-A-80PQ from a previously-saved key value.">ascon80pq_isap_aead_load_key()</a> function can be used to initialize the pre-computed key from a value that was previously saved with <a class="el" href="isap_8h.html#aec1351fb8bd453a2e46e108581a67217" title="Saves a previously pre-computed key for ISAP-A-80PQ to a buffer.">ascon80pq_isap_aead_save_key()</a>.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="isap_8h.html#aa767d2a4407bb451f634a91ac556baf3" title="Frees a pre-computed key for ISAP-A-80PQ.">ascon80pq_isap_aead_free()</a>, <a class="el" href="isap_8h.html#a0a67da1379e6291c0060140bf3b774f2" title="Encrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.">ascon80pq_isap_aead_encrypt()</a>, <a class="el" href="isap_8h.html#ac6c0e7c9095710b85701cc74501eef4a" title="Decrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.">ascon80pq_isap_aead_decrypt()</a>, <a class="el" href="isap_8h.html#a233a89879d4647e96fddb996a1defc6f" title="Initializes a pre-computed key for ISAP-A-80PQ from a previously-saved key value.">ascon80pq_isap_aead_load_key()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a233a89879d4647e96fddb996a1defc6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a233a89879d4647e96fddb996a1defc6f">&#9670;&nbsp;</a></span>ascon80pq_isap_aead_load_key()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon80pq_isap_aead_load_key </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *&#160;</td>
+          <td class="paramname"><em>pk</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned char&#160;</td>
+          <td class="paramname"><em>k</em>[ASCON_ISAP_SAVED_KEY_SIZE]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes a pre-computed key for ISAP-A-80PQ from a previously-saved key value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pk</td><td>Points to the object to receive the pre-computed key value. </td></tr>
+    <tr><td class="paramname">k</td><td>Points to the bytes of the previously-saved key.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="isap_8h.html#aa767d2a4407bb451f634a91ac556baf3" title="Frees a pre-computed key for ISAP-A-80PQ.">ascon80pq_isap_aead_free()</a>, <a class="el" href="isap_8h.html#a0a67da1379e6291c0060140bf3b774f2" title="Encrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.">ascon80pq_isap_aead_encrypt()</a>, <a class="el" href="isap_8h.html#ac6c0e7c9095710b85701cc74501eef4a" title="Decrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.">ascon80pq_isap_aead_decrypt()</a>, <a class="el" href="isap_8h.html#aec1351fb8bd453a2e46e108581a67217" title="Saves a previously pre-computed key for ISAP-A-80PQ to a buffer.">ascon80pq_isap_aead_save_key()</a> </dd></dl>
+
+</div>
+</div>
+<a id="aec1351fb8bd453a2e46e108581a67217"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec1351fb8bd453a2e46e108581a67217">&#9670;&nbsp;</a></span>ascon80pq_isap_aead_save_key()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ascon80pq_isap_aead_save_key </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structascon80pq__isap__aead__key__t.html">ascon80pq_isap_aead_key_t</a> *&#160;</td>
+          <td class="paramname"><em>pk</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned char&#160;</td>
+          <td class="paramname"><em>k</em>[ASCON_ISAP_SAVED_KEY_SIZE]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Saves a previously pre-computed key for ISAP-A-80PQ to a buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pk</td><td>Points to the object to receive the pre-computed key value. </td></tr>
+    <tr><td class="paramname">k</td><td>Points to the buffer to save the pre-computed key in.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="isap_8h.html#aa767d2a4407bb451f634a91ac556baf3" title="Frees a pre-computed key for ISAP-A-80PQ.">ascon80pq_isap_aead_free()</a>, <a class="el" href="isap_8h.html#a0a67da1379e6291c0060140bf3b774f2" title="Encrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.">ascon80pq_isap_aead_encrypt()</a>, <a class="el" href="isap_8h.html#ac6c0e7c9095710b85701cc74501eef4a" title="Decrypts and authenticates a packet with ISAP-A-80PQ and pre-computed keys.">ascon80pq_isap_aead_decrypt()</a>, <a class="el" href="isap_8h.html#a233a89879d4647e96fddb996a1defc6f" title="Initializes a pre-computed key for ISAP-A-80PQ from a previously-saved key value.">ascon80pq_isap_aead_load_key()</a> </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 11 2023 09:01:58 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

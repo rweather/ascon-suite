@@ -92,6 +92,8 @@ Backends</h1>
 <td>stm32</td><td>STM32 platforms with the HAL_RNG_GenerateRandomNumber() function </td></tr>
 <tr>
 <td>windows</td><td>Windows systems using the CryptGenRandom() function </td></tr>
+<tr>
+<td>zephyr</td><td>Zephyr RTOS systems with either sys_csrand_get() or bt_rand() configured </td></tr>
 </table>
 <p>The file <a class="el" href="ascon-select-trng_8h_source.html">ascon-select-trng.h</a> contains <code>#ifdef</code>'s to select the specific backend. You will need to modify this file when adding a new backend.</p>
 <p>The "dev-random" backend will use the <code>getrandom()</code> or <code>genentropy()</code> functions instead of /dev/urandom, if one of those functions is present on the system.</p>
@@ -161,7 +163,7 @@ Escape hatch</h1>
 </div><!-- PageDoc -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 11 2023 09:01:59 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

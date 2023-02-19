@@ -143,12 +143,12 @@ Extensions</h1>
 <p>The following higher-level extensions are provided:</p>
 <ul>
 <li>ASCON-128-SIV, ASCON-128a-SIV, and ASCON-80pq-SIV variants that provide Synthetic Initialization Vector (SIV) encryption modes. See the <a class="el" href="siv.html">SIV page</a> for more information. </li>
-<li>ISAP-A-128 and ISAP-A-128A modes for enhanced protection against side channel leakage. </li>
+<li>ISAP-A-128, ISAP-A-128A, and ISAP-A-80PQ modes for enhanced protection against side channel leakage. </li>
 <li>HMAC and KMAC modes for keyed hashing built around ASCON-HASH and ASCON-XOF. See the <a class="el" href="kmac.html">KMAC page</a> for more information on ASCON-KMAC. </li>
 <li>ASCON-PRNG for generating an arbitary sequence of random data from system-supplied and application-supplied seed material. This is based on ASCON-XOF and uses the <a href="https://keccak.team/files/SpongePRNG.pdf">SpongePRNG</a> construction. See the <a class="el" href="random_8h.html">PRNG page</a> for more information. </li>
 <li>HKDF and PBKDF2 modes built around the ASCON HMAC mode.</li>
 </ul>
-<p>Other than ISAP, these extensions have not yet been standardised by a public standards body, but I did try to follow general practice when creating such modes. See the individual pages for the design choices that I made. Feedback welcome.</p>
+<p>Other than ISAP-A-128 and ISAP-A-128A, these extensions have not yet been standardised by a public standards body, but I did try to follow general practice when creating such modes. See the individual pages for the design choices that I made. Feedback welcome.</p>
 <h1><a class="anchor" id="mainpage_histor"></a>
 History</h1>
 <p>The functionality in this library was originally prototyped in the <a href="https://github.com/rweather/lwc-finalists">LWC Finalists</a> repository. This repository extracts and expands the ASCON-specific parts of the original repository.</p>
@@ -159,7 +159,7 @@ Contact</h1>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Feb 11 2023 09:01:59 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
