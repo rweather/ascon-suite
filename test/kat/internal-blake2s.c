@@ -21,7 +21,7 @@
  */
 
 #include "internal-blake2s.h"
-#include "ascon-util.h"
+#include "core/ascon-util.h"
 #include <string.h>
 
 aead_hash_algorithm_t const internal_blake2s_hash_algorithm = {

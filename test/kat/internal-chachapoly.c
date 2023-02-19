@@ -21,8 +21,8 @@
  */
 
 #include "internal-chachapoly.h"
-#include "ascon-util.h"
-#include "ascon-aead-common.h"
+#include "core/ascon-util.h"
+#include "aead/ascon-aead-common.h"
 #include <string.h>
 
 aead_cipher_t const internal_chachapoly_cipher = {

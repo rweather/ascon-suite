@@ -1,4 +1,6 @@
 
+add_subdirectory(ascon)
+
 list(APPEND ASCON_SOURCES
     aead/ascon-aead-128.c
     aead/ascon-aead-128a.c
@@ -98,8 +100,6 @@ add_library(ascon SHARED ${ASCON_SOURCES})
 
 target_include_directories(ascon
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/../include
-        ${CMAKE_CURRENT_LIST_DIR}/core
         ${CMAKE_CURRENT_LIST_DIR}
         ${PROJECT_BINARY_DIR}
 )
@@ -112,8 +112,6 @@ endif()
 add_library(ascon_static STATIC ${ASCON_SOURCES})
 target_include_directories(ascon_static
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/../include
-        ${CMAKE_CURRENT_LIST_DIR}/core
         ${CMAKE_CURRENT_LIST_DIR}
         ${PROJECT_BINARY_DIR}
 )

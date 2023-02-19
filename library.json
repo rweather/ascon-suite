@@ -1,0 +1,20 @@
+{
+    "name": "ASCON",
+    "version": "0.2.0",
+    "keywords": "ASCON,ASCON-128,ASCON-HASH",
+    "description": "Suite of cryptographic primitives built around the ASCON permutation",
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/rweather/ascon-suite.git"
+    },
+    "authors":
+    [
+        {
+            "name": "Rhys Weatherley",
+            "email": "rhys.weatherley@gmail.com"
+        }
+    ],
+    "frameworks": "arduino",
+    "platforms": "*"
+}

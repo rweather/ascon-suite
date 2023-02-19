@@ -23,9 +23,6 @@ API's are provided for the following areas:
 See the [HTML documentation](https://rweather.github.io/ascon-suite/index.html)
 for more information on the suite.
 
-A version of ASCON Suite is available for Arduino devices in a
-[separate repository](https://github.com/rweather/ascon-arduino).
-
 Building
 --------
 
@@ -60,6 +57,12 @@ If you are having problems compiling the assembly code backends, then
 I will need some extra information to help diagnose the problem.
 Navigate to the "test/compiler" directory and follow the instructions
 in the README.md file there.
+
+Arduino
+-------
+
+This repository can be used as a library with the Arduino IDE by copying the
+entire contents to "libraries/ascon-suite" in your sketchbook directory.
 
 History
 -------

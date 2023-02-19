@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2023 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,13 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#if !defined(ARDUINO)
+#ifndef ASCON_H
+#define ASCON_H
 
-#include "version.h"
-
-int ascon_suite_version(void)
-{
-    return ASCON_SUITE_VERSION;
-}
+#include "ascon/permutation.h"
+#include "ascon/aead.h"
+#include "ascon/aead-masked.h"
+#include "ascon/hash.h"
+#include "ascon/hkdf.h"
+#include "ascon/hmac.h"
+#include "ascon/isap.h"
+#include "ascon/kmac.h"
+#include "ascon/masking.h"
+#include "ascon/pbkdf2.h"
+#include "ascon/permutation.h"
+#include "ascon/prf.h"
+#include "ascon/random.h"
+#include "ascon/siv.h"
+#include "ascon/utility.h"
+#include "ascon/xof.h"
 
 #endif

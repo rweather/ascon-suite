@@ -21,7 +21,7 @@
  */
 
 #include "ascon-aead-common.h"
-#include "ascon-util-snp.h"
+#include "core/ascon-util-snp.h"
 
 int ascon_aead_check_tag
     (unsigned char *plaintext, size_t plaintext_len,

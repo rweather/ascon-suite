@@ -5,7 +5,7 @@ include(CheckLibraryExists)
 include(CheckCSourceCompiles)
 
 # Set the project name and version number.
-project(AsconSuite VERSION 0.1.0 LANGUAGES C ASM)
+project(AsconSuite VERSION 0.2.0 LANGUAGES C ASM)
 
 # Options to force the use of specific backends for testing.
 # Use "cmake -DBACKEND_X=ON" to enable the specific backend.
@@ -34,7 +34,7 @@ option(RDRAND "Allow use of the RDRAND instruction on x86-64 platforms" OFF)
 option(MINIMAL "Build a minimal configuration only" OFF)
 
 # Add configuration parameters to the version.h include file.
-configure_file(include/ascon/version.h.in version.h)
+configure_file(src/ascon/version.h.in version.h)
 
 # Set up the type of build and the compiler flags to use.
 if(NOT CMAKE_BUILD_TYPE)
@@ -108,10 +108,9 @@ check_function_exists(getpass HAVE_GETPASS)
 configure_file(config.h.in config.h)
 
 # Set up the main include directory.
-include_directories(include)
+include_directories(src/ascon)
 
 # Add the subdirectories.
-add_subdirectory(include)
 add_subdirectory(src)
 if(NOT MINIMAL)
     add_subdirectory(apps)
