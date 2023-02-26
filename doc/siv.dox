@@ -191,7 +191,7 @@ The complete list of initialization vectors is:
 \li ASCON-80pq-SIV encryption phase: 0xa2400c06
 
 The key lengths in the ASCON-128 and ASCON-128a initialization vectors are
-129 and 130.  In theory this would conflict with with a future standard AEAD
+129 and 130.  In theory this would conflict with a future standard AEAD
 mode with 129-bit and 130-bit keys.  But such key lengths are highly unlikely.
 Similarly for the 161-bit and 162-bit key lengths of ASCON-80pq-SIV.
 
