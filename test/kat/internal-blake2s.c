@@ -35,7 +35,8 @@ aead_hash_algorithm_t const internal_blake2s_hash_algorithm = {
     (aead_hash_update_t)0,
     (aead_hash_finalize_t)0,
     (aead_xof_absorb_t)0,
-    (aead_xof_squeeze_t)0
+    (aead_xof_squeeze_t)0,
+    (aead_hash_free_t)0
 };
 
 /**

@@ -38,6 +38,8 @@ list(APPEND ASCON_SOURCES
     core/ascon-util.h
     core/ascon-util-snp.h
     core/ascon-version.c
+    cplusplus/ascon-byte-array.cpp
+    cplusplus/ascon-cplusplus.cpp
     hash/ascon-hasha.c
     hash/ascon-hash.c
     hash/ascon-xofa.c

@@ -6,6 +6,7 @@ add_executable(kat
     aead-metadata.h
     algorithms.c
     algorithms.h
+    algorithms-cpp.cpp
     internal-blake2s.c
     internal-blake2s.h
     internal-chachapoly.c
@@ -31,6 +32,7 @@ add_executable(kat-gen
     aead-metadata.h
     algorithms.c
     algorithms.h
+    algorithms-cpp.cpp
     kat-gen.c
 )
 target_link_libraries(kat-gen PUBLIC ascon_static)
@@ -66,9 +68,13 @@ kat_test(ASCON-128-incremental ASCON-128.txt "")
 kat_test(ASCON-128a-incremental ASCON-128a.txt "")
 kat_test(ASCON-80pq-incremental ASCON-80pq.txt "")
 kat_test(ASCON-HASH ASCON-HASH.txt "")
+kat_test(ASCON-HASH-cpp ASCON-HASH.txt "")
 kat_test(ASCON-HASHA ASCON-HASHA.txt "")
+kat_test(ASCON-HASHA-cpp ASCON-HASHA.txt "")
 kat_test(ASCON-XOF ASCON-XOF.txt "")
+kat_test(ASCON-XOF-cpp ASCON-XOF.txt "")
 kat_test(ASCON-XOFA ASCON-XOFA.txt "")
+kat_test(ASCON-XOFA-cpp ASCON-XOFA.txt "")
 kat_test(ASCON-XOF-fixed-length ASCON-HASH.txt "")
 kat_test(ASCON-XOFA-fixed-length ASCON-HASHA.txt "")
 kat_test(ASCON-128-SIV ASCON-128-SIV.txt "")

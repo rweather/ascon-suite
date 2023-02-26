@@ -784,6 +784,8 @@ static int test_hash_inner
             }
             memset(out, 0xAA, alg->hash_len);
             (*(alg->finalize))(state, out);
+            if (alg->free)
+                (*(alg->free))(state);
             if (!test_compare(out, md->data, md->size)) {
                 test_print_error(alg->name, vec, "incremental hash failed");
                 free(state);
@@ -806,6 +808,8 @@ static int test_hash_inner
             }
             memset(out, 0xAA, alg->hash_len);
             (*(alg->squeeze))(state, out, alg->hash_len);
+            if (alg->free)
+                (*(alg->free))(state);
             if (!test_compare(out, md->data, md->size)) {
                 test_print_error(alg->name, vec, "incremental absorb failed");
                 free(state);
@@ -827,6 +831,8 @@ static int test_hash_inner
                     temp = inc;
                 (*(alg->squeeze))(state, out + index, temp);
             }
+            if (alg->free)
+                (*(alg->free))(state);
             if (!test_compare(out, md->data, md->size)) {
                 test_print_error(alg->name, vec, "incremental squeeze failed");
                 free(state);
@@ -1041,6 +1047,8 @@ static int test_auth_inner
                 (*(alg->hmac_finalize))(state, key->data, key->size, out);
             else
                 (*(alg->squeeze))(state, out, alg->tag_len);
+            if (alg->free)
+                (*(alg->free))(state);
             if (!test_compare(out, tag->data, tag->size)) {
                 test_print_error(alg->name, vec, "incremental absorb failed");
                 free(state);
@@ -1062,6 +1070,8 @@ static int test_auth_inner
                     temp = inc;
                 (*(alg->squeeze))(state, out + index, temp);
             }
+            if (alg->free)
+                (*(alg->free))(state);
             if (!test_compare(out, tag->data, tag->size)) {
                 test_print_error(alg->name, vec, "incremental squeeze failed");
                 free(state);

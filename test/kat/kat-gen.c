@@ -347,6 +347,8 @@ static void generate_kats_for_hash(const aead_hash_algorithm_t *alg, FILE *file)
             (*(alg->init_fixed))(state, alg->hash_len);
             (*(alg->absorb))(state, msg, msg_len);
             (*(alg->squeeze))(state, hash, alg->hash_len);
+            if (alg->free)
+                (*(alg->free))(state);
         } else {
             (*(alg->hash))(hash, msg, msg_len);
         }

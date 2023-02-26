@@ -5,7 +5,7 @@ include(CheckLibraryExists)
 include(CheckCSourceCompiles)
 
 # Set the project name and version number.
-project(AsconSuite VERSION 0.2.0 LANGUAGES C ASM)
+project(AsconSuite VERSION 0.2.0 LANGUAGES C CXX ASM)
 
 # Options to force the use of specific backends for testing.
 # Use "cmake -DBACKEND_X=ON" to enable the specific backend.
@@ -27,7 +27,6 @@ set_property(CACHE MAX_SHARES PROPERTY STRINGS 2 3 4)
 # Other options.
 option(CHECK_ACQUIRE_RELEASE "Check that acquire/release calls are balanced" OFF)
 option(COVERAGE "Enable the use of gcov for coverage testing" OFF)
-option(RDRAND "Allow use of the RDRAND instruction on x86-64 platforms" OFF)
 
 # Option to compile a minimal configuration with just the static library.
 # This may be needed when cross-compiling for embedded microcontrollers.
@@ -47,31 +46,37 @@ endif()
 set(CMAKE_C_FLAGS "-Wall -Wextra -DHAVE_CONFIG_H ${CMAKE_C_FLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "-g")
 set(CMAKE_C_FLAGS_RELEASE "-O3")
+set(ASCON_EXTRA_C_FLAGS "")
 if(BACKEND_C32)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_C32")
+    set(ASCON_EXTRA_C_FLAGS "${ASCON_EXTRA_C_FLAGS} -DASCON_FORCE_C32")
 endif()
 if(BACKEND_C64)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_C64")
+    set(ASCON_EXTRA_C_FLAGS "${ASCON_EXTRA_C_FLAGS} -DASCON_FORCE_C64")
 endif()
 if(BACKEND_DIRECT_XOR)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_DIRECT_XOR")
+    set(ASCON_EXTRA_C_FLAGS "${ASCON_EXTRA_C_FLAGS} -DASCON_FORCE_DIRECT_XOR")
 endif()
 if(BACKEND_GENERIC)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_GENERIC")
+    set(ASCON_EXTRA_C_FLAGS "${ASCON_EXTRA_C_FLAGS} -DASCON_FORCE_GENERIC")
 endif()
 if(CHECK_ACQUIRE_RELEASE)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DASCON_FORCE_GENERIC -DASCON_CHECK_ACQUIRE_RELEASE")
+    set(ASCON_EXTRA_C_FLAGS "${ASCON_EXTRA_C_FLAGS} -DASCON_FORCE_GENERIC -DASCON_CHECK_ACQUIRE_RELEASE")
 endif()
 if(COVERAGE)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+    set(ASCON_EXTRA_C_FLAGS "${ASCON_EXTRA_C_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
-if(RDRAND)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mrdrnd")
-endif()
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ASCON_EXTRA_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -DHAVE_CONFIG_H ${CMAKE_CXX_FLAGS} ${ASCON_EXTRA_C_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-# Require the c99 standard to compile the code.
+# Require the c99 standard to compile C code.
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
+
+# Require the c++11 standard to compile C++ code.
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Set up the assembler options.
 set(ASM_OPTIONS "-x assembler-with-cpp")

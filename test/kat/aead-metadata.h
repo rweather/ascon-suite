@@ -161,6 +161,15 @@ typedef void (*aead_cipher_dec_inc_t)
 typedef int (*aead_cipher_dec_fin_t)(void *state, const unsigned char *tag);
 
 /**
+ * \brief Frees the state of a hashing function.
+ *
+ * \param state XOF state to squeeze the output data from.
+ * \param out Points to the output buffer to receive the squeezed data.
+ * \param outlen Number of bytes of data to squeeze out of the state.
+ */
+typedef void (*aead_hash_free_t)(void *state);
+
+/**
  * \brief Hashes a block of input data.
  *
  * \param out Buffer to receive the hash output.
@@ -373,6 +382,7 @@ typedef struct
     aead_hash_finalize_t finalize; /**< Incremental hash finalize function */
     aead_xof_absorb_t absorb;   /**< Incremental XOF absorb function */
     aead_xof_squeeze_t squeeze; /**< Incremental XOF squeeze function */
+    aead_hash_free_t free;      /**< Function to free the state */
 
 } aead_hash_algorithm_t;
 
@@ -393,6 +403,7 @@ typedef struct
     aead_xof_absorb_t absorb;   /**< Incremental absorb function */
     aead_xof_squeeze_t squeeze; /**< Incremental squeeze function */
     auth_hmac_finalize_t hmac_finalize; /**< HMAC finalize function */
+    aead_hash_free_t free;      /**< Function to free the state */
 
 } aead_auth_algorithm_t;
 

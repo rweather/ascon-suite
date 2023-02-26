@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2023 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -149,7 +149,7 @@ void ascon_xof_reinit_fixed(ascon_xof_state_t *state, size_t outlen);
 void ascon_xof_free(ascon_xof_state_t *state);
 
 /**
- * \brief Aborbs more input data into an ASCON-XOF state.
+ * \brief Absorbs more input data into an ASCON-XOF state.
  *
  * \param state XOF state to be updated.
  * \param in Points to the input data to be absorbed into the state.
@@ -285,7 +285,7 @@ void ascon_xofa_reinit_fixed(ascon_xofa_state_t *state, size_t outlen);
 void ascon_xofa_free(ascon_xofa_state_t *state);
 
 /**
- * \brief Aborbs more input data into an ASCON-XOFA state.
+ * \brief Absorbs more input data into an ASCON-XOFA state.
  *
  * \param state XOF state to be updated.
  * \param in Points to the input data to be absorbed into the state.
@@ -349,7 +349,523 @@ void ascon_xofa_clear_rate(ascon_xofa_state_t *state);
 void ascon_xofa_copy(ascon_xofa_state_t *dest, const ascon_xofa_state_t *src);
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
+
+#include <ascon/utility.h>
+#if !defined(ARDUINO)
+#include <string>
+#else
+#include <WString.h>
 #endif
+
+namespace ascon
+{
+
+/**
+ * \brief ASCON-XOF with a specific output length.
+ *
+ * This template takes the desired output length in bytes as a parameter.
+ * For example, the following produces a result identical to the
+ * ascon::hash class:
+ *
+ * \code
+ * ascon::xof_with_output_length<32> hash;
+ * unsigned char output[32];
+ *
+ * hash.absorb("Hello, World!");
+ * hash.squeeze(output, sizeof(output));
+ * \endcode
+ *
+ * The output length should be set to zero for arbitrary-length output.
+ * The ascon::xof type provides a convenient alias for this use case:
+ *
+ * \code
+ * ascon::xof x;
+ * unsigned char output2[64];
+ *
+ * x.absorb("Hello, World!");
+ * x.squeeze(output2, sizeof(output2));
+ * \endcode
+ */
+template<size_t outlen>
+class xof_with_output_length
+{
+public:
+    /**
+     * \brief Constucts a new ASCON-XOF object.
+     *
+     * After construction, the new object is ready to accept input
+     * data with absorb().
+     */
+    inline xof_with_output_length()
+    {
+        if (outlen == 0)
+            ::ascon_xof_init(&m_state);
+        else
+            ::ascon_xof_init_fixed(&m_state, outlen);
+    }
+
+    /**
+     * \brief Constructs a copy of another ASCON-XOF object.
+     *
+     * \param other The other object to copy, which must have the same
+     * output length as this class.
+     */
+    inline xof_with_output_length
+        (const ascon::xof_with_output_length<outlen> &other)
+    {
+        ::ascon_xof_copy(&m_state, &other.m_state);
+    }
+
+    /**
+     * \brief Destroys this ASCON-XOF object.
+     */
+    inline ~xof_with_output_length()
+    {
+        ::ascon_xof_free(&m_state);
+    }
+
+    /**
+     * \brief Copies the state of another ASCON-XOF object into this one.
+     *
+     * \param other The other object to copy, which must have the same
+     * output length as this class.
+     *
+     * \return A reference to this ASCON-XOF object.
+     */
+    inline xof_with_output_length<outlen> &operator=
+        (const ascon::xof_with_output_length<outlen> &other)
+    {
+        if (this != &other) {
+            ::ascon_xof_free(&m_state);
+            ::ascon_xof_copy(&m_state, &other.m_state);
+        }
+        return *this;
+    }
+
+    /**
+     * \brief Resets this ASCON-XOF object back to the initial state.
+     */
+    inline void reset()
+    {
+        if (outlen == 0)
+            ::ascon_xof_reinit(&m_state);
+        else
+            ::ascon_xof_reinit_fixed(&m_state, outlen);
+    }
+
+    /**
+     * \brief Absorbs more input data into this ASCON-XOF object.
+     *
+     * \param data Points to the input data to be absorbed into the state.
+     * \param len Length of the input data to be absorbed into the state.
+     */
+    inline void absorb(const unsigned char *data, size_t len)
+    {
+        ::ascon_xof_absorb(&m_state, data, len);
+    }
+
+    /**
+     * \brief Absorbs the contents of a NUL-terminated C string into
+     * this ASCON-XOF object.
+     *
+     * \param str Points to the C string to absorb.
+     *
+     * If \a str is NULL, then this function is equivalent to absorbing the
+     * empty string into the state.
+     */
+    inline void absorb(const char *str)
+    {
+        if (str) {
+            ::ascon_xof_absorb
+                (&m_state, reinterpret_cast<const unsigned char *>(str),
+                 ::strlen(str));
+        }
+    }
+
+    /**
+     * \brief Absorbs the contents of a byte array into this ASCON-XOF object.
+     *
+     * \param data Reference to the byte array to absorb.
+     */
+    inline void absorb(const ascon::byte_array& data)
+    {
+        ::ascon_xof_absorb(&m_state, data.data(), data.size());
+    }
+
+    /**
+     * \brief Squeezes output data from this ASCON-XOF object.
+     *
+     * \param data Points to the output buffer to receive the squeezed data.
+     * \param len Number of bytes of data to squeeze out of the state.
+     */
+    inline void squeeze(unsigned char *data, size_t len)
+    {
+        ::ascon_xof_squeeze(&m_state, data, len);
+    }
+
+    /**
+     * \brief Squeezes data out of this ASCON-XOF object as a byte array.
+     *
+     * \param len The number of bytes to squeeze out.
+     *
+     * \return A byte array containing the squeezed data.
+     */
+    ascon::byte_array squeeze(size_t len)
+    {
+        ascon::byte_array vec(len);
+        ::ascon_xof_squeeze(&m_state, vec.data(), len);
+        return vec;
+    }
+
+    /**
+     * \brief Absorbs enough zeroes into this ASCON-XOF object to pad the
+     * input to the next multiple of the block rate.
+     *
+     * Does nothing if the state is already aligned on a multiple of
+     * the block rate.
+     *
+     * This function can avoid unnecessary XOR-with-zero operations
+     * to save some time when padding is required.
+     */
+    inline void pad()
+    {
+        ::ascon_xof_pad(&m_state);
+    }
+
+    /**
+     * \brief Clears the rate portion of this ASCON-XOF object to
+     * all-zeroes and runs the permutation.
+     *
+     * This operation is used in the SpongePRNG construction for pseudorandom
+     * number generators.  The rate is zeroed and then the permutation is run.
+     * This makes it difficult to run the PRNG backwards if the state is
+     * captured sometime in the future.
+     *
+     * This function calls pad() before clearing the rate to ensure that the
+     * XOF is in absorb mode and aligned on a block boundary.
+     */
+    inline void clear_rate()
+    {
+        ::ascon_xof_clear_rate(&m_state);
+    }
+
+    /**
+     * \brief Gets a reference to the C version of the ASCON-XOF state.
+     *
+     * \return A reference to the state.
+     */
+    inline ::ascon_xof_state_t *state() { return &m_state; }
+
+    /**
+     * \brief Gets a constant reference to the C version of the ASCON-XOF state.
+     *
+     * \return A constant reference to the state.
+     */
+    inline const ::ascon_xof_state_t *state() const { return &m_state; }
+
+#if !defined(ARDUINO) && !defined(ASCON_NO_STL)
+
+    /**
+     * \brief Absorbs the contents of a standard C++ string into
+     * this ASCON-XOF object.
+     *
+     * \param str Reference to the string to absorb.
+     */
+    inline void absorb(const std::string& str)
+    {
+        ::ascon_xof_absorb
+            (&m_state, reinterpret_cast<const unsigned char *>(str.data()),
+             str.size());
+    }
+
+#elif defined(ARDUINO)
+
+    /**
+     * \brief Absorbs the contents of an Arduino string object into
+     * this ASCON-XOF object.
+     *
+     * \param str Reference to the string to absorb.
+     */
+    inline void absorb(const String& str)
+    {
+        ::ascon_xof_absorb
+            (&m_state, reinterpret_cast<const unsigned char *>(str.c_str()),
+             str.length());
+    }
+
+#endif /* ARDUINO */
+
+private:
+    ::ascon_xof_state_t m_state; /**< Internal XOF state */
+};
+
+/**
+ * \brief ASCON-XOFA with a specific output length.
+ *
+ * This template takes the desired output length in bytes as a parameter.
+ * For example, the following produces a result identical to the
+ * ascon::hasha class:
+ *
+ * \code
+ * ascon::xofa_with_output_length<32> hash;
+ * unsigned char output[32];
+ *
+ * hash.absorb("Hello, World!");
+ * hash.squeeze(output, sizeof(output));
+ * \endcode
+ *
+ * The output length should be set to zero for arbitrary-length output.
+ * The ascon::xofa type provides a convenient alias for this use case:
+ *
+ * \code
+ * ascon::xofa x;
+ * unsigned char output2[64];
+ *
+ * x.absorb("Hello, World!");
+ * x.squeeze(output2, sizeof(output2));
+ * \endcode
+ */
+template<size_t outlen>
+class xofa_with_output_length
+{
+public:
+    /**
+     * \brief Constucts a new ASCON-XOFA object.
+     *
+     * After construction, the new object is ready to accept input
+     * data with absorb().
+     */
+    inline xofa_with_output_length()
+    {
+        if (outlen == 0)
+            ::ascon_xofa_init(&m_state);
+        else
+            ::ascon_xofa_init_fixed(&m_state, outlen);
+    }
+
+    /**
+     * \brief Constructs a copy of another ASCON-XOFA object.
+     *
+     * \param other The other object to copy, which must have the same
+     * output length as this class.
+     */
+    inline xofa_with_output_length
+        (const ascon::xofa_with_output_length<outlen> &other)
+    {
+        ::ascon_xofa_copy(&m_state, &other.m_state);
+    }
+
+    /**
+     * \brief Destroys this ASCON-XOFA object.
+     */
+    inline ~xofa_with_output_length()
+    {
+        ::ascon_xofa_free(&m_state);
+    }
+
+    /**
+     * \brief Copies the state of another ASCON-XOFA object into this one.
+     *
+     * \param other The other object to copy, which must have the same
+     * output length as this class.
+     *
+     * \return A reference to this ASCON-XOFA object.
+     */
+    inline xofa_with_output_length<outlen> &operator=
+        (const ascon::xofa_with_output_length<outlen> &other)
+    {
+        if (this != &other) {
+            ::ascon_xofa_free(&m_state);
+            ::ascon_xofa_copy(&m_state, &other.m_state);
+        }
+        return *this;
+    }
+
+    /**
+     * \brief Resets this ASCON-XOFA object back to the initial state.
+     */
+    inline void reset()
+    {
+        if (outlen == 0)
+            ::ascon_xofa_reinit(&m_state);
+        else
+            ::ascon_xofa_reinit_fixed(&m_state, outlen);
+    }
+
+    /**
+     * \brief Absorbs more input data into this ASCON-XOFA object.
+     *
+     * \param data Points to the input data to be absorbed into the state.
+     * \param len Length of the input data to be absorbed into the state.
+     */
+    inline void absorb(const unsigned char *data, size_t len)
+    {
+        ::ascon_xofa_absorb(&m_state, data, len);
+    }
+
+    /**
+     * \brief Absorbs the contents of a NUL-terminated C string into
+     * this ASCON-XOFA object.
+     *
+     * \param str Points to the C string to absorb.
+     *
+     * If \a str is NULL, then this function is equivalent to absorbing the
+     * empty string into the state.
+     */
+    inline void absorb(const char *str)
+    {
+        if (str)
+            ::ascon_xofa_absorb(&m_state, str, ::strlen(str));
+    }
+
+    /**
+     * \brief Absorbs the contents of a byte array into this ASCON-XOFA object.
+     *
+     * \param data Reference to the byte array to absorb.
+     */
+    inline void absorb(const ascon::byte_array& data)
+    {
+        ::ascon_xofa_absorb(&m_state, data.data(), data.size());
+    }
+
+    /**
+     * \brief Squeezes output data from this ASCON-XOFA object.
+     *
+     * \param data Points to the output buffer to receive the squeezed data.
+     * \param len Number of bytes of data to squeeze out of the state.
+     */
+    inline void squeeze(unsigned char *data, size_t len)
+    {
+        ::ascon_xofa_squeeze(&m_state, data, len);
+    }
+
+    /**
+     * \brief Squeezes data out of this ASCON-XOFA object as a byte array.
+     *
+     * \param len The number of bytes to squeeze out.
+     *
+     * \return A byte array containing the squeezed data.
+     */
+    inline ascon::byte_array squeeze(size_t len)
+    {
+        ascon::byte_array vec(len);
+        ::ascon_xofa_squeeze(&m_state, vec.data(), len);
+        return vec;
+    }
+
+    /**
+     * \brief Absorbs enough zeroes into this ASCON-XOFA object to pad the
+     * input to the next multiple of the block rate.
+     *
+     * Does nothing if the state is already aligned on a multiple of
+     * the block rate.
+     *
+     * This function can avoid unnecessary XOR-with-zero operations
+     * to save some time when padding is required.
+     */
+    inline void pad()
+    {
+        ::ascon_xofa_pad(&m_state);
+    }
+
+    /**
+     * \brief Clears the rate portion of this ASCON-XOFA object to
+     * all-zeroes and runs the permutation.
+     *
+     * This operation is used in the SpongePRNG construction for pseudorandom
+     * number generators.  The rate is zeroed and then the permutation is run.
+     * This makes it difficult to run the PRNG backwards if the state is
+     * captured sometime in the future.
+     *
+     * This function calls pad() before clearing the rate to ensure that the
+     * XOF is in absorb mode and aligned on a block boundary.
+     */
+    inline void clear_rate()
+    {
+        ::ascon_xofa_clear_rate(&m_state);
+    }
+
+    /**
+     * \brief Gets a reference to the C version of the ASCON-XOFA state.
+     *
+     * \return A reference to the state.
+     */
+    inline ::ascon_xofa_state_t *state() { return &m_state; }
+
+    /**
+     * \brief Gets a constant reference to the C version of the ASCON-XOFA state.
+     *
+     * \return A constant reference to the state.
+     */
+    inline const ::ascon_xofa_state_t *state() const { return &m_state; }
+
+#if !defined(ARDUINO) && !defined(ASCON_NO_STL)
+
+    /**
+     * \brief Absorbs the contents of a standard C++ string into
+     * this ASCON-XOFA object.
+     *
+     * \param str Reference to the string to absorb.
+     */
+    inline void absorb(const std::string& str)
+    {
+        ::ascon_xofa_absorb(&m_state, str.data(), str.size());
+    }
+
+#elif defined(ARDUINO)
+
+    /**
+     * \brief Absorbs the contents of an Arduino string object into
+     * this ASCON-XOFA object.
+     *
+     * \param str Reference to the string to absorb.
+     */
+    inline void absorb(const String& str)
+    {
+        ::ascon_xofa_absorb(&m_state, str.c_str(), str.length());
+    }
+
+#endif /* ARDUINO */
+
+private:
+    ::ascon_xofa_state_t m_state; /**< Internal XOF state */
+};
+
+/**
+ * \brief ASCON-XOF object with arbitrary-length output.
+ *
+ * The following example runs ASCON-XOF over an input string and then
+ * squeezes 64 bytes of output:
+ *
+ * \code
+ * ascon::xof x;
+ * unsigned char output2[64];
+ *
+ * x.absorb("Hello, World!");
+ * x.squeeze(output2, sizeof(output2));
+ * \endcode
+ */
+typedef xof_with_output_length<0> xof;
+
+/**
+ * \brief ASCON-XOFA object with arbitrary-length output.
+ *
+ * The following example runs ASCON-XOFA over an input string and then
+ * squeezes 64 bytes of output:
+ *
+ * \code
+ * ascon::xofa x;
+ * unsigned char output2[64];
+ *
+ * x.absorb("Hello, World!");
+ * x.squeeze(output2, sizeof(output2));
+ * \endcode
+ */
+typedef xofa_with_output_length<0> xofa;
+
+} /* namespace ascon */
+
+#endif /* __cplusplus */
 
 #endif

@@ -76,13 +76,14 @@ aead_hash_algorithm_t const ascon_hash_algorithm = {
     (aead_hash_update_t)ascon_hash_update,
     (aead_hash_finalize_t)ascon_hash_finalize,
     0, /* absorb */
-    0  /* squeeze */
+    0, /* squeeze */
+    (aead_hash_free_t)ascon_hash_free
 };
 
 aead_hash_algorithm_t const ascon_hasha_algorithm = {
     "ASCON-HASHA",
     sizeof(ascon_hash_state_t),
-    ASCON_HASH_SIZE,
+    ASCON_HASHA_SIZE,
     AEAD_FLAG_NONE,
     ascon_hasha,
     (aead_hash_init_t)ascon_hasha_init,
@@ -90,7 +91,8 @@ aead_hash_algorithm_t const ascon_hasha_algorithm = {
     (aead_hash_update_t)ascon_hasha_update,
     (aead_hash_finalize_t)ascon_hasha_finalize,
     0, /* absorb */
-    0  /* squeeze */
+    0, /* squeeze */
+    (aead_hash_free_t)ascon_hasha_free
 };
 
 aead_hash_algorithm_t const ascon_xof_algorithm = {
@@ -104,13 +106,14 @@ aead_hash_algorithm_t const ascon_xof_algorithm = {
     0, /* update */
     0, /* finalize */
     (aead_xof_absorb_t)ascon_xof_absorb,
-    (aead_xof_squeeze_t)ascon_xof_squeeze
+    (aead_xof_squeeze_t)ascon_xof_squeeze,
+    (aead_hash_free_t)ascon_xof_free
 };
 
 aead_hash_algorithm_t const ascon_xofa_algorithm = {
     "ASCON-XOFA",
     sizeof(ascon_xofa_state_t),
-    ASCON_HASH_SIZE,
+    ASCON_HASHA_SIZE,
     AEAD_FLAG_NONE,
     ascon_xofa,
     (aead_hash_init_t)ascon_xofa_init,
@@ -118,7 +121,8 @@ aead_hash_algorithm_t const ascon_xofa_algorithm = {
     0, /* update */
     0, /* finalize */
     (aead_xof_absorb_t)ascon_xofa_absorb,
-    (aead_xof_squeeze_t)ascon_xofa_squeeze
+    (aead_xof_squeeze_t)ascon_xofa_squeeze,
+    (aead_hash_free_t)ascon_xofa_free
 };
 
 aead_hash_algorithm_t const ascon_xof_fixed_length_algorithm = {
@@ -132,13 +136,14 @@ aead_hash_algorithm_t const ascon_xof_fixed_length_algorithm = {
     0, /* update */
     0, /* finalize */
     (aead_xof_absorb_t)ascon_xof_absorb,
-    (aead_xof_squeeze_t)ascon_xof_squeeze
+    (aead_xof_squeeze_t)ascon_xof_squeeze,
+    (aead_hash_free_t)ascon_xof_free
 };
 
 aead_hash_algorithm_t const ascon_xofa_fixed_length_algorithm = {
     "ASCON-XOFA-fixed-length",
     sizeof(ascon_xofa_state_t),
-    ASCON_HASH_SIZE,
+    ASCON_HASHA_SIZE,
     AEAD_FLAG_NONE,
     ascon_xofa,
     (aead_hash_init_t)ascon_xofa_init,
@@ -146,7 +151,8 @@ aead_hash_algorithm_t const ascon_xofa_fixed_length_algorithm = {
     0, /* update */
     0, /* finalize */
     (aead_xof_absorb_t)ascon_xofa_absorb,
-    (aead_xof_squeeze_t)ascon_xofa_squeeze
+    (aead_xof_squeeze_t)ascon_xofa_squeeze,
+    (aead_hash_free_t)ascon_xofa_free
 };
 
 aead_cipher_t const ascon128_siv_cipher = {
@@ -399,7 +405,8 @@ aead_auth_algorithm_t const ascon_prf_auth = {
     0,
     (aead_xof_absorb_t)ascon_prf_absorb,
     (aead_xof_squeeze_t)ascon_prf_squeeze,
-    0
+    0,
+    (aead_hash_free_t)ascon_prf_free
 };
 
 aead_auth_algorithm_t const ascon_prf_short_auth = {
@@ -409,7 +416,7 @@ aead_auth_algorithm_t const ascon_prf_short_auth = {
     ASCON_PRF_SHORT_TAG_SIZE,
     AEAD_FLAG_NONE,
     ascon_prf_short_compute_wrapper,
-    0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0
 };
 
 aead_auth_algorithm_t const ascon_mac_auth = {
@@ -424,7 +431,8 @@ aead_auth_algorithm_t const ascon_mac_auth = {
     (auth_init_fixed_t)ascon_prf_fixed_init_wrapper,
     (aead_xof_absorb_t)ascon_prf_absorb,
     (aead_xof_squeeze_t)ascon_prf_squeeze,
-    0
+    0,
+    (aead_hash_free_t)ascon_prf_free
 };
 
 aead_auth_algorithm_t const ascon_hmac_auth = {
@@ -439,7 +447,8 @@ aead_auth_algorithm_t const ascon_hmac_auth = {
     0,
     (aead_xof_absorb_t)ascon_hmac_update,
     0,
-    (auth_hmac_finalize_t)ascon_hmac_finalize
+    (auth_hmac_finalize_t)ascon_hmac_finalize,
+    (aead_hash_free_t)ascon_hmac_free
 };
 
 aead_auth_algorithm_t const ascon_hmaca_auth = {
@@ -454,7 +463,104 @@ aead_auth_algorithm_t const ascon_hmaca_auth = {
     0,
     (aead_xof_absorb_t)ascon_hmaca_update,
     0,
-    (auth_hmac_finalize_t)ascon_hmaca_finalize
+    (auth_hmac_finalize_t)ascon_hmaca_finalize,
+    (aead_hash_free_t)ascon_hmac_free
+};
+
+/* Test the C++ bindings for the algorithms */
+
+extern void ascon_hash_cpp
+    (unsigned char *out, const unsigned char *in, size_t inlen);
+extern void ascon_hash_init_cpp(void *state);
+extern void ascon_hash_free_cpp(void *state);
+extern void ascon_hash_update_cpp
+    (void *state, const unsigned char *in, size_t inlen);
+extern void ascon_hash_finalize_cpp(void *state, unsigned char *out);
+
+extern void ascon_hasha_cpp
+    (unsigned char *out, const unsigned char *in, size_t inlen);
+extern void ascon_hasha_init_cpp(void *state);
+extern void ascon_hasha_free_cpp(void *state);
+extern void ascon_hasha_update_cpp
+    (void *state, const unsigned char *in, size_t inlen);
+extern void ascon_hasha_finalize_cpp(void *state, unsigned char *out);
+
+extern void ascon_xof_cpp
+    (unsigned char *out, const unsigned char *in, size_t inlen);
+extern void ascon_xof_init_cpp(void *state);
+extern void ascon_xof_free_cpp(void *state);
+extern void ascon_xof_absorb_cpp
+    (void *state, const unsigned char *in, size_t inlen);
+extern void ascon_xof_squeeze_cpp
+    (void *state, unsigned char *out, size_t outlen);
+
+extern void ascon_xofa_cpp
+    (unsigned char *out, const unsigned char *in, size_t inlen);
+extern void ascon_xofa_init_cpp(void *state);
+extern void ascon_xofa_free_cpp(void *state);
+extern void ascon_xofa_absorb_cpp
+    (void *state, const unsigned char *in, size_t inlen);
+extern void ascon_xofa_squeeze_cpp
+    (void *state, unsigned char *out, size_t outlen);
+
+aead_hash_algorithm_t const ascon_hash_cpp_algorithm = {
+    "ASCON-HASH-cpp",
+    sizeof(void **),
+    ASCON_HASH_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_hash_cpp,
+    (aead_hash_init_t)ascon_hash_init_cpp,
+    0, /* init_fixed */
+    (aead_hash_update_t)ascon_hash_update_cpp,
+    (aead_hash_finalize_t)ascon_hash_finalize_cpp,
+    0, /* absorb */
+    0, /* squeeze */
+    (aead_hash_free_t)ascon_hash_free_cpp
+};
+
+aead_hash_algorithm_t const ascon_hasha_cpp_algorithm = {
+    "ASCON-HASHA-cpp",
+    sizeof(void **),
+    ASCON_HASHA_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_hasha_cpp,
+    (aead_hash_init_t)ascon_hasha_init_cpp,
+    0, /* init_fixed */
+    (aead_hash_update_t)ascon_hasha_update_cpp,
+    (aead_hash_finalize_t)ascon_hasha_finalize_cpp,
+    0, /* absorb */
+    0, /* squeeze */
+    (aead_hash_free_t)ascon_hasha_free_cpp
+};
+
+aead_hash_algorithm_t const ascon_xof_cpp_algorithm = {
+    "ASCON-XOF-cpp",
+    sizeof(void **),
+    ASCON_HASH_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_xof_cpp,
+    (aead_hash_init_t)ascon_xof_init_cpp,
+    0, /* init_fixed */
+    0, /* update */
+    0, /* finalize */
+    (aead_xof_absorb_t)ascon_xof_absorb_cpp,
+    (aead_xof_squeeze_t)ascon_xof_squeeze_cpp,
+    (aead_hash_free_t)ascon_xof_free_cpp
+};
+
+aead_hash_algorithm_t const ascon_xofa_cpp_algorithm = {
+    "ASCON-XOFA-cpp",
+    sizeof(void **),
+    ASCON_HASHA_SIZE,
+    AEAD_FLAG_NONE,
+    ascon_xofa_cpp,
+    (aead_hash_init_t)ascon_xofa_init_cpp,
+    0, /* init_fixed */
+    0, /* update */
+    0, /* finalize */
+    (aead_xof_absorb_t)ascon_xofa_absorb_cpp,
+    (aead_xof_squeeze_t)ascon_xofa_squeeze_cpp,
+    (aead_hash_free_t)ascon_xofa_free_cpp
 };
 
 /* List of all AEAD ciphers that we can run KAT tests for */
@@ -485,6 +591,10 @@ static const aead_hash_algorithm_t *const hashes[] = {
     &ascon_xofa_algorithm,
     &ascon_xof_fixed_length_algorithm,
     &ascon_xofa_fixed_length_algorithm,
+    &ascon_hash_cpp_algorithm,
+    &ascon_hasha_cpp_algorithm,
+    &ascon_xof_cpp_algorithm,
+    &ascon_xofa_cpp_algorithm,
     0
 };
 

@@ -63,6 +63,7 @@ Patches are welcome to provide new permutation and TRNG backends.
 \li \ref xof.h "Extensible Output Functions (XOF)"
 \li \ref permutation "Direct Access to the ASCON Permutation"
 \li \ref utility.h "Utility Functions"
+\li \ref cpp_api "C++ API Reference"
 
 \section mainpage_building Building
 
