@@ -66,7 +66,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -77,21 +77,20 @@ $(function() {
 <p>Access to the system's random number source.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="permutation_8h_source.html">ascon/permutation.h</a>&gt;</code><br />
-<code>#include &quot;ascon-select-trng.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="ascon-select-trng_8h_source.html">ascon-select-trng.h</a>&quot;</code><br />
 </div>
 <p><a href="ascon-trng_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
+Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of the random number source.  <a href="structascon__trng__state__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a8b3df7735c8c8643a5af5b3ea988ba51"><td class="memItemLeft" align="right" valign="top"><a id="a8b3df7735c8c8643a5af5b3ea988ba51"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#a8b3df7735c8c8643a5af5b3ea988ba51">ASCON_SYSTEM_SEED_SIZE</a>&#160;&#160;&#160;32</td></tr>
-<tr class="memdesc:a8b3df7735c8c8643a5af5b3ea988ba51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bytes to request from the system TRNG to seed a PRNG. <br /></td></tr>
+<tr class="memitem:a8b3df7735c8c8643a5af5b3ea988ba51"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#a8b3df7735c8c8643a5af5b3ea988ba51">ASCON_SYSTEM_SEED_SIZE</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a8b3df7735c8c8643a5af5b3ea988ba51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bytes to request from the system TRNG to seed a PRNG.  <a href="ascon-trng_8h.html#a8b3df7735c8c8643a5af5b3ea988ba51">More...</a><br /></td></tr>
 <tr class="separator:a8b3df7735c8c8643a5af5b3ea988ba51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ef2fbd309048aae355829c451d70941"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#a7ef2fbd309048aae355829c451d70941">ASCON_TRNG_MIXER_RATE</a>&#160;&#160;&#160;8U</td></tr>
 <tr class="separator:a7ef2fbd309048aae355829c451d70941"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -101,19 +100,19 @@ Functions</h2></td></tr>
 <tr class="memitem:a1f56ed5cff00978e75f3061fa4535621"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a> (unsigned char *out, size_t outlen)</td></tr>
 <tr class="memdesc:a1f56ed5cff00978e75f3061fa4535621"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a buffer of bytes from the system TRNG source.  <a href="ascon-trng_8h.html#a1f56ed5cff00978e75f3061fa4535621">More...</a><br /></td></tr>
 <tr class="separator:a1f56ed5cff00978e75f3061fa4535621"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfa435f9eb6f9c364a131efe5a1cf9b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#abfa435f9eb6f9c364a131efe5a1cf9b2">ascon_trng_init</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</td></tr>
+<tr class="memitem:abfa435f9eb6f9c364a131efe5a1cf9b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#abfa435f9eb6f9c364a131efe5a1cf9b2">ascon_trng_init</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:abfa435f9eb6f9c364a131efe5a1cf9b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the random number source for generating a sequence of masking material at high speed.  <a href="ascon-trng_8h.html#abfa435f9eb6f9c364a131efe5a1cf9b2">More...</a><br /></td></tr>
 <tr class="separator:abfa435f9eb6f9c364a131efe5a1cf9b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9cdf0973ca1098e50274490e5575821"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#ae9cdf0973ca1098e50274490e5575821">ascon_trng_free</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</td></tr>
+<tr class="memitem:ae9cdf0973ca1098e50274490e5575821"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#ae9cdf0973ca1098e50274490e5575821">ascon_trng_free</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:ae9cdf0973ca1098e50274490e5575821"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the random number source and destroys any sensitive material.  <a href="ascon-trng_8h.html#ae9cdf0973ca1098e50274490e5575821">More...</a><br /></td></tr>
 <tr class="separator:ae9cdf0973ca1098e50274490e5575821"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f6cd78f3b8b840a53e71616764d0f98"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#a1f6cd78f3b8b840a53e71616764d0f98">ascon_trng_generate_32</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</td></tr>
+<tr class="memitem:a1f6cd78f3b8b840a53e71616764d0f98"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#a1f6cd78f3b8b840a53e71616764d0f98">ascon_trng_generate_32</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:a1f6cd78f3b8b840a53e71616764d0f98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a 32-bit random value for masking operations.  <a href="ascon-trng_8h.html#a1f6cd78f3b8b840a53e71616764d0f98">More...</a><br /></td></tr>
 <tr class="separator:a1f6cd78f3b8b840a53e71616764d0f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1dea3c48686092616b052aef452f946"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#ab1dea3c48686092616b052aef452f946">ascon_trng_generate_64</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</td></tr>
+<tr class="memitem:ab1dea3c48686092616b052aef452f946"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#ab1dea3c48686092616b052aef452f946">ascon_trng_generate_64</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:ab1dea3c48686092616b052aef452f946"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a 64-bit random value for masking operations.  <a href="ascon-trng_8h.html#ab1dea3c48686092616b052aef452f946">More...</a><br /></td></tr>
 <tr class="separator:ab1dea3c48686092616b052aef452f946"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7ebee9831efe41233f13989e76dfd0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#ad7ebee9831efe41233f13989e76dfd0a">ascon_trng_reseed</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *state)</td></tr>
+<tr class="memitem:ad7ebee9831efe41233f13989e76dfd0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ascon-trng_8h.html#ad7ebee9831efe41233f13989e76dfd0a">ascon_trng_reseed</a> (<a class="el" href="structascon__trng__state__t.html">ascon_trng_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:ad7ebee9831efe41233f13989e76dfd0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reseeds the random number source.  <a href="ascon-trng_8h.html#ad7ebee9831efe41233f13989e76dfd0a">More...</a><br /></td></tr>
 <tr class="separator:ad7ebee9831efe41233f13989e76dfd0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -127,6 +126,24 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="ascon-trng_8h_source.html">ascon-trng.h</a>.</p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a8b3df7735c8c8643a5af5b3ea988ba51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b3df7735c8c8643a5af5b3ea988ba51">&#9670;&nbsp;</a></span>ASCON_SYSTEM_SEED_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ASCON_SYSTEM_SEED_SIZE&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of bytes to request from the system TRNG to seed a PRNG. </p>
+
+<p class="definition">Definition at line <a class="el" href="ascon-trng_8h_source.html#l00058">58</a> of file <a class="el" href="ascon-trng_8h_source.html">ascon-trng.h</a>.</p>
+
+</div>
+</div>
 <a id="a7ef2fbd309048aae355829c451d70941"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ef2fbd309048aae355829c451d70941">&#9670;&nbsp;</a></span>ASCON_TRNG_MIXER_RATE</h2>
 
@@ -336,7 +353,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

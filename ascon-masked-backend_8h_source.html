@@ -69,7 +69,7 @@ $(function() {
 <div class="title">ascon-masked-backend.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ascon-masked-backend_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (C) 2022 Southern Storm Software, Pty Ltd.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
@@ -94,7 +94,7 @@ $(function() {
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#ifndef ASCON_MASKED_BACKEND_H</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#define ASCON_MASKED_BACKEND_H</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;core/ascon-select-backend.h&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-select-backend_8h.html">core/ascon-select-backend.h</a>&quot;</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-masked-config_8h.html">ascon-masked-config.h</a>&quot;</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">/* Select the default back end to use for the masked ASCON permutation,</span></div>
@@ -130,20 +130,21 @@ $(function() {
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment">/* Fall back to the 64-bit version of the masked backend if nothing better */</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#define ASCON_MASKED_X2_BACKEND_C64 1</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#define ASCON_MASKED_X3_BACKEND_C64 1</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#define ASCON_MASKED_X4_BACKEND_C64 1</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#define ASCON_MASKED_WORD_BACKEND_C64 1</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#define ASCON_MASKED_BACKEND_SLICED64 1</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="ascon-masked-backend_8h.html#adb14e4c48871c6df1d29ddd866f63d44">   62</a></span>&#160;<span class="preprocessor">#define ASCON_MASKED_X2_BACKEND_C64 1</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="ascon-masked-backend_8h.html#abf53b81e9184982504d7c8f2e938415d">   63</a></span>&#160;<span class="preprocessor">#define ASCON_MASKED_X3_BACKEND_C64 1</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="ascon-masked-backend_8h.html#a5c0463827fd0f5ca13019f20b49d2eae">   64</a></span>&#160;<span class="preprocessor">#define ASCON_MASKED_X4_BACKEND_C64 1</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="ascon-masked-backend_8h.html#a65cb26825185adb556ca9863048d7b2f">   65</a></span>&#160;<span class="preprocessor">#define ASCON_MASKED_WORD_BACKEND_C64 1</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="ascon-masked-backend_8h.html#ab7825117066998fa74b2e4df4a526a1c">   66</a></span>&#160;<span class="preprocessor">#define ASCON_MASKED_BACKEND_SLICED64 1</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aascon-masked-config_8h_html"><div class="ttname"><a href="ascon-masked-config_8h.html">ascon-masked-config.h</a></div><div class="ttdoc">Configures the number of shares to use for masked AEAD modes.</div></div>
+<div class="ttc" id="aascon-select-backend_8h_html"><div class="ttname"><a href="ascon-select-backend_8h.html">ascon-select-backend.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

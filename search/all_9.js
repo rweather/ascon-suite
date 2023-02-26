@@ -1,14 +1,21 @@
 var searchData=
 [
-  ['p_353',['P',['../unionascon__state__t.html#a6b1470b3c08fc9b1a0db5eb800369bcd',1,'ascon_state_t']]],
-  ['pbkdf2_2eh_354',['pbkdf2.h',['../pbkdf2_8h.html',1,'']]],
-  ['permutation_2edox_355',['permutation.dox',['../permutation_8dox.html',1,'']]],
-  ['permutation_2eh_356',['permutation.h',['../permutation_8h.html',1,'']]],
-  ['porting_20the_20ascon_20permutation_357',['Porting the ASCON permutation',['../porting.html',1,'']]],
-  ['porting_20the_20trng_20to_20new_20platforms_358',['Porting the TRNG to new platforms',['../porting_trng.html',1,'']]],
-  ['porting_2edox_359',['porting.dox',['../porting_8dox.html',1,'']]],
-  ['posn_360',['posn',['../structascon128__state__t.html#ad6f17d652d56142ffaf44f79007b93b7',1,'ascon128_state_t::posn()'],['../structascon128a__state__t.html#a4abf606b195fa389f8302940f6830545',1,'ascon128a_state_t::posn()'],['../structascon80pq__state__t.html#a6014a33c99f356b848e3ea3da02e2846',1,'ascon80pq_state_t::posn()'],['../structascon__hkdf__state__t.html#a7f0012be4071c17225bac6d011ac29f6',1,'ascon_hkdf_state_t::posn()'],['../structascon__hkdfa__state__t.html#a1d0398394e101aba9e345e041f253809',1,'ascon_hkdfa_state_t::posn()'],['../structascon__trng__state__t.html#a21dc366b10f26349fa389f216e809e1e',1,'ascon_trng_state_t::posn()']]],
-  ['prf_2eh_361',['prf.h',['../prf_8h.html',1,'']]],
-  ['prk_362',['prk',['../structascon__hkdf__state__t.html#a50973da6164b1ba02c9aae1fe23f238f',1,'ascon_hkdf_state_t::prk()'],['../structascon__hkdfa__state__t.html#a13f29531be6a41dd6da23b7ecdd40632',1,'ascon_hkdfa_state_t::prk()']]],
-  ['prng_363',['prng',['../structascon__trng__state__t.html#a0303b084790ca727266c120c17720536',1,'ascon_trng_state_t']]]
+  ['k_521',['k',['../structascon__masked__key__128__t.html#a817851e6d463293fc3704ea7b79b921a',1,'ascon_masked_key_128_t::k()'],['../structascon__masked__key__160__t.html#af4c70ca336ca08bf28e6134c6b35cb18',1,'ascon_masked_key_160_t::k()']]],
+  ['ka_522',['ka',['../structascon128a__isap__aead__key__t.html#a8e7e05439966e9719635512121afb329',1,'ascon128a_isap_aead_key_t::ka()'],['../structascon128__isap__aead__key__t.html#accee3c87b20bd398a8c0786875ce7d5d',1,'ascon128_isap_aead_key_t::ka()'],['../structascon80pq__isap__aead__key__t.html#a9dbbd2b475b0b2db72ce6144754c9044',1,'ascon80pq_isap_aead_key_t::ka()']]],
+  ['ke_523',['ke',['../structascon128a__isap__aead__key__t.html#a54ea985ddac3964ae7450220eb47351b',1,'ascon128a_isap_aead_key_t::ke()'],['../structascon128__isap__aead__key__t.html#aaddaefbdb88f167451db906e54d68429',1,'ascon128_isap_aead_key_t::ke()'],['../structascon80pq__isap__aead__key__t.html#a6224e8608acca36b95675d75009b5b15',1,'ascon80pq_isap_aead_key_t::ke()']]],
+  ['key_524',['key',['../structascon128__state__t.html#aef21be4c4b2f862b8aa88df0c4dea74a',1,'ascon128_state_t::key()'],['../structascon128a__state__t.html#a9f5af8c86dbf5a49c05b4c2d0343302b',1,'ascon128a_state_t::key()'],['../structascon80pq__state__t.html#a9426fe2207d4ea501e5b664fd106ab68',1,'ascon80pq_state_t::key()']]],
+  ['keyed_20message_20authentication_20code_20_28kmac_29_20mode_20for_20ascon_525',['Keyed Message Authentication Code (KMAC) mode for ASCON',['../kmac.html',1,'']]],
+  ['kmac_2edox_526',['kmac.dox',['../kmac_8dox.html',1,'']]],
+  ['kmac_2eh_527',['kmac.h',['../kmac_8h.html',1,'']]],
+  ['kmac_5falg_5fname_528',['KMAC_ALG_NAME',['../ascon-kmaca_8c.html#ab0f17108f24e667b314509dd783bf981',1,'KMAC_ALG_NAME():&#160;ascon-kmaca.c'],['../ascon-kmac_8c.html#ab0f17108f24e667b314509dd783bf981',1,'KMAC_ALG_NAME():&#160;ascon-kmac.c']]],
+  ['kmac_5frate_529',['KMAC_RATE',['../ascon-kmac_8c.html#acd1e8779402561559e77eb6be82e037b',1,'KMAC_RATE():&#160;ascon-kmac.c'],['../ascon-kmaca_8c.html#acd1e8779402561559e77eb6be82e037b',1,'KMAC_RATE():&#160;ascon-kmaca.c']]],
+  ['kmac_5fsize_530',['KMAC_SIZE',['../ascon-kmaca_8c.html#aa6b064ea6adf33bf4d864bc2da8ca2c4',1,'KMAC_SIZE():&#160;ascon-kmaca.c'],['../ascon-kmac_8c.html#aa6b064ea6adf33bf4d864bc2da8ca2c4',1,'KMAC_SIZE():&#160;ascon-kmac.c']]],
+  ['kmac_5fstate_531',['KMAC_STATE',['../ascon-kmaca_8c.html#a5970ead1ea7be5a9bec6870762cb7b56',1,'KMAC_STATE():&#160;ascon-kmaca.c'],['../ascon-kmac_8c.html#a5970ead1ea7be5a9bec6870762cb7b56',1,'KMAC_STATE():&#160;ascon-kmac.c']]],
+  ['kmac_5fxof_5fabsorb_532',['KMAC_XOF_ABSORB',['../ascon-kmac_8c.html#ace2be856d5c3c32024a9d21c908e242e',1,'KMAC_XOF_ABSORB():&#160;ascon-kmac.c'],['../ascon-kmaca_8c.html#ace2be856d5c3c32024a9d21c908e242e',1,'KMAC_XOF_ABSORB():&#160;ascon-kmaca.c']]],
+  ['kmac_5fxof_5ffree_533',['KMAC_XOF_FREE',['../ascon-kmac_8c.html#a230e1f4c99d54bf2e1b6984833222e08',1,'KMAC_XOF_FREE():&#160;ascon-kmac.c'],['../ascon-kmaca_8c.html#a230e1f4c99d54bf2e1b6984833222e08',1,'KMAC_XOF_FREE():&#160;ascon-kmaca.c']]],
+  ['kmac_5fxof_5finit_534',['KMAC_XOF_INIT',['../ascon-kmac_8c.html#a8e25a622ac92a2294c03827d374bb900',1,'KMAC_XOF_INIT():&#160;ascon-kmac.c'],['../ascon-kmaca_8c.html#a8e25a622ac92a2294c03827d374bb900',1,'KMAC_XOF_INIT():&#160;ascon-kmaca.c']]],
+  ['kmac_5fxof_5fis_5fabsorbing_535',['KMAC_XOF_IS_ABSORBING',['../ascon-kmac_8c.html#a184a82c21a590713e8af90529c316ca5',1,'KMAC_XOF_IS_ABSORBING():&#160;ascon-kmac.c'],['../ascon-kmaca_8c.html#a184a82c21a590713e8af90529c316ca5',1,'KMAC_XOF_IS_ABSORBING():&#160;ascon-kmaca.c']]],
+  ['kmac_5fxof_5fpad_536',['KMAC_XOF_PAD',['../ascon-kmac_8c.html#a0f48ba07f6589fa2a4b4a077e1ebb0e4',1,'KMAC_XOF_PAD():&#160;ascon-kmac.c'],['../ascon-kmaca_8c.html#a0f48ba07f6589fa2a4b4a077e1ebb0e4',1,'KMAC_XOF_PAD():&#160;ascon-kmaca.c']]],
+  ['kmac_5fxof_5fpreinit_537',['KMAC_XOF_PREINIT',['../ascon-kmac_8c.html#a4212566a9e933e1a223ec6fc9c6ab012',1,'KMAC_XOF_PREINIT():&#160;ascon-kmac.c'],['../ascon-kmaca_8c.html#a4212566a9e933e1a223ec6fc9c6ab012',1,'KMAC_XOF_PREINIT():&#160;ascon-kmaca.c']]],
+  ['kmac_5fxof_5fsqueeze_538',['KMAC_XOF_SQUEEZE',['../ascon-kmac_8c.html#a0ddac7ffcac6d209c5963a1fadbaf591',1,'KMAC_XOF_SQUEEZE():&#160;ascon-kmac.c'],['../ascon-kmaca_8c.html#a0ddac7ffcac6d209c5963a1fadbaf591',1,'KMAC_XOF_SQUEEZE():&#160;ascon-kmaca.c']]]
 ];

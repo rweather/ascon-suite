@@ -69,7 +69,7 @@ $(function() {
 <div class="title">ascon-clean.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ascon-clean_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (C) 2022 Southern Storm Software, Pty Ltd.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
@@ -94,7 +94,7 @@ $(function() {
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#if defined(HAVE_CONFIG_H)</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &lt;config.h&gt;</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define __STDC_WANT_LIB_EXT1__ 1 </span><span class="comment">/* Detect if the C library has memset_s */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="ascon-clean_8c.html#a7a104b2e349617222c6419b36bfd3260">   26</a></span>&#160;<span class="preprocessor">#define __STDC_WANT_LIB_EXT1__ 1 </span><span class="comment">/* Detect if the C library has memset_s */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="utility_8h.html">ascon/utility.h</a>&gt;</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
@@ -106,7 +106,7 @@ $(function() {
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;wincrypt.h&gt;</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">   38</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(<span class="keywordtype">void</span> *buf, <span class="keywordtype">unsigned</span> size)</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">   38</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="ascon-clean_8c.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(<span class="keywordtype">void</span> *buf, <span class="keywordtype">unsigned</span> size)</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">/* The safest way to do this is using SecureZeroMemory(), memset_s(), or</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">     * explicit_bzero() so that the compiler will not optimise away the</span></div>
@@ -127,12 +127,12 @@ $(function() {
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
+<div class="ttc" id="aascon-clean_8c_html_a331ff039487fd153ee170a600cf4850b"><div class="ttname"><a href="ascon-clean_8c.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a></div><div class="ttdeci">void ascon_clean(void *buf, unsigned size)</div><div class="ttdoc">Cleans a buffer that contains sensitive material.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-clean_8c_source.html#l00038">ascon-clean.c:38</a></div></div>
 <div class="ttc" id="autility_8h_html"><div class="ttname"><a href="utility_8h.html">utility.h</a></div><div class="ttdoc">System utilities of use to applications that use ASCON.</div></div>
-<div class="ttc" id="autility_8h_html_a331ff039487fd153ee170a600cf4850b"><div class="ttname"><a href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a></div><div class="ttdeci">void ascon_clean(void *buf, unsigned size)</div><div class="ttdoc">Cleans a buffer that contains sensitive material.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-clean_8c_source.html#l00038">ascon-clean.c:38</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

@@ -66,7 +66,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -81,7 +81,7 @@ $(function() {
 <p><a href="hkdf_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
+Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__hkdf__state__t.html">ascon_hkdf_state_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">State for incremental generation of key material from ASCON-HKDF.  <a href="structascon__hkdf__state__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -91,9 +91,8 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ac79be9d364874170d219a783fd81ffdd"><td class="memItemLeft" align="right" valign="top"><a id="ac79be9d364874170d219a783fd81ffdd"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#ac79be9d364874170d219a783fd81ffdd">ASCON_HKDF_OUTPUT_SIZE</a>&#160;&#160;&#160;32</td></tr>
-<tr class="memdesc:ac79be9d364874170d219a783fd81ffdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default output block size for ASCON-HKDF and ASCON-HKDFA. Key material is generated in blocks of this size. <br /></td></tr>
+<tr class="memitem:ac79be9d364874170d219a783fd81ffdd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#ac79be9d364874170d219a783fd81ffdd">ASCON_HKDF_OUTPUT_SIZE</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:ac79be9d364874170d219a783fd81ffdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default output block size for ASCON-HKDF and ASCON-HKDFA. Key material is generated in blocks of this size.  <a href="hkdf_8h.html#ac79be9d364874170d219a783fd81ffdd">More...</a><br /></td></tr>
 <tr class="separator:ac79be9d364874170d219a783fd81ffdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -101,25 +100,25 @@ Functions</h2></td></tr>
 <tr class="memitem:a4050c533750238f3e2aa67b6c644d666"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a4050c533750238f3e2aa67b6c644d666">ascon_hkdf</a> (unsigned char *out, size_t outlen, const unsigned char *key, size_t keylen, const unsigned char *salt, size_t saltlen, const unsigned char *info, size_t infolen)</td></tr>
 <tr class="memdesc:a4050c533750238f3e2aa67b6c644d666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives key material using ASCON-HKDF.  <a href="hkdf_8h.html#a4050c533750238f3e2aa67b6c644d666">More...</a><br /></td></tr>
 <tr class="separator:a4050c533750238f3e2aa67b6c644d666"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a655652d8671cfc65abf46aaeb103270b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a655652d8671cfc65abf46aaeb103270b">ascon_hkdf_extract</a> (<a class="el" href="structascon__hkdf__state__t.html">ascon_hkdf_state_t</a> *state, const unsigned char *key, size_t keylen, const unsigned char *salt, size_t saltlen)</td></tr>
+<tr class="memitem:a655652d8671cfc65abf46aaeb103270b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a655652d8671cfc65abf46aaeb103270b">ascon_hkdf_extract</a> (<a class="el" href="structascon__hkdf__state__t.html">ascon_hkdf_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, const unsigned char *key, size_t keylen, const unsigned char *salt, size_t saltlen)</td></tr>
 <tr class="memdesc:a655652d8671cfc65abf46aaeb103270b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts entropy from a key and salt for ASCON-HKDF.  <a href="hkdf_8h.html#a655652d8671cfc65abf46aaeb103270b">More...</a><br /></td></tr>
 <tr class="separator:a655652d8671cfc65abf46aaeb103270b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d94ada0b1aec4fefe1fb16126a18d1b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a8d94ada0b1aec4fefe1fb16126a18d1b">ascon_hkdf_expand</a> (<a class="el" href="structascon__hkdf__state__t.html">ascon_hkdf_state_t</a> *state, const unsigned char *info, size_t infolen, unsigned char *out, size_t outlen)</td></tr>
+<tr class="memitem:a8d94ada0b1aec4fefe1fb16126a18d1b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a8d94ada0b1aec4fefe1fb16126a18d1b">ascon_hkdf_expand</a> (<a class="el" href="structascon__hkdf__state__t.html">ascon_hkdf_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, const unsigned char *info, size_t infolen, unsigned char *out, size_t outlen)</td></tr>
 <tr class="memdesc:a8d94ada0b1aec4fefe1fb16126a18d1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expands key material using a ASCON-HKDF state.  <a href="hkdf_8h.html#a8d94ada0b1aec4fefe1fb16126a18d1b">More...</a><br /></td></tr>
 <tr class="separator:a8d94ada0b1aec4fefe1fb16126a18d1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd84e3ea9cfea6581d74857c4c29dcd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#abd84e3ea9cfea6581d74857c4c29dcd4">ascon_hkdf_free</a> (<a class="el" href="structascon__hkdf__state__t.html">ascon_hkdf_state_t</a> *state)</td></tr>
+<tr class="memitem:abd84e3ea9cfea6581d74857c4c29dcd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#abd84e3ea9cfea6581d74857c4c29dcd4">ascon_hkdf_free</a> (<a class="el" href="structascon__hkdf__state__t.html">ascon_hkdf_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:abd84e3ea9cfea6581d74857c4c29dcd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees all sensitive material in a ASCON-HKDF state.  <a href="hkdf_8h.html#abd84e3ea9cfea6581d74857c4c29dcd4">More...</a><br /></td></tr>
 <tr class="separator:abd84e3ea9cfea6581d74857c4c29dcd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe37d70a88454a51ab3474cca3aea29e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#afe37d70a88454a51ab3474cca3aea29e">ascon_hkdfa</a> (unsigned char *out, size_t outlen, const unsigned char *key, size_t keylen, const unsigned char *salt, size_t saltlen, const unsigned char *info, size_t infolen)</td></tr>
 <tr class="memdesc:afe37d70a88454a51ab3474cca3aea29e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives key material using ASCON-HKDFA.  <a href="hkdf_8h.html#afe37d70a88454a51ab3474cca3aea29e">More...</a><br /></td></tr>
 <tr class="separator:afe37d70a88454a51ab3474cca3aea29e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ad7313438638bad61fdbf677228576d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a2ad7313438638bad61fdbf677228576d">ascon_hkdfa_extract</a> (<a class="el" href="structascon__hkdfa__state__t.html">ascon_hkdfa_state_t</a> *state, const unsigned char *key, size_t keylen, const unsigned char *salt, size_t saltlen)</td></tr>
+<tr class="memitem:a2ad7313438638bad61fdbf677228576d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a2ad7313438638bad61fdbf677228576d">ascon_hkdfa_extract</a> (<a class="el" href="structascon__hkdfa__state__t.html">ascon_hkdfa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, const unsigned char *key, size_t keylen, const unsigned char *salt, size_t saltlen)</td></tr>
 <tr class="memdesc:a2ad7313438638bad61fdbf677228576d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts entropy from a key and salt for ASCON-HKDFA.  <a href="hkdf_8h.html#a2ad7313438638bad61fdbf677228576d">More...</a><br /></td></tr>
 <tr class="separator:a2ad7313438638bad61fdbf677228576d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72a64fb0954c445b5eadb91ac1d6d36d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a72a64fb0954c445b5eadb91ac1d6d36d">ascon_hkdfa_expand</a> (<a class="el" href="structascon__hkdfa__state__t.html">ascon_hkdfa_state_t</a> *state, const unsigned char *info, size_t infolen, unsigned char *out, size_t outlen)</td></tr>
+<tr class="memitem:a72a64fb0954c445b5eadb91ac1d6d36d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#a72a64fb0954c445b5eadb91ac1d6d36d">ascon_hkdfa_expand</a> (<a class="el" href="structascon__hkdfa__state__t.html">ascon_hkdfa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, const unsigned char *info, size_t infolen, unsigned char *out, size_t outlen)</td></tr>
 <tr class="memdesc:a72a64fb0954c445b5eadb91ac1d6d36d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Expands key material using a ASCON-HKDFA state.  <a href="hkdf_8h.html#a72a64fb0954c445b5eadb91ac1d6d36d">More...</a><br /></td></tr>
 <tr class="separator:a72a64fb0954c445b5eadb91ac1d6d36d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0246e01c38de7091c8dfb2ee2a80f0c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#ab0246e01c38de7091c8dfb2ee2a80f0c">ascon_hkdfa_free</a> (<a class="el" href="structascon__hkdfa__state__t.html">ascon_hkdfa_state_t</a> *state)</td></tr>
+<tr class="memitem:ab0246e01c38de7091c8dfb2ee2a80f0c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hkdf_8h.html#ab0246e01c38de7091c8dfb2ee2a80f0c">ascon_hkdfa_free</a> (<a class="el" href="structascon__hkdfa__state__t.html">ascon_hkdfa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:ab0246e01c38de7091c8dfb2ee2a80f0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees all sensitive material in a ASCON-HKDFA state.  <a href="hkdf_8h.html#ab0246e01c38de7091c8dfb2ee2a80f0c">More...</a><br /></td></tr>
 <tr class="separator:ab0246e01c38de7091c8dfb2ee2a80f0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -128,7 +127,26 @@ Functions</h2></td></tr>
 <p>Reference: <a href="https://tools.ietf.org/html/rfc5869">https://tools.ietf.org/html/rfc5869</a> </p>
 
 <p class="definition">Definition in file <a class="el" href="hkdf_8h_source.html">hkdf.h</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ac79be9d364874170d219a783fd81ffdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac79be9d364874170d219a783fd81ffdd">&#9670;&nbsp;</a></span>ASCON_HKDF_OUTPUT_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ASCON_HKDF_OUTPUT_SIZE&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default output block size for ASCON-HKDF and ASCON-HKDFA. Key material is generated in blocks of this size. </p>
+
+<p class="definition">Definition at line <a class="el" href="hkdf_8h_source.html#l00043">43</a> of file <a class="el" href="hkdf_8h_source.html">hkdf.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="a4050c533750238f3e2aa67b6c644d666"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4050c533750238f3e2aa67b6c644d666">&#9670;&nbsp;</a></span>ascon_hkdf()</h2>
 
@@ -582,7 +600,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

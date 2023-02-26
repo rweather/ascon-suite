@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['xof_682',['xof',['../structascon__hash__state__t.html#a8eef1d78f75c5296d289c125e7818694',1,'ascon_hash_state_t::xof()'],['../structascon__hasha__state__t.html#a3ef013340bbc1ee9f1e3cb68e38ff916',1,'ascon_hasha_state_t::xof()'],['../structascon__kmac__state__t.html#ae07ea3eb05efbcd122f5a88eb8a94f8a',1,'ascon_kmac_state_t::xof()'],['../structascon__kmaca__state__t.html#abeab48f2f653cd3d9af0ce2ec7c9e457',1,'ascon_kmaca_state_t::xof()'],['../structascon__random__state__t.html#a129ff33497639e7c0bf8bbddbeec1a92',1,'ascon_random_state_t::xof()']]]
+  ['w_1263',['W',['../unionascon__masked__key__word__t.html#a8e5ea45171ba3bfc83bc202364b55163',1,'ascon_masked_key_word_t::W()'],['../unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0',1,'ascon_state_t::W()'],['../unionascon__masked__word__t.html#a2fd0cdf48b9ee9d7ced12f6c2fe0995e',1,'ascon_masked_word_t::W()']]]
 ];

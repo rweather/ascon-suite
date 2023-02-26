@@ -1,6 +1,13 @@
 var searchData=
 [
-  ['computing_20file_20checksums_20with_20ascon_2dhash_332',['Computing file checksums with ASCON-HASH',['../asconsum.html',1,'']]],
-  ['count_333',['count',['../structascon__prf__state__t.html#af582d92f7c6aa8d573f9f5b8f5811a3c',1,'ascon_prf_state_t::count()'],['../structascon__xof__state__t.html#af92db0c0ccd69b2c1588dcceed84e27f',1,'ascon_xof_state_t::count()'],['../structascon__xofa__state__t.html#a37529b6743e1d5d232a5d0bec29240a6',1,'ascon_xofa_state_t::count()']]],
-  ['counter_334',['counter',['../structascon__hkdf__state__t.html#ac70968ace601d22fe3861e207571a2a9',1,'ascon_hkdf_state_t::counter()'],['../structascon__hkdfa__state__t.html#ab8704c98c58eedaf0335e0dde316da56',1,'ascon_hkdfa_state_t::counter()'],['../structascon__random__state__t.html#ac91f74f464cd3fbd3b9450593b41c896',1,'ascon_random_state_t::counter()']]]
+  ['b_463',['B',['../unionascon__masked__key__word__t.html#a90ec153afc49bd0e4ee3eea3321e6b2d',1,'ascon_masked_key_word_t::B()'],['../unionascon__state__t.html#ae607bbd4cfa80ca2592b0e56b3f694b1',1,'ascon_state_t::B()'],['../unionascon__masked__word__t.html#a75b54442fb0030c2c43ea977fc5ab384',1,'ascon_masked_word_t::B()']]],
+  ['be_5fload_5fword16_464',['be_load_word16',['../ascon-util_8h.html#a181f1744d5ef7c7ab4d14bdea6dace30',1,'ascon-util.h']]],
+  ['be_5fload_5fword32_465',['be_load_word32',['../ascon-util_8h.html#a782e60df32709ff584a221739808a76e',1,'ascon-util.h']]],
+  ['be_5fload_5fword64_466',['be_load_word64',['../ascon-util_8h.html#ad55ecee415c515f93cf5925370d60563',1,'ascon-util.h']]],
+  ['be_5fstore_5fword16_467',['be_store_word16',['../ascon-util_8h.html#a374492b789fe36baa90f7a43d2db886f',1,'ascon-util.h']]],
+  ['be_5fstore_5fword32_468',['be_store_word32',['../ascon-util_8h.html#acc139546b2894c2003863801b16440d3',1,'ascon-util.h']]],
+  ['be_5fstore_5fword64_469',['be_store_word64',['../ascon-util_8h.html#a8d3dd0e68e1a148468add18aedeb1ac0',1,'ascon-util.h']]],
+  ['blockcipher_2edox_470',['blockcipher.dox',['../blockcipher_8dox.html',1,'']]],
+  ['building_20a_20block_20cipher_20with_20the_20ascon_20permutation_471',['Building a block cipher with the ASCON permutation',['../blockcipher.html',1,'']]],
+  ['byte_5farray_472',['byte_array',['../namespaceascon.html#a27d9c2d10f14e83aafae4d7ff8d42567',1,'ascon']]]
 ];

@@ -69,7 +69,7 @@ $(function() {
 <div class="title">ascon-trng-dev-random.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ascon-trng-dev-random_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (C) 2022 Southern Storm Software, Pty Ltd.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
@@ -91,9 +91,9 @@ $(function() {
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> * DEALINGS IN THE SOFTWARE.</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define _GNU_SOURCE</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="ascon-trng-dev-random_8c.html#a369266c24eacffb87046522897a570d5">   23</a></span>&#160;<span class="preprocessor">#define _GNU_SOURCE</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-trng_8h.html">ascon-trng.h</a>&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;core/ascon-select-backend.h&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-select-backend_8h.html">core/ascon-select-backend.h</a>&quot;</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#if defined(ASCON_TRNG_DEV_RANDOM)</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
@@ -174,7 +174,7 @@ $(function() {
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng_8h.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outlen)</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng-none_8c.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outlen)</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;{</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor">#if defined(ascon_getrandom)</span></div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">return</span> ascon_dev_random_read(-1, out, outlen);</div>
@@ -188,12 +188,13 @@ $(function() {
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;}</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ASCON_TRNG_DEV_RANDOM */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aascon-select-backend_8h_html"><div class="ttname"><a href="ascon-select-backend_8h.html">ascon-select-backend.h</a></div></div>
+<div class="ttc" id="aascon-trng-none_8c_html_a1f56ed5cff00978e75f3061fa4535621"><div class="ttname"><a href="ascon-trng-none_8c.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a></div><div class="ttdeci">int ascon_trng_generate(unsigned char *out, size_t outlen)</div><div class="ttdoc">Generates a buffer of bytes from the system TRNG source.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-trng-none_8c_source.html#l00192">ascon-trng-none.c:192</a></div></div>
 <div class="ttc" id="aascon-trng_8h_html"><div class="ttname"><a href="ascon-trng_8h.html">ascon-trng.h</a></div><div class="ttdoc">Access to the system's random number source.</div></div>
-<div class="ttc" id="aascon-trng_8h_html_a1f56ed5cff00978e75f3061fa4535621"><div class="ttname"><a href="ascon-trng_8h.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a></div><div class="ttdeci">int ascon_trng_generate(unsigned char *out, size_t outlen)</div><div class="ttdoc">Generates a buffer of bytes from the system TRNG source.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-trng-none_8c_source.html#l00192">ascon-trng-none.c:192</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

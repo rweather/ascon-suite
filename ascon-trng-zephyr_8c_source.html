@@ -69,7 +69,7 @@ $(function() {
 <div class="title">ascon-trng-zephyr.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ascon-trng-zephyr_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (C) 2023 Southern Storm Software, Pty Ltd.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
@@ -92,14 +92,14 @@ $(function() {
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-trng_8h.html">ascon-trng.h</a>&quot;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;core/ascon-select-backend.h&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-select-backend_8h.html">core/ascon-select-backend.h</a>&quot;</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#if defined(ASCON_TRNG_ZEPHYR_CSRAND)</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;zephyr/random/rand32.h&gt;</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng_8h.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outlen)</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng-none_8c.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outlen)</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="comment">/* Try to get random data from the Zephyr kernel */</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordflow">if</span> (sys_csrand_get(out, outlen) == 0)</div>
@@ -114,7 +114,7 @@ $(function() {
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;zephyr/bluetooth/crypto.h&gt;</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng_8h.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outlen)</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">int</span> <a class="code" href="ascon-trng-none_8c.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *out, <span class="keywordtype">size_t</span> outlen)</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="comment">/* Try to get random data from the Bluetooth stack */</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">if</span> (bt_rand(out, outlen) == 0)</div>
@@ -126,12 +126,13 @@ $(function() {
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* !ASCON_TRNG_ZEPHYR_CSRAND &amp;&amp; !ASCON_TRNG_ZEPHYR_BTRAND */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aascon-select-backend_8h_html"><div class="ttname"><a href="ascon-select-backend_8h.html">ascon-select-backend.h</a></div></div>
+<div class="ttc" id="aascon-trng-none_8c_html_a1f56ed5cff00978e75f3061fa4535621"><div class="ttname"><a href="ascon-trng-none_8c.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a></div><div class="ttdeci">int ascon_trng_generate(unsigned char *out, size_t outlen)</div><div class="ttdoc">Generates a buffer of bytes from the system TRNG source.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-trng-none_8c_source.html#l00192">ascon-trng-none.c:192</a></div></div>
 <div class="ttc" id="aascon-trng_8h_html"><div class="ttname"><a href="ascon-trng_8h.html">ascon-trng.h</a></div><div class="ttdoc">Access to the system's random number source.</div></div>
-<div class="ttc" id="aascon-trng_8h_html_a1f56ed5cff00978e75f3061fa4535621"><div class="ttname"><a href="ascon-trng_8h.html#a1f56ed5cff00978e75f3061fa4535621">ascon_trng_generate</a></div><div class="ttdeci">int ascon_trng_generate(unsigned char *out, size_t outlen)</div><div class="ttdoc">Generates a buffer of bytes from the system TRNG source.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-trng-none_8c_source.html#l00192">ascon-trng-none.c:192</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

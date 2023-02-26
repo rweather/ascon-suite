@@ -195,20 +195,20 @@ $(function() {
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> buffer[ASCON_BUFSIZ];</div>
 <div class="line">    <span class="keywordtype">int</span> len, ok;</div>
-<div class="line">    <a name="_a1"></a><a class="code" href="structascon__hash__state__t.html">ascon_hash_state_t</a> state;</div>
-<div class="line">    <a name="a2"></a><a class="code" href="hash_8h.html#a1cc8894358bbf26c57b7a2cffb122865">ascon_hash_init</a>(&amp;state);</div>
+<div class="line">    <a name="_a1"></a><a class="code" href="structascon__hash__state__t.html">ascon_hash_state_t</a> <a name="a2"></a><a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>;</div>
+<div class="line">    <a name="a3"></a><a class="code" href="hash_8h.html#a1cc8894358bbf26c57b7a2cffb122865">ascon_hash_init</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    <span class="keywordflow">while</span> ((len = fread(buffer, 1, ASCON_BUFSIZ, file)) == ASCON_BUFSIZ) {</div>
-<div class="line">        <a name="a3"></a><a class="code" href="hash_8h.html#a5fc41e4ccd0f2633fdddf3667e4b0894">ascon_hash_update</a>(&amp;state, buffer, len);</div>
+<div class="line">        <a name="a4"></a><a class="code" href="hash_8h.html#a5fc41e4ccd0f2633fdddf3667e4b0894">ascon_hash_update</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, buffer, len);</div>
 <div class="line">    }</div>
 <div class="line">    ok = !ferror(file);</div>
 <div class="line">    <span class="keywordflow">if</span> (!ok) {</div>
 <div class="line">        perror(filename);</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">if</span> (len &gt; 0) {</div>
-<div class="line">        <a class="code" href="hash_8h.html#a5fc41e4ccd0f2633fdddf3667e4b0894">ascon_hash_update</a>(&amp;state, buffer, len);</div>
+<div class="line">        <a class="code" href="hash_8h.html#a5fc41e4ccd0f2633fdddf3667e4b0894">ascon_hash_update</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, buffer, len);</div>
 <div class="line">    }</div>
-<div class="line">    <a name="a4"></a><a class="code" href="hash_8h.html#a6acc6df761756d14f1b58ea25645c0f7">ascon_hash_finalize</a>(&amp;state, hash);</div>
-<div class="line">    <a name="a5"></a><a class="code" href="hash_8h.html#ab63b9c1c72ac7f10a8629f0167d666b2">ascon_hash_free</a>(&amp;state);</div>
+<div class="line">    <a name="a5"></a><a class="code" href="hash_8h.html#a6acc6df761756d14f1b58ea25645c0f7">ascon_hash_finalize</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, hash);</div>
+<div class="line">    <a name="a6"></a><a class="code" href="hash_8h.html#ab63b9c1c72ac7f10a8629f0167d666b2">ascon_hash_free</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    <span class="keywordflow">return</span> ok;</div>
 <div class="line">}</div>
 <div class="line"> </div>
@@ -218,20 +218,20 @@ $(function() {
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> buffer[ASCON_BUFSIZ];</div>
 <div class="line">    <span class="keywordtype">int</span> len, ok;</div>
-<div class="line">    <a name="_a6"></a><a class="code" href="structascon__hasha__state__t.html">ascon_hasha_state_t</a> state;</div>
-<div class="line">    <a name="a7"></a><a class="code" href="hash_8h.html#a90d6bccffbe47c6d0b1c657557694d93">ascon_hasha_init</a>(&amp;state);</div>
+<div class="line">    <a name="_a7"></a><a class="code" href="structascon__hasha__state__t.html">ascon_hasha_state_t</a> <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>;</div>
+<div class="line">    <a name="a8"></a><a class="code" href="hash_8h.html#a90d6bccffbe47c6d0b1c657557694d93">ascon_hasha_init</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    <span class="keywordflow">while</span> ((len = fread(buffer, 1, ASCON_BUFSIZ, file)) == ASCON_BUFSIZ) {</div>
-<div class="line">        <a name="a8"></a><a class="code" href="hash_8h.html#a9aab61a3047cc711229b2dc59aaf38e3">ascon_hasha_update</a>(&amp;state, buffer, len);</div>
+<div class="line">        <a name="a9"></a><a class="code" href="hash_8h.html#a9aab61a3047cc711229b2dc59aaf38e3">ascon_hasha_update</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, buffer, len);</div>
 <div class="line">    }</div>
 <div class="line">    ok = !ferror(file);</div>
 <div class="line">    <span class="keywordflow">if</span> (!ok) {</div>
 <div class="line">        perror(filename);</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">if</span> (len &gt; 0) {</div>
-<div class="line">        <a class="code" href="hash_8h.html#a9aab61a3047cc711229b2dc59aaf38e3">ascon_hasha_update</a>(&amp;state, buffer, len);</div>
+<div class="line">        <a class="code" href="hash_8h.html#a9aab61a3047cc711229b2dc59aaf38e3">ascon_hasha_update</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, buffer, len);</div>
 <div class="line">    }</div>
-<div class="line">    <a name="a9"></a><a class="code" href="hash_8h.html#a257e0993332bc304043f73b74a0825f2">ascon_hasha_finalize</a>(&amp;state, hash);</div>
-<div class="line">    <a name="a10"></a><a class="code" href="hash_8h.html#a96dd8efce2b55d95204e2c7e4811ad9b">ascon_hasha_free</a>(&amp;state);</div>
+<div class="line">    <a name="a10"></a><a class="code" href="hash_8h.html#a257e0993332bc304043f73b74a0825f2">ascon_hasha_finalize</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, hash);</div>
+<div class="line">    <a name="a11"></a><a class="code" href="hash_8h.html#a96dd8efce2b55d95204e2c7e4811ad9b">ascon_hasha_free</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    <span class="keywordflow">return</span> ok;</div>
 <div class="line">}</div>
 <div class="line"> </div>
@@ -241,20 +241,20 @@ $(function() {
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> buffer[ASCON_BUFSIZ];</div>
 <div class="line">    <span class="keywordtype">int</span> len, ok;</div>
-<div class="line">    <a name="_a11"></a><a class="code" href="structascon__xof__state__t.html">ascon_xof_state_t</a> state;</div>
-<div class="line">    <a name="a12"></a><a class="code" href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124">ascon_xof_init</a>(&amp;state);</div>
+<div class="line">    <a name="_a12"></a><a class="code" href="structascon__xof__state__t.html">ascon_xof_state_t</a> <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>;</div>
+<div class="line">    <a name="a13"></a><a class="code" href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124">ascon_xof_init</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    <span class="keywordflow">while</span> ((len = fread(buffer, 1, ASCON_BUFSIZ, file)) == ASCON_BUFSIZ) {</div>
-<div class="line">        <a name="a13"></a><a class="code" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">ascon_xof_absorb</a>(&amp;state, buffer, len);</div>
+<div class="line">        <a name="a14"></a><a class="code" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">ascon_xof_absorb</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, buffer, len);</div>
 <div class="line">    }</div>
 <div class="line">    ok = !ferror(file);</div>
 <div class="line">    <span class="keywordflow">if</span> (!ok) {</div>
 <div class="line">        perror(filename);</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">if</span> (len &gt; 0) {</div>
-<div class="line">        <a class="code" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">ascon_xof_absorb</a>(&amp;state, buffer, len);</div>
+<div class="line">        <a class="code" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">ascon_xof_absorb</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, buffer, len);</div>
 <div class="line">    }</div>
-<div class="line">    <a name="a14"></a><a class="code" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a">ascon_xof_squeeze</a>(&amp;state, hash, <a class="code" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a>);</div>
-<div class="line">    <a name="a15"></a><a class="code" href="xof_8h.html#a0c6465473558cf82e24ccdc3ff7ba00b">ascon_xof_free</a>(&amp;state);</div>
+<div class="line">    <a name="a15"></a><a class="code" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a">ascon_xof_squeeze</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, hash, <a class="code" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a>);</div>
+<div class="line">    <a name="a16"></a><a class="code" href="xof_8h.html#a0c6465473558cf82e24ccdc3ff7ba00b">ascon_xof_free</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    <span class="keywordflow">return</span> ok;</div>
 <div class="line">}</div>
 <div class="line"> </div>
@@ -264,20 +264,20 @@ $(function() {
 <div class="line">{</div>
 <div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> buffer[ASCON_BUFSIZ];</div>
 <div class="line">    <span class="keywordtype">int</span> len, ok;</div>
-<div class="line">    <a name="_a16"></a><a class="code" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> state;</div>
-<div class="line">    <a name="a17"></a><a class="code" href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637">ascon_xofa_init</a>(&amp;state);</div>
+<div class="line">    <a name="_a17"></a><a class="code" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>;</div>
+<div class="line">    <a name="a18"></a><a class="code" href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637">ascon_xofa_init</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    <span class="keywordflow">while</span> ((len = fread(buffer, 1, ASCON_BUFSIZ, file)) == ASCON_BUFSIZ) {</div>
-<div class="line">        <a name="a18"></a><a class="code" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">ascon_xofa_absorb</a>(&amp;state, buffer, len);</div>
+<div class="line">        <a name="a19"></a><a class="code" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">ascon_xofa_absorb</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, buffer, len);</div>
 <div class="line">    }</div>
 <div class="line">    ok = !ferror(file);</div>
 <div class="line">    <span class="keywordflow">if</span> (!ok) {</div>
 <div class="line">        perror(filename);</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">if</span> (len &gt; 0) {</div>
-<div class="line">        <a class="code" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">ascon_xofa_absorb</a>(&amp;state, buffer, len);</div>
+<div class="line">        <a class="code" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">ascon_xofa_absorb</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, buffer, len);</div>
 <div class="line">    }</div>
-<div class="line">    <a name="a19"></a><a class="code" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3">ascon_xofa_squeeze</a>(&amp;state, hash, <a class="code" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a>);</div>
-<div class="line">    <a name="a20"></a><a class="code" href="xof_8h.html#af79d56267775b9ffeb0a29931ee6d1a4">ascon_xofa_free</a>(&amp;state);</div>
+<div class="line">    <a name="a20"></a><a class="code" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3">ascon_xofa_squeeze</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, hash, <a class="code" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a>);</div>
+<div class="line">    <a name="a21"></a><a class="code" href="xof_8h.html#af79d56267775b9ffeb0a29931ee6d1a4">ascon_xofa_free</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    <span class="keywordflow">return</span> ok;</div>
 <div class="line">}</div>
 <div class="line"> </div>
@@ -473,6 +473,7 @@ $(function() {
 <div class="ttc" id="ahash_8h_html_a96dd8efce2b55d95204e2c7e4811ad9b"><div class="ttname"><a href="hash_8h.html#a96dd8efce2b55d95204e2c7e4811ad9b">ascon_hasha_free</a></div><div class="ttdeci">void ascon_hasha_free(ascon_hasha_state_t *state)</div><div class="ttdoc">Frees the ASCON-HASHA state and destroys any sensitive material.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-hasha_8c_source.html#l00084">ascon-hasha.c:84</a></div></div>
 <div class="ttc" id="ahash_8h_html_a9aab61a3047cc711229b2dc59aaf38e3"><div class="ttname"><a href="hash_8h.html#a9aab61a3047cc711229b2dc59aaf38e3">ascon_hasha_update</a></div><div class="ttdeci">void ascon_hasha_update(ascon_hasha_state_t *state, const unsigned char *in, size_t inlen)</div><div class="ttdoc">Updates an ASCON-HASHA state with more input data.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-hasha_8c_source.html#l00089">ascon-hasha.c:90</a></div></div>
 <div class="ttc" id="ahash_8h_html_ab63b9c1c72ac7f10a8629f0167d666b2"><div class="ttname"><a href="hash_8h.html#ab63b9c1c72ac7f10a8629f0167d666b2">ascon_hash_free</a></div><div class="ttdeci">void ascon_hash_free(ascon_hash_state_t *state)</div><div class="ttdoc">Frees the ASCON-HASH state and destroys any sensitive material.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-hash_8c_source.html#l00084">ascon-hash.c:84</a></div></div>
+<div class="ttc" id="asnippets_8c_html_a11a12bb758476a291d682dac7046a3f4"><div class="ttname"><a href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a></div><div class="ttdeci">ascon_state_t state</div><div class="ttdoc">[snippet_key]</div><div class="ttdef"><b>Definition:</b> <a href="snippets_8c_source.html#l00002">snippets.c:2</a></div></div>
 <div class="ttc" id="astructascon__hash__state__t_html"><div class="ttname"><a href="structascon__hash__state__t.html">ascon_hash_state_t</a></div><div class="ttdoc">State information for the ASCON-HASH incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="hash_8h_source.html#l00042">hash.h:43</a></div></div>
 <div class="ttc" id="astructascon__hasha__state__t_html"><div class="ttname"><a href="structascon__hasha__state__t.html">ascon_hasha_state_t</a></div><div class="ttdoc">State information for the ASCON-HASHA incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="hash_8h_source.html#l00051">hash.h:52</a></div></div>
 <div class="ttc" id="astructascon__xof__state__t_html"><div class="ttname"><a href="structascon__xof__state__t.html">ascon_xof_state_t</a></div><div class="ttdoc">State information for ASCON-XOF incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="xof_8h_source.html#l00060">xof.h:61</a></div></div>
@@ -480,9 +481,9 @@ $(function() {
 <div class="ttc" id="axof_8h_html"><div class="ttname"><a href="xof_8h.html">xof.h</a></div><div class="ttdoc">ASCON-XOF and ASCON-XOFA extensible output functions (XOF's).</div></div>
 <div class="ttc" id="axof_8h_html_a0c6465473558cf82e24ccdc3ff7ba00b"><div class="ttname"><a href="xof_8h.html#a0c6465473558cf82e24ccdc3ff7ba00b">ascon_xof_free</a></div><div class="ttdeci">void ascon_xof_free(ascon_xof_state_t *state)</div><div class="ttdoc">Frees the ASCON-XOF state and destroys any sensitive material.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xof_8c_source.html#l00151">ascon-xof.c:151</a></div></div>
 <div class="ttc" id="axof_8h_html_a24aaea5531adf7478d27050acb8cecf3"><div class="ttname"><a href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3">ascon_xofa_squeeze</a></div><div class="ttdeci">void ascon_xofa_squeeze(ascon_xofa_state_t *state, unsigned char *out, size_t outlen)</div><div class="ttdoc">Squeezes output data from an ASCON-XOFA state.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xofa_8c_source.html#l00211">ascon-xofa.c:212</a></div></div>
-<div class="ttc" id="axof_8h_html_a45b6ff2d6e7f47a4842b60bb969d9b36"><div class="ttname"><a href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">ascon_xof_absorb</a></div><div class="ttdeci">void ascon_xof_absorb(ascon_xof_state_t *state, const unsigned char *in, size_t inlen)</div><div class="ttdoc">Aborbs more input data into an ASCON-XOF state.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xof_8c_source.html#l00161">ascon-xof.c:162</a></div></div>
+<div class="ttc" id="axof_8h_html_a45b6ff2d6e7f47a4842b60bb969d9b36"><div class="ttname"><a href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">ascon_xof_absorb</a></div><div class="ttdeci">void ascon_xof_absorb(ascon_xof_state_t *state, const unsigned char *in, size_t inlen)</div><div class="ttdoc">Absorbs more input data into an ASCON-XOF state.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xof_8c_source.html#l00161">ascon-xof.c:162</a></div></div>
 <div class="ttc" id="axof_8h_html_a577bbc23ca44840e65f7967c1e720124"><div class="ttname"><a href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124">ascon_xof_init</a></div><div class="ttdeci">void ascon_xof_init(ascon_xof_state_t *state)</div><div class="ttdoc">Initializes the state for an ASCON-XOF hashing operation.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xof_8c_source.html#l00035">ascon-xof.c:35</a></div></div>
-<div class="ttc" id="axof_8h_html_a6d901c7f1b4b3bc7c6ec55e50f64afc8"><div class="ttname"><a href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">ascon_xofa_absorb</a></div><div class="ttdeci">void ascon_xofa_absorb(ascon_xofa_state_t *state, const unsigned char *in, size_t inlen)</div><div class="ttdoc">Aborbs more input data into an ASCON-XOFA state.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xofa_8c_source.html#l00161">ascon-xofa.c:162</a></div></div>
+<div class="ttc" id="axof_8h_html_a6d901c7f1b4b3bc7c6ec55e50f64afc8"><div class="ttname"><a href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">ascon_xofa_absorb</a></div><div class="ttdeci">void ascon_xofa_absorb(ascon_xofa_state_t *state, const unsigned char *in, size_t inlen)</div><div class="ttdoc">Absorbs more input data into an ASCON-XOFA state.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xofa_8c_source.html#l00161">ascon-xofa.c:162</a></div></div>
 <div class="ttc" id="axof_8h_html_ab2c9302a9e7a26f5e5585fb5cbbe747d"><div class="ttname"><a href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a></div><div class="ttdeci">#define ASCON_HASH_SIZE</div><div class="ttdoc">Size of the hash output for ASCON-HASH and the default hash output size for ASCON-XOF.</div><div class="ttdef"><b>Definition:</b> <a href="xof_8h_source.html#l00043">xof.h:43</a></div></div>
 <div class="ttc" id="axof_8h_html_ad0df1adce85652cbaac500e5f56e317a"><div class="ttname"><a href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a">ascon_xof_squeeze</a></div><div class="ttdeci">void ascon_xof_squeeze(ascon_xof_state_t *state, unsigned char *out, size_t outlen)</div><div class="ttdoc">Squeezes output data from an ASCON-XOF state.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xof_8c_source.html#l00211">ascon-xof.c:212</a></div></div>
 <div class="ttc" id="axof_8h_html_ae5db8f02c4aae9821d78114d9a996637"><div class="ttname"><a href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637">ascon_xofa_init</a></div><div class="ttdeci">void ascon_xofa_init(ascon_xofa_state_t *state)</div><div class="ttdoc">Initializes the state for an ASCON-XOFA hashing operation.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-xofa_8c_source.html#l00035">ascon-xofa.c:35</a></div></div>
@@ -490,7 +491,7 @@ $(function() {
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

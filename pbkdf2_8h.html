@@ -81,9 +81,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a2cb8fad60be665c0be7a218fd4100bc6"><td class="memItemLeft" align="right" valign="top"><a id="a2cb8fad60be665c0be7a218fd4100bc6"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbkdf2_8h.html#a2cb8fad60be665c0be7a218fd4100bc6">ASCON_PBKDF2_SIZE</a>&#160;&#160;&#160;32</td></tr>
-<tr class="memdesc:a2cb8fad60be665c0be7a218fd4100bc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default output block size for ASCON-PBKDF2. Key material is generated in blocks of this size. <br /></td></tr>
+<tr class="memitem:a2cb8fad60be665c0be7a218fd4100bc6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbkdf2_8h.html#a2cb8fad60be665c0be7a218fd4100bc6">ASCON_PBKDF2_SIZE</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a2cb8fad60be665c0be7a218fd4100bc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default output block size for ASCON-PBKDF2. Key material is generated in blocks of this size.  <a href="pbkdf2_8h.html#a2cb8fad60be665c0be7a218fd4100bc6">More...</a><br /></td></tr>
 <tr class="separator:a2cb8fad60be665c0be7a218fd4100bc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -97,7 +96,26 @@ Functions</h2></td></tr>
 <p>Reference: <a href="https://tools.ietf.org/html/rfc8018">https://tools.ietf.org/html/rfc8018</a> </p>
 
 <p class="definition">Definition in file <a class="el" href="pbkdf2_8h_source.html">pbkdf2.h</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a2cb8fad60be665c0be7a218fd4100bc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cb8fad60be665c0be7a218fd4100bc6">&#9670;&nbsp;</a></span>ASCON_PBKDF2_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ASCON_PBKDF2_SIZE&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default output block size for ASCON-PBKDF2. Key material is generated in blocks of this size. </p>
+
+<p class="definition">Definition at line <a class="el" href="pbkdf2_8h_source.html#l00043">43</a> of file <a class="el" href="pbkdf2_8h_source.html">pbkdf2.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="a9f535b04717852cdae5f2f7ba0a99fd0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9f535b04717852cdae5f2f7ba0a99fd0">&#9670;&nbsp;</a></span>ascon_pbkdf2()</h2>
 
@@ -168,7 +186,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <p>This function can generate a maximum of (2^32 - 1) * ASCON_PBKDF2_SIZE bytes, but this limit is not checked. The <em>count</em> value should be large enough to provide resistance against dictionary attacks on the password. </p>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconcrypt_2asconcrypt_8c-example.html#a3">asconcrypt/asconcrypt.c</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconcrypt_2asconcrypt_8c-example.html#a5">asconcrypt/asconcrypt.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-pbkdf2_8c_source.html#l00058">58</a> of file <a class="el" href="ascon-pbkdf2_8c_source.html">ascon-pbkdf2.c</a>.</p>
@@ -178,7 +196,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

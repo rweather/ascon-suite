@@ -69,7 +69,7 @@ $(function() {
 <div class="title">ascon-hmaca.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ascon-hmaca_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (C) 2022 Southern Storm Software, Pty Ltd.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
@@ -98,22 +98,23 @@ $(function() {
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">/* The actual implementation is in the &quot;ascon-hmac-common.h&quot; file */</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">/* ASCON-HMACA */</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#define HMAC_ALG_NAME ascon_hmaca</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#define HMAC_HASH_SIZE ASCON_HASHA_SIZE</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#define HMAC_BLOCK_SIZE 64</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#define HMAC_STATE ascon_hmaca_state_t</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#define HMAC_HASH_INIT ascon_hasha_init</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#define HMAC_HASH_REINIT ascon_hasha_reinit</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#define HMAC_HASH_FREE ascon_hasha_free</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#define HMAC_HASH_UPDATE ascon_hasha_update</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#define HMAC_HASH_FINALIZE ascon_hasha_finalize</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;mac/ascon-hmac-common.h&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#a8964013536aec7a109def5b71e362c29">   30</a></span>&#160;<span class="preprocessor">#define HMAC_ALG_NAME ascon_hmaca</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#a9b2a940c8bc9cfb2518e589df1415c10">   31</a></span>&#160;<span class="preprocessor">#define HMAC_HASH_SIZE ASCON_HASHA_SIZE</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#af7ec8e72430c612cc936a2ea2f91d6d0">   32</a></span>&#160;<span class="preprocessor">#define HMAC_BLOCK_SIZE 64</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#a603d331a3af93a1d626db71365e136f2">   33</a></span>&#160;<span class="preprocessor">#define HMAC_STATE ascon_hmaca_state_t</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#a415cbbb2ed94bc1d7435da88aadc2d37">   34</a></span>&#160;<span class="preprocessor">#define HMAC_HASH_INIT ascon_hasha_init</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#a6cb91228c457e6f72c8baf55a02133e9">   35</a></span>&#160;<span class="preprocessor">#define HMAC_HASH_REINIT ascon_hasha_reinit</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#a0c752f346aea4ec956701904c430536a">   36</a></span>&#160;<span class="preprocessor">#define HMAC_HASH_FREE ascon_hasha_free</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#a4bbafcf34b1acec2dbab1f1a9c73bdd1">   37</a></span>&#160;<span class="preprocessor">#define HMAC_HASH_UPDATE ascon_hasha_update</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="ascon-hmaca_8c.html#a07de8e14a6047711d66f7be7b57efbd9">   38</a></span>&#160;<span class="preprocessor">#define HMAC_HASH_FINALIZE ascon_hasha_finalize</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-hmac-common_8h.html">mac/ascon-hmac-common.h</a>&quot;</span></div>
+<div class="ttc" id="aascon-hmac-common_8h_html"><div class="ttname"><a href="ascon-hmac-common_8h.html">ascon-hmac-common.h</a></div></div>
 <div class="ttc" id="ahmac_8h_html"><div class="ttname"><a href="hmac_8h.html">hmac.h</a></div><div class="ttdoc">Hashed Message Authentication Code (HMAC) based on ASCON-HASH.</div></div>
 <div class="ttc" id="autility_8h_html"><div class="ttname"><a href="utility_8h.html">utility.h</a></div><div class="ttdoc">System utilities of use to applications that use ASCON.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

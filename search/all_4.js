@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['hash_337',['hash',['../structascon__hmac__state__t.html#a4d66509258dea16a521cf5b573dcecce',1,'ascon_hmac_state_t::hash()'],['../structascon__hmaca__state__t.html#a312655b7d9a2b2ed334e48c89dc13540',1,'ascon_hmaca_state_t::hash()']]],
-  ['hash_2eh_338',['hash.h',['../hash_8h.html',1,'']]],
-  ['hkdf_2eh_339',['hkdf.h',['../hkdf_8h.html',1,'']]],
-  ['hmac_2eh_340',['hmac.h',['../hmac_8h.html',1,'']]]
+  ['data_482',['data',['../snippets_8c.html#a452197b783e2154bfb867fe34c4e7067',1,'snippets.c']]],
+  ['digest_483',['digest',['../classascon_1_1hash.html#a9b5e0eb27d61cad0a03a6099c48fee63',1,'ascon::hash::digest()'],['../classascon_1_1hasha.html#af3751f32a3b785c40f46cc0c4c02e0ac',1,'ascon::hasha::digest()']]]
 ];

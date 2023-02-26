@@ -69,7 +69,7 @@ $(function() {
 <div class="title">ascon-util-snp.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ascon-util-snp_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (C) 2022 Southern Storm Software, Pty Ltd.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
@@ -103,60 +103,60 @@ $(function() {
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="permutation_8h.html">ascon/permutation.h</a>&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;ascon-select-backend.h&quot;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;ascon-util.h&quot;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-select-backend_8h.html">ascon-select-backend.h</a>&quot;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-util_8h.html">ascon-util.h</a>&quot;</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#if defined(ASCON_BACKEND_SLICED32)</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &quot;ascon-sliced32.h&quot;</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-sliced32_8h.html">ascon-sliced32.h</a>&quot;</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#define ascon_separator(state) ((state)-&gt;W[8] ^= 0x01)</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#define ascon_pad(state, offset) \</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#ad4b0f592b6c4d41bc4ea6f5b27f6444c">   43</a></span>&#160;<span class="preprocessor">#define ascon_separator(state) ((state)-&gt;W[8] ^= 0x01)</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a5014a2e017f42b79b8cf6bcf9b7cc3b7">   44</a></span>&#160;<span class="preprocessor">#define ascon_pad(state, offset) \</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">    ((state)-&gt;W[((offset) / 8) * 2 + 1] ^= \</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">            (0x80000000U &gt;&gt; (((offset) &amp; 7) * 4)))</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#define ascon_absorb_8(state, data, offset) \</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a485b71e4f5500fd606ff86b0d0c6a734">   48</a></span>&#160;<span class="preprocessor">#define ascon_absorb_8(state, data, offset) \</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">    ascon_absorb_sliced((state), (data), (offset) / 8)</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#define ascon_absorb_16(state, data, offset) \</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a6d00fbc3ca55f187ff5c6a0eb87ba6cd">   50</a></span>&#160;<span class="preprocessor">#define ascon_absorb_16(state, data, offset) \</span></div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">    do { \</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">        ascon_absorb_sliced((state), (data), (offset) / 8); \</span></div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">        ascon_absorb_sliced((state), (data) + 8, (offset) / 8 + 1); \</span></div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">    } while (0)</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#define ascon_absorb_partial(state, data, offset, count) \</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#aa5e33608eb3cf2c6a7e49ac384ff68f6">   55</a></span>&#160;<span class="preprocessor">#define ascon_absorb_partial(state, data, offset, count) \</span></div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">    ascon_add_bytes((state), (data), (offset), (count))</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#define ascon_squeeze_8(state, data, offset) \</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a72f6a26c0ee147ed5aed4744f38ece9c">   58</a></span>&#160;<span class="preprocessor">#define ascon_squeeze_8(state, data, offset) \</span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">    ascon_squeeze_sliced((state), (data), (offset) / 8)</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#define ascon_squeeze_16(state, data, offset) \</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#aca573677d6e7c53eb3fa87f555e3ca98">   60</a></span>&#160;<span class="preprocessor">#define ascon_squeeze_16(state, data, offset) \</span></div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">    do { \</span></div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">        ascon_squeeze_sliced((state), (data), (offset) / 8); \</span></div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">        ascon_squeeze_sliced((state), (data) + 8, (offset) / 8 + 1); \</span></div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">    } while (0)</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#define ascon_squeeze_partial(state, data, offset, count) \</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a75abed13f03f89235099b839a4cc95c1">   65</a></span>&#160;<span class="preprocessor">#define ascon_squeeze_partial(state, data, offset, count) \</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">    ascon_extract_bytes((state), (data), (offset), (count))</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#define ascon_encrypt_8(state, dest, src, offset) \</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a642e018693a33dce2e82aabb1917db51">   68</a></span>&#160;<span class="preprocessor">#define ascon_encrypt_8(state, dest, src, offset) \</span></div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">    ascon_encrypt_sliced((state), (dest), (src), (offset) / 8)</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#define ascon_encrypt_16(state, dest, src, offset) \</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a9762965b405641f63444d9032edc1c26">   70</a></span>&#160;<span class="preprocessor">#define ascon_encrypt_16(state, dest, src, offset) \</span></div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">    do { \</span></div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">        ascon_encrypt_sliced((state), (dest), (src), (offset) / 8); \</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">        ascon_encrypt_sliced((state), (dest) + 8, (src) + 8, (offset) / 8 + 1); \</span></div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">    } while (0)</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#define ascon_encrypt_partial(state, dest, src, offset, count) \</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#af9e52969becbd179083d92230aa9932f">   75</a></span>&#160;<span class="preprocessor">#define ascon_encrypt_partial(state, dest, src, offset, count) \</span></div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">    do { \</span></div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">        ascon_add_bytes((state), (src), (offset), (count)); \</span></div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">        ascon_extract_bytes((state), (dest), (offset), (count)); \</span></div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">    } while (0)</span></div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">#define ascon_decrypt_8(state, dest, src, offset) \</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a01f349d7041ed98b23ccb39c26afeeea">   81</a></span>&#160;<span class="preprocessor">#define ascon_decrypt_8(state, dest, src, offset) \</span></div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">    ascon_decrypt_sliced((state), (dest), (src), (offset) / 8)</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#define ascon_decrypt_16(state, dest, src, offset) \</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a23d11bc4cfc704bf996ecab12493f5ec">   83</a></span>&#160;<span class="preprocessor">#define ascon_decrypt_16(state, dest, src, offset) \</span></div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">    do { \</span></div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">        ascon_decrypt_sliced((state), (dest), (src), (offset) / 8); \</span></div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">        ascon_decrypt_sliced((state), (dest) + 8, (src) + 8, (offset) / 8 + 1); \</span></div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">    } while (0)</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#define ascon_decrypt_partial(state, dest, src, offset, count) \</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#abc878538a8d1450b3c371289a1176094">   88</a></span>&#160;<span class="preprocessor">#define ascon_decrypt_partial(state, dest, src, offset, count) \</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">    ascon_extract_and_overwrite_bytes((state), (src), (dest), (offset), (count))</span></div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#elif defined(ASCON_BACKEND_SLICED64)</span></div>
@@ -308,24 +308,30 @@ $(function() {
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ASCON_BACKEND_GENERIC */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="preprocessor">#if defined(ASCON_BACKEND_INIT)</span></div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="keywordtype">void</span> ascon_backend_init(<a class="code" href="unionascon__state__t.html">ascon_state_t</a> *state);</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ascon-util-snp_8h.html#a3ffbbd7f99c483d5d92d3a80d0b3ce83">ascon_backend_init</a>(<a class="code" href="unionascon__state__t.html">ascon_state_t</a> *<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="preprocessor">#define ascon_backend_init(state) do { ; } while (0)</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a3ffbbd7f99c483d5d92d3a80d0b3ce83">  248</a></span>&#160;<span class="preprocessor">#define ascon_backend_init(state) do { ; } while (0)</span></div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="preprocessor">#if defined(ASCON_BACKEND_FREE)</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="keywordtype">void</span> ascon_backend_free(<a class="code" href="unionascon__state__t.html">ascon_state_t</a> *state);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ascon-util-snp_8h.html#a1e01097e9a2bda84eaf0924ebaeffd91">ascon_backend_free</a>(<a class="code" href="unionascon__state__t.html">ascon_state_t</a> *<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="preprocessor">#define ascon_backend_free(state) do { ; } while (0)</span></div>
+<div class="line"><a name="l00260"></a><span class="lineno"><a class="line" href="ascon-util-snp_8h.html#a1e01097e9a2bda84eaf0924ebaeffd91">  260</a></span>&#160;<span class="preprocessor">#define ascon_backend_free(state) do { ; } while (0)</span></div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aascon-select-backend_8h_html"><div class="ttname"><a href="ascon-select-backend_8h.html">ascon-select-backend.h</a></div></div>
+<div class="ttc" id="aascon-sliced32_8h_html"><div class="ttname"><a href="ascon-sliced32_8h.html">ascon-sliced32.h</a></div></div>
+<div class="ttc" id="aascon-util-snp_8h_html_a1e01097e9a2bda84eaf0924ebaeffd91"><div class="ttname"><a href="ascon-util-snp_8h.html#a1e01097e9a2bda84eaf0924ebaeffd91">ascon_backend_free</a></div><div class="ttdeci">#define ascon_backend_free(state)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util-snp_8h_source.html#l00260">ascon-util-snp.h:260</a></div></div>
+<div class="ttc" id="aascon-util-snp_8h_html_a3ffbbd7f99c483d5d92d3a80d0b3ce83"><div class="ttname"><a href="ascon-util-snp_8h.html#a3ffbbd7f99c483d5d92d3a80d0b3ce83">ascon_backend_init</a></div><div class="ttdeci">#define ascon_backend_init(state)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util-snp_8h_source.html#l00248">ascon-util-snp.h:248</a></div></div>
+<div class="ttc" id="aascon-util_8h_html"><div class="ttname"><a href="ascon-util_8h.html">ascon-util.h</a></div></div>
 <div class="ttc" id="apermutation_8h_html"><div class="ttname"><a href="permutation_8h.html">permutation.h</a></div><div class="ttdoc">Direct access to the ASCON permutation primitive.</div></div>
+<div class="ttc" id="asnippets_8c_html_a11a12bb758476a291d682dac7046a3f4"><div class="ttname"><a href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a></div><div class="ttdeci">ascon_state_t state</div><div class="ttdoc">[snippet_key]</div><div class="ttdef"><b>Definition:</b> <a href="snippets_8c_source.html#l00002">snippets.c:2</a></div></div>
 <div class="ttc" id="aunionascon__state__t_html"><div class="ttname"><a href="unionascon__state__t.html">ascon_state_t</a></div><div class="ttdoc">Structure of the internal state of the ASCON permutation.</div><div class="ttdef"><b>Definition:</b> <a href="permutation_8h_source.html#l00062">permutation.h:63</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

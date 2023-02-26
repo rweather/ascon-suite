@@ -69,7 +69,7 @@ $(function() {
 <div class="title">ascon-c32.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<a href="ascon-c32_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (C) 2022 Southern Storm Software, Pty Ltd.</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
@@ -95,45 +95,45 @@ $(function() {
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"> * 32-bit native word size. */</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="permutation_8h.html">ascon/permutation.h</a>&gt;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;ascon-select-backend.h&quot;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;ascon-sliced32.h&quot;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;ascon-util.h&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-select-backend_8h.html">ascon-select-backend.h</a>&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-sliced32_8h.html">ascon-sliced32.h</a>&quot;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ascon-util_8h.html">ascon-util.h</a>&quot;</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#if defined(ASCON_BACKEND_C32)</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#define ROUND_CONSTANT_PAIR(rc1, rc2) \</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">   33</a></span>&#160;<span class="preprocessor">#define ROUND_CONSTANT_PAIR(rc1, rc2) \</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">    (~((uint32_t)(rc1))), (~((uint32_t)(rc2)))</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="permutation_8h.html#ab21c365db8b660dc1e81ddbbda00395e">   36</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="permutation_8h.html#ab21c365db8b660dc1e81ddbbda00395e">ascon_permute</a>(<a class="code" href="unionascon__state__t.html">ascon_state_t</a> *state, uint8_t first_round)</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="permutation_8h.html#ab21c365db8b660dc1e81ddbbda00395e">   36</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="ascon-c32_8c.html#ab21c365db8b660dc1e81ddbbda00395e">ascon_permute</a>(<a class="code" href="unionascon__state__t.html">ascon_state_t</a> *<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, uint8_t first_round)</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;{</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> uint32_t RC[12 * 2] = {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        ROUND_CONSTANT_PAIR(12, 12),</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        ROUND_CONSTANT_PAIR( 9, 12),</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        ROUND_CONSTANT_PAIR(12,  9),</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        ROUND_CONSTANT_PAIR( 9,  9),</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        ROUND_CONSTANT_PAIR( 6, 12),</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        ROUND_CONSTANT_PAIR( 3, 12),</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        ROUND_CONSTANT_PAIR( 6,  9),</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        ROUND_CONSTANT_PAIR( 3,  9),</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        ROUND_CONSTANT_PAIR(12,  6),</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        ROUND_CONSTANT_PAIR( 9,  6),</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        ROUND_CONSTANT_PAIR(12,  3),</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        ROUND_CONSTANT_PAIR( 9,  3)</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>(12, 12),</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>( 9, 12),</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>(12,  9),</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>( 9,  9),</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>( 6, 12),</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>( 3, 12),</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>( 6,  9),</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>( 3,  9),</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>(12,  6),</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>( 9,  6),</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>(12,  3),</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a>( 9,  3)</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    };</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">const</span> uint32_t *rc = RC + first_round * 2;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    uint32_t t0, t1, t2, t3, t4;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="comment">/* Load the state into local variables */</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    uint32_t x0_e = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[0];</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    uint32_t x0_o = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[1];</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    uint32_t x1_e = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[2];</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    uint32_t x1_o = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[3];</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    uint32_t x2_e = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[4];</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    uint32_t x2_o = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[5];</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    uint32_t x3_e = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[6];</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    uint32_t x3_o = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[7];</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    uint32_t x4_e = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[8];</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    uint32_t x4_o = state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[9];</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    uint32_t x0_e = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[0];</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    uint32_t x0_o = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[1];</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    uint32_t x1_e = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[2];</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    uint32_t x1_o = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[3];</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    uint32_t x2_e = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[4];</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    uint32_t x2_o = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[5];</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    uint32_t x3_e = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[6];</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    uint32_t x3_o = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[7];</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    uint32_t x4_e = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[8];</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    uint32_t x4_o = <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[9];</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="comment">/* We move the &quot;x2 = ~x2&quot; term of the substitution layer outside</span></div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">     * the loop.  The round constants are modified to &quot;NOT value&quot; to</span></div>
@@ -158,35 +158,35 @@ $(function() {
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">                x0 ^= t1;   x1 ^= t2;   x2 ^= t3;   x3 ^= t4;   x4 ^= t0; \</span></div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">                x1 ^= x0;   x0 ^= x4;   x3 ^= x2;   </span><span class="comment">/* x2 = ~x2; */</span><span class="preprocessor"> \</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">            } while (0)</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        ascon_sbox(x0_e, x1_e, x2_e, x3_e, x4_e);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        ascon_sbox(x0_o, x1_o, x2_o, x3_o, x4_o);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <a class="code" href="ascon-c32_8c.html#a7204a0b7d12a0cb4c376efccbde193a3">ascon_sbox</a>(x0_e, x1_e, x2_e, x3_e, x4_e);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <a class="code" href="ascon-c32_8c.html#a7204a0b7d12a0cb4c376efccbde193a3">ascon_sbox</a>(x0_o, x1_o, x2_o, x3_o, x4_o);</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="comment">/* Linear diffusion layer */</span></div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="comment">/* x0 ^= rightRotate19_64(x0) ^ rightRotate28_64(x0); */</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        t0 = x0_e ^ rightRotate4(x0_o);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        t1 = x0_o ^ rightRotate5(x0_e);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        x0_e ^= rightRotate9(t1);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        x0_o ^= rightRotate10(t0);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        t0 = x0_e ^ <a class="code" href="ascon-util_8h.html#a25ac1d4f09fd44e0a66710e5de27deaa">rightRotate4</a>(x0_o);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        t1 = x0_o ^ <a class="code" href="ascon-util_8h.html#a85a6e66a082b21644a22a8224ab5a850">rightRotate5</a>(x0_e);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        x0_e ^= <a class="code" href="ascon-util_8h.html#a1b61de6f585ede38799e51191ddc0d77">rightRotate9</a>(t1);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        x0_o ^= <a class="code" href="ascon-util_8h.html#a5ab12d3dfd680c27fbfad76ca0fc7661">rightRotate10</a>(t0);</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="comment">/* x1 ^= rightRotate61_64(x1) ^ rightRotate39_64(x1); */</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        t0 = x1_e ^ rightRotate11(x1_e);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        t1 = x1_o ^ rightRotate11(x1_o);</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        x1_e ^= rightRotate19(t1);</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        x1_o ^= rightRotate20(t0);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        t0 = x1_e ^ <a class="code" href="ascon-util_8h.html#a0c059b70958a9b60c26bd038f9f43210">rightRotate11</a>(x1_e);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        t1 = x1_o ^ <a class="code" href="ascon-util_8h.html#a0c059b70958a9b60c26bd038f9f43210">rightRotate11</a>(x1_o);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        x1_e ^= <a class="code" href="ascon-util_8h.html#a9d35086be6ce05c8a3731e417b752732">rightRotate19</a>(t1);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        x1_o ^= <a class="code" href="ascon-util_8h.html#a50c5ef8eaa18b051ee73a41af97f99ff">rightRotate20</a>(t0);</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="comment">/* x2 ^= rightRotate1_64(x2)  ^ rightRotate6_64(x2); */</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        t0 = x2_e ^ rightRotate2(x2_o);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        t1 = x2_o ^ rightRotate3(x2_e);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        t0 = x2_e ^ <a class="code" href="ascon-util_8h.html#ae14e399c6986d488c57722253b9141bc">rightRotate2</a>(x2_o);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        t1 = x2_o ^ <a class="code" href="ascon-util_8h.html#a303e037ffdce80c7ebca29ce82a5ce58">rightRotate3</a>(x2_e);</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        x2_e ^= t1;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        x2_o ^= rightRotate1(t0);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        x2_o ^= <a class="code" href="ascon-util_8h.html#ab203bd4da987be4ff9ade931d8f25ddf">rightRotate1</a>(t0);</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="comment">/* x3 ^= rightRotate10_64(x3) ^ rightRotate17_64(x3); */</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        t0 = x3_e ^ rightRotate3(x3_o);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        t1 = x3_o ^ rightRotate4(x3_e);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        x3_e ^= rightRotate5(t0);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        x3_o ^= rightRotate5(t1);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        t0 = x3_e ^ <a class="code" href="ascon-util_8h.html#a303e037ffdce80c7ebca29ce82a5ce58">rightRotate3</a>(x3_o);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        t1 = x3_o ^ <a class="code" href="ascon-util_8h.html#a25ac1d4f09fd44e0a66710e5de27deaa">rightRotate4</a>(x3_e);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        x3_e ^= <a class="code" href="ascon-util_8h.html#a85a6e66a082b21644a22a8224ab5a850">rightRotate5</a>(t0);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        x3_o ^= <a class="code" href="ascon-util_8h.html#a85a6e66a082b21644a22a8224ab5a850">rightRotate5</a>(t1);</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="comment">/* x4 ^= rightRotate7_64(x4)  ^ rightRotate41_64(x4); */</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        t0 = x4_e ^ rightRotate17(x4_e);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        t1 = x4_o ^ rightRotate17(x4_o);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        x4_e ^= rightRotate3(t1);</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        x4_o ^= rightRotate4(t0);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        t0 = x4_e ^ <a class="code" href="ascon-util_8h.html#a90668028f964a7ae12cdbbb8b7708210">rightRotate17</a>(x4_e);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        t1 = x4_o ^ <a class="code" href="ascon-util_8h.html#a90668028f964a7ae12cdbbb8b7708210">rightRotate17</a>(x4_o);</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        x4_e ^= <a class="code" href="ascon-util_8h.html#a303e037ffdce80c7ebca29ce82a5ce58">rightRotate3</a>(t1);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        x4_o ^= <a class="code" href="ascon-util_8h.html#a25ac1d4f09fd44e0a66710e5de27deaa">rightRotate4</a>(t0);</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="comment">/* Move onto the next round */</span></div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        ++first_round;</div>
@@ -197,27 +197,44 @@ $(function() {
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    x2_o = ~x2_o;</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="comment">/* Write the local variables back to the state */</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[0] = x0_e;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[1] = x0_o;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[2] = x1_e;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[3] = x1_o;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[4] = x2_e;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[5] = x2_o;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[6] = x3_e;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[7] = x3_o;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[8] = x4_e;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    state-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[9] = x4_o;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[0] = x0_e;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[1] = x0_o;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[2] = x1_e;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[3] = x1_o;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[4] = x2_e;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[5] = x2_o;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[6] = x3_e;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[7] = x3_o;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[8] = x4_e;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>-&gt;<a class="code" href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">W</a>[9] = x4_o;</div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;}</div>
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* ASCON_BACKEND_C32 */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aascon-c32_8c_html_a7204a0b7d12a0cb4c376efccbde193a3"><div class="ttname"><a href="ascon-c32_8c.html#a7204a0b7d12a0cb4c376efccbde193a3">ascon_sbox</a></div><div class="ttdeci">#define ascon_sbox(x0, x1, x2, x3, x4)</div></div>
+<div class="ttc" id="aascon-c32_8c_html_a9800c1d25404e9aa62a18ac9a9492449"><div class="ttname"><a href="ascon-c32_8c.html#a9800c1d25404e9aa62a18ac9a9492449">ROUND_CONSTANT_PAIR</a></div><div class="ttdeci">#define ROUND_CONSTANT_PAIR(rc1, rc2)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-c32_8c_source.html#l00033">ascon-c32.c:33</a></div></div>
+<div class="ttc" id="aascon-c32_8c_html_ab21c365db8b660dc1e81ddbbda00395e"><div class="ttname"><a href="ascon-c32_8c.html#ab21c365db8b660dc1e81ddbbda00395e">ascon_permute</a></div><div class="ttdeci">void ascon_permute(ascon_state_t *state, uint8_t first_round)</div><div class="ttdoc">Permutes the ASCON state with a specified number of rounds.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-c32_8c_source.html#l00036">ascon-c32.c:36</a></div></div>
+<div class="ttc" id="aascon-select-backend_8h_html"><div class="ttname"><a href="ascon-select-backend_8h.html">ascon-select-backend.h</a></div></div>
+<div class="ttc" id="aascon-sliced32_8h_html"><div class="ttname"><a href="ascon-sliced32_8h.html">ascon-sliced32.h</a></div></div>
+<div class="ttc" id="aascon-util_8h_html"><div class="ttname"><a href="ascon-util_8h.html">ascon-util.h</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a0c059b70958a9b60c26bd038f9f43210"><div class="ttname"><a href="ascon-util_8h.html#a0c059b70958a9b60c26bd038f9f43210">rightRotate11</a></div><div class="ttdeci">#define rightRotate11(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00330">ascon-util.h:330</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a1b61de6f585ede38799e51191ddc0d77"><div class="ttname"><a href="ascon-util_8h.html#a1b61de6f585ede38799e51191ddc0d77">rightRotate9</a></div><div class="ttdeci">#define rightRotate9(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00328">ascon-util.h:328</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a25ac1d4f09fd44e0a66710e5de27deaa"><div class="ttname"><a href="ascon-util_8h.html#a25ac1d4f09fd44e0a66710e5de27deaa">rightRotate4</a></div><div class="ttdeci">#define rightRotate4(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00323">ascon-util.h:323</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a303e037ffdce80c7ebca29ce82a5ce58"><div class="ttname"><a href="ascon-util_8h.html#a303e037ffdce80c7ebca29ce82a5ce58">rightRotate3</a></div><div class="ttdeci">#define rightRotate3(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00322">ascon-util.h:322</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a50c5ef8eaa18b051ee73a41af97f99ff"><div class="ttname"><a href="ascon-util_8h.html#a50c5ef8eaa18b051ee73a41af97f99ff">rightRotate20</a></div><div class="ttdeci">#define rightRotate20(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00339">ascon-util.h:339</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a5ab12d3dfd680c27fbfad76ca0fc7661"><div class="ttname"><a href="ascon-util_8h.html#a5ab12d3dfd680c27fbfad76ca0fc7661">rightRotate10</a></div><div class="ttdeci">#define rightRotate10(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00329">ascon-util.h:329</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a85a6e66a082b21644a22a8224ab5a850"><div class="ttname"><a href="ascon-util_8h.html#a85a6e66a082b21644a22a8224ab5a850">rightRotate5</a></div><div class="ttdeci">#define rightRotate5(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00324">ascon-util.h:324</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a90668028f964a7ae12cdbbb8b7708210"><div class="ttname"><a href="ascon-util_8h.html#a90668028f964a7ae12cdbbb8b7708210">rightRotate17</a></div><div class="ttdeci">#define rightRotate17(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00336">ascon-util.h:336</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_a9d35086be6ce05c8a3731e417b752732"><div class="ttname"><a href="ascon-util_8h.html#a9d35086be6ce05c8a3731e417b752732">rightRotate19</a></div><div class="ttdeci">#define rightRotate19(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00338">ascon-util.h:338</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_ab203bd4da987be4ff9ade931d8f25ddf"><div class="ttname"><a href="ascon-util_8h.html#ab203bd4da987be4ff9ade931d8f25ddf">rightRotate1</a></div><div class="ttdeci">#define rightRotate1(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00320">ascon-util.h:320</a></div></div>
+<div class="ttc" id="aascon-util_8h_html_ae14e399c6986d488c57722253b9141bc"><div class="ttname"><a href="ascon-util_8h.html#ae14e399c6986d488c57722253b9141bc">rightRotate2</a></div><div class="ttdeci">#define rightRotate2(a)</div><div class="ttdef"><b>Definition:</b> <a href="ascon-util_8h_source.html#l00321">ascon-util.h:321</a></div></div>
 <div class="ttc" id="apermutation_8h_html"><div class="ttname"><a href="permutation_8h.html">permutation.h</a></div><div class="ttdoc">Direct access to the ASCON permutation primitive.</div></div>
-<div class="ttc" id="apermutation_8h_html_ab21c365db8b660dc1e81ddbbda00395e"><div class="ttname"><a href="permutation_8h.html#ab21c365db8b660dc1e81ddbbda00395e">ascon_permute</a></div><div class="ttdeci">void ascon_permute(ascon_state_t *state, uint8_t first_round)</div><div class="ttdoc">Permutes the ASCON state with a specified number of rounds.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-c32_8c_source.html#l00036">ascon-c32.c:36</a></div></div>
+<div class="ttc" id="asnippets_8c_html_a11a12bb758476a291d682dac7046a3f4"><div class="ttname"><a href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a></div><div class="ttdeci">ascon_state_t state</div><div class="ttdoc">[snippet_key]</div><div class="ttdef"><b>Definition:</b> <a href="snippets_8c_source.html#l00002">snippets.c:2</a></div></div>
 <div class="ttc" id="aunionascon__state__t_html"><div class="ttname"><a href="unionascon__state__t.html">ascon_state_t</a></div><div class="ttdoc">Structure of the internal state of the ASCON permutation.</div><div class="ttdef"><b>Definition:</b> <a href="permutation_8h_source.html#l00062">permutation.h:63</a></div></div>
 <div class="ttc" id="aunionascon__state__t_html_a1dd723b1ab12cd746a9283f25dbbb2c0"><div class="ttname"><a href="unionascon__state__t.html#a1dd723b1ab12cd746a9283f25dbbb2c0">ascon_state_t::W</a></div><div class="ttdeci">uint32_t W[10]</div><div class="ttdef"><b>Definition:</b> <a href="permutation_8h_source.html#l00065">permutation.h:65</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

@@ -66,8 +66,10 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">xof.h File Reference</div>  </div>
@@ -77,63 +79,81 @@ $(function() {
 <p>ASCON-XOF and ASCON-XOFA extensible output functions (XOF's).  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="permutation_8h_source.html">ascon/permutation.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="utility_8h_source.html">ascon/utility.h</a>&gt;</code><br />
 </div>
 <p><a href="xof_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
+Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">State information for ASCON-XOF incremental mode.  <a href="structascon__xof__state__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">State information for ASCON-XOFA incremental mode.  <a href="structascon__xofa__state__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classascon_1_1xof__with__output__length.html">ascon::xof_with_output_length&lt; outlen &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ASCON-XOF with a specific output length.  <a href="classascon_1_1xof__with__output__length.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classascon_1_1xofa__with__output__length.html">ascon::xofa_with_output_length&lt; outlen &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ASCON-XOFA with a specific output length.  <a href="classascon_1_1xofa__with__output__length.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespaceascon"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceascon.html">ascon</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ab2c9302a9e7a26f5e5585fb5cbbe747d"><td class="memItemLeft" align="right" valign="top"><a id="ab2c9302a9e7a26f5e5585fb5cbbe747d"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a>&#160;&#160;&#160;32</td></tr>
-<tr class="memdesc:ab2c9302a9e7a26f5e5585fb5cbbe747d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the hash output for ASCON-HASH and the default hash output size for ASCON-XOF. <br /></td></tr>
+<tr class="memitem:ab2c9302a9e7a26f5e5585fb5cbbe747d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:ab2c9302a9e7a26f5e5585fb5cbbe747d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the hash output for ASCON-HASH and the default hash output size for ASCON-XOF.  <a href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">More...</a><br /></td></tr>
 <tr class="separator:ab2c9302a9e7a26f5e5585fb5cbbe747d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7743a384adcdeeb23b7d8513328ceb1"><td class="memItemLeft" align="right" valign="top"><a id="ac7743a384adcdeeb23b7d8513328ceb1"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#ac7743a384adcdeeb23b7d8513328ceb1">ASCON_HASHA_SIZE</a>&#160;&#160;&#160;<a class="el" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a></td></tr>
-<tr class="memdesc:ac7743a384adcdeeb23b7d8513328ceb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the hash output for ASCON-HASHA and the default hash output size for ASCON-XOFA. <br /></td></tr>
+<tr class="memitem:ac7743a384adcdeeb23b7d8513328ceb1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#ac7743a384adcdeeb23b7d8513328ceb1">ASCON_HASHA_SIZE</a>&#160;&#160;&#160;<a class="el" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a></td></tr>
+<tr class="memdesc:ac7743a384adcdeeb23b7d8513328ceb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the hash output for ASCON-HASHA and the default hash output size for ASCON-XOFA.  <a href="xof_8h.html#ac7743a384adcdeeb23b7d8513328ceb1">More...</a><br /></td></tr>
 <tr class="separator:ac7743a384adcdeeb23b7d8513328ceb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b383b4701b0a734d97c7bec8580e3b0"><td class="memItemLeft" align="right" valign="top"><a id="a8b383b4701b0a734d97c7bec8580e3b0"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a8b383b4701b0a734d97c7bec8580e3b0">ASCON_XOF_RATE</a>&#160;&#160;&#160;8</td></tr>
-<tr class="memdesc:a8b383b4701b0a734d97c7bec8580e3b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rate of absorbing and squeezing data for ASCON-XOF, ASCON-XOFA, ASCON-HASH, and ASCON-HASHA. <br /></td></tr>
+<tr class="memitem:a8b383b4701b0a734d97c7bec8580e3b0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a8b383b4701b0a734d97c7bec8580e3b0">ASCON_XOF_RATE</a>&#160;&#160;&#160;8</td></tr>
+<tr class="memdesc:a8b383b4701b0a734d97c7bec8580e3b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rate of absorbing and squeezing data for ASCON-XOF, ASCON-XOFA, ASCON-HASH, and ASCON-HASHA.  <a href="xof_8h.html#a8b383b4701b0a734d97c7bec8580e3b0">More...</a><br /></td></tr>
 <tr class="separator:a8b383b4701b0a734d97c7bec8580e3b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a5a36abe0fb31225eaf50a05d65d9a658"><td class="memItemLeft" align="right" valign="top">typedef xof_with_output_length&lt; 0 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceascon.html#a5a36abe0fb31225eaf50a05d65d9a658">ascon::xof</a></td></tr>
+<tr class="memdesc:a5a36abe0fb31225eaf50a05d65d9a658"><td class="mdescLeft">&#160;</td><td class="mdescRight">ASCON-XOF object with arbitrary-length output.  <a href="namespaceascon.html#a5a36abe0fb31225eaf50a05d65d9a658">More...</a><br /></td></tr>
+<tr class="separator:a5a36abe0fb31225eaf50a05d65d9a658"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af66a27490228f8dee34f5d4fc7130a1a"><td class="memItemLeft" align="right" valign="top">typedef xofa_with_output_length&lt; 0 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceascon.html#af66a27490228f8dee34f5d4fc7130a1a">ascon::xofa</a></td></tr>
+<tr class="memdesc:af66a27490228f8dee34f5d4fc7130a1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">ASCON-XOFA object with arbitrary-length output.  <a href="namespaceascon.html#af66a27490228f8dee34f5d4fc7130a1a">More...</a><br /></td></tr>
+<tr class="separator:af66a27490228f8dee34f5d4fc7130a1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af74ca4af2131fc97cb2a9883ea5040bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#af74ca4af2131fc97cb2a9883ea5040bb">ascon_xof</a> (unsigned char *out, const unsigned char *in, size_t inlen)</td></tr>
 <tr class="memdesc:af74ca4af2131fc97cb2a9883ea5040bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes a block of input data with ASCON-XOF and generates a fixed-length 32 byte output.  <a href="xof_8h.html#af74ca4af2131fc97cb2a9883ea5040bb">More...</a><br /></td></tr>
 <tr class="separator:af74ca4af2131fc97cb2a9883ea5040bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a577bbc23ca44840e65f7967c1e720124"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124">ascon_xof_init</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state)</td></tr>
+<tr class="memitem:a577bbc23ca44840e65f7967c1e720124"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124">ascon_xof_init</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:a577bbc23ca44840e65f7967c1e720124"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the state for an ASCON-XOF hashing operation.  <a href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124">More...</a><br /></td></tr>
 <tr class="separator:a577bbc23ca44840e65f7967c1e720124"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa1487553da05ec29958aa8e5a05762a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#afa1487553da05ec29958aa8e5a05762a">ascon_xof_init_fixed</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state, size_t outlen)</td></tr>
+<tr class="memitem:afa1487553da05ec29958aa8e5a05762a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#afa1487553da05ec29958aa8e5a05762a">ascon_xof_init_fixed</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, size_t outlen)</td></tr>
 <tr class="memdesc:afa1487553da05ec29958aa8e5a05762a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the state for an incremental ASCON-XOF operation, with a fixed output length.  <a href="xof_8h.html#afa1487553da05ec29958aa8e5a05762a">More...</a><br /></td></tr>
 <tr class="separator:afa1487553da05ec29958aa8e5a05762a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26e555d85af2686b594540021a953e11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a26e555d85af2686b594540021a953e11">ascon_xof_reinit</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state)</td></tr>
+<tr class="memitem:a26e555d85af2686b594540021a953e11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a26e555d85af2686b594540021a953e11">ascon_xof_reinit</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:a26e555d85af2686b594540021a953e11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-initializes the state for an ASCON-XOF hashing operation.  <a href="xof_8h.html#a26e555d85af2686b594540021a953e11">More...</a><br /></td></tr>
 <tr class="separator:a26e555d85af2686b594540021a953e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcad712aec8d7e3615ad78c3211fb7b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#abcad712aec8d7e3615ad78c3211fb7b6">ascon_xof_reinit_fixed</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state, size_t outlen)</td></tr>
+<tr class="memitem:abcad712aec8d7e3615ad78c3211fb7b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#abcad712aec8d7e3615ad78c3211fb7b6">ascon_xof_reinit_fixed</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, size_t outlen)</td></tr>
 <tr class="memdesc:abcad712aec8d7e3615ad78c3211fb7b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-initializes the state for an incremental ASCON-XOF operation, with a fixed output length.  <a href="xof_8h.html#abcad712aec8d7e3615ad78c3211fb7b6">More...</a><br /></td></tr>
 <tr class="separator:abcad712aec8d7e3615ad78c3211fb7b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c6465473558cf82e24ccdc3ff7ba00b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a0c6465473558cf82e24ccdc3ff7ba00b">ascon_xof_free</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state)</td></tr>
+<tr class="memitem:a0c6465473558cf82e24ccdc3ff7ba00b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a0c6465473558cf82e24ccdc3ff7ba00b">ascon_xof_free</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:a0c6465473558cf82e24ccdc3ff7ba00b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the ASCON-XOF state and destroys any sensitive material.  <a href="xof_8h.html#a0c6465473558cf82e24ccdc3ff7ba00b">More...</a><br /></td></tr>
 <tr class="separator:a0c6465473558cf82e24ccdc3ff7ba00b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45b6ff2d6e7f47a4842b60bb969d9b36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">ascon_xof_absorb</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state, const unsigned char *in, size_t inlen)</td></tr>
-<tr class="memdesc:a45b6ff2d6e7f47a4842b60bb969d9b36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborbs more input data into an ASCON-XOF state.  <a href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">More...</a><br /></td></tr>
+<tr class="memitem:a45b6ff2d6e7f47a4842b60bb969d9b36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">ascon_xof_absorb</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, const unsigned char *in, size_t inlen)</td></tr>
+<tr class="memdesc:a45b6ff2d6e7f47a4842b60bb969d9b36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Absorbs more input data into an ASCON-XOF state.  <a href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36">More...</a><br /></td></tr>
 <tr class="separator:a45b6ff2d6e7f47a4842b60bb969d9b36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0df1adce85652cbaac500e5f56e317a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a">ascon_xof_squeeze</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state, unsigned char *out, size_t outlen)</td></tr>
+<tr class="memitem:ad0df1adce85652cbaac500e5f56e317a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a">ascon_xof_squeeze</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, unsigned char *out, size_t outlen)</td></tr>
 <tr class="memdesc:ad0df1adce85652cbaac500e5f56e317a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squeezes output data from an ASCON-XOF state.  <a href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a">More...</a><br /></td></tr>
 <tr class="separator:ad0df1adce85652cbaac500e5f56e317a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1618f0fd2b920de6fad9865b33106c06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a1618f0fd2b920de6fad9865b33106c06">ascon_xof_pad</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state)</td></tr>
+<tr class="memitem:a1618f0fd2b920de6fad9865b33106c06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a1618f0fd2b920de6fad9865b33106c06">ascon_xof_pad</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:a1618f0fd2b920de6fad9865b33106c06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Absorbs enough zeroes into an ASCON-XOF state to pad the input to the next multiple of the block rate.  <a href="xof_8h.html#a1618f0fd2b920de6fad9865b33106c06">More...</a><br /></td></tr>
 <tr class="separator:a1618f0fd2b920de6fad9865b33106c06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa85c8abde2af905b21184e8083f8df3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#aa85c8abde2af905b21184e8083f8df3e">ascon_xof_clear_rate</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *state)</td></tr>
+<tr class="memitem:aa85c8abde2af905b21184e8083f8df3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#aa85c8abde2af905b21184e8083f8df3e">ascon_xof_clear_rate</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:aa85c8abde2af905b21184e8083f8df3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the rate portion of an ASCON-XOF state to all-zeroes and runs the permutation.  <a href="xof_8h.html#aa85c8abde2af905b21184e8083f8df3e">More...</a><br /></td></tr>
 <tr class="separator:aa85c8abde2af905b21184e8083f8df3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca2e0cbf9af91920521089b920c9ceae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#aca2e0cbf9af91920521089b920c9ceae">ascon_xof_copy</a> (<a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *dest, const <a class="el" href="structascon__xof__state__t.html">ascon_xof_state_t</a> *src)</td></tr>
@@ -142,31 +162,31 @@ Functions</h2></td></tr>
 <tr class="memitem:a38bc64f8fbca3fe5639a69117ff2d216"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a38bc64f8fbca3fe5639a69117ff2d216">ascon_xofa</a> (unsigned char *out, const unsigned char *in, size_t inlen)</td></tr>
 <tr class="memdesc:a38bc64f8fbca3fe5639a69117ff2d216"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes a block of input data with ASCON-XOFA and generates a fixed-length 32 byte output.  <a href="xof_8h.html#a38bc64f8fbca3fe5639a69117ff2d216">More...</a><br /></td></tr>
 <tr class="separator:a38bc64f8fbca3fe5639a69117ff2d216"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5db8f02c4aae9821d78114d9a996637"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637">ascon_xofa_init</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state)</td></tr>
+<tr class="memitem:ae5db8f02c4aae9821d78114d9a996637"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637">ascon_xofa_init</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:ae5db8f02c4aae9821d78114d9a996637"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the state for an ASCON-XOFA hashing operation.  <a href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637">More...</a><br /></td></tr>
 <tr class="separator:ae5db8f02c4aae9821d78114d9a996637"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87555314ba367ca9fcdd5ac641fd2e8e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a87555314ba367ca9fcdd5ac641fd2e8e">ascon_xofa_init_fixed</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state, size_t outlen)</td></tr>
+<tr class="memitem:a87555314ba367ca9fcdd5ac641fd2e8e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a87555314ba367ca9fcdd5ac641fd2e8e">ascon_xofa_init_fixed</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, size_t outlen)</td></tr>
 <tr class="memdesc:a87555314ba367ca9fcdd5ac641fd2e8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the state for an incremental ASCON-XOFA operation, with a fixed output length.  <a href="xof_8h.html#a87555314ba367ca9fcdd5ac641fd2e8e">More...</a><br /></td></tr>
 <tr class="separator:a87555314ba367ca9fcdd5ac641fd2e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a275f8c57bb65691282337a553358e69f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a275f8c57bb65691282337a553358e69f">ascon_xofa_reinit</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state)</td></tr>
+<tr class="memitem:a275f8c57bb65691282337a553358e69f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a275f8c57bb65691282337a553358e69f">ascon_xofa_reinit</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:a275f8c57bb65691282337a553358e69f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-initializes the state for an ASCON-XOFA hashing operation.  <a href="xof_8h.html#a275f8c57bb65691282337a553358e69f">More...</a><br /></td></tr>
 <tr class="separator:a275f8c57bb65691282337a553358e69f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2b359ae38094f0f41ceed008171ac43b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a2b359ae38094f0f41ceed008171ac43b">ascon_xofa_reinit_fixed</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state, size_t outlen)</td></tr>
+<tr class="memitem:a2b359ae38094f0f41ceed008171ac43b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a2b359ae38094f0f41ceed008171ac43b">ascon_xofa_reinit_fixed</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, size_t outlen)</td></tr>
 <tr class="memdesc:a2b359ae38094f0f41ceed008171ac43b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-initializes the state for an incremental ASCON-XOFA operation, with a fixed output length.  <a href="xof_8h.html#a2b359ae38094f0f41ceed008171ac43b">More...</a><br /></td></tr>
 <tr class="separator:a2b359ae38094f0f41ceed008171ac43b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af79d56267775b9ffeb0a29931ee6d1a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#af79d56267775b9ffeb0a29931ee6d1a4">ascon_xofa_free</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state)</td></tr>
+<tr class="memitem:af79d56267775b9ffeb0a29931ee6d1a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#af79d56267775b9ffeb0a29931ee6d1a4">ascon_xofa_free</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:af79d56267775b9ffeb0a29931ee6d1a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the ASCON-XOFA state and destroys any sensitive material.  <a href="xof_8h.html#af79d56267775b9ffeb0a29931ee6d1a4">More...</a><br /></td></tr>
 <tr class="separator:af79d56267775b9ffeb0a29931ee6d1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d901c7f1b4b3bc7c6ec55e50f64afc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">ascon_xofa_absorb</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state, const unsigned char *in, size_t inlen)</td></tr>
-<tr class="memdesc:a6d901c7f1b4b3bc7c6ec55e50f64afc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aborbs more input data into an ASCON-XOFA state.  <a href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">More...</a><br /></td></tr>
+<tr class="memitem:a6d901c7f1b4b3bc7c6ec55e50f64afc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">ascon_xofa_absorb</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, const unsigned char *in, size_t inlen)</td></tr>
+<tr class="memdesc:a6d901c7f1b4b3bc7c6ec55e50f64afc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Absorbs more input data into an ASCON-XOFA state.  <a href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8">More...</a><br /></td></tr>
 <tr class="separator:a6d901c7f1b4b3bc7c6ec55e50f64afc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24aaea5531adf7478d27050acb8cecf3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3">ascon_xofa_squeeze</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state, unsigned char *out, size_t outlen)</td></tr>
+<tr class="memitem:a24aaea5531adf7478d27050acb8cecf3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3">ascon_xofa_squeeze</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, unsigned char *out, size_t outlen)</td></tr>
 <tr class="memdesc:a24aaea5531adf7478d27050acb8cecf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squeezes output data from an ASCON-XOFA state.  <a href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3">More...</a><br /></td></tr>
 <tr class="separator:a24aaea5531adf7478d27050acb8cecf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adce576ae20eeb55277a7238fd7f72504"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#adce576ae20eeb55277a7238fd7f72504">ascon_xofa_pad</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state)</td></tr>
+<tr class="memitem:adce576ae20eeb55277a7238fd7f72504"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#adce576ae20eeb55277a7238fd7f72504">ascon_xofa_pad</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:adce576ae20eeb55277a7238fd7f72504"><td class="mdescLeft">&#160;</td><td class="mdescRight">Absorbs enough zeroes into an ASCON-XOFA state to pad the input to the next multiple of the block rate.  <a href="xof_8h.html#adce576ae20eeb55277a7238fd7f72504">More...</a><br /></td></tr>
 <tr class="separator:adce576ae20eeb55277a7238fd7f72504"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98a3a68fc069f0834ccb408e52c79348"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a98a3a68fc069f0834ccb408e52c79348">ascon_xofa_clear_rate</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *state)</td></tr>
+<tr class="memitem:a98a3a68fc069f0834ccb408e52c79348"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#a98a3a68fc069f0834ccb408e52c79348">ascon_xofa_clear_rate</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:a98a3a68fc069f0834ccb408e52c79348"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the rate portion of an ASCON-XOFA state to all-zeroes and runs the permutation.  <a href="xof_8h.html#a98a3a68fc069f0834ccb408e52c79348">More...</a><br /></td></tr>
 <tr class="separator:a98a3a68fc069f0834ccb408e52c79348"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af76efb08d7f382ba06511190c1e3bcbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="xof_8h.html#af76efb08d7f382ba06511190c1e3bcbd">ascon_xofa_copy</a> (<a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *dest, const <a class="el" href="structascon__xofa__state__t.html">ascon_xofa_state_t</a> *src)</td></tr>
@@ -178,7 +198,64 @@ Functions</h2></td></tr>
 <p>References: <a href="https://ascon.iaik.tugraz.at/">https://ascon.iaik.tugraz.at/</a> </p>
 
 <p class="definition">Definition in file <a class="el" href="xof_8h_source.html">xof.h</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ab2c9302a9e7a26f5e5585fb5cbbe747d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2c9302a9e7a26f5e5585fb5cbbe747d">&#9670;&nbsp;</a></span>ASCON_HASH_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ASCON_HASH_SIZE&#160;&#160;&#160;32</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Size of the hash output for ASCON-HASH and the default hash output size for ASCON-XOF. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a0">asconsum/asconsum.c</a>.</dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="xof_8h_source.html#l00043">43</a> of file <a class="el" href="xof_8h_source.html">xof.h</a>.</p>
+
+</div>
+</div>
+<a id="ac7743a384adcdeeb23b7d8513328ceb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7743a384adcdeeb23b7d8513328ceb1">&#9670;&nbsp;</a></span>ASCON_HASHA_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ASCON_HASHA_SIZE&#160;&#160;&#160;<a class="el" href="xof_8h.html#ab2c9302a9e7a26f5e5585fb5cbbe747d">ASCON_HASH_SIZE</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Size of the hash output for ASCON-HASHA and the default hash output size for ASCON-XOFA. </p>
+
+<p class="definition">Definition at line <a class="el" href="xof_8h_source.html#l00049">49</a> of file <a class="el" href="xof_8h_source.html">xof.h</a>.</p>
+
+</div>
+</div>
+<a id="a8b383b4701b0a734d97c7bec8580e3b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b383b4701b0a734d97c7bec8580e3b0">&#9670;&nbsp;</a></span>ASCON_XOF_RATE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ASCON_XOF_RATE&#160;&#160;&#160;8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Rate of absorbing and squeezing data for ASCON-XOF, ASCON-XOFA, ASCON-HASH, and ASCON-HASHA. </p>
+
+<p class="definition">Definition at line <a class="el" href="xof_8h_source.html#l00055">55</a> of file <a class="el" href="xof_8h_source.html">xof.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="af74ca4af2131fc97cb2a9883ea5040bb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af74ca4af2131fc97cb2a9883ea5040bb">&#9670;&nbsp;</a></span>ascon_xof()</h2>
 
@@ -221,7 +298,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <p>Use <a class="el" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a" title="Squeezes output data from an ASCON-XOF state.">ascon_xof_squeeze()</a> instead if you need variable-length XOF ouutput.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124" title="Initializes the state for an ASCON-XOF hashing operation.">ascon_xof_init()</a>, <a class="el" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36" title="Aborbs more input data into an ASCON-XOF state.">ascon_xof_absorb()</a>, <a class="el" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a" title="Squeezes output data from an ASCON-XOF state.">ascon_xof_squeeze()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124" title="Initializes the state for an ASCON-XOF hashing operation.">ascon_xof_init()</a>, <a class="el" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36" title="Absorbs more input data into an ASCON-XOF state.">ascon_xof_absorb()</a>, <a class="el" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a" title="Squeezes output data from an ASCON-XOF state.">ascon_xof_squeeze()</a> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xof_8c_source.html#l00026">26</a> of file <a class="el" href="ascon-xof_8c_source.html">ascon-xof.c</a>.</p>
 
@@ -259,7 +336,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Aborbs more input data into an ASCON-XOF state. </p>
+<p>Absorbs more input data into an ASCON-XOF state. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>XOF state to be updated. </td></tr>
@@ -269,7 +346,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124" title="Initializes the state for an ASCON-XOF hashing operation.">ascon_xof_init()</a>, <a class="el" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a" title="Squeezes output data from an ASCON-XOF state.">ascon_xof_squeeze()</a> </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a13">asconsum/asconsum.c</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a14">asconsum/asconsum.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xof_8c_source.html#l00161">161</a> of file <a class="el" href="ascon-xof_8c_source.html">ascon-xof.c</a>.</p>
@@ -369,7 +446,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a15">asconsum/asconsum.c</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a16">asconsum/asconsum.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xof_8c_source.html#l00151">151</a> of file <a class="el" href="ascon-xof_8c_source.html">ascon-xof.c</a>.</p>
@@ -399,8 +476,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36" title="Aborbs more input data into an ASCON-XOF state.">ascon_xof_absorb()</a>, <a class="el" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a" title="Squeezes output data from an ASCON-XOF state.">ascon_xof_squeeze()</a>, <a class="el" href="xof_8h.html#af74ca4af2131fc97cb2a9883ea5040bb" title="Hashes a block of input data with ASCON-XOF and generates a fixed-length 32 byte output.">ascon_xof()</a> </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a12">asconsum/asconsum.c</a>.</dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#a45b6ff2d6e7f47a4842b60bb969d9b36" title="Absorbs more input data into an ASCON-XOF state.">ascon_xof_absorb()</a>, <a class="el" href="xof_8h.html#ad0df1adce85652cbaac500e5f56e317a" title="Squeezes output data from an ASCON-XOF state.">ascon_xof_squeeze()</a>, <a class="el" href="xof_8h.html#af74ca4af2131fc97cb2a9883ea5040bb" title="Hashes a block of input data with ASCON-XOF and generates a fixed-length 32 byte output.">ascon_xof()</a> </dd></dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a13">asconsum/asconsum.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xof_8c_source.html#l00035">35</a> of file <a class="el" href="ascon-xof_8c_source.html">ascon-xof.c</a>.</p>
@@ -590,7 +667,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#a577bbc23ca44840e65f7967c1e720124" title="Initializes the state for an ASCON-XOF hashing operation.">ascon_xof_init()</a>, ascon_xof_update() </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a14">asconsum/asconsum.c</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a15">asconsum/asconsum.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xof_8c_source.html#l00211">211</a> of file <a class="el" href="ascon-xof_8c_source.html">ascon-xof.c</a>.</p>
@@ -639,7 +716,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <p>Use <a class="el" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3" title="Squeezes output data from an ASCON-XOFA state.">ascon_xofa_squeeze()</a> instead if you need variable-length XOF ouutput.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637" title="Initializes the state for an ASCON-XOFA hashing operation.">ascon_xofa_init()</a>, <a class="el" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8" title="Aborbs more input data into an ASCON-XOFA state.">ascon_xofa_absorb()</a>, <a class="el" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3" title="Squeezes output data from an ASCON-XOFA state.">ascon_xofa_squeeze()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637" title="Initializes the state for an ASCON-XOFA hashing operation.">ascon_xofa_init()</a>, <a class="el" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8" title="Absorbs more input data into an ASCON-XOFA state.">ascon_xofa_absorb()</a>, <a class="el" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3" title="Squeezes output data from an ASCON-XOFA state.">ascon_xofa_squeeze()</a> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xofa_8c_source.html#l00026">26</a> of file <a class="el" href="ascon-xofa_8c_source.html">ascon-xofa.c</a>.</p>
 
@@ -677,7 +754,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Aborbs more input data into an ASCON-XOFA state. </p>
+<p>Absorbs more input data into an ASCON-XOFA state. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>XOF state to be updated. </td></tr>
@@ -687,7 +764,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637" title="Initializes the state for an ASCON-XOFA hashing operation.">ascon_xofa_init()</a>, <a class="el" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3" title="Squeezes output data from an ASCON-XOFA state.">ascon_xofa_squeeze()</a> </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a18">asconsum/asconsum.c</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a19">asconsum/asconsum.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xofa_8c_source.html#l00161">161</a> of file <a class="el" href="ascon-xofa_8c_source.html">ascon-xofa.c</a>.</p>
@@ -787,7 +864,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a20">asconsum/asconsum.c</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a21">asconsum/asconsum.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xofa_8c_source.html#l00151">151</a> of file <a class="el" href="ascon-xofa_8c_source.html">ascon-xofa.c</a>.</p>
@@ -817,8 +894,8 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8" title="Aborbs more input data into an ASCON-XOFA state.">ascon_xofa_absorb()</a>, <a class="el" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3" title="Squeezes output data from an ASCON-XOFA state.">ascon_xofa_squeeze()</a>, <a class="el" href="xof_8h.html#a38bc64f8fbca3fe5639a69117ff2d216" title="Hashes a block of input data with ASCON-XOFA and generates a fixed-length 32 byte output.">ascon_xofa()</a> </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a17">asconsum/asconsum.c</a>.</dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#a6d901c7f1b4b3bc7c6ec55e50f64afc8" title="Absorbs more input data into an ASCON-XOFA state.">ascon_xofa_absorb()</a>, <a class="el" href="xof_8h.html#a24aaea5531adf7478d27050acb8cecf3" title="Squeezes output data from an ASCON-XOFA state.">ascon_xofa_squeeze()</a>, <a class="el" href="xof_8h.html#a38bc64f8fbca3fe5639a69117ff2d216" title="Hashes a block of input data with ASCON-XOFA and generates a fixed-length 32 byte output.">ascon_xofa()</a> </dd></dl>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a18">asconsum/asconsum.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xofa_8c_source.html#l00035">35</a> of file <a class="el" href="ascon-xofa_8c_source.html">ascon-xofa.c</a>.</p>
@@ -1008,7 +1085,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="xof_8h.html#ae5db8f02c4aae9821d78114d9a996637" title="Initializes the state for an ASCON-XOFA hashing operation.">ascon_xofa_init()</a>, ascon_xofa_update() </dd></dl>
-<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a19">asconsum/asconsum.c</a>.</dd>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="asconsum_2asconsum_8c-example.html#a20">asconsum/asconsum.c</a>.</dd>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="ascon-xofa_8c_source.html#l00211">211</a> of file <a class="el" href="ascon-xofa_8c_source.html">ascon-xofa.c</a>.</p>
@@ -1018,7 +1095,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

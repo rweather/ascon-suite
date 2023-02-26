@@ -508,8 +508,8 @@ $(function() {
 <div class="line">    <span class="keywordtype">size_t</span> clen = 0;</div>
 <div class="line">    SAFEFILE input;</div>
 <div class="line">    SAFEFILE output;</div>
-<div class="line">    <a name="_a2"></a><a class="code" href="structascon80pq__state__t.html">ascon80pq_state_t</a> state;</div>
-<div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> data[ASCON_BUFSIZ];</div>
+<div class="line">    <a name="_a2"></a><a class="code" href="structascon80pq__state__t.html">ascon80pq_state_t</a> <a name="a3"></a><a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>;</div>
+<div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> <a name="a4"></a><a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>[ASCON_BUFSIZ];</div>
 <div class="line">    uint64_t size;</div>
 <div class="line">    <span class="keywordtype">int</span> len;</div>
 <div class="line"> </div>
@@ -538,12 +538,12 @@ $(function() {
 <div class="line">    siv_copy = siv;</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Run PBKDF2 to derive the key and nonce to use to encrypt the SIV block */</span></div>
-<div class="line">    <a name="a3"></a><a class="code" href="pbkdf2_8h.html#a9f535b04717852cdae5f2f7ba0a99fd0">ascon_pbkdf2</a>(kn, <span class="keyword">sizeof</span>(kn),</div>
+<div class="line">    <a name="a5"></a><a class="code" href="pbkdf2_8h.html#a9f535b04717852cdae5f2f7ba0a99fd0">ascon_pbkdf2</a>(kn, <span class="keyword">sizeof</span>(kn),</div>
 <div class="line">                 (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)full_password, strlen(full_password),</div>
 <div class="line">                 header.salt, <span class="keyword">sizeof</span>(header.salt), ASCON_PBKDF2_ROUNDS);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Encrypt the SIV block and generate the tag */</span></div>
-<div class="line">    <a name="a4"></a><a class="code" href="siv_8h.html#a6085aa447e6af78f5c6f347d000e8bc8">ascon80pq_siv_encrypt</a></div>
+<div class="line">    <a name="a6"></a><a class="code" href="siv_8h.html#a6085aa447e6af78f5c6f347d000e8bc8">ascon80pq_siv_encrypt</a></div>
 <div class="line">        (siv.key, &amp;clen, siv.key, <span class="keyword">sizeof</span>(siv.key) + <span class="keyword">sizeof</span>(siv.nonce),</div>
 <div class="line">         (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)&amp;header, <span class="keyword">sizeof</span>(header), kn + 20, kn);</div>
 <div class="line"> </div>
@@ -555,12 +555,12 @@ $(function() {
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Read the input file, encrypt it, and write to the output file */</span></div>
-<div class="line">    <a name="a5"></a><a class="code" href="aead_8h.html#a4a0a167ac1c5bb4b978d5a1f2144681a">ascon80pq_aead_start</a></div>
-<div class="line">        (&amp;state, (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)&amp;siv, <span class="keyword">sizeof</span>(siv),</div>
+<div class="line">    <a name="a7"></a><a class="code" href="ascon-aead-inc-80pq_8c.html#a4a0a167ac1c5bb4b978d5a1f2144681a">ascon80pq_aead_start</a></div>
+<div class="line">        (&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)&amp;siv, <span class="keyword">sizeof</span>(siv),</div>
 <div class="line">         siv_copy.nonce, siv_copy.key);</div>
 <div class="line">    size = 0;</div>
 <div class="line">    <span class="keywordflow">while</span> (exit_val) {</div>
-<div class="line">        len = safe_file_read(&amp;input, data, <span class="keyword">sizeof</span>(data));</div>
+<div class="line">        len = safe_file_read(&amp;input, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, <span class="keyword">sizeof</span>(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>));</div>
 <div class="line">        <span class="keywordflow">if</span> (len &lt; 0) {</div>
 <div class="line">            exit_val = 0;</div>
 <div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (len == 0) {</div>
@@ -572,16 +572,16 @@ $(function() {
 <div class="line">                exit_val = 0;</div>
 <div class="line">                <span class="keywordflow">break</span>;</div>
 <div class="line">            }</div>
-<div class="line">            <a name="a6"></a><a class="code" href="aead_8h.html#a71bdab88f3fb8be929d92a7e70e3ae60">ascon80pq_aead_encrypt_block</a>(&amp;state, data, data, len);</div>
-<div class="line">            <span class="keywordflow">if</span> (!safe_file_write(&amp;output, data, len))</div>
+<div class="line">            <a name="a8"></a><a class="code" href="ascon-aead-inc-80pq_8c.html#a71bdab88f3fb8be929d92a7e70e3ae60">ascon80pq_aead_encrypt_block</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, len);</div>
+<div class="line">            <span class="keywordflow">if</span> (!safe_file_write(&amp;output, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, len))</div>
 <div class="line">                exit_val = 0;</div>
-<div class="line">            <span class="keywordflow">if</span> (len &lt; (<span class="keywordtype">int</span>)<span class="keyword">sizeof</span>(data))</div>
+<div class="line">            <span class="keywordflow">if</span> (len &lt; (<span class="keywordtype">int</span>)<span class="keyword">sizeof</span>(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>))</div>
 <div class="line">                <span class="keywordflow">break</span>; <span class="comment">/* Short last block - we&#39;re done */</span></div>
 <div class="line">        }</div>
 <div class="line">    }</div>
-<div class="line">    <a name="a7"></a><a class="code" href="aead_8h.html#a9e2dc4423fcbc2695e56cde5c2742c1e">ascon80pq_aead_encrypt_finalize</a>(&amp;state, data);</div>
+<div class="line">    <a name="a9"></a><a class="code" href="ascon-aead-inc-80pq_8c.html#a9e2dc4423fcbc2695e56cde5c2742c1e">ascon80pq_aead_encrypt_finalize</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>);</div>
 <div class="line">    <span class="keywordflow">if</span> (exit_val) {</div>
-<div class="line">        <span class="keywordflow">if</span> (!safe_file_write(&amp;output, data, <a name="a8"></a><a class="code" href="aead_8h.html#a450d7deb3267a5767c2792fb32bdc912">ASCON80PQ_TAG_SIZE</a>))</div>
+<div class="line">        <span class="keywordflow">if</span> (!safe_file_write(&amp;output, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, <a name="a10"></a><a class="code" href="aead_8h.html#a450d7deb3267a5767c2792fb32bdc912">ASCON80PQ_TAG_SIZE</a>))</div>
 <div class="line">            exit_val = 0;</div>
 <div class="line">    }</div>
 <div class="line"> </div>
@@ -593,7 +593,7 @@ $(function() {
 <div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(&amp;siv, <span class="keyword">sizeof</span>(siv));</div>
 <div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(&amp;siv_copy, <span class="keyword">sizeof</span>(siv_copy));</div>
 <div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(kn, <span class="keyword">sizeof</span>(kn));</div>
-<div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(data, <span class="keyword">sizeof</span>(data));</div>
+<div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, <span class="keyword">sizeof</span>(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>));</div>
 <div class="line">    <span class="keywordflow">if</span> (!exit_val)</div>
 <div class="line">        safe_file_delete(&amp;output);</div>
 <div class="line">    <span class="keywordflow">return</span> exit_val;</div>
@@ -610,8 +610,8 @@ $(function() {
 <div class="line">    <span class="keywordtype">int</span> bad_format;</div>
 <div class="line">    SAFEFILE input;</div>
 <div class="line">    SAFEFILE output;</div>
-<div class="line">    <a class="code" href="structascon80pq__state__t.html">ascon80pq_state_t</a> state;</div>
-<div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> data[ASCON_BUFSIZ];</div>
+<div class="line">    <a class="code" href="structascon80pq__state__t.html">ascon80pq_state_t</a> <a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>;</div>
+<div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>[ASCON_BUFSIZ];</div>
 <div class="line">    uint64_t size;</div>
 <div class="line">    <span class="keywordtype">int</span> len;</div>
 <div class="line"> </div>
@@ -650,7 +650,7 @@ $(function() {
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Decrypt the SIV block and check the tag */</span></div>
 <div class="line">    siv_copy = header.siv;</div>
-<div class="line">    <span class="keywordflow">if</span> (<a name="a9"></a><a class="code" href="siv_8h.html#a79504dacdfd41b127c78dcf8a6862eea">ascon80pq_siv_decrypt</a></div>
+<div class="line">    <span class="keywordflow">if</span> (<a name="a11"></a><a class="code" href="siv_8h.html#a79504dacdfd41b127c78dcf8a6862eea">ascon80pq_siv_decrypt</a></div>
 <div class="line">            (header.siv.key, &amp;mlen, header.siv.key, <span class="keyword">sizeof</span>(header.siv),</div>
 <div class="line">             (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)&amp;(header.header), <span class="keyword">sizeof</span>(header.header),</div>
 <div class="line">             kn + 20, kn) != 0) {</div>
@@ -661,19 +661,19 @@ $(function() {
 <div class="line">    <span class="comment">/* We need to decrypt everything except the last 16 bytes which is the</span></div>
 <div class="line"><span class="comment">     * authentication tag.  Pre-read the first 16 bytes and then keep 16</span></div>
 <div class="line"><span class="comment">     * bytes in the buffer for every block until we are done. */</span></div>
-<div class="line">    <span class="keywordflow">if</span> (safe_file_read(&amp;input, data, 16) != 16) {</div>
+<div class="line">    <span class="keywordflow">if</span> (safe_file_read(&amp;input, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, 16) != 16) {</div>
 <div class="line">        fprintf(stderr, <span class="stringliteral">&quot;%s: encrypted data is truncated\n&quot;</span>, infilename);</div>
 <div class="line">        <span class="keywordflow">goto</span> cleanup;</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Read the input file, decrypt it, and write to the output file */</span></div>
-<div class="line">    <a class="code" href="aead_8h.html#a4a0a167ac1c5bb4b978d5a1f2144681a">ascon80pq_aead_start</a></div>
-<div class="line">        (&amp;state, (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)&amp;siv_copy, <span class="keyword">sizeof</span>(siv_copy),</div>
+<div class="line">    <a class="code" href="ascon-aead-inc-80pq_8c.html#a4a0a167ac1c5bb4b978d5a1f2144681a">ascon80pq_aead_start</a></div>
+<div class="line">        (&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)&amp;siv_copy, <span class="keyword">sizeof</span>(siv_copy),</div>
 <div class="line">         header.siv.nonce, header.siv.key);</div>
 <div class="line">    size = 0;</div>
 <div class="line">    exit_val = 1;</div>
 <div class="line">    <span class="keywordflow">while</span> (exit_val) {</div>
-<div class="line">        len = safe_file_read(&amp;input, data + 16, <span class="keyword">sizeof</span>(data) - 16);</div>
+<div class="line">        len = safe_file_read(&amp;input, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a> + 16, <span class="keyword">sizeof</span>(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>) - 16);</div>
 <div class="line">        <span class="keywordflow">if</span> (len &lt; 0) {</div>
 <div class="line">            exit_val = 0;</div>
 <div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (len == 0) {</div>
@@ -685,15 +685,15 @@ $(function() {
 <div class="line">                exit_val = 0;</div>
 <div class="line">                <span class="keywordflow">break</span>;</div>
 <div class="line">            }</div>
-<div class="line">            <a name="a10"></a><a class="code" href="aead_8h.html#a923a2b71d9f02499d70b481f45c6c9e4">ascon80pq_aead_decrypt_block</a>(&amp;state, data, data, len);</div>
-<div class="line">            <span class="keywordflow">if</span> (!safe_file_write(&amp;output, data, len))</div>
+<div class="line">            <a name="a12"></a><a class="code" href="ascon-aead-inc-80pq_8c.html#a923a2b71d9f02499d70b481f45c6c9e4">ascon80pq_aead_decrypt_block</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, len);</div>
+<div class="line">            <span class="keywordflow">if</span> (!safe_file_write(&amp;output, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, len))</div>
 <div class="line">                exit_val = 0;</div>
-<div class="line">            memmove(data, data + len, 16);</div>
-<div class="line">            <span class="keywordflow">if</span> (len &lt; (<span class="keywordtype">int</span>)(<span class="keyword">sizeof</span>(data) - 16))</div>
+<div class="line">            memmove(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a> + len, 16);</div>
+<div class="line">            <span class="keywordflow">if</span> (len &lt; (<span class="keywordtype">int</span>)(<span class="keyword">sizeof</span>(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>) - 16))</div>
 <div class="line">                <span class="keywordflow">break</span>; <span class="comment">/* Short last block - we&#39;re done */</span></div>
 <div class="line">        }</div>
 <div class="line">    }</div>
-<div class="line">    <span class="keywordflow">if</span> (<a name="a11"></a><a class="code" href="aead_8h.html#af70beb05e74919600dfaef51478bfd28">ascon80pq_aead_decrypt_finalize</a>(&amp;state, data) != 0 &amp;&amp; exit_val) {</div>
+<div class="line">    <span class="keywordflow">if</span> (<a name="a13"></a><a class="code" href="ascon-aead-inc-80pq_8c.html#af70beb05e74919600dfaef51478bfd28">ascon80pq_aead_decrypt_finalize</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>) != 0 &amp;&amp; exit_val) {</div>
 <div class="line">        exit_val = 0;</div>
 <div class="line">        fprintf(stderr, <span class="stringliteral">&quot;%s: file is corrupt and failed to decrypt\n&quot;</span>,</div>
 <div class="line">                infilename);</div>
@@ -707,18 +707,18 @@ $(function() {
 <div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(&amp;header, <span class="keyword">sizeof</span>(header));</div>
 <div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(&amp;siv_copy, <span class="keyword">sizeof</span>(siv_copy));</div>
 <div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(kn, <span class="keyword">sizeof</span>(kn));</div>
-<div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(data, <span class="keyword">sizeof</span>(data));</div>
+<div class="line">    <a class="code" href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a>(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, <span class="keyword">sizeof</span>(<a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>));</div>
 <div class="line">    <span class="keywordflow">if</span> (!exit_val)</div>
 <div class="line">        safe_file_delete(&amp;output);</div>
 <div class="line">    <span class="keywordflow">return</span> exit_val;</div>
 <div class="line">}</div>
 <div class="ttc" id="aaead_8h_html"><div class="ttname"><a href="aead_8h.html">aead.h</a></div><div class="ttdoc">ASCON-128 encryption algorithm and related family members.</div></div>
 <div class="ttc" id="aaead_8h_html_a450d7deb3267a5767c2792fb32bdc912"><div class="ttname"><a href="aead_8h.html#a450d7deb3267a5767c2792fb32bdc912">ASCON80PQ_TAG_SIZE</a></div><div class="ttdeci">#define ASCON80PQ_TAG_SIZE</div><div class="ttdoc">Size of the authentication tag for ASCON-80pq.</div><div class="ttdef"><b>Definition:</b> <a href="aead_8h_source.html#l00080">aead.h:80</a></div></div>
-<div class="ttc" id="aaead_8h_html_a4a0a167ac1c5bb4b978d5a1f2144681a"><div class="ttname"><a href="aead_8h.html#a4a0a167ac1c5bb4b978d5a1f2144681a">ascon80pq_aead_start</a></div><div class="ttdeci">void ascon80pq_aead_start(ascon80pq_state_t *state, const unsigned char *ad, size_t adlen, const unsigned char *npub, const unsigned char *k)</div><div class="ttdoc">Starts encrypting or decrypting a packet with ASCON-80pq in incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00030">ascon-aead-inc-80pq.c:31</a></div></div>
-<div class="ttc" id="aaead_8h_html_a71bdab88f3fb8be929d92a7e70e3ae60"><div class="ttname"><a href="aead_8h.html#a71bdab88f3fb8be929d92a7e70e3ae60">ascon80pq_aead_encrypt_block</a></div><div class="ttdeci">void ascon80pq_aead_encrypt_block(ascon80pq_state_t *state, const unsigned char *in, unsigned char *out, size_t len)</div><div class="ttdoc">Encrypts a block of data with ASCON-80pq in incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00064">ascon-aead-inc-80pq.c:65</a></div></div>
-<div class="ttc" id="aaead_8h_html_a923a2b71d9f02499d70b481f45c6c9e4"><div class="ttname"><a href="aead_8h.html#a923a2b71d9f02499d70b481f45c6c9e4">ascon80pq_aead_decrypt_block</a></div><div class="ttdeci">void ascon80pq_aead_decrypt_block(ascon80pq_state_t *state, const unsigned char *in, unsigned char *out, size_t len)</div><div class="ttdoc">Decrypts a block of data with ASCON-80pq in incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00092">ascon-aead-inc-80pq.c:93</a></div></div>
-<div class="ttc" id="aaead_8h_html_a9e2dc4423fcbc2695e56cde5c2742c1e"><div class="ttname"><a href="aead_8h.html#a9e2dc4423fcbc2695e56cde5c2742c1e">ascon80pq_aead_encrypt_finalize</a></div><div class="ttdeci">void ascon80pq_aead_encrypt_finalize(ascon80pq_state_t *state, unsigned char *tag)</div><div class="ttdoc">Finalizes an incremental ASCON-80pq encryption operation and generates the authentication tag.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00074">ascon-aead-inc-80pq.c:75</a></div></div>
-<div class="ttc" id="aaead_8h_html_af70beb05e74919600dfaef51478bfd28"><div class="ttname"><a href="aead_8h.html#af70beb05e74919600dfaef51478bfd28">ascon80pq_aead_decrypt_finalize</a></div><div class="ttdeci">int ascon80pq_aead_decrypt_finalize(ascon80pq_state_t *state, const unsigned char *tag)</div><div class="ttdoc">Finalizes an incremental ASCON-80pq decryption operation and checks the authentication tag.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00102">ascon-aead-inc-80pq.c:103</a></div></div>
+<div class="ttc" id="aascon-aead-inc-80pq_8c_html_a4a0a167ac1c5bb4b978d5a1f2144681a"><div class="ttname"><a href="ascon-aead-inc-80pq_8c.html#a4a0a167ac1c5bb4b978d5a1f2144681a">ascon80pq_aead_start</a></div><div class="ttdeci">void ascon80pq_aead_start(ascon80pq_state_t *state, const unsigned char *ad, size_t adlen, const unsigned char *npub, const unsigned char *k)</div><div class="ttdoc">Starts encrypting or decrypting a packet with ASCON-80pq in incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00030">ascon-aead-inc-80pq.c:31</a></div></div>
+<div class="ttc" id="aascon-aead-inc-80pq_8c_html_a71bdab88f3fb8be929d92a7e70e3ae60"><div class="ttname"><a href="ascon-aead-inc-80pq_8c.html#a71bdab88f3fb8be929d92a7e70e3ae60">ascon80pq_aead_encrypt_block</a></div><div class="ttdeci">void ascon80pq_aead_encrypt_block(ascon80pq_state_t *state, const unsigned char *in, unsigned char *out, size_t len)</div><div class="ttdoc">Encrypts a block of data with ASCON-80pq in incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00064">ascon-aead-inc-80pq.c:65</a></div></div>
+<div class="ttc" id="aascon-aead-inc-80pq_8c_html_a923a2b71d9f02499d70b481f45c6c9e4"><div class="ttname"><a href="ascon-aead-inc-80pq_8c.html#a923a2b71d9f02499d70b481f45c6c9e4">ascon80pq_aead_decrypt_block</a></div><div class="ttdeci">void ascon80pq_aead_decrypt_block(ascon80pq_state_t *state, const unsigned char *in, unsigned char *out, size_t len)</div><div class="ttdoc">Decrypts a block of data with ASCON-80pq in incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00092">ascon-aead-inc-80pq.c:93</a></div></div>
+<div class="ttc" id="aascon-aead-inc-80pq_8c_html_a9e2dc4423fcbc2695e56cde5c2742c1e"><div class="ttname"><a href="ascon-aead-inc-80pq_8c.html#a9e2dc4423fcbc2695e56cde5c2742c1e">ascon80pq_aead_encrypt_finalize</a></div><div class="ttdeci">void ascon80pq_aead_encrypt_finalize(ascon80pq_state_t *state, unsigned char *tag)</div><div class="ttdoc">Finalizes an incremental ASCON-80pq encryption operation and generates the authentication tag.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00074">ascon-aead-inc-80pq.c:75</a></div></div>
+<div class="ttc" id="aascon-aead-inc-80pq_8c_html_af70beb05e74919600dfaef51478bfd28"><div class="ttname"><a href="ascon-aead-inc-80pq_8c.html#af70beb05e74919600dfaef51478bfd28">ascon80pq_aead_decrypt_finalize</a></div><div class="ttdeci">int ascon80pq_aead_decrypt_finalize(ascon80pq_state_t *state, const unsigned char *tag)</div><div class="ttdoc">Finalizes an incremental ASCON-80pq decryption operation and checks the authentication tag.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-aead-inc-80pq_8c_source.html#l00102">ascon-aead-inc-80pq.c:103</a></div></div>
 <div class="ttc" id="apbkdf2_8h_html"><div class="ttname"><a href="pbkdf2_8h.html">pbkdf2.h</a></div><div class="ttdoc">Password-based key derivation function based on ASCON-HMAC.</div></div>
 <div class="ttc" id="apbkdf2_8h_html_a9f535b04717852cdae5f2f7ba0a99fd0"><div class="ttname"><a href="pbkdf2_8h.html#a9f535b04717852cdae5f2f7ba0a99fd0">ascon_pbkdf2</a></div><div class="ttdeci">void ascon_pbkdf2(unsigned char *out, size_t outlen, const unsigned char *password, size_t passwordlen, const unsigned char *salt, size_t saltlen, unsigned long count)</div><div class="ttdoc">Derives key material using ASCON-PBKDF2.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-pbkdf2_8c_source.html#l00058">ascon-pbkdf2.c:59</a></div></div>
 <div class="ttc" id="arandom_8h_html"><div class="ttname"><a href="random_8h.html">random.h</a></div><div class="ttdoc">Pseudorandom number generator (PRNG) built around ASCON.</div></div>
@@ -726,13 +726,15 @@ $(function() {
 <div class="ttc" id="asiv_8h_html"><div class="ttname"><a href="siv_8h.html">siv.h</a></div><div class="ttdoc">SIV encryption primitives built around the ASCON permutation.</div></div>
 <div class="ttc" id="asiv_8h_html_a6085aa447e6af78f5c6f347d000e8bc8"><div class="ttname"><a href="siv_8h.html#a6085aa447e6af78f5c6f347d000e8bc8">ascon80pq_siv_encrypt</a></div><div class="ttdeci">void ascon80pq_siv_encrypt(unsigned char *c, size_t *clen, const unsigned char *m, size_t mlen, const unsigned char *ad, size_t adlen, const unsigned char *npub, const unsigned char *k)</div><div class="ttdoc">Encrypts and authenticates a packet with ASCON-80pq-SIV.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-siv-80pq_8c_source.html#l00090">ascon-siv-80pq.c:91</a></div></div>
 <div class="ttc" id="asiv_8h_html_a79504dacdfd41b127c78dcf8a6862eea"><div class="ttname"><a href="siv_8h.html#a79504dacdfd41b127c78dcf8a6862eea">ascon80pq_siv_decrypt</a></div><div class="ttdeci">int ascon80pq_siv_decrypt(unsigned char *m, size_t *mlen, const unsigned char *c, size_t clen, const unsigned char *ad, size_t adlen, const unsigned char *npub, const unsigned char *k)</div><div class="ttdoc">Decrypts and authenticates a packet with ASCON-80pq-SIV.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-siv-80pq_8c_source.html#l00130">ascon-siv-80pq.c:131</a></div></div>
+<div class="ttc" id="asnippets_8c_html_a11a12bb758476a291d682dac7046a3f4"><div class="ttname"><a href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a></div><div class="ttdeci">ascon_state_t state</div><div class="ttdoc">[snippet_key]</div><div class="ttdef"><b>Definition:</b> <a href="snippets_8c_source.html#l00002">snippets.c:2</a></div></div>
+<div class="ttc" id="asnippets_8c_html_a452197b783e2154bfb867fe34c4e7067"><div class="ttname"><a href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a></div><div class="ttdeci">unsigned char data[8]</div><div class="ttdoc">[snippet_key]</div><div class="ttdef"><b>Definition:</b> <a href="snippets_8c_source.html#l00014">snippets.c:14</a></div></div>
 <div class="ttc" id="astructascon80pq__state__t_html"><div class="ttname"><a href="structascon80pq__state__t.html">ascon80pq_state_t</a></div><div class="ttdoc">State information for the incremental version of ASCON-80pq.</div><div class="ttdef"><b>Definition:</b> <a href="aead_8h_source.html#l00298">aead.h:299</a></div></div>
 <div class="ttc" id="autility_8h_html"><div class="ttname"><a href="utility_8h.html">utility.h</a></div><div class="ttdoc">System utilities of use to applications that use ASCON.</div></div>
 <div class="ttc" id="autility_8h_html_a331ff039487fd153ee170a600cf4850b"><div class="ttname"><a href="utility_8h.html#a331ff039487fd153ee170a600cf4850b">ascon_clean</a></div><div class="ttdeci">void ascon_clean(void *buf, unsigned size)</div><div class="ttdoc">Cleans a buffer that contains sensitive material.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-clean_8c_source.html#l00038">ascon-clean.c:38</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

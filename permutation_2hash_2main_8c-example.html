@@ -82,7 +82,7 @@ $(function() {
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[])</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data;</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *<a name="a0"></a><a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>;</div>
 <div class="line">    <span class="keywordtype">size_t</span> len, posn;</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Validate the command-line parameters */</span></div>
@@ -90,45 +90,45 @@ $(function() {
 <div class="line">        fprintf(stderr, <span class="stringliteral">&quot;Usage: %s \&quot;text to be hashed\&quot;\n&quot;</span>, argv[0]);</div>
 <div class="line">        <span class="keywordflow">return</span> 1;</div>
 <div class="line">    }</div>
-<div class="line">    data = (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)(argv[1]);</div>
+<div class="line">    <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a> = (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)(argv[1]);</div>
 <div class="line">    len = strlen(argv[1]);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Initialize the ASCON permutation state */</span></div>
-<div class="line">    <a name="_a0"></a><a class="code" href="unionascon__state__t.html">ascon_state_t</a> state;</div>
-<div class="line">    <a name="a1"></a><a class="code" href="permutation_8h.html#adafef02af51e197bc78bba4b4222e940">ascon_init</a>(&amp;state);</div>
+<div class="line">    <a name="_a1"></a><a class="code" href="unionascon__state__t.html">ascon_state_t</a> <a name="a2"></a><a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>;</div>
+<div class="line">    <a name="a3"></a><a class="code" href="permutation_8h.html#adafef02af51e197bc78bba4b4222e940">ascon_init</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Set the ASCON-HASHA initialization vector and permute for 12 rounds */</span></div>
 <div class="line">    <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> <span class="keyword">const</span> iv[8] = {</div>
 <div class="line">        0x00, 0x40, 0x0c, 0x04, 0x00, 0x00, 0x01, 0x00</div>
 <div class="line">    };</div>
-<div class="line">    <a name="a2"></a><a class="code" href="permutation_8h.html#a63ccf2f2c9304de42a07db57fa77f111">ascon_overwrite_bytes</a>(&amp;state, iv, 0, 8);</div>
-<div class="line">    <a name="a3"></a><a class="code" href="permutation_8h.html#a132695890e3130dd42ba6eaf3f545aec">ascon_permute12</a>(&amp;state);</div>
+<div class="line">    <a name="a4"></a><a class="code" href="permutation_8h.html#a63ccf2f2c9304de42a07db57fa77f111">ascon_overwrite_bytes</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, iv, 0, 8);</div>
+<div class="line">    <a name="a5"></a><a class="code" href="permutation_8h.html#a132695890e3130dd42ba6eaf3f545aec">ascon_permute12</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Absorb the data 8 bytes at a time.  Permute each block with 8 rounds */</span></div>
 <div class="line">    <span class="keywordflow">for</span> (posn = 0; (posn + 8) &lt;= len; posn += 8) {</div>
-<div class="line">        <a name="a4"></a><a class="code" href="permutation_8h.html#a9f8aac2e179991e4109fc6846cf475ad">ascon_add_bytes</a>(&amp;state, data + posn, 0, 8);</div>
-<div class="line">        <a name="a5"></a><a class="code" href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a>(&amp;state);</div>
+<div class="line">        <a name="a6"></a><a class="code" href="permutation_8h.html#a9f8aac2e179991e4109fc6846cf475ad">ascon_add_bytes</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a> + posn, 0, 8);</div>
+<div class="line">        <a name="a7"></a><a class="code" href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line">    }</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Absorb and pad the last block.  Use 12 permutation rounds when</span></div>
 <div class="line"><span class="comment">     * transitioning from absorbing to squeezing. */</span></div>
 <div class="line">    <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> <span class="keyword">const</span> pad[1] = {0x80};</div>
-<div class="line">    <a class="code" href="permutation_8h.html#a9f8aac2e179991e4109fc6846cf475ad">ascon_add_bytes</a>(&amp;state, data + posn, 0, len - posn);</div>
-<div class="line">    <a class="code" href="permutation_8h.html#a9f8aac2e179991e4109fc6846cf475ad">ascon_add_bytes</a>(&amp;state, pad, len - posn, 1);</div>
-<div class="line">    <a class="code" href="permutation_8h.html#a132695890e3130dd42ba6eaf3f545aec">ascon_permute12</a>(&amp;state);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#a9f8aac2e179991e4109fc6846cf475ad">ascon_add_bytes</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a> + posn, 0, len - posn);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#a9f8aac2e179991e4109fc6846cf475ad">ascon_add_bytes</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, pad, len - posn, 1);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#a132695890e3130dd42ba6eaf3f545aec">ascon_permute12</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Squeeze out the 32-byte hash value, 8 bytes at a time */</span></div>
 <div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> hash[32];</div>
-<div class="line">    <a name="a6"></a><a class="code" href="permutation_8h.html#a87a4d252e365571cb22856cf5dd7ae15">ascon_extract_bytes</a>(&amp;state, hash, 0, 8);</div>
-<div class="line">    <a class="code" href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a>(&amp;state);</div>
-<div class="line">    <a class="code" href="permutation_8h.html#a87a4d252e365571cb22856cf5dd7ae15">ascon_extract_bytes</a>(&amp;state, hash + 8, 0, 8);</div>
-<div class="line">    <a class="code" href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a>(&amp;state);</div>
-<div class="line">    <a class="code" href="permutation_8h.html#a87a4d252e365571cb22856cf5dd7ae15">ascon_extract_bytes</a>(&amp;state, hash + 16, 0, 8);</div>
-<div class="line">    <a class="code" href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a>(&amp;state);</div>
-<div class="line">    <a class="code" href="permutation_8h.html#a87a4d252e365571cb22856cf5dd7ae15">ascon_extract_bytes</a>(&amp;state, hash + 24, 0, 8);</div>
+<div class="line">    <a name="a8"></a><a class="code" href="permutation_8h.html#a87a4d252e365571cb22856cf5dd7ae15">ascon_extract_bytes</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, hash, 0, 8);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#a87a4d252e365571cb22856cf5dd7ae15">ascon_extract_bytes</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, hash + 8, 0, 8);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#a87a4d252e365571cb22856cf5dd7ae15">ascon_extract_bytes</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, hash + 16, 0, 8);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
+<div class="line">    <a class="code" href="permutation_8h.html#a87a4d252e365571cb22856cf5dd7ae15">ascon_extract_bytes</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, hash + 24, 0, 8);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Free the resources associated with the ASCON permutation state */</span></div>
-<div class="line">    <a name="a7"></a><a class="code" href="permutation_8h.html#a3331b7366f81091a2182f215cf7fef1c">ascon_free</a>(&amp;state);</div>
+<div class="line">    <a name="a9"></a><a class="code" href="permutation_8h.html#a3331b7366f81091a2182f215cf7fef1c">ascon_free</a>(&amp;<a class="code" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Print the final hash value */</span></div>
 <div class="line">    <span class="keywordflow">for</span> (posn = 0; posn &lt; 32; ++posn)</div>
@@ -137,7 +137,7 @@ $(function() {
 <div class="line"> </div>
 <div class="line">    <span class="comment">/* Cross-check with the library&#39;s version of ASCON-HASHA */</span></div>
 <div class="line">    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> hash2[32];</div>
-<div class="line">    <a name="a8"></a><a class="code" href="hash_8h.html#a8792540643afad247c190e4fc170cd73">ascon_hasha</a>(hash2, data, len);</div>
+<div class="line">    <a name="a10"></a><a class="code" href="hash_8h.html#a8792540643afad247c190e4fc170cd73">ascon_hasha</a>(hash2, <a class="code" href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a>, len);</div>
 <div class="line">    <span class="keywordflow">if</span> (memcmp(hash, hash2, 32) != 0) {</div>
 <div class="line">        printf(<span class="stringliteral">&quot;Hash value is incorrect!&quot;</span>);</div>
 <div class="line">        <span class="keywordflow">return</span> 1;</div>
@@ -154,11 +154,13 @@ $(function() {
 <div class="ttc" id="apermutation_8h_html_a9f8aac2e179991e4109fc6846cf475ad"><div class="ttname"><a href="permutation_8h.html#a9f8aac2e179991e4109fc6846cf475ad">ascon_add_bytes</a></div><div class="ttdeci">void ascon_add_bytes(ascon_state_t *state, const uint8_t *data, unsigned offset, unsigned size)</div><div class="ttdoc">Adds bytes to the ASCON state by XOR'ing them with existing bytes.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-sliced32_8c_source.html#l00050">ascon-sliced32.c:51</a></div></div>
 <div class="ttc" id="apermutation_8h_html_adafef02af51e197bc78bba4b4222e940"><div class="ttname"><a href="permutation_8h.html#adafef02af51e197bc78bba4b4222e940">ascon_init</a></div><div class="ttdeci">void ascon_init(ascon_state_t *state)</div><div class="ttdoc">Initializes the words of the ASCON permutation state to zero.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-sliced32_8c_source.html#l00032">ascon-sliced32.c:32</a></div></div>
 <div class="ttc" id="apermutation_8h_html_ae569b026a158b727a6f3a6148266c2af"><div class="ttname"><a href="permutation_8h.html#ae569b026a158b727a6f3a6148266c2af">ascon_permute8</a></div><div class="ttdeci">#define ascon_permute8(state)</div><div class="ttdoc">Permutes the ASCON state with 8 rounds of the permutation.</div><div class="ttdef"><b>Definition:</b> <a href="permutation_8h_source.html#l00206">permutation.h:206</a></div></div>
+<div class="ttc" id="asnippets_8c_html_a11a12bb758476a291d682dac7046a3f4"><div class="ttname"><a href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a></div><div class="ttdeci">ascon_state_t state</div><div class="ttdoc">[snippet_key]</div><div class="ttdef"><b>Definition:</b> <a href="snippets_8c_source.html#l00002">snippets.c:2</a></div></div>
+<div class="ttc" id="asnippets_8c_html_a452197b783e2154bfb867fe34c4e7067"><div class="ttname"><a href="snippets_8c.html#a452197b783e2154bfb867fe34c4e7067">data</a></div><div class="ttdeci">unsigned char data[8]</div><div class="ttdoc">[snippet_key]</div><div class="ttdef"><b>Definition:</b> <a href="snippets_8c_source.html#l00014">snippets.c:14</a></div></div>
 <div class="ttc" id="aunionascon__state__t_html"><div class="ttname"><a href="unionascon__state__t.html">ascon_state_t</a></div><div class="ttdoc">Structure of the internal state of the ASCON permutation.</div><div class="ttdef"><b>Definition:</b> <a href="permutation_8h_source.html#l00062">permutation.h:63</a></div></div>
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 19 2023 11:02:52 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
