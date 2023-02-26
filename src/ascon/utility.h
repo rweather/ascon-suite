@@ -42,6 +42,46 @@ extern "C" {
  */
 void ascon_clean(void *buf, unsigned size);
 
+/**
+ * \brief Converts an array of bytes into a hexadecimal string.
+ *
+ * \param out Points to the buffer to receive the output string.
+ * \param outlen Maximum number of characters in the \a out buffer,
+ * which should be at least \a inlen * 2 + 1 in length.
+ * \param in Points to the input byte array to convert into hexadecimal.
+ * \param inlen Number of bytes to be converted.
+ * \param upper_case Use uppercase hexadecimal letters if non-zero;
+ * or use lowercase hexadecimal letters if zero.
+ *
+ * \return The number of characters written to \a out, excluding the
+ * terminating NUL.  Returns -1 if there is something wrong with
+ * the parameters such as \a outlen not being large enough.
+ *
+ * The result \a out buffer will be NUL-terminated except when the
+ * function returns -1.
+ */
+int ascon_bytes_to_hex
+    (char *out, size_t outlen, const unsigned char *in, size_t inlen,
+     int upper_case);
+
+/**
+ * \brief Converts a hexadecimal string into an array of bytes.
+ *
+ * \param out Points to the buffer to receive the output bytes.
+ * \param outlen Maximum number of bytes in the output buffer.
+ * \param in Points to the input hexadecimal string to convert.
+ * \param inlen Number of characters in the input string to convert.
+ *
+ * \return The number of bytes written to \a out.  Returns -1 if there
+ * is something wrong with the parameters such as \a outlen not being
+ * large enough or invalid characters in the input string.
+ *
+ * Both uppercase and lowercase hexadecimal characters are recognized.
+ * Whitespace characters are ignored.  All other characters are invalid.
+ */
+int ascon_bytes_from_hex
+    (unsigned char *out, size_t outlen, const char *in, size_t inlen);
+
 #ifdef __cplusplus
 }
 
@@ -56,6 +96,7 @@ void ascon_clean(void *buf, unsigned size);
 
 namespace ascon
 {
+
     /**
      * \brief C++ type for an array of bytes.
      *
@@ -201,6 +242,152 @@ private:
 } /* namespace ascon */
 
 #endif /* ASCON_NO_STL */
+
+#if !defined(ARDUINO) || defined(ASCON_SUITE_DOC)
+
+#include <string>
+
+namespace ascon
+{
+
+/**
+ * \brief Converts a hexadecimal string into a byte array.
+ *
+ * \param str Points to the input string to convert.
+ * \param len Number of characters in the input string to convert.
+ *
+ * \return The byte array version of \a str.  Returns an empty byte
+ * array if the input is invalid.
+ */
+static inline byte_array bytes_from_hex(const char *str, size_t len)
+{
+    byte_array vec(len / 2);
+    int result = ::ascon_bytes_from_hex(vec.data(), vec.size(), str, len);
+    if (result != -1)
+        return vec;
+    else
+        return byte_array();
+}
+
+/**
+ * \brief Converts a hexadecimal string into a byte array.
+ *
+ * \param str Points to the NUL-terminated input string to convert.
+ *
+ * \return The byte array version of \a str.  Returns an empty byte
+ * array if the input is invalid.
+ */
+static inline byte_array bytes_from_hex(const char *str)
+{
+    return bytes_from_hex(str, str ? ::strlen(str) : 0);
+}
+
+#if !defined(ASCON_NO_STL) || defined(ASCON_SUITE_DOC)
+
+/**
+ * \brief Converts an array of bytes into a hexadecimal string.
+ *
+ * \param in Points to the input byte array to convert into hexadecimal.
+ * \param inlen Number of bytes to be converted.
+ * \param upper_case Use uppercase hexadecimal letters if true;
+ * or use lowercase hexadecimal letters if false.
+ *
+ * \return The hexadecimal string version of \a in.
+ */
+static inline std::string bytes_to_hex
+    (const unsigned char *in, size_t len, bool upper_case = false)
+{
+    char out[len * 2U + 1U];
+    ::ascon_bytes_to_hex
+        (out, sizeof(out), in, len, upper_case ? 1 : 0);
+    return std::string(out);
+}
+
+/**
+ * \brief Converts a byte array into a hexadecimal string.
+ *
+ * \param in The byte array to be converted.
+ * \param upper_case Use uppercase hexadecimal letters if true;
+ * or use lowercase hexadecimal letters if false.
+ *
+ * \return The hexadecimal string version of \a in.
+ */
+static inline std::string bytes_to_hex
+    (const byte_array &in, bool upper_case = false)
+{
+    size_t len = in.size();
+    char out[len * 2U + 1U];
+    ::ascon_bytes_to_hex
+        (out, sizeof(out), in.data(), len, upper_case ? 1 : 0);
+    return std::string(out);
+}
+
+/**
+ * \brief Converts a hexadecimal string into a byte array.
+ *
+ * \param str The input string to convert.
+ *
+ * \return The byte array version of \a str.  Returns an empty byte
+ * array if the input is invalid.
+ */
+static inline byte_array bytes_from_hex(const std::string &str)
+{
+    return bytes_from_hex(str.data(), str.size());
+}
+
+#endif /* !ASCON_NO_STL */
+
+} /* namespace ascon */
+
+#elif defined(ARDUINO)
+
+#include <WString.h>
+
+namespace ascon
+{
+
+static inline String bytes_to_hex
+    (const unsigned char *in, size_t len, bool upper_case = false)
+{
+    char out[len * 2U + 1U];
+    ::ascon_bytes_to_hex
+        (out, sizeof(out), in, len, upper_case ? 1 : 0);
+    return String(out);
+}
+
+static inline String bytes_to_hex
+    (const byte_array &in, bool upper_case = false)
+{
+    size_t len = in.size();
+    char out[len * 2U + 1U];
+    ::ascon_bytes_to_hex
+        (out, sizeof(out), in.data(), len, upper_case ? 1 : 0);
+    return String(out);
+}
+
+static inline byte_array bytes_from_hex(const char *str, size_t len)
+{
+    byte_array vec(len / 2);
+    int result = ::ascon_bytes_from_hex(vec.data(), vec.size(), str, len);
+    if (result != -1)
+        return vec;
+    else
+        return byte_array();
+}
+
+static inline byte_array bytes_from_hex(const char *str)
+{
+    return bytes_from_hex(str, str ? ::strlen(str) : 0);
+}
+
+static inline byte_array bytes_from_hex(const String &str)
+{
+    return bytes_from_hex(str.c_str(), str.length());
+}
+
+} /* namespace ascon */
+
+#endif /* ARDUINO */
 
 #endif /* _cplusplus */
 

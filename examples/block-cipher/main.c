@@ -21,6 +21,7 @@
  */
 
 #include "ascon-ecb.h"
+#include <ascon/utility.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -93,13 +94,9 @@ static TestVector const vec6 = {
 static void print_hex
     (const char *name, const unsigned char *data, unsigned len)
 {
-    printf("%-7s = ", name);
-    while (len > 0) {
-        printf("%02X", *data);
-        ++data;
-        --len;
-    }
-    printf("\n");
+    char out[len * 2 + 1];
+    ascon_bytes_to_hex(out, sizeof(out), data, len, 1);
+    printf("%-7s = %s\n", name, out);
 }
 
 static int exit_val = 0;

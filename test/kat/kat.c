@@ -29,6 +29,7 @@
 #include "timing.h"
 #include "internal-chachapoly.h"
 #include "internal-blake2s.h"
+#include <ascon/utility.h>
 
 /* Dynamically-allocated test string that was converted from hexadecimal */
 typedef struct {
@@ -39,34 +40,15 @@ typedef struct {
 /* Create a test string from a hexadecimal string */
 static test_string_t *create_test_string(const char *in)
 {
-    int value;
-    int nibble;
-    int phase;
     test_string_t *out;
-    out = (test_string_t *)malloc(sizeof(test_string_t) + (strlen(in) / 2));
+    size_t inlen;
+    size_t outlen;
+    inlen = strlen(in);
+    outlen = inlen / 2;
+    out = (test_string_t *)malloc(sizeof(test_string_t) + outlen);
     if (!out)
         exit(2);
-    out->size = 0;
-    value = 0;
-    phase = 0;
-    while (*in != '\0') {
-        int ch = *in++;
-        if (ch >= '0' && ch <= '9')
-            nibble = ch - '0';
-        else if (ch >= 'A' && ch <= 'F')
-            nibble = ch - 'A' + 10;
-        else if (ch >= 'a' && ch <= 'f')
-            nibble = ch - 'a' + 10;
-        else
-            continue; /* skip whitespace and other separators */
-        if (!phase) {
-            value = nibble << 4;
-            phase = 1;
-        } else {
-            out->data[(out->size)++] = value | nibble;
-            phase = 0;
-        }
-    }
+    out->size = ascon_bytes_from_hex(out->data, outlen, in, inlen);
     return out;
 }
 

@@ -23,6 +23,7 @@
 #include "aead-metadata.h"
 #include "algorithms.h"
 #include <ascon/xof.h>
+#include <ascon/utility.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -233,13 +234,9 @@ static void usage(const char *progname)
 static void write_hex
     (FILE *file, const char *name, const unsigned char *data, int len)
 {
-    fprintf(file, "%s = ", name);
-    while (len > 0) {
-        fprintf(file, "%02X", data[0]);
-        ++data;
-        --len;
-    }
-    fprintf(file, "\n");
+    char out[len * 2 + 1];
+    ascon_bytes_to_hex(out, sizeof(out), data, len, 1);
+    fprintf(file, "%s = %s\n", name, out);
 }
 
 /**

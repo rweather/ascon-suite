@@ -31,6 +31,7 @@ list(APPEND ASCON_SOURCES
     core/ascon-c64.c
     core/ascon-clean.c
     core/ascon-direct-xor.c
+    core/ascon-hex.c
     core/ascon-select-backend.h
     core/ascon-sliced32.c
     core/ascon-sliced32.h

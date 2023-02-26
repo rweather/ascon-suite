@@ -41,4 +41,10 @@ with C++ naming and coding conventions.
 \li ascon::xofa
 \li ascon::xofa_with_output_length
 
+\section cpp_utility Utilities
+
+\li ascon::byte_array
+\li ascon::bytes_to_hex()
+\li ascon::bytes_from_hex()
+
 */

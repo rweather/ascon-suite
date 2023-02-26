@@ -352,11 +352,6 @@ void ascon_xofa_copy(ascon_xofa_state_t *dest, const ascon_xofa_state_t *src);
 } /* extern "C" */
 
 #include <ascon/utility.h>
-#if !defined(ARDUINO)
-#include <string>
-#else
-#include <WString.h>
-#endif
 
 namespace ascon
 {
