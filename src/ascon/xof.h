@@ -116,6 +116,32 @@ void ascon_xof_init(ascon_xof_state_t *state);
 void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen);
 
 /**
+ * \brief Initializes the state for an incremental ASCON-XOF operation,
+ * with a named function, customization string, and output length.
+ *
+ * \param state XOF state to be initialized.
+ * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
+ * empty for no function name.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ *
+ * In the ASCON standard, the output length is encoded as a bit counter
+ * in a 32-bit word.  If \a outlen is greater than 536870911, it will be
+ * replaced with zero to indicate arbitary-length output instead.
+ *
+ * This version of initialization is intended for building higher-level
+ * functions like KMAC on top of ASCON-XOF.  The function name provides
+ * domain separation between different functions.  The customization string
+ * provides domain separation between different users of the same function.
+ *
+ * \sa ascon_xof_init()
+ */
+void ascon_xof_init_custom
+    (ascon_xof_state_t *state, const char *function_name,
+     const unsigned char *custom, size_t customlen, size_t outlen);
+
+/**
  * \brief Re-initializes the state for an ASCON-XOF hashing operation.
  *
  * \param state XOF state to be re-initialized.
@@ -140,6 +166,23 @@ void ascon_xof_reinit(ascon_xof_state_t *state);
  * \sa ascon_xof_init_fixed()
  */
 void ascon_xof_reinit_fixed(ascon_xof_state_t *state, size_t outlen);
+
+/**
+ * \brief Re-nitializes the state for an incremental ASCON-XOF operation,
+ * with a named function, customization string, and output length.
+ *
+ * \param state XOF state to be initialized.
+ * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
+ * empty for no function name.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ *
+ * \sa ascon_xof_init_custom()
+ */
+void ascon_xof_reinit_custom
+    (ascon_xof_state_t *state, const char *function_name,
+     const unsigned char *custom, size_t customlen, size_t outlen);
 
 /**
  * \brief Frees the ASCON-XOF state and destroys any sensitive material.
@@ -252,6 +295,32 @@ void ascon_xofa_init(ascon_xofa_state_t *state);
 void ascon_xofa_init_fixed(ascon_xofa_state_t *state, size_t outlen);
 
 /**
+ * \brief Initializes the state for an incremental ASCON-XOFA operation,
+ * with a named function, customization string, and output length.
+ *
+ * \param state XOF state to be initialized.
+ * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
+ * empty for no function name.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ *
+ * In the ASCON standard, the output length is encoded as a bit counter
+ * in a 32-bit word.  If \a outlen is greater than 536870911, it will be
+ * replaced with zero to indicate arbitary-length output instead.
+ *
+ * This version of initialization is intended for building higher-level
+ * functions like KMAC on top of ASCON-XOF.  The function name provides
+ * domain separation between different functions.  The customization string
+ * provides domain separation between different users of the same function.
+ *
+ * \sa ascon_xofa_init()
+ */
+void ascon_xofa_init_custom
+    (ascon_xofa_state_t *state, const char *function_name,
+     const unsigned char *custom, size_t customlen, size_t outlen);
+
+/**
  * \brief Re-initializes the state for an ASCON-XOFA hashing operation.
  *
  * \param state XOF state to be re-initialized.
@@ -276,6 +345,23 @@ void ascon_xofa_reinit(ascon_xofa_state_t *state);
  * \sa ascon_xof_init_fixed()
  */
 void ascon_xofa_reinit_fixed(ascon_xofa_state_t *state, size_t outlen);
+
+/**
+ * \brief Re-nitializes the state for an incremental ASCON-XOFA operation,
+ * with a named function, customization string, and output length.
+ *
+ * \param state XOF state to be initialized.
+ * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
+ * empty for no function name.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ *
+ * \sa ascon_xofa_init_custom()
+ */
+void ascon_xofa_reinit_custom
+    (ascon_xofa_state_t *state, const char *function_name,
+     const unsigned char *custom, size_t customlen, size_t outlen);
 
 /**
  * \brief Frees the ASCON-XOFA state and destroys any sensitive material.
@@ -410,6 +496,23 @@ public:
         (const ascon::xof_with_output_length<outlen> &other)
     {
         ::ascon_xof_copy(&m_state, &other.m_state);
+    }
+
+    /**
+     * \brief Constructs a new ASCON-XOF object with a named function and
+     * customization string.
+     *
+     * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
+     * empty for no function name.
+     * \param custom Points to the customization string.
+     * \param customlen Number of bytes in the customization string.
+     */
+    inline explicit xof_with_output_length
+        (const char *function_name, const unsigned char *custom = 0,
+         size_t customlen = 0)
+    {
+        ::ascon_xof_init_custom
+            (&m_state, function_name, custom, customlen, outlen);
     }
 
     /**
@@ -649,6 +752,23 @@ public:
         (const ascon::xofa_with_output_length<outlen> &other)
     {
         ::ascon_xofa_copy(&m_state, &other.m_state);
+    }
+
+    /**
+     * \brief Constructs a new ASCON-XOFA object with a named function and
+     * customization string.
+     *
+     * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
+     * empty for no function name.
+     * \param custom Points to the customization string.
+     * \param customlen Number of bytes in the customization string.
+     */
+    inline explicit xofa_with_output_length
+        (const char *function_name, const unsigned char *custom = 0,
+         size_t customlen = 0)
+    {
+        ::ascon_xofa_init_custom
+            (&m_state, function_name, custom, customlen, outlen);
     }
 
     /**

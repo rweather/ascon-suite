@@ -22,6 +22,8 @@
 
 #include <ascon/xof.h>
 #include "core/ascon-util-snp.h"
+#include "hash/ascon-xof-internal.h"
+#include <string.h>
 
 void ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen)
 {
@@ -126,6 +128,58 @@ void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen)
     }
 }
 
+void ascon_xof_absorb_custom
+    (ascon_xof_state_t *state, const unsigned char *custom, size_t customlen)
+{
+    if (customlen > 0) {
+        ascon_xof_absorb(state, custom, customlen);
+        ascon_acquire(&(state->state));
+        ascon_pad(&(state->state), state->count);
+        ascon_permute(&(state->state), 0);
+        ascon_separator(&(state->state));
+        ascon_release(&(state->state));
+        state->count = 0;
+    }
+}
+
+void ascon_xof_init_custom
+    (ascon_xof_state_t *state, const char *function_name,
+     const unsigned char *custom, size_t customlen, size_t outlen)
+{
+    /* Format the initial block with the function name and output length */
+    uint8_t temp[ASCON_HASH_SIZE];
+    size_t len = function_name ? strlen(function_name) : 0;
+#if !defined(__SIZEOF_SIZE_T__) || __SIZEOF_SIZE_T__ >= 4
+    if (outlen >= (((size_t)1) << 29))
+        outlen = 0; /* Too large, so switch to arbitrary-length output */
+#endif
+    if (len == 0) {
+        /* No function name specified */
+        memset(temp, 0, ASCON_HASH_SIZE);
+    } else if (len <= 32) {
+        /* Pad the function name with zeroes */
+        memcpy(temp, function_name, len);
+        memset(temp + len, 0, ASCON_HASH_SIZE - len);
+    } else {
+        /* Compute ASCON-HASH(function_name) */
+        ascon_xof_init_fixed(state, ASCON_HASH_SIZE);
+        ascon_xof_absorb(state, (const unsigned char *)function_name, len);
+        ascon_xof_squeeze(state, temp, ASCON_HASH_SIZE);
+        ascon_xof_free(state);
+    }
+    ascon_init(&(state->state));
+    ascon_overwrite_bytes(&(state->state), temp, 8, ASCON_HASH_SIZE);
+    be_store_word64(temp, 0x00400c0000000000ULL | (outlen * 8UL));
+    ascon_overwrite_bytes(&(state->state), temp, 0, 8);
+    ascon_permute(&(state->state), 0);
+    ascon_release(&(state->state));
+    state->count = 0;
+    state->mode = 0;
+
+    /* Absorb the customization string */
+    ascon_xof_absorb_custom(state, custom, customlen);
+}
+
 void ascon_xof_reinit(ascon_xof_state_t *state)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
@@ -145,6 +199,19 @@ void ascon_xof_reinit_fixed(ascon_xof_state_t *state, size_t outlen)
 #else
     ascon_xof_free(state);
     ascon_xof_init_fixed(state, outlen);
+#endif
+}
+
+void ascon_xof_reinit_custom
+    (ascon_xof_state_t *state, const char *function_name,
+     const unsigned char *custom, size_t customlen, size_t outlen)
+{
+#if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
+        defined(ASCON_BACKEND_DIRECT_XOR)
+    ascon_xof_init_custom(state, function_name, custom, customlen, outlen);
+#else
+    ascon_xof_free(state);
+    ascon_xof_init_custom(state, function_name, custom, customlen, outlen);
 #endif
 }
 

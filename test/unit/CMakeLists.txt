@@ -10,6 +10,18 @@ list(APPEND COMMON_TEST_SOURCES
     test-cipher.h
 )
 
+add_executable(ascon-test-cxof
+    ${COMMON_TEST_SOURCES}
+    test-cxof.c
+)
+target_link_libraries(ascon-test-cxof PUBLIC ascon_static)
+
+add_executable(ascon-test-cxof-shared
+    ${COMMON_TEST_SOURCES}
+    test-cxof.c
+)
+target_link_libraries(ascon-test-cxof-shared PUBLIC ascon)
+
 add_executable(ascon-test-hkdf
     ${COMMON_TEST_SOURCES}
     test-hkdf.c
@@ -123,6 +135,7 @@ add_test(NAME ASCON-Permutation COMMAND ascon-test-permutation)
 add_test(NAME ASCON-Permutation-x2 COMMAND ascon-test-permutation-x2)
 add_test(NAME ASCON-Permutation-x3 COMMAND ascon-test-permutation-x3)
 add_test(NAME ASCON-Permutation-x4 COMMAND ascon-test-permutation-x4)
+add_test(NAME ASCON-cXOF COMMAND ascon-test-cxof)
 add_test(NAME ASCON-HKDF COMMAND ascon-test-hkdf)
 add_test(NAME ASCON-HMAC COMMAND ascon-test-hmac)
 add_test(NAME ASCON-KMAC COMMAND ascon-test-kmac)
@@ -134,6 +147,7 @@ add_test(NAME ASCON-Permutation-Shared COMMAND ascon-test-permutation-shared)
 add_test(NAME ASCON-Permutation-x2-Shared COMMAND ascon-test-permutation-x2-shared)
 add_test(NAME ASCON-Permutation-x3-Shared COMMAND ascon-test-permutation-x3-shared)
 add_test(NAME ASCON-Permutation-x4-Shared COMMAND ascon-test-permutation-x4-shared)
+add_test(NAME ASCON-cXOF-Shared COMMAND ascon-test-cxof-shared)
 add_test(NAME ASCON-HKDF-Shared COMMAND ascon-test-hkdf-shared)
 add_test(NAME ASCON-HMAC-Shared COMMAND ascon-test-hmac-shared)
 add_test(NAME ASCON-KMAC-Shared COMMAND ascon-test-kmac-shared)

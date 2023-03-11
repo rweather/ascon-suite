@@ -45,6 +45,7 @@ list(APPEND ASCON_SOURCES
     hash/ascon-hash.c
     hash/ascon-xofa.c
     hash/ascon-xof.c
+    hash/ascon-xof-internal.h
     isap/ascon-isap-128.c
     isap/ascon-isap-128a.c
     isap/ascon-isap-80pq.c
