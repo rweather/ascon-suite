@@ -54,8 +54,13 @@ static void ascon_random_rekey(ascon_random_state_t *state)
 
     /* Zero out part of the state and run the permutation several times.
      * This enforces forward security on the SpongePRNG state. */
-    for (temp = 0; temp < (40 - ASCON_XOF_RATE); temp += ASCON_XOF_RATE)
-        ascon_xof_clear_rate(&(state->xof));
+    ascon_xof_pad(&(state->xof));
+    ascon_acquire(&(state->xof.state));
+    for (temp = 0; temp < (40 - ASCON_XOF_RATE); temp += ASCON_XOF_RATE) {
+        ascon_overwrite_with_zeroes(&(state->xof.state), 0, ASCON_XOF_RATE);
+        ascon_permute(&(state->xof.state), 0);
+    }
+    ascon_release(&(state->xof.state));
 }
 
 int ascon_random_init(ascon_random_state_t *state)
