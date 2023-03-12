@@ -101,7 +101,7 @@ int ascon_random(unsigned char *out, size_t outlen);
  * must be freed explicitly with ascon_random_free() regardless of
  * the return value from this function.
  *
- * \sa ascon_random_generate(), ascon_random_add_entropy()
+ * \sa ascon_random_fetch(), ascon_random_feed()
  */
 int ascon_random_init(ascon_random_state_t *state);
 
@@ -116,15 +116,15 @@ int ascon_random_init(ascon_random_state_t *state);
 void ascon_random_free(ascon_random_state_t *state);
 
 /**
- * \brief Generates data from a pseudorandom number generator.
+ * \brief Fetches data from a pseudorandom number generator.
  *
  * \param state The pseudorandom number generator state to use.
  * \param out Points to a buffer to receive the random data.
- * \param outlen Number of bytes of random data to generate.
+ * \param outlen Number of bytes of random data to fetch.
  *
  * \sa ascon_random_reseed()
  */
-void ascon_random_generate
+void ascon_random_fetch
     (ascon_random_state_t *state, unsigned char *out, size_t outlen);
 
 /**
@@ -137,17 +137,17 @@ void ascon_random_generate
  * zero if there is no system random number source or it has failed.
  *
  * The pseudorandom number generator will be re-seeded periodically
- * by ascon_random_generate() but the application can choose to re-seed
+ * by ascon_random_fetch() but the application can choose to re-seed
  * more often if it needs fresh random data.
  *
- * \sa ascon_random_generate()
+ * \sa ascon_random_fetch()
  */
 int ascon_random_reseed(ascon_random_state_t *state);
 
 /**
- * \brief Adds entropy to a pseudorandom number generator.
+ * \brief Feeds entropy into a pseudorandom number generator.
  *
- * \param state The pseudorandom number generator to add entropy to.
+ * \param state The pseudorandom number generator to feed the entropy into.
  * \param entropy Points to a buffer containing the entropy.
  * \param size Number of bytes of entropy to add, which can be zero to
  * "stir" the random pool but not introduce any new entropy.
@@ -157,40 +157,11 @@ int ascon_random_reseed(ascon_random_state_t *state);
  * and would make the API very complex.
  *
  * The application can keep track of "entropy credits" itself if that is
- * important.  And then only call ascon_random_generate() when it judges
+ * important.  And then only call ascon_random_fetch() when it judges
  * that the entropy pool is sufficiently populated.
- *
- * \sa ascon_random_add_entropy_quick()
  */
-void ascon_random_add_entropy
+void ascon_random_feed
     (ascon_random_state_t *state, const unsigned char *entropy, size_t size);
-
-/**
- * \brief Quickly adds a 64-bit word of entropy to a pseudorandom
- * number generator.
- *
- * \param state The pseudorandom number generator to add entropy to.
- * \param entropy The entropy value.
- *
- * This function is intended for collecting entropy at high frequency
- * from simple sources.  The \a entropy may be an analog reading from a
- * noise source, the timing jitter from input events, or something else.
- *
- * This function incorporates \a entropy into the state and performs
- * two rounds of the ASCON permutation to lightly mix it into the state.
- * This reduces the overhead of entropy collection.
- *
- * If your entropy source is slow or intermittent, then
- * ascon_random_add_entropy() is a better choice.
- *
- * When using this function, it is recommended that ascon_random_add_entropy()
- * be called periodically with zero-length input to "stir" the entropy into
- * the random pool properly.
- *
- * \sa ascon_random_add_entropy()
- */
-void ascon_random_add_entropy_quick
-    (ascon_random_state_t *state, uint64_t entropy);
 
 #ifdef __cplusplus
 }

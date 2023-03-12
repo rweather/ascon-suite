@@ -64,7 +64,7 @@ int ascon_random_init(ascon_random_state_t *state)
     int ok;
     if (!state)
         return 0;
-    ascon_xof_init(&(state->xof));
+    ascon_xof_init_custom(&(state->xof), "SpongePRNG", 0, 0, 0);
     state->counter = 0;
     state->reserved = 0;
     ok = ascon_trng_generate(seed, sizeof(seed));
@@ -82,7 +82,7 @@ void ascon_random_free(ascon_random_state_t *state)
     }
 }
 
-void ascon_random_generate
+void ascon_random_fetch
     (ascon_random_state_t *state, unsigned char *out, size_t outlen)
 {
     /* If there is no state, use the global ascon_random() function
@@ -127,37 +127,12 @@ int ascon_random_reseed(ascon_random_state_t *state)
     return 0;
 }
 
-void ascon_random_add_entropy
+void ascon_random_feed
     (ascon_random_state_t *state, const unsigned char *entropy, size_t size)
 {
     if (state) {
         ascon_xof_absorb(&(state->xof), entropy, size);
-        ascon_random_rekey(state);
-    }
-}
-
-void ascon_random_add_entropy_quick
-    (ascon_random_state_t *state, uint64_t entropy)
-{
-    if (state) {
-        /* Force the XOF object back into absorbing mode if necessary */
         ascon_xof_pad(&(state->xof));
-
-        /* Incorporate the bits into the state as quickly as we can.
-         * The bit order isn't important.  One random bit is just as
-         * good as another so we directly XOR the entropy in. */
-        ascon_acquire(&(state->xof.state));
-#if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
-    defined(ASCON_BACKEND_DIRECT_XOR)
-        state->xof.state.S[0] ^= entropy;
-#else
-        ascon_add_bytes
-            (&(state->xof.state), (const unsigned char *)&entropy, 0,
-             sizeof(entropy));
-#endif
-
-        /* Perform two rounds of ASCON to mix in the entropy */
-        ascon_permute(&(state->xof.state), 10); /* Start at round 10 of 12 */
-        ascon_release(&(state->xof.state));
+        ascon_random_rekey(state);
     }
 }
