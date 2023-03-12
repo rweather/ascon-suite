@@ -21,7 +21,7 @@
  */
 
 #include "test-cipher.h"
-#include <ascon/hmac.h>
+#include <ascon/xof.h>
 #include <ascon/pbkdf2.h>
 #include <stdio.h>
 #include <string.h>
@@ -35,7 +35,6 @@ typedef struct
     const char *password;
     const char *salt;
     unsigned count;
-    unsigned char out[MAX_OUT_LEN];
     size_t out_len;
 
 } TestPBKDF2Vector;
@@ -48,10 +47,6 @@ static TestPBKDF2Vector const testVectorPBKDF2_1 = {
     "password",
     "salt",
     1,
-    {0x12, 0x0f, 0xb6, 0xcf, 0xfc, 0xf8, 0xb3, 0x2c,
-     0x43, 0xe7, 0x22, 0x52, 0x56, 0xc4, 0xf8, 0x37,
-     0xa8, 0x65, 0x48, 0xc9, 0x2c, 0xcc, 0x35, 0x48,
-     0x08, 0x05, 0x98, 0x7c, 0xb7, 0x0b, 0xe1, 0x7b},
     32
 };
 static TestPBKDF2Vector const testVectorPBKDF2_2 = {
@@ -59,10 +54,6 @@ static TestPBKDF2Vector const testVectorPBKDF2_2 = {
     "password",
     "salt",
     2,
-    {0xae, 0x4d, 0x0c, 0x95, 0xaf, 0x6b, 0x46, 0xd3,
-     0x2d, 0x0a, 0xdf, 0xf9, 0x28, 0xf0, 0x6d, 0xd0,
-     0x2a, 0x30, 0x3f, 0x8e, 0xf3, 0xc2, 0x51, 0xdf,
-     0xd6, 0xe2, 0xd8, 0x5a, 0x95, 0x47, 0x4c, 0x43},
     32
 };
 static TestPBKDF2Vector const testVectorPBKDF2_3 = {
@@ -70,10 +61,6 @@ static TestPBKDF2Vector const testVectorPBKDF2_3 = {
     "password",
     "salt",
     4096,
-    {0xc5, 0xe4, 0x78, 0xd5, 0x92, 0x88, 0xc8, 0x41,
-     0xaa, 0x53, 0x0d, 0xb6, 0x84, 0x5c, 0x4c, 0x8d,
-     0x96, 0x28, 0x93, 0xa0, 0x01, 0xce, 0x4e, 0x11,
-     0xa4, 0x96, 0x38, 0x73, 0xaa, 0x98, 0x13, 0x4a},
     32
 };
 static TestPBKDF2Vector const testVectorPBKDF2_4 = {
@@ -81,11 +68,6 @@ static TestPBKDF2Vector const testVectorPBKDF2_4 = {
     "passwordPASSWORDpassword",
     "saltSALTsaltSALTsaltSALTsaltSALTsalt",
     4096,
-    {0x34, 0x8c, 0x89, 0xdb, 0xcb, 0xd3, 0x2b, 0x2f,
-     0x32, 0xd8, 0x14, 0xb8, 0x11, 0x6e, 0x84, 0xcf,
-     0x2b, 0x17, 0x34, 0x7e, 0xbc, 0x18, 0x00, 0x18,
-     0x1c, 0x4e, 0x2a, 0x1f, 0xb8, 0xdd, 0x53, 0xe1,
-     0xc6, 0x35, 0x51, 0x8c, 0x7d, 0xac, 0x47, 0xe9},
     40
 };
 
@@ -93,17 +75,16 @@ typedef void (*pbkdf2_func_t)
     (unsigned char *out, size_t outlen,
      const unsigned char *password, size_t passwordlen,
      const unsigned char *salt, size_t saltlen, unsigned long count);
-typedef void (*hmac_func_t)
-    (unsigned char *out,
-     const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen);
 
 /* Simple implementation of PBKDF2 based on RFC 8018 for
  * cross-checking the more efficient one in the library. */
-static void PRF(hmac_func_t hmac, size_t hmac_size,
-                const char *password, const char *salt,
+static void PRF(size_t block_size, const char *password, const char *salt,
                 uint32_t i, const unsigned char *in, unsigned char *out)
 {
+    ascon_xof_state_t state;
+    ascon_xof_init_custom
+        (&state, "PBKDF2", (const unsigned char *)password, strlen(password),
+         block_size);
     if (salt) {
         size_t salt_len = strlen(salt);
         unsigned char temp[salt_len + 4];
@@ -112,39 +93,37 @@ static void PRF(hmac_func_t hmac, size_t hmac_size,
         temp[salt_len + 1] = (unsigned char)(i >> 16);
         temp[salt_len + 2] = (unsigned char)(i >> 8);
         temp[salt_len + 3] = (unsigned char)i;
-        (*hmac)(out, (const unsigned char *)password, strlen(password),
-                temp, salt_len + 4);
+        ascon_xof_absorb(&state, temp, salt_len + 4);
     } else {
-        (*hmac)(out, (const unsigned char *)password, strlen(password),
-                in, hmac_size);
+        ascon_xof_absorb(&state, in, block_size);
     }
+    ascon_xof_squeeze(&state, out, block_size);
+    ascon_xof_free(&state);
 }
-static void F(hmac_func_t hmac, size_t hmac_size,
-              const char *password, const char *salt,
+static void F(size_t block_size, const char *password, const char *salt,
               uint32_t c, uint32_t i, unsigned char *out)
 {
-    unsigned char U[hmac_size];
+    unsigned char U[block_size];
     size_t posn;
-    PRF(hmac, hmac_size, password, salt, i, 0, out);
-    memcpy(U, out, hmac_size);
+    PRF(block_size, password, salt, i, 0, out);
+    memcpy(U, out, block_size);
     while (c > 1) {
-        PRF(hmac, hmac_size, password, 0, i, U, U);
-        for (posn = 0; posn < hmac_size; ++posn)
+        PRF(block_size, password, 0, i, U, U);
+        for (posn = 0; posn < block_size; ++posn)
             out[posn] ^= U[posn];
         --c;
     }
 }
-static void PBKDF2(hmac_func_t hmac, size_t hmac_size,
-                   const char *password, const char *salt,
+static void PBKDF2(size_t block_size, const char *password, const char *salt,
                    uint32_t c, unsigned char *out, size_t outlen)
 {
-    unsigned char T[hmac_size];
+    unsigned char T[block_size];
     uint32_t i = 1;
     while (outlen > 0) {
         size_t len = outlen;
-        if (len > hmac_size)
-            len = hmac_size;
-        F(hmac, hmac_size, password, salt, c, i, T);
+        if (len > block_size)
+            len = block_size;
+        F(block_size, password, salt, c, i, T);
         memcpy(out, T, len);
         out += len;
         outlen -= len;
@@ -153,8 +132,8 @@ static void PBKDF2(hmac_func_t hmac, size_t hmac_size,
 }
 
 static void test_pbkdf2_vector
-    (const char *hash_name, pbkdf2_func_t pbkdf2, hmac_func_t hmac,
-     size_t hmac_size, const TestPBKDF2Vector *test_vector)
+    (const char *hash_name, pbkdf2_func_t pbkdf2,
+     size_t block_size, const TestPBKDF2Vector *test_vector)
 {
     unsigned char expected[MAX_OUT_LEN];
     unsigned char actual[MAX_OUT_LEN];
@@ -163,8 +142,8 @@ static void test_pbkdf2_vector
     printf("%s %s ... ", hash_name, test_vector->name);
     fflush(stdout);
 
-    /* Create the expected vector using the underlying HMAC function */
-    PBKDF2(hmac, hmac_size, test_vector->password,
+    /* Create the expected vector using the underlying PRF function */
+    PBKDF2(block_size, test_vector->password,
            test_vector->salt, test_vector->count,
            expected, test_vector->out_len);
 
@@ -211,17 +190,17 @@ int main(int argc, char *argv[])
         return 1;
 
     test_pbkdf2_vector
-        ("ASCON", ascon_pbkdf2, ascon_hmac,
-         ASCON_HMAC_SIZE, &testVectorPBKDF2_1);
+        ("ASCON", ascon_pbkdf2,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_1);
     test_pbkdf2_vector
-        ("ASCON", ascon_pbkdf2, ascon_hmac,
-         ASCON_HMAC_SIZE, &testVectorPBKDF2_2);
+        ("ASCON", ascon_pbkdf2,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_2);
     test_pbkdf2_vector
-        ("ASCON", ascon_pbkdf2, ascon_hmac,
-         ASCON_HMAC_SIZE, &testVectorPBKDF2_3);
+        ("ASCON", ascon_pbkdf2,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_3);
     test_pbkdf2_vector
-        ("ASCON", ascon_pbkdf2, ascon_hmac,
-         ASCON_HMAC_SIZE, &testVectorPBKDF2_4);
+        ("ASCON", ascon_pbkdf2,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_4);
 
     return test_exit_result;
 }

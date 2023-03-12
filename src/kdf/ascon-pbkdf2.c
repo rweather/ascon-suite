@@ -21,38 +21,62 @@
  */
 
 #include <ascon/pbkdf2.h>
-#include <ascon/hmac.h>
+#include <ascon/xof.h>
 #include <ascon/utility.h>
 #include "core/ascon-util.h"
+#include "core/ascon-util-snp.h"
 #include <string.h>
 
-/* Implementation of the "F" function from RFC 8018, section 5.2 */
+/* Determine if we need to explicitly free the XOF state between iterations */
+#if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
+        defined(ASCON_BACKEND_DIRECT_XOR)
+#define ASCON_PBKDF2_FREE_STATE 0
+#else
+#define ASCON_PBKDF2_FREE_STATE 1
+#endif
+
+/*
+ * Implementation of the "F" function from RFC 8018, section 5.2
+ *
+ * Note: Instead of HMAC like in RFC 8018, we use the following PRF:
+ *
+ * PRF(P, X) = ASCON-cXOF(X, 256, "PBKDF2", P)
+ */
 static void ascon_pbkdf2_f
-    (ascon_hmac_state_t *state, unsigned char *T, unsigned char *U,
-     const unsigned char *password, size_t passwordlen,
+    (ascon_xof_state_t *state, unsigned char *T, unsigned char *U,
      const unsigned char *salt, size_t saltlen,
      unsigned long count, unsigned long blocknum)
 {
+    ascon_xof_state_t state2;
     unsigned char b[4];
     be_store_word32(b, blocknum);
-    ascon_hmac_init(state, password, passwordlen);
-    ascon_hmac_update(state, salt, saltlen);
-    ascon_hmac_update(state, b, sizeof(b));
-    ascon_hmac_finalize(state, password, passwordlen, T);
+    ascon_xof_copy(&state2, state);
+    ascon_xof_absorb(&state2, salt, saltlen);
+    ascon_xof_absorb(&state2, b, sizeof(b));
+    ascon_xof_squeeze(&state2, T, ASCON_PBKDF2_SIZE);
+#if ASCON_PBKDF2_FREE_STATE
+    ascon_xof_free(&state2);
+#endif
     if (count > 1) {
-        ascon_hmac_reinit(state, password, passwordlen);
-        ascon_hmac_update(state, T, ASCON_HMAC_SIZE);
-        ascon_hmac_finalize(state, password, passwordlen, U);
-        lw_xor_block(T, U, ASCON_HMAC_SIZE);
+        ascon_xof_copy(&state2, state);
+        ascon_xof_absorb(&state2, T, ASCON_PBKDF2_SIZE);
+        ascon_xof_squeeze(&state2, U, ASCON_PBKDF2_SIZE);
+#if ASCON_PBKDF2_FREE_STATE
+        ascon_xof_free(&state2);
+#endif
+        lw_xor_block(T, U, ASCON_PBKDF2_SIZE);
         while (count > 2) {
-            ascon_hmac_reinit(state, password, passwordlen);
-            ascon_hmac_update(state, U, ASCON_HMAC_SIZE);
-            ascon_hmac_finalize(state, password, passwordlen, U);
-            lw_xor_block(T, U, ASCON_HMAC_SIZE);
+            ascon_xof_copy(&state2, state);
+            ascon_xof_absorb(&state2, U, ASCON_PBKDF2_SIZE);
+            ascon_xof_squeeze(&state2, U, ASCON_PBKDF2_SIZE);
+            ascon_xof_free(&state2);
+            lw_xor_block(T, U, ASCON_PBKDF2_SIZE);
             --count;
         }
     }
-    ascon_hmac_free(state);
+#if !ASCON_PBKDF2_FREE_STATE
+    ascon_xof_free(&state2);
+#endif
 }
 
 void ascon_pbkdf2
@@ -60,24 +84,25 @@ void ascon_pbkdf2
      const unsigned char *password, size_t passwordlen,
      const unsigned char *salt, size_t saltlen, unsigned long count)
 {
-    ascon_hmac_state_t state;
-    unsigned char U[ASCON_HMAC_SIZE];
+    ascon_xof_state_t state;
+    unsigned char U[ASCON_PBKDF2_SIZE];
     unsigned long blocknum = 1;
+    ascon_xof_init_custom
+        (&state, "PBKDF2", password, passwordlen, ASCON_PBKDF2_SIZE);
     while (outlen > 0) {
-        if (outlen >= ASCON_HMAC_SIZE) {
-            ascon_pbkdf2_f(&state, out, U, password, passwordlen,
-                           salt, saltlen, count, blocknum);
-            out += ASCON_HMAC_SIZE;
-            outlen -= ASCON_HMAC_SIZE;
+        if (outlen >= ASCON_PBKDF2_SIZE) {
+            ascon_pbkdf2_f(&state, out, U, salt, saltlen, count, blocknum);
+            out += ASCON_PBKDF2_SIZE;
+            outlen -= ASCON_PBKDF2_SIZE;
         } else {
-            unsigned char T[ASCON_HMAC_SIZE];
-            ascon_pbkdf2_f(&state, T, U, password, passwordlen,
-                           salt, saltlen, count, blocknum);
+            unsigned char T[ASCON_PBKDF2_SIZE];
+            ascon_pbkdf2_f(&state, T, U, salt, saltlen, count, blocknum);
             memcpy(out, T, outlen);
             ascon_clean(T, sizeof(T));
             break;
         }
         ++blocknum;
     }
+    ascon_xof_free(&state);
     ascon_clean(U, sizeof(U));
 }

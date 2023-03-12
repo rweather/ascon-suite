@@ -58,6 +58,10 @@ extern "C" {
  * ASCON_PBKDF2_SIZE bytes, but this limit is not checked.
  * The \a count value should be large enough to provide resistance
  * against dictionary attacks on the password.
+ *
+ * \note This function uses ASCON-XOF to implement the pseudorandom
+ * function PRF from RFC 8018 rather than HMAC.  This is more efficient
+ * in terms of time and code size.
  */
 void ascon_pbkdf2
     (unsigned char *out, size_t outlen,
