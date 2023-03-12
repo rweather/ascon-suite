@@ -58,7 +58,6 @@ list(APPEND ASCON_SOURCES
     mac/ascon-hmac-common.h
     mac/ascon-kmac.c
     mac/ascon-kmaca.c
-    mac/ascon-kmac-common.h
     mac/ascon-prf.c
     masking/ascon-masked-backend.h
     masking/ascon-masked-config.h

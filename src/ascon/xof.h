@@ -516,6 +516,21 @@ public:
     }
 
     /**
+     * \brief Constructs a new ASCON-XOF object with a named function and
+     * customization string.
+     *
+     * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
+     * empty for no function name.
+     * \param custom The customization string.
+     */
+    inline xof_with_output_length
+        (const char *function_name, const ascon::byte_array &custom)
+    {
+        ::ascon_xof_init_custom
+            (&m_state, function_name, custom.data(), custom.size(), outlen);
+    }
+
+    /**
      * \brief Destroys this ASCON-XOF object.
      */
     inline ~xof_with_output_length()
@@ -769,6 +784,21 @@ public:
     {
         ::ascon_xofa_init_custom
             (&m_state, function_name, custom, customlen, outlen);
+    }
+
+    /**
+     * \brief Constructs a new ASCON-XOFA object with a named function and
+     * customization string.
+     *
+     * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
+     * empty for no function name.
+     * \param custom The customization string.
+     */
+    inline xofa_with_output_length
+        (const char *function_name, const ascon::byte_array &custom)
+    {
+        ::ascon_xofa_init_custom
+            (&m_state, function_name, custom.data(), custom.size(), outlen);
     }
 
     /**

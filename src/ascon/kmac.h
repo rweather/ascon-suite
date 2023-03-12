@@ -34,8 +34,8 @@
  * hashing the key followed by the data.
  *
  * NIST SP 800-185 is an extension of the XOF modes SHAKE128 and SHAKE256.
- * The nearest equivalent for us is ASCON-XOF.  We use the same encoding
- * as NIST SP 800-185 to provide domain separation between the key and data.
+ * The nearest equivalent for us is ASCON-XOF with function names and
+ * customization strings.
  *
  * Two versions of KMAC are provided: ASCON-KMAC based around ASCON-XOF,
  * and ASCON-KMACA based around ASCON-XOFA.
@@ -104,12 +104,13 @@ void ascon_kmac
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
  * \sa ascon_kmac_update(), ascon_kmac_squeeze()
  */
 void ascon_kmac_init
     (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen);
+     const unsigned char *custom, size_t customlen, size_t outlen);
 
 /**
  * \brief Re-initializes an incremental KMAC state using ASCON-XOF.
@@ -119,6 +120,7 @@ void ascon_kmac_init
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
  * This function is equivalent to calling ascon_kmac_free() and then
  * ascon_kmac_init().
@@ -127,7 +129,7 @@ void ascon_kmac_init
  */
 void ascon_kmac_reinit
     (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen);
+     const unsigned char *custom, size_t customlen, size_t outlen);
 
 /**
  * \brief Frees the ASCON-KMAC state and destroys any sensitive material.
@@ -149,48 +151,16 @@ void ascon_kmac_absorb
     (ascon_kmac_state_t *state, const unsigned char *in, size_t inlen);
 
 /**
- * \brief Sets the desired output length for an incremental ASCON-KMAC state.
- *
- * \param state KMAC state to squeeze the output data from after the
- * desired output length has been set.
- * \param outlen Desired output length, or zero for arbitrary-length output.
- *
- * \sa ascon_kmac_squeeze()
- */
-void ascon_kmac_set_output_length(ascon_kmac_state_t *state, size_t outlen);
-
-/**
  * \brief Squeezes output data from an incremental ASCON-KMAC state.
  *
  * \param state KMAC state to squeeze the output data from.
  * \param out Points to the output buffer to receive the squeezed data.
  * \param outlen Number of bytes of data to squeeze out of the state.
  *
- * The application should call ascon_kmac_set_output_length() before
- * this function to set the desured output length.  If that function
- * has not been called, then this function will assume that the application
- * wants arbitrary-length output.
- *
  * \sa ascon_kmac_init(), ascon_kmac_update(), ascon_kmac_finalize()
  */
 void ascon_kmac_squeeze
     (ascon_kmac_state_t *state, unsigned char *out, size_t outlen);
-
-/**
- * \brief Squeezes fixed-length data from an incremental ASCON-KMAC
- * state and finalizes the KMAC process.
- *
- * \param state KMAC state to squeeze the output data from.
- * \param out Points to the output buffer to receive the
- * ASCON_KMAC_SIZE bytes of squeezed data.
- *
- * This function combines the effect of ascon_kmac_set_output_length()
- * and ascon_kmac_squeeze() for convenience.
- *
- * \sa ascon_kmac_squeeze(), ascon_kmac_set_output_length()
- */
-void ascon_kmac_finalize
-    (ascon_kmac_state_t *state, unsigned char out[ASCON_KMAC_SIZE]);
 
 /**
  * \brief Computes a KMAC value using ASCON-XOFA.
@@ -221,12 +191,13 @@ void ascon_kmaca
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
  * \sa ascon_kmaca_update(), ascon_kmaca_squeeze()
  */
 void ascon_kmaca_init
     (ascon_kmaca_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen);
+     const unsigned char *custom, size_t customlen, size_t outlen);
 
 /**
  * \brief Re-initializes an incremental KMAC state using ASCON-XOFA.
@@ -236,6 +207,7 @@ void ascon_kmaca_init
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
  * This function is equivalent to calling ascon_kmaca_free() and then
  * ascon_kmaca_init().
@@ -244,7 +216,7 @@ void ascon_kmaca_init
  */
 void ascon_kmaca_reinit
     (ascon_kmaca_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen);
+     const unsigned char *custom, size_t customlen, size_t outlen);
 
 /**
  * \brief Frees the ASCON-KMACA state and destroys any sensitive material.
@@ -266,48 +238,16 @@ void ascon_kmaca_absorb
     (ascon_kmaca_state_t *state, const unsigned char *in, size_t inlen);
 
 /**
- * \brief Sets the desired output length for an incremental ASCON-KMACA state.
- *
- * \param state KMAC state to squeeze the output data from after the
- * desired output length has been set.
- * \param outlen Desired output length, or zero for arbitrary-length output.
- *
- * \sa ascon_kmaca_squeeze()
- */
-void ascon_kmaca_set_output_length(ascon_kmaca_state_t *state, size_t outlen);
-
-/**
  * \brief Squeezes output data from an incremental ASCON-KMACA state.
  *
  * \param state KMAC state to squeeze the output data from.
  * \param out Points to the output buffer to receive the squeezed data.
  * \param outlen Number of bytes of data to squeeze out of the state.
  *
- * The application should call ascon_kmaca_set_output_length() before
- * this function to set the desured output length.  If that function
- * has not been called, then this function will assume that the application
- * wants arbitrary-length output.
- *
  * \sa ascon_kmaca_init(), ascon_kmaca_update(), ascon_kmaca_finalize()
  */
 void ascon_kmaca_squeeze
     (ascon_kmaca_state_t *state, unsigned char *out, size_t outlen);
-
-/**
- * \brief Squeezes fixed-length data from an incremental ASCON-KMACA
- * state and finalizes the KMAC process.
- *
- * \param state KMAC state to squeeze the output data from.
- * \param out Points to the output buffer to receive the
- * ASCON_KMACA_SIZE bytes of squeezed data.
- *
- * This function combines the effect of ascon_kmaca_set_output_length()
- * and ascon_kmaca_squeeze() for convenience.
- *
- * \sa ascon_kmaca_squeeze(), ascon_kmaca_set_output_length()
- */
-void ascon_kmaca_finalize
-    (ascon_kmaca_state_t *state, unsigned char out[ASCON_KMACA_SIZE]);
 
 #ifdef __cplusplus
 }

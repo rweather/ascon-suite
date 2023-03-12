@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2023 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,41 +22,99 @@
 
 #include <ascon/kmac.h>
 #include <ascon/utility.h>
+#include "hash/ascon-xof-internal.h"
+#include "core/ascon-util-snp.h"
 #include <string.h>
 
 /**
- * \brief Intializes a ASCON-KMAC context with the prefix pre-computed.
+ * \brief Intializes a ASCON-KMAC context with the first block pre-computed.
  *
  * \param state Points to the internal ASCON-XOF state to initialize.
  */
 static void ascon_kmac_init_precomputed(ascon_xof_state_t *state)
 {
-    static unsigned char const kmac_iv[40] = {
-        0xe9, 0x9c, 0x8c, 0x07, 0x34, 0xea, 0x50, 0x0d,
-        0x47, 0xdb, 0x5a, 0xef, 0xc7, 0x14, 0x5c, 0x7d,
-        0xa9, 0x83, 0x39, 0x87, 0x9e, 0x0d, 0x0a, 0x5e,
-        0x6f, 0xfa, 0x41, 0x35, 0x0e, 0x80, 0x7e, 0x09,
-        0x73, 0x27, 0x88, 0x0d, 0x8b, 0x76, 0x4c, 0x34
+#if defined(ASCON_BACKEND_SLICED64)
+    static uint64_t const iv[5] = {
+        0x7a09132495dfa176ULL, 0x1b19e04f31cc4caeULL,
+        0x64ba72afaa61d2b1ULL, 0xd2964e09a5169084ULL,
+        0x05bc6c865abe514bULL
     };
+    memcpy(state->state.S, iv, sizeof(iv));
+#elif defined(ASCON_BACKEND_SLICED32)
+    static uint32_t const iv[10] = {
+        0xc1527f1e, 0x72148bc5, 0x558b5aa2, 0x32c34a2f,
+        0xa4c309c5, 0x4f5ff49c, 0xc6a13642, 0x9932c188,
+        0x36a2c6d9, 0x0e693f03
+    };
+    memcpy(state->state.W, iv, sizeof(iv));
+#else
+    static uint8_t const iv[40] = {
+        0x7a, 0x09, 0x13, 0x24, 0x95, 0xdf, 0xa1, 0x76,
+        0x1b, 0x19, 0xe0, 0x4f, 0x31, 0xcc, 0x4c, 0xae,
+        0x64, 0xba, 0x72, 0xaf, 0xaa, 0x61, 0xd2, 0xb1,
+        0xd2, 0x96, 0x4e, 0x09, 0xa5, 0x16, 0x90, 0x84,
+        0x05, 0xbc, 0x6c, 0x86, 0x5a, 0xbe, 0x51, 0x4b
+    };
+#if defined(ASCON_BACKEND_DIRECT_XOR)
+    memcpy(state->state.B, iv, sizeof(iv));
+#else
     ascon_init(&(state->state));
-    ascon_overwrite_bytes(&(state->state), kmac_iv, 0, sizeof(kmac_iv));
+    ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
     ascon_release(&(state->state));
+#endif
+#endif
     state->count = 0;
     state->mode = 0;
 }
 
-/* The actual implementation is in the "ascon-kmac-common.h" file */
+void ascon_kmac
+    (const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen,
+     unsigned char *out, size_t outlen)
+{
+    ascon_kmac_state_t state;
+    ascon_kmac_init(&state, key, keylen, custom, customlen, outlen);
+    ascon_xof_absorb(&(state.xof), in, inlen);
+    ascon_xof_squeeze(&(state.xof), out, outlen);
+    ascon_kmac_free(&state);
+}
 
-/* ASCON-XOF */
-#define KMAC_ALG_NAME ascon_kmac
-#define KMAC_SIZE ASCON_KMAC_SIZE
-#define KMAC_STATE ascon_kmac_state_t
-#define KMAC_RATE ASCON_XOF_RATE
-#define KMAC_XOF_INIT ascon_xof_init
-#define KMAC_XOF_PREINIT ascon_kmac_init_precomputed
-#define KMAC_XOF_FREE ascon_xof_free
-#define KMAC_XOF_ABSORB ascon_xof_absorb
-#define KMAC_XOF_SQUEEZE ascon_xof_squeeze
-#define KMAC_XOF_PAD ascon_xof_pad
-#define KMAC_XOF_IS_ABSORBING(state) ((state)->mode == 0)
-#include "mac/ascon-kmac-common.h"
+void ascon_kmac_init
+    (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
+     const unsigned char *custom, size_t customlen, size_t outlen)
+{
+    if (outlen == ASCON_KMAC_SIZE) {
+        ascon_kmac_init_precomputed(&(state->xof));
+        ascon_xof_absorb_custom(&(state->xof), custom, customlen);
+    } else {
+        ascon_xof_init_custom(&(state->xof), "KMAC", custom, customlen, outlen);
+    }
+    ascon_xof_absorb(&(state->xof), key, keylen);
+}
+
+void ascon_kmac_reinit
+    (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
+     const unsigned char *custom, size_t customlen, size_t outlen)
+{
+    ascon_kmac_free(state);
+    ascon_kmac_init(state, key, keylen, custom, customlen, outlen);
+}
+
+void ascon_kmac_free(ascon_kmac_state_t *state)
+{
+    if (state)
+        ascon_xof_free(&(state->xof));
+}
+
+void ascon_kmac_absorb
+    (ascon_kmac_state_t *state, const unsigned char *in, size_t inlen)
+{
+    ascon_xof_absorb(&(state->xof), in, inlen);
+}
+
+void ascon_kmac_squeeze
+    (ascon_kmac_state_t *state, unsigned char *out, size_t outlen)
+{
+    ascon_xof_squeeze(&(state->xof), out, outlen);
+}

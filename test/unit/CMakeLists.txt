@@ -4,8 +4,6 @@ enable_testing()
 list(APPEND COMMON_TEST_SOURCES
     sha256.c
     sha256.h
-    sha3.c
-    sha3.h
     test-cipher.c
     test-cipher.h
 )
