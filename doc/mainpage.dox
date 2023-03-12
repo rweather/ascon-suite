@@ -137,8 +137,11 @@ provide Synthetic Initialization Vector (SIV) encryption modes.
 See the \ref siv "SIV page" for more information.
 \li ISAP-A-128, ISAP-A-128A, and ISAP-A-80PQ modes for enhanced
 protection against side channel leakage.
-\li HMAC and KMAC modes for keyed hashing built around ASCON-HASH and
-ASCON-XOF.  See the \ref kmac "KMAC page" for more information on ASCON-KMAC.
+\li Customizable hashing with ASCON-cXOF.  See \ref cxof "this page" for
+more information on ASCON-cXOF.
+\li KMAC modes for keyed hashing built around ASCON-cXOF.  See the
+\ref kmac "KMAC page" for more information on ASCON-KMAC.
+\li HMAC modes for keyed hashing built around ASCON-HASH.
 \li ASCON-PRNG for generating an arbitary sequence of random data from
 system-supplied and application-supplied seed material.  This is based on
 ASCON-XOF and uses the <a href="https://keccak.team/files/SpongePRNG.pdf">SpongePRNG</a>

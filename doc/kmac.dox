@@ -32,34 +32,12 @@ under a key using ASCON in hashing mode.  The input is essentially
 equivalent to hashing the key followed by the data without the
 double layers of hashing that are needed for HMAC.
 
+In this library, KMAC is defined in terms of
+\ref cxof "ASCON-cXOF customizable hashing".
+
 Note: Other hash algorithms like SHA-256 use HMAC instead of KMAC.
 The HMAC construction is not necessary for sponge-based hash algorithms
 like ASCON, so the simpler KMAC is preferable.
-
-\section kmac_nist Standard NIST KMAC
-
-<a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf">NIST SP 800-185</a> is an extension of the extensible-output function (XOF)
-modes SHAKE128 and SHAKE256.
-
-\section kmac_technical Technical details of ASCON-KMAC
-
-The nearest equivalent to SHAKE is ASCON-XOF.  We use a similar encoding to
-NIST SP 800-185 to provide domain separation between the key and data.
-We form the data to be hashed as a concatenation of the following:
-
-\li Declaration of the rate block size, which for this algorithm is the
-two byte sequence 0x01 0x08.
-\li Length-prefixed function name, which is "KMAC" for this algorithm.
-\li Length-prefixed application-supplied customization string.
-\li Zero padding to a multiple of the 8-byte rate block size.
-\li Another copy of the rate declaration, this time for the key.
-\li Length-prefixed key.
-\li Zero padding to a multiple of the 8-byte rate block size.
-\li The actual data to be authenticated.
-\li Length-suffixed size of the desired output, 0 for arbitrary output.
-
-We use the same encoding for length prefixes and suffixes as
-NIST SP 800-185.
 
 \section kmac_using Using ASCON-KMAC
 
@@ -98,27 +76,16 @@ amounts of output using the incremental API:
 
 \code
 ascon_kmac_state_t kmac;
-ascon_kmac_init(&kmac, key, key_len, "A2B", 3);
+ascon_kmac_init(&kmac, key, key_len, "A2B", 3, 0);
 ascon_kmac_absorb(&kmac, input1, sizeof(input1));
 ascon_kmac_absorb(&kmac, input2, sizeof(input2));
 ...;
 ascon_kmac_absorb(&kmac, inputN, sizeof(inputN));
-ascon_kmac_set_output_length(&kmac, sizeof(out1) + sizeof(out2));
 ascon_kmac_squeeze(&kmac, out1, sizeof(out1));
 ascon_kmac_squeeze(&kmac, out2, sizeof(out2));
 \endcode
 
-If the output length is not set with ascon_kmac_set_output_length(),
-then it is assumed that the output is open-ended.  Open-ended output
-can also be specified with an output length of 0.
-
 ASCON-KMACA has a similar API, but uses ASCON-XOFA internally instead
 of ASCON-XOF.
-
-\section kmac_other_modes Other NIST modes
-
-NIST SP 800-185 also defines modes called cSHAKE, TupleHash, and ParallelHash,
-using the same definition style as KMAC.  We could define similar modes for
-ASCON as well but haven't done so yet.  They aren't as widely used as KMAC.
 
 */
