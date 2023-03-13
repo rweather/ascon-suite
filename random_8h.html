@@ -96,18 +96,15 @@ Functions</h2></td></tr>
 <tr class="memitem:aa007eabc7073074870088f5d168ffcce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#aa007eabc7073074870088f5d168ffcce">ascon_random_free</a> (<a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:aa007eabc7073074870088f5d168ffcce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a pseudorandom number generator and destroys any sensitive values.  <a href="random_8h.html#aa007eabc7073074870088f5d168ffcce">More...</a><br /></td></tr>
 <tr class="separator:aa007eabc7073074870088f5d168ffcce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a373c40dd344c2f0850e3755b506bb80e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#a373c40dd344c2f0850e3755b506bb80e">ascon_random_generate</a> (<a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, unsigned char *out, size_t outlen)</td></tr>
-<tr class="memdesc:a373c40dd344c2f0850e3755b506bb80e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates data from a pseudorandom number generator.  <a href="random_8h.html#a373c40dd344c2f0850e3755b506bb80e">More...</a><br /></td></tr>
-<tr class="separator:a373c40dd344c2f0850e3755b506bb80e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a296e020f6a0eeea087f0cd2a682ba1e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#a296e020f6a0eeea087f0cd2a682ba1e1">ascon_random_fetch</a> (<a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, unsigned char *out, size_t outlen)</td></tr>
+<tr class="memdesc:a296e020f6a0eeea087f0cd2a682ba1e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fetches data from a pseudorandom number generator.  <a href="random_8h.html#a296e020f6a0eeea087f0cd2a682ba1e1">More...</a><br /></td></tr>
+<tr class="separator:a296e020f6a0eeea087f0cd2a682ba1e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11d9bef48a944437fe9a3665715aa3ba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#a11d9bef48a944437fe9a3665715aa3ba">ascon_random_reseed</a> (<a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>)</td></tr>
 <tr class="memdesc:a11d9bef48a944437fe9a3665715aa3ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Explicitly re-seeds a pseudorandom number generator from the system random number source.  <a href="random_8h.html#a11d9bef48a944437fe9a3665715aa3ba">More...</a><br /></td></tr>
 <tr class="separator:a11d9bef48a944437fe9a3665715aa3ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e6a4173975685ea94c57de67773cb74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#a5e6a4173975685ea94c57de67773cb74">ascon_random_add_entropy</a> (<a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, const unsigned char *entropy, size_t size)</td></tr>
-<tr class="memdesc:a5e6a4173975685ea94c57de67773cb74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds entropy to a pseudorandom number generator.  <a href="random_8h.html#a5e6a4173975685ea94c57de67773cb74">More...</a><br /></td></tr>
-<tr class="separator:a5e6a4173975685ea94c57de67773cb74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52a18de8044cda5b9080578651e3485d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#a52a18de8044cda5b9080578651e3485d">ascon_random_add_entropy_quick</a> (<a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, uint64_t entropy)</td></tr>
-<tr class="memdesc:a52a18de8044cda5b9080578651e3485d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quickly adds a 64-bit word of entropy to a pseudorandom number generator.  <a href="random_8h.html#a52a18de8044cda5b9080578651e3485d">More...</a><br /></td></tr>
-<tr class="separator:a52a18de8044cda5b9080578651e3485d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6a7f7b003e867aaa26492bafad369c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="random_8h.html#ac6a7f7b003e867aaa26492bafad369c1">ascon_random_feed</a> (<a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *<a class="el" href="snippets_8c.html#a11a12bb758476a291d682dac7046a3f4">state</a>, const unsigned char *entropy, size_t size)</td></tr>
+<tr class="memdesc:ac6a7f7b003e867aaa26492bafad369c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Feeds entropy into a pseudorandom number generator.  <a href="random_8h.html#ac6a7f7b003e867aaa26492bafad369c1">More...</a><br /></td></tr>
+<tr class="separator:ac6a7f7b003e867aaa26492bafad369c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Pseudorandom number generator (PRNG) built around ASCON. </p>
@@ -162,14 +159,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5e6a4173975685ea94c57de67773cb74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e6a4173975685ea94c57de67773cb74">&#9670;&nbsp;</a></span>ascon_random_add_entropy()</h2>
+<a id="ac6a7f7b003e867aaa26492bafad369c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6a7f7b003e867aaa26492bafad369c1">&#9670;&nbsp;</a></span>ascon_random_feed()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void ascon_random_add_entropy </td>
+          <td class="memname">void ascon_random_feed </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *&#160;</td>
           <td class="paramname"><em>state</em>, </td>
@@ -194,31 +191,30 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Adds entropy to a pseudorandom number generator. </p>
+<p>Feeds entropy into a pseudorandom number generator. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">state</td><td>The pseudorandom number generator to add entropy to. </td></tr>
+    <tr><td class="paramname">state</td><td>The pseudorandom number generator to feed the entropy into. </td></tr>
     <tr><td class="paramname">entropy</td><td>Points to a buffer containing the entropy. </td></tr>
     <tr><td class="paramname">size</td><td>Number of bytes of entropy to add, which can be zero to "stir" the random pool but not introduce any new entropy.</td></tr>
   </table>
   </dd>
 </dl>
 <p>This API does not keep track of how much entropy has been collected. Estimating the amount of entropy contained in noise sources is difficult and would make the API very complex.</p>
-<p>The application can keep track of "entropy credits" itself if that is important. And then only call <a class="el" href="random_8h.html#a373c40dd344c2f0850e3755b506bb80e" title="Generates data from a pseudorandom number generator.">ascon_random_generate()</a> when it judges that the entropy pool is sufficiently populated.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#a52a18de8044cda5b9080578651e3485d" title="Quickly adds a 64-bit word of entropy to a pseudorandom number generator.">ascon_random_add_entropy_quick()</a> </dd></dl>
+<p>The application can keep track of "entropy credits" itself if that is important. And then only call <a class="el" href="random_8h.html#a296e020f6a0eeea087f0cd2a682ba1e1" title="Fetches data from a pseudorandom number generator.">ascon_random_fetch()</a> when it judges that the entropy pool is sufficiently populated. </p>
 
-<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00130">130</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00135">135</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
 
 </div>
 </div>
-<a id="a52a18de8044cda5b9080578651e3485d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52a18de8044cda5b9080578651e3485d">&#9670;&nbsp;</a></span>ascon_random_add_entropy_quick()</h2>
+<a id="a296e020f6a0eeea087f0cd2a682ba1e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a296e020f6a0eeea087f0cd2a682ba1e1">&#9670;&nbsp;</a></span>ascon_random_fetch()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void ascon_random_add_entropy_quick </td>
+          <td class="memname">void ascon_random_fetch </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *&#160;</td>
           <td class="paramname"><em>state</em>, </td>
@@ -226,8 +222,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint64_t&#160;</td>
-          <td class="paramname"><em>entropy</em>&#160;</td>
+          <td class="paramtype">unsigned char *&#160;</td>
+          <td class="paramname"><em>out</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>outlen</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -237,21 +239,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Quickly adds a 64-bit word of entropy to a pseudorandom number generator. </p>
+<p>Fetches data from a pseudorandom number generator. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">state</td><td>The pseudorandom number generator to add entropy to. </td></tr>
-    <tr><td class="paramname">entropy</td><td>The entropy value.</td></tr>
+    <tr><td class="paramname">state</td><td>The pseudorandom number generator state to use. </td></tr>
+    <tr><td class="paramname">out</td><td>Points to a buffer to receive the random data. </td></tr>
+    <tr><td class="paramname">outlen</td><td>Number of bytes of random data to fetch.</td></tr>
   </table>
   </dd>
 </dl>
-<p>This function is intended for collecting entropy at high frequency from simple sources. The <em>entropy</em> may be an analog reading from a noise source, the timing jitter from input events, or something else.</p>
-<p>This function incorporates <em>entropy</em> into the state and performs two rounds of the ASCON permutation to lightly mix it into the state. This reduces the overhead of entropy collection.</p>
-<p>If your entropy source is slow or intermittent, then <a class="el" href="random_8h.html#a5e6a4173975685ea94c57de67773cb74" title="Adds entropy to a pseudorandom number generator.">ascon_random_add_entropy()</a> is a better choice.</p>
-<p>When using this function, it is recommended that <a class="el" href="random_8h.html#a5e6a4173975685ea94c57de67773cb74" title="Adds entropy to a pseudorandom number generator.">ascon_random_add_entropy()</a> be called periodically with zero-length input to "stir" the entropy into the random pool properly.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#a5e6a4173975685ea94c57de67773cb74" title="Adds entropy to a pseudorandom number generator.">ascon_random_add_entropy()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#a11d9bef48a944437fe9a3665715aa3ba" title="Explicitly re-seeds a pseudorandom number generator from the system random number source.">ascon_random_reseed()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00139">139</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00090">90</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
 
 </div>
 </div>
@@ -280,54 +279,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#abe4bd03fb2545209bb84f04dac6854f5" title="Initializes a pseudorandom number generator from the system random number source.">ascon_random_init()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00077">77</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
-
-</div>
-</div>
-<a id="a373c40dd344c2f0850e3755b506bb80e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a373c40dd344c2f0850e3755b506bb80e">&#9670;&nbsp;</a></span>ascon_random_generate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ascon_random_generate </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structascon__random__state__t.html">ascon_random_state_t</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned char *&#160;</td>
-          <td class="paramname"><em>out</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>outlen</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Generates data from a pseudorandom number generator. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>The pseudorandom number generator state to use. </td></tr>
-    <tr><td class="paramname">out</td><td>Points to a buffer to receive the random data. </td></tr>
-    <tr><td class="paramname">outlen</td><td>Number of bytes of random data to generate.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#a11d9bef48a944437fe9a3665715aa3ba" title="Explicitly re-seeds a pseudorandom number generator from the system random number source.">ascon_random_reseed()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00085">85</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00082">82</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
 
 </div>
 </div>
@@ -357,9 +309,9 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Non-zero if the system random number source is working; zero if there is no system random number source or it has failed.</dd></dl>
 <p>In the case of a zero return, the returned data may be predictable so the application should avoid using the pseudorandom number generator unless it has some other source of entropy it can use.</p>
 <dl class="section note"><dt>Note</dt><dd>If this function returns zero, then the <em>state</em> is still usable to generate data at a lower level of quality. The <em>state</em> must be freed explicitly with <a class="el" href="random_8h.html#aa007eabc7073074870088f5d168ffcce" title="Frees a pseudorandom number generator and destroys any sensitive values.">ascon_random_free()</a> regardless of the return value from this function.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#a373c40dd344c2f0850e3755b506bb80e" title="Generates data from a pseudorandom number generator.">ascon_random_generate()</a>, <a class="el" href="random_8h.html#a5e6a4173975685ea94c57de67773cb74" title="Adds entropy to a pseudorandom number generator.">ascon_random_add_entropy()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#a296e020f6a0eeea087f0cd2a682ba1e1" title="Fetches data from a pseudorandom number generator.">ascon_random_fetch()</a>, <a class="el" href="random_8h.html#ac6a7f7b003e867aaa26492bafad369c1" title="Feeds entropy into a pseudorandom number generator.">ascon_random_feed()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00061">61</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00066">66</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
 
 </div>
 </div>
@@ -387,17 +339,17 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Non-zero if the system random number source is working; zero if there is no system random number source or it has failed.</dd></dl>
-<p>The pseudorandom number generator will be re-seeded periodically by <a class="el" href="random_8h.html#a373c40dd344c2f0850e3755b506bb80e" title="Generates data from a pseudorandom number generator.">ascon_random_generate()</a> but the application can choose to re-seed more often if it needs fresh random data.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#a373c40dd344c2f0850e3755b506bb80e" title="Generates data from a pseudorandom number generator.">ascon_random_generate()</a> </dd></dl>
+<p>The pseudorandom number generator will be re-seeded periodically by <a class="el" href="random_8h.html#a296e020f6a0eeea087f0cd2a682ba1e1" title="Fetches data from a pseudorandom number generator.">ascon_random_fetch()</a> but the application can choose to re-seed more often if it needs fresh random data.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="random_8h.html#a296e020f6a0eeea087f0cd2a682ba1e1" title="Fetches data from a pseudorandom number generator.">ascon_random_fetch()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00111">111</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ascon-prng_8c_source.html#l00116">116</a> of file <a class="el" href="ascon-prng_8c_source.html">ascon-prng.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 27 2023 04:49:16 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Mar 13 2023 19:22:36 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

@@ -67,34 +67,14 @@ $(function() {
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#kmac_intro">Introduction</a></li>
-<li class="level1"><a href="#kmac_nist">Standard NIST KMAC</a></li>
-<li class="level1"><a href="#kmac_technical">Technical details of ASCON-KMAC</a></li>
 <li class="level1"><a href="#kmac_using">Using ASCON-KMAC</a></li>
-<li class="level1"><a href="#kmac_other_modes">Other NIST modes</a></li>
 </ul>
 </div>
 <div class="textblock"><h1><a class="anchor" id="kmac_intro"></a>
 Introduction</h1>
 <p>The KMAC mode provides a method to authenticate a sequence of bytes under a key using ASCON in hashing mode. The input is essentially equivalent to hashing the key followed by the data without the double layers of hashing that are needed for HMAC.</p>
+<p>In this library, KMAC is defined in terms of <a class="el" href="cxof.html">ASCON-cXOF customizable hashing</a>.</p>
 <p>Note: Other hash algorithms like SHA-256 use HMAC instead of KMAC. The HMAC construction is not necessary for sponge-based hash algorithms like ASCON, so the simpler KMAC is preferable.</p>
-<h1><a class="anchor" id="kmac_nist"></a>
-Standard NIST KMAC</h1>
-<p><a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf">NIST SP 800-185</a> is an extension of the extensible-output function (XOF) modes SHAKE128 and SHAKE256.</p>
-<h1><a class="anchor" id="kmac_technical"></a>
-Technical details of ASCON-KMAC</h1>
-<p>The nearest equivalent to SHAKE is ASCON-XOF. We use a similar encoding to NIST SP 800-185 to provide domain separation between the key and data. We form the data to be hashed as a concatenation of the following:</p>
-<ul>
-<li>Declaration of the rate block size, which for this algorithm is the two byte sequence 0x01 0x08. </li>
-<li>Length-prefixed function name, which is "KMAC" for this algorithm. </li>
-<li>Length-prefixed application-supplied customization string. </li>
-<li>Zero padding to a multiple of the 8-byte rate block size. </li>
-<li>Another copy of the rate declaration, this time for the key. </li>
-<li>Length-prefixed key. </li>
-<li>Zero padding to a multiple of the 8-byte rate block size. </li>
-<li>The actual data to be authenticated. </li>
-<li>Length-suffixed size of the desired output, 0 for arbitrary output.</li>
-</ul>
-<p>We use the same encoding for length prefixes and suffixes as NIST SP 800-185.</p>
 <h1><a class="anchor" id="kmac_using"></a>
 Using ASCON-KMAC</h1>
 <p>Given a key and an input buffer containing data to authenticate, the output KMAC value can be computed as follows:</p>
@@ -104,7 +84,7 @@ Using ASCON-KMAC</h1>
 <div class="line"><a class="code" href="kmac_8h.html#af77d295266b216a6c2573d209ccaa167">ascon_kmac</a>(key, key_len, input, input_len, 0, 0, out, <span class="keyword">sizeof</span>(out));</div>
 <div class="ttc" id="akmac_8h_html"><div class="ttname"><a href="kmac_8h.html">kmac.h</a></div><div class="ttdoc">Keyed Message Authentication Code (KMAC) based on ASCON-XOF.</div></div>
 <div class="ttc" id="akmac_8h_html_a7cd133c2679a76220bb714e6f1825a9c"><div class="ttname"><a href="kmac_8h.html#a7cd133c2679a76220bb714e6f1825a9c">ASCON_KMAC_SIZE</a></div><div class="ttdeci">#define ASCON_KMAC_SIZE</div><div class="ttdoc">Default size of the output for ASCON-KMAC.</div><div class="ttdef"><b>Definition:</b> <a href="kmac_8h_source.html#l00053">kmac.h:53</a></div></div>
-<div class="ttc" id="akmac_8h_html_af77d295266b216a6c2573d209ccaa167"><div class="ttname"><a href="kmac_8h.html#af77d295266b216a6c2573d209ccaa167">ascon_kmac</a></div><div class="ttdeci">void ascon_kmac(const unsigned char *key, size_t keylen, const unsigned char *in, size_t inlen, const unsigned char *custom, size_t customlen, unsigned char *out, size_t outlen)</div><div class="ttdoc">Computes a KMAC value using ASCON-XOF.</div></div>
+<div class="ttc" id="akmac_8h_html_af77d295266b216a6c2573d209ccaa167"><div class="ttname"><a href="kmac_8h.html#af77d295266b216a6c2573d209ccaa167">ascon_kmac</a></div><div class="ttdeci">void ascon_kmac(const unsigned char *key, size_t keylen, const unsigned char *in, size_t inlen, const unsigned char *custom, size_t customlen, unsigned char *out, size_t outlen)</div><div class="ttdoc">Computes a KMAC value using ASCON-XOF.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-kmac_8c_source.html#l00070">ascon-kmac.c:71</a></div></div>
 </div><!-- fragment --><p>This uses the default output length of ASCON_KMAC_SIZE (32) and a zero-length customization string. Customization strings can provide domain separation between two different uses of the same input.</p>
 <p>As an example of customization, say we wanted to derive two different session keys from the same input; one for encrypting data from party A to party B and the other for encrypting data from party B back to party A. We can use KMAC as a key derivation function (KDF) with different customization strings in each direction:</p>
 <div class="fragment"><div class="line"><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> atob_key[<a class="code" href="aead_8h.html#a74d1e46abe6ab08aeb2c431344f2107f">ASCON128_KEY_SIZE</a>];</div>
@@ -115,29 +95,23 @@ Using ASCON-KMAC</h1>
 </div><!-- fragment --><p>The two outputs are related to each other but will be completely different due to the different customization strings (<code>A2B</code> and <code>B2A</code>).</p>
 <p>ASCON-KMAC can process arbitrary amounts of input and generate arbitrary amounts of output using the incremental API:</p>
 <div class="fragment"><div class="line"><a class="code" href="structascon__kmac__state__t.html">ascon_kmac_state_t</a> kmac;</div>
-<div class="line"><a class="code" href="kmac_8h.html#a1df25dd7b8c1f50c703ed535c4416ff5">ascon_kmac_init</a>(&amp;kmac, key, key_len, <span class="stringliteral">&quot;A2B&quot;</span>, 3);</div>
+<div class="line"><a class="code" href="kmac_8h.html#a8fa415634727fc2231a45afcea416ad0">ascon_kmac_init</a>(&amp;kmac, key, key_len, <span class="stringliteral">&quot;A2B&quot;</span>, 3, 0);</div>
 <div class="line"><a class="code" href="kmac_8h.html#a6344772e6b64962e2ea64e4e1c6a7f78">ascon_kmac_absorb</a>(&amp;kmac, input1, <span class="keyword">sizeof</span>(input1));</div>
 <div class="line"><a class="code" href="kmac_8h.html#a6344772e6b64962e2ea64e4e1c6a7f78">ascon_kmac_absorb</a>(&amp;kmac, input2, <span class="keyword">sizeof</span>(input2));</div>
 <div class="line">...;</div>
 <div class="line"><a class="code" href="kmac_8h.html#a6344772e6b64962e2ea64e4e1c6a7f78">ascon_kmac_absorb</a>(&amp;kmac, inputN, <span class="keyword">sizeof</span>(inputN));</div>
-<div class="line"><a class="code" href="kmac_8h.html#a95d5029c672a5b34889afaf2994d2335">ascon_kmac_set_output_length</a>(&amp;kmac, <span class="keyword">sizeof</span>(out1) + <span class="keyword">sizeof</span>(out2));</div>
 <div class="line"><a class="code" href="kmac_8h.html#a7fe5157f6574cc449e84abddac2cf1f9">ascon_kmac_squeeze</a>(&amp;kmac, out1, <span class="keyword">sizeof</span>(out1));</div>
 <div class="line"><a class="code" href="kmac_8h.html#a7fe5157f6574cc449e84abddac2cf1f9">ascon_kmac_squeeze</a>(&amp;kmac, out2, <span class="keyword">sizeof</span>(out2));</div>
-<div class="ttc" id="akmac_8h_html_a1df25dd7b8c1f50c703ed535c4416ff5"><div class="ttname"><a href="kmac_8h.html#a1df25dd7b8c1f50c703ed535c4416ff5">ascon_kmac_init</a></div><div class="ttdeci">void ascon_kmac_init(ascon_kmac_state_t *state, const unsigned char *key, size_t keylen, const unsigned char *custom, size_t customlen)</div><div class="ttdoc">Initializes an incremental KMAC state using ASCON-XOF.</div></div>
-<div class="ttc" id="akmac_8h_html_a6344772e6b64962e2ea64e4e1c6a7f78"><div class="ttname"><a href="kmac_8h.html#a6344772e6b64962e2ea64e4e1c6a7f78">ascon_kmac_absorb</a></div><div class="ttdeci">void ascon_kmac_absorb(ascon_kmac_state_t *state, const unsigned char *in, size_t inlen)</div><div class="ttdoc">Absorbs more input data into an incremental ASCON-KMAC state.</div></div>
-<div class="ttc" id="akmac_8h_html_a7fe5157f6574cc449e84abddac2cf1f9"><div class="ttname"><a href="kmac_8h.html#a7fe5157f6574cc449e84abddac2cf1f9">ascon_kmac_squeeze</a></div><div class="ttdeci">void ascon_kmac_squeeze(ascon_kmac_state_t *state, unsigned char *out, size_t outlen)</div><div class="ttdoc">Squeezes output data from an incremental ASCON-KMAC state.</div></div>
-<div class="ttc" id="akmac_8h_html_a95d5029c672a5b34889afaf2994d2335"><div class="ttname"><a href="kmac_8h.html#a95d5029c672a5b34889afaf2994d2335">ascon_kmac_set_output_length</a></div><div class="ttdeci">void ascon_kmac_set_output_length(ascon_kmac_state_t *state, size_t outlen)</div><div class="ttdoc">Sets the desired output length for an incremental ASCON-KMAC state.</div></div>
+<div class="ttc" id="akmac_8h_html_a6344772e6b64962e2ea64e4e1c6a7f78"><div class="ttname"><a href="kmac_8h.html#a6344772e6b64962e2ea64e4e1c6a7f78">ascon_kmac_absorb</a></div><div class="ttdeci">void ascon_kmac_absorb(ascon_kmac_state_t *state, const unsigned char *in, size_t inlen)</div><div class="ttdoc">Absorbs more input data into an incremental ASCON-KMAC state.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-kmac_8c_source.html#l00110">ascon-kmac.c:111</a></div></div>
+<div class="ttc" id="akmac_8h_html_a7fe5157f6574cc449e84abddac2cf1f9"><div class="ttname"><a href="kmac_8h.html#a7fe5157f6574cc449e84abddac2cf1f9">ascon_kmac_squeeze</a></div><div class="ttdeci">void ascon_kmac_squeeze(ascon_kmac_state_t *state, unsigned char *out, size_t outlen)</div><div class="ttdoc">Squeezes output data from an incremental ASCON-KMAC state.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-kmac_8c_source.html#l00116">ascon-kmac.c:117</a></div></div>
+<div class="ttc" id="akmac_8h_html_a8fa415634727fc2231a45afcea416ad0"><div class="ttname"><a href="kmac_8h.html#a8fa415634727fc2231a45afcea416ad0">ascon_kmac_init</a></div><div class="ttdeci">void ascon_kmac_init(ascon_kmac_state_t *state, const unsigned char *key, size_t keylen, const unsigned char *custom, size_t customlen, size_t outlen)</div><div class="ttdoc">Initializes an incremental KMAC state using ASCON-XOF.</div><div class="ttdef"><b>Definition:</b> <a href="ascon-kmac_8c_source.html#l00083">ascon-kmac.c:84</a></div></div>
 <div class="ttc" id="astructascon__kmac__state__t_html"><div class="ttname"><a href="structascon__kmac__state__t.html">ascon_kmac_state_t</a></div><div class="ttdoc">State information for the ASCON-KMAC incremental mode.</div><div class="ttdef"><b>Definition:</b> <a href="kmac_8h_source.html#l00063">kmac.h:64</a></div></div>
-</div><!-- fragment --><p>If the output length is not set with <a class="el" href="kmac_8h.html#a95d5029c672a5b34889afaf2994d2335" title="Sets the desired output length for an incremental ASCON-KMAC state.">ascon_kmac_set_output_length()</a>, then it is assumed that the output is open-ended. Open-ended output can also be specified with an output length of 0.</p>
-<p>ASCON-KMACA has a similar API, but uses ASCON-XOFA internally instead of ASCON-XOF.</p>
-<h1><a class="anchor" id="kmac_other_modes"></a>
-Other NIST modes</h1>
-<p>NIST SP 800-185 also defines modes called cSHAKE, TupleHash, and ParallelHash, using the same definition style as KMAC. We could define similar modes for ASCON as well but haven't done so yet. They aren't as widely used as KMAC. </p>
+</div><!-- fragment --><p>ASCON-KMACA has a similar API, but uses ASCON-XOFA internally instead of ASCON-XOF. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Feb 27 2023 04:49:17 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Mar 13 2023 19:22:36 for ASCON Suite by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
