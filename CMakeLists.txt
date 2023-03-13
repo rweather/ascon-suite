@@ -5,7 +5,7 @@ include(CheckLibraryExists)
 include(CheckCSourceCompiles)
 
 # Set the project name and version number.
-project(AsconSuite VERSION 0.2.0 LANGUAGES C CXX ASM)
+project(AsconSuite VERSION 0.3.0 LANGUAGES C CXX ASM)
 
 # Options to force the use of specific backends for testing.
 # Use "cmake -DBACKEND_X=ON" to enable the specific backend.

@@ -1,6 +1,6 @@
 {
     "name": "ASCON",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "keywords": "ASCON,ASCON-128,ASCON-HASH",
     "description": "Suite of cryptographic primitives built around the ASCON permutation",
     "repository":
