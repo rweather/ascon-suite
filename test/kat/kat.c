@@ -964,6 +964,8 @@ static int test_auth_inner
     const test_string_t *key;
     const test_string_t *msg;
     const test_string_t *tag;
+    const unsigned char *custom = 0;
+    size_t customlen = 0;
     size_t index;
     size_t inc;
 
@@ -971,6 +973,12 @@ static int test_auth_inner
     key = get_test_string(vec, "Key");
     msg = get_test_string(vec, "Msg");
     tag = get_test_string(vec, "Tag");
+    if (alg->flags & AEAD_FLAG_CUSTOMIZATION) {
+        /* We require a customization string for this algorithm */
+        const test_string_t *cust = get_test_string(vec, "Custom");
+        custom = cust->data;
+        customlen = cust->size;
+    }
     if (key->size != alg->key_len) {
         test_print_error(alg->name, vec, "incorrect key size in test data");
         return 0;
@@ -983,7 +991,8 @@ static int test_auth_inner
     /* Compute the result with the all-in-one function */
     memset(out, 0xAA, alg->tag_len);
     (*(alg->compute))
-        (out, tag->size, key->data, key->size, msg->data, msg->size);
+        (out, tag->size, key->data, key->size, msg->data, msg->size,
+         custom, customlen);
     if (!test_compare(out, tag->data, tag->size)) {
         test_print_error(alg->name, vec, "all-in-one auth failed");
         return 0;
@@ -993,14 +1002,14 @@ static int test_auth_inner
     if (alg->verify) {
         if ((*(alg->verify))
                 (out, tag->size, key->data, key->size,
-                 msg->data, msg->size) != 0) {
+                 msg->data, msg->size, custom, customlen) != 0) {
             test_print_error(alg->name, vec, "all-in-one auth verify failed");
             return 0;
         }
         out[2] ^= 0x01; /* Deliberately corrupt the tag */
         if ((*(alg->verify))
                 (out, tag->size, key->data, key->size,
-                 msg->data, msg->size) == 0) {
+                 msg->data, msg->size, custom, customlen) == 0) {
             test_print_error(alg->name, vec, "all-in-one auth verify succeeded when it should not have");
             return 0;
         }
@@ -1010,14 +1019,19 @@ static int test_auth_inner
     state = malloc(alg->state_size);
     if (!state)
         exit(2);
-    if ((alg->init || alg->init_fixed) && alg->absorb &&
+    if ((alg->init || alg->init_fixed || alg->init_custom) && alg->absorb &&
             (alg->squeeze || alg->hmac_finalize)) {
         /* Incremental absorb with single squeeze step */
         for (inc = 1; inc <= msg->size; ADVANCE_INC(inc)) {
-            if (alg->init_fixed)
+            if (alg->init_custom) {
+                (*(alg->init_custom))
+                    (state, key->data, key->size, custom, customlen,
+                     alg->tag_len);
+            } else if (alg->init_fixed) {
                 (*(alg->init_fixed))(state, key->data, key->size, alg->tag_len);
-            else
+            } else {
                 (*(alg->init))(state, key->data, key->size);
+            }
             for (index = 0; index < msg->size; index += inc) {
                 size_t temp = msg->size - index;
                 if (temp > inc)
@@ -1040,10 +1054,15 @@ static int test_auth_inner
 
         /* All-in-one absorb with incremental squeeze output */
         for (inc = 1; inc <= alg->tag_len && alg->squeeze; ADVANCE_INC(inc)) {
-            if (alg->init_fixed)
+            if (alg->init_custom) {
+                (*(alg->init_custom))
+                    (state, key->data, key->size, custom, customlen,
+                     alg->tag_len);
+            } else if (alg->init_fixed) {
                 (*(alg->init_fixed))(state, key->data, key->size, alg->tag_len);
-            else
+            } else {
                 (*(alg->init))(state, key->data, key->size);
+            }
             (*(alg->absorb))(state, msg->data, msg->size);
             memset(out, 0xAA, alg->tag_len);
             for (index = 0; index < alg->tag_len; index += inc) {

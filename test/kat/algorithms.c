@@ -29,6 +29,7 @@
 #include <ascon/xof.h>
 #include <ascon/prf.h>
 #include <ascon/hmac.h>
+#include <ascon/kmac.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -326,38 +327,50 @@ aead_cipher_t const ascon80pq_masked_cipher = {
 static void ascon_prf_compute_wrapper
     (unsigned char *tag, size_t taglen,
      const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen)
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen)
 {
     (void)keylen;
+    (void)custom;
+    (void)customlen;
     ascon_prf(tag, taglen, in, inlen, key);
 }
 
 static void ascon_prf_short_compute_wrapper
     (unsigned char *tag, size_t taglen,
      const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen)
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen)
 {
     (void)keylen;
+    (void)custom;
+    (void)customlen;
     ascon_prf_short(tag, taglen, in, inlen, key);
 }
 
 static void ascon_mac_compute_wrapper
     (unsigned char *tag, size_t taglen,
      const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen)
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen)
 {
     (void)keylen;
     (void)taglen;
+    (void)custom;
+    (void)customlen;
     ascon_mac(tag, in, inlen, key);
 }
 
 static int ascon_mac_verify_wrapper
     (const unsigned char *tag, size_t taglen,
      const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen)
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen)
 {
     (void)keylen;
     (void)taglen;
+    (void)custom;
+    (void)customlen;
     return ascon_mac_verify(tag, in, inlen, key);
 }
 
@@ -378,19 +391,43 @@ static void ascon_prf_fixed_init_wrapper
 static void ascon_hmac_compute_wrapper
     (unsigned char *tag, size_t taglen,
      const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen)
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen)
 {
     (void)taglen;
+    (void)custom;
+    (void)customlen;
     ascon_hmac(tag, key, keylen, in, inlen);
 }
 
 static void ascon_hmaca_compute_wrapper
     (unsigned char *tag, size_t taglen,
      const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen)
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen)
 {
     (void)taglen;
+    (void)custom;
+    (void)customlen;
     ascon_hmaca(tag, key, keylen, in, inlen);
+}
+
+static void ascon_kmac_compute_wrapper
+    (unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen)
+{
+    ascon_kmac(key, keylen, in, inlen, custom, customlen, tag, taglen);
+}
+
+static void ascon_kmaca_compute_wrapper
+    (unsigned char *tag, size_t taglen,
+     const unsigned char *key, size_t keylen,
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen)
+{
+    ascon_kmaca(key, keylen, in, inlen, custom, customlen, tag, taglen);
 }
 
 aead_auth_algorithm_t const ascon_prf_auth = {
@@ -402,6 +439,7 @@ aead_auth_algorithm_t const ascon_prf_auth = {
     ascon_prf_compute_wrapper,
     0,
     (auth_init_t)ascon_prf_init_wrapper,
+    0,
     0,
     (aead_xof_absorb_t)ascon_prf_absorb,
     (aead_xof_squeeze_t)ascon_prf_squeeze,
@@ -416,7 +454,7 @@ aead_auth_algorithm_t const ascon_prf_short_auth = {
     ASCON_PRF_SHORT_TAG_SIZE,
     AEAD_FLAG_NONE,
     ascon_prf_short_compute_wrapper,
-    0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_auth_algorithm_t const ascon_mac_auth = {
@@ -429,6 +467,7 @@ aead_auth_algorithm_t const ascon_mac_auth = {
     ascon_mac_verify_wrapper,
     0,
     (auth_init_fixed_t)ascon_prf_fixed_init_wrapper,
+    0,
     (aead_xof_absorb_t)ascon_prf_absorb,
     (aead_xof_squeeze_t)ascon_prf_squeeze,
     0,
@@ -444,6 +483,7 @@ aead_auth_algorithm_t const ascon_hmac_auth = {
     ascon_hmac_compute_wrapper,
     0,
     (auth_init_t)ascon_hmac_init,
+    0,
     0,
     (aead_xof_absorb_t)ascon_hmac_update,
     0,
@@ -461,10 +501,45 @@ aead_auth_algorithm_t const ascon_hmaca_auth = {
     0,
     (auth_init_t)ascon_hmaca_init,
     0,
+    0,
     (aead_xof_absorb_t)ascon_hmaca_update,
     0,
     (auth_hmac_finalize_t)ascon_hmaca_finalize,
     (aead_hash_free_t)ascon_hmac_free
+};
+
+aead_auth_algorithm_t const ascon_kmac_auth = {
+    "ASCON-KMAC",
+    sizeof(ascon_kmac_state_t),
+    ASCON_KMAC_SIZE,
+    ASCON_KMAC_SIZE,
+    AEAD_FLAG_CUSTOMIZATION,
+    ascon_kmac_compute_wrapper,
+    0,
+    0,
+    0,
+    (auth_init_custom_t)ascon_kmac_init,
+    (aead_xof_absorb_t)ascon_kmac_absorb,
+    (aead_xof_squeeze_t)ascon_kmac_squeeze,
+    0,
+    (aead_hash_free_t)ascon_kmac_free
+};
+
+aead_auth_algorithm_t const ascon_kmaca_auth = {
+    "ASCON-KMACA",
+    sizeof(ascon_kmaca_state_t),
+    ASCON_KMACA_SIZE,
+    ASCON_KMACA_SIZE,
+    AEAD_FLAG_CUSTOMIZATION,
+    ascon_kmaca_compute_wrapper,
+    0,
+    0,
+    0,
+    (auth_init_custom_t)ascon_kmaca_init,
+    (aead_xof_absorb_t)ascon_kmaca_absorb,
+    (aead_xof_squeeze_t)ascon_kmaca_squeeze,
+    0,
+    (aead_hash_free_t)ascon_kmaca_free
 };
 
 /* Test the C++ bindings for the algorithms */
@@ -605,6 +680,8 @@ static const aead_auth_algorithm_t *const auths[] = {
     &ascon_mac_auth,
     &ascon_hmac_auth,
     &ascon_hmaca_auth,
+    &ascon_kmac_auth,
+    &ascon_kmaca_auth,
     0
 };
 

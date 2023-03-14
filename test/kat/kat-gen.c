@@ -36,6 +36,8 @@ static int min_pt = 0;
 static int max_pt = 32;
 static int min_msg = 0;
 static int max_msg = 1024;
+static int min_custom = 0;
+static int max_custom = 32;
 static const char *alg_name = 0;
 static const char *output_filename = 0;
 static const aead_cipher_t *alg_cipher = 0;
@@ -157,6 +159,10 @@ static int parse_command_line(int argc, char **argv)
             continue;
         if (parse_option(name, "max-msg", &max_msg))
             continue;
+        if (parse_option(name, "min-custom", &min_custom))
+            continue;
+        if (parse_option(name, "max-custom", &max_custom))
+            continue;
         if (!strcmp(name, "random")) {
             rng_init(0);
             continue;
@@ -219,6 +225,12 @@ static void usage(const char *progname)
 
     fprintf(stderr, "    --max-msg=SIZE\n");
     fprintf(stderr, "        Set the maximum message size for hash inputs, default is 1024.\n\n");
+
+    fprintf(stderr, "    --min-custom=SIZE\n");
+    fprintf(stderr, "        Set the minimum customization string size, default is 0.\n\n");
+
+    fprintf(stderr, "    --max-custom=SIZE\n");
+    fprintf(stderr, "        Set the maximum customization string size, default is 32.\n\n");
 
     fprintf(stderr, "    --random\n");
     fprintf(stderr, "    --random=SEED\n");
@@ -373,32 +385,66 @@ static void generate_kats_for_auth(const aead_auth_algorithm_t *alg, FILE *file)
 {
     int count = 1;
     int msg_len;
+    int cust_len;
 
     /* Allocate space for the temporary buffers we will need */
     unsigned char *state = (unsigned char *)malloc(alg->state_size);
     unsigned char *msg = (unsigned char *)malloc(max_msg);
     unsigned char *tag = (unsigned char *)malloc(alg->tag_len);
     unsigned char *key = (unsigned char *)malloc(alg->key_len);
+    unsigned char *custom = 0;
     if (!state || !msg || !tag || !key) {
         fprintf(stderr, "Out of memory\n");
         exit(1);
     }
+    if (alg->flags & AEAD_FLAG_CUSTOMIZATION) {
+        custom = (unsigned char *)malloc(max_custom);
+        if (!custom) {
+            fprintf(stderr, "Out of memory\n");
+            exit(1);
+        }
+    }
 
     /* Generate the KAT vectors */
-    for (msg_len = min_msg; msg_len <= max_msg; ++msg_len) {
-        /* Generate the vectors for this test */
-        rng_generate(key, alg->key_len);
-        rng_generate(msg, msg_len);
+    if (!custom) {
+        for (msg_len = min_msg; msg_len <= max_msg; ++msg_len) {
+            /* Generate the vectors for this test */
+            rng_generate(key, alg->key_len);
+            rng_generate(msg, msg_len);
 
-        /* Produce the authentication output */
-        (*(alg->compute))(tag, alg->tag_len, key, alg->key_len, msg, msg_len);
+            /* Produce the authentication output */
+            (*(alg->compute))
+                (tag, alg->tag_len, key, alg->key_len, msg, msg_len, 0, 0);
 
-        /* Write out the results */
-        fprintf(file, "Count = %d\n", count++);
-        write_hex(file, "Key", key, alg->key_len);
-        write_hex(file, "Msg", msg, msg_len);
-        write_hex(file, "Tag", tag, alg->tag_len);
-        fprintf(file, "\n");
+            /* Write out the results */
+            fprintf(file, "Count = %d\n", count++);
+            write_hex(file, "Key", key, alg->key_len);
+            write_hex(file, "Msg", msg, msg_len);
+            write_hex(file, "Tag", tag, alg->tag_len);
+            fprintf(file, "\n");
+        }
+    } else {
+        for (msg_len = min_msg; msg_len <= max_msg; ++msg_len) {
+            for (cust_len = 0; cust_len <= max_custom; ++cust_len) {
+                /* Generate the vectors for this test */
+                rng_generate(key, alg->key_len);
+                rng_generate(msg, msg_len);
+                rng_generate(custom, cust_len);
+
+                /* Produce the authentication output */
+                (*(alg->compute))
+                    (tag, alg->tag_len, key, alg->key_len, msg, msg_len,
+                     cust_len ? custom : 0, cust_len);
+
+                /* Write out the results */
+                fprintf(file, "Count = %d\n", count++);
+                write_hex(file, "Key", key, alg->key_len);
+                write_hex(file, "Msg", msg, msg_len);
+                write_hex(file, "Custom", custom, cust_len);
+                write_hex(file, "Tag", tag, alg->tag_len);
+                fprintf(file, "\n");
+            }
+        }
     }
 
     /* Clean up */
@@ -406,6 +452,8 @@ static void generate_kats_for_auth(const aead_auth_algorithm_t *alg, FILE *file)
     free(msg);
     free(tag);
     free(key);
+    if (custom)
+        free(custom);
 }
 
 int main(int argc, char *argv[])

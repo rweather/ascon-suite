@@ -243,11 +243,14 @@ typedef void (*aead_xof_squeeze_t)
  * \param keylen Length of the key in bytes.
  * \param in Points to the input data.
  * \param inlen Length of the input data in bytes.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
  */
 typedef void (*auth_compute_t)
     (unsigned char *tag, size_t taglen,
      const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen);
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen);
 
 /**
  * \brief All-in-one verification for authentication functions.
@@ -258,13 +261,16 @@ typedef void (*auth_compute_t)
  * \param keylen Length of the key in bytes.
  * \param in Points to the input data.
  * \param inlen Length of the input data in bytes.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
  *
  * \return 0 on success, -1 for a verification failure.
  */
 typedef int (*auth_verify_t)
     (const unsigned char *tag, size_t taglen,
      const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen);
+     const unsigned char *in, size_t inlen,
+     const unsigned char *custom, size_t customlen);
 
 /**
  * \brief Initializes the state for an incremental PRF operation.
@@ -287,6 +293,21 @@ typedef void (*auth_init_t)
  */
 typedef void (*auth_init_fixed_t)
     (void *state, const unsigned char *key, size_t keylen, size_t length);
+
+/**
+ * \brief Initializes the state for an incremental authentication operation
+ * with a customization string.
+ *
+ * \param state Authentication state to be initialized.
+ * \param key Points to the key.
+ * \param keylen Number of bytes in the key.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ */
+typedef void (*auth_init_custom_t)
+    (void *state, const unsigned char *key, size_t keylen,
+     const unsigned char *custom, size_t customlen, size_t outlen);
 
 /**
  * \brief Returns the final tag value from an incremental HMAC operation.
@@ -337,6 +358,11 @@ typedef void (*auth_hmac_finalize_t)
  * \brief Algorithm uses masking to protect sensitive material.
  */
 #define AEAD_FLAG_MASKED            0x0010
+
+/**
+ * \brief Customization strings are required for this algorithm.
+ */
+#define AEAD_FLAG_CUSTOMIZATION     0x0020
 
 /**
  * \brief Meta-information about an AEAD cipher.
@@ -400,6 +426,7 @@ typedef struct
     auth_verify_t verify;       /**< All in one verification function */
     auth_init_t init;           /**< Initialize incremental operation */
     auth_init_fixed_t init_fixed; /**< Incremental with fixed output length */
+    auth_init_custom_t init_custom; /**< Initialize with customization string */
     aead_xof_absorb_t absorb;   /**< Incremental absorb function */
     aead_xof_squeeze_t squeeze; /**< Incremental squeeze function */
     auth_hmac_finalize_t hmac_finalize; /**< HMAC finalize function */
