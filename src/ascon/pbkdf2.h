@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2023 Southern Storm Software, Pty Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,7 +27,7 @@
 
 /**
  * \file pbkdf2.h
- * \brief Password-based key derivation function based on ASCON-HMAC.
+ * \brief Password-based key derivation function based on ASCON.
  *
  * Reference: https://tools.ietf.org/html/rfc8018
  */
@@ -62,8 +62,35 @@ extern "C" {
  * \note This function uses ASCON-XOF to implement the pseudorandom
  * function PRF from RFC 8018 rather than HMAC.  This is more efficient
  * in terms of time and code size.
+ *
+ * \sa ascon_pbkdf2_hmac()
  */
 void ascon_pbkdf2
+    (unsigned char *out, size_t outlen,
+     const unsigned char *password, size_t passwordlen,
+     const unsigned char *salt, size_t saltlen, unsigned long count);
+
+/**
+ * \brief Derives key material using ASCON-PBKDF2 (legacy HMAC version).
+ *
+ * \param out Points to the output buffer to receive the key material.
+ * \param outlen Number of bytes of key material to generate.
+ * \param password Points to the bytes of the password.
+ * \param passwordlen Number of bytes in the password.
+ * \param salt Points to the bytes of the salt.
+ * \param saltlen Number of bytes in the salt.
+ * \param count Number of iterations to perform.  If this is set to zero,
+ * then the value will be changed to 1.
+ *
+ * This function can generate a maximum of (2^32 - 1) *
+ * ASCON_PBKDF2_SIZE bytes, but this limit is not checked.
+ * The \a count value should be large enough to provide resistance
+ * against dictionary attacks on the password.
+ *
+ * \note This function uses ASCON-HMAC to implement the pseudorandom
+ * function PRF from RFC 8018 for compatibility with existing designs.
+ */
+void ascon_pbkdf2_hmac
     (unsigned char *out, size_t outlen,
      const unsigned char *password, size_t passwordlen,
      const unsigned char *salt, size_t saltlen, unsigned long count);

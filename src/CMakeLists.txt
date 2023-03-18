@@ -52,7 +52,6 @@ list(APPEND ASCON_SOURCES
     isap/ascon-isap-common.h
     kdf/ascon-hkdf.c
     kdf/ascon-hkdfa.c
-    kdf/ascon-pbkdf2.c
     mac/ascon-hmac.c
     mac/ascon-hmaca.c
     mac/ascon-hmac-common.h
@@ -80,6 +79,8 @@ list(APPEND ASCON_SOURCES
     masking/ascon-x3-c64.c
     masking/ascon-x4-c32.c
     masking/ascon-x4-c64.c
+    password/ascon-pbkdf2.c
+    password/ascon-pbkdf2-hmac.c
     random/ascon-prng.c
     random/ascon-random.c
     random/ascon-select-trng.h

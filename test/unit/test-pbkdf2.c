@@ -23,6 +23,7 @@
 #include "test-cipher.h"
 #include <ascon/xof.h>
 #include <ascon/pbkdf2.h>
+#include <ascon/hmac.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -131,9 +132,60 @@ static void PBKDF2(size_t block_size, const char *password, const char *salt,
     }
 }
 
+/* Simple implementation of PBKDF2 based on RFC 8018 using ASCON-HMAC. */
+static void PRF_HMAC(size_t hmac_size, const char *password, const char *salt,
+                     uint32_t i, const unsigned char *in, unsigned char *out)
+{
+    if (salt) {
+        size_t salt_len = strlen(salt);
+        unsigned char temp[salt_len + 4];
+        memcpy(temp, salt, salt_len);
+        temp[salt_len]     = (unsigned char)(i >> 24);
+        temp[salt_len + 1] = (unsigned char)(i >> 16);
+        temp[salt_len + 2] = (unsigned char)(i >> 8);
+        temp[salt_len + 3] = (unsigned char)i;
+        ascon_hmac(out, (const unsigned char *)password, strlen(password),
+                   temp, salt_len + 4);
+    } else {
+        ascon_hmac(out, (const unsigned char *)password, strlen(password),
+                   in, hmac_size);
+    }
+}
+static void F_HMAC(size_t hmac_size, const char *password, const char *salt,
+                   uint32_t c, uint32_t i, unsigned char *out)
+{
+    unsigned char U[hmac_size];
+    size_t posn;
+    PRF_HMAC(hmac_size, password, salt, i, 0, out);
+    memcpy(U, out, hmac_size);
+    while (c > 1) {
+        PRF_HMAC(hmac_size, password, 0, i, U, U);
+        for (posn = 0; posn < hmac_size; ++posn)
+            out[posn] ^= U[posn];
+        --c;
+    }
+}
+static void PBKDF2_HMAC(size_t hmac_size, const char *password,
+                        const char *salt, uint32_t c,
+                        unsigned char *out, size_t outlen)
+{
+    unsigned char T[hmac_size];
+    uint32_t i = 1;
+    while (outlen > 0) {
+        size_t len = outlen;
+        if (len > hmac_size)
+            len = hmac_size;
+        F_HMAC(hmac_size, password, salt, c, i, T);
+        memcpy(out, T, len);
+        out += len;
+        outlen -= len;
+        ++i;
+    }
+}
+
 static void test_pbkdf2_vector
     (const char *hash_name, pbkdf2_func_t pbkdf2,
-     size_t block_size, const TestPBKDF2Vector *test_vector)
+     size_t block_size, const TestPBKDF2Vector *test_vector, int is_hmac)
 {
     unsigned char expected[MAX_OUT_LEN];
     unsigned char actual[MAX_OUT_LEN];
@@ -143,9 +195,15 @@ static void test_pbkdf2_vector
     fflush(stdout);
 
     /* Create the expected vector using the underlying PRF function */
-    PBKDF2(block_size, test_vector->password,
-           test_vector->salt, test_vector->count,
-           expected, test_vector->out_len);
+    if (is_hmac) {
+        PBKDF2_HMAC(block_size, test_vector->password,
+                    test_vector->salt, test_vector->count,
+                    expected, test_vector->out_len);
+    } else {
+        PBKDF2(block_size, test_vector->password,
+               test_vector->salt, test_vector->count,
+               expected, test_vector->out_len);
+    }
 
     /* Test generating the full output in one go */
     memset(actual, 0xAA, sizeof(actual));
@@ -190,17 +248,30 @@ int main(int argc, char *argv[])
         return 1;
 
     test_pbkdf2_vector
-        ("ASCON", ascon_pbkdf2,
-         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_1);
+        ("ASCON-PBKDF2", ascon_pbkdf2,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_1, 0);
     test_pbkdf2_vector
-        ("ASCON", ascon_pbkdf2,
-         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_2);
+        ("ASCON-PBKDF2", ascon_pbkdf2,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_2, 0);
     test_pbkdf2_vector
-        ("ASCON", ascon_pbkdf2,
-         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_3);
+        ("ASCON-PBKDF2", ascon_pbkdf2,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_3, 0);
     test_pbkdf2_vector
-        ("ASCON", ascon_pbkdf2,
-         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_4);
+        ("ASCON-PBKDF2", ascon_pbkdf2,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_4, 0);
+
+    test_pbkdf2_vector
+        ("ASCON-PBKDF2-HMAC", ascon_pbkdf2_hmac,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_1, 1);
+    test_pbkdf2_vector
+        ("ASCON-PBKDF2-HMAC", ascon_pbkdf2_hmac,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_2, 1);
+    test_pbkdf2_vector
+        ("ASCON-PBKDF2-HMAC", ascon_pbkdf2_hmac,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_3, 1);
+    test_pbkdf2_vector
+        ("ASCON-PBKDF2-HMAC", ascon_pbkdf2_hmac,
+         ASCON_PBKDF2_SIZE, &testVectorPBKDF2_4, 1);
 
     return test_exit_result;
 }
