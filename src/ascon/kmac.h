@@ -157,7 +157,7 @@ void ascon_kmac_absorb
  * \param out Points to the output buffer to receive the squeezed data.
  * \param outlen Number of bytes of data to squeeze out of the state.
  *
- * \sa ascon_kmac_init(), ascon_kmac_update(), ascon_kmac_finalize()
+ * \sa ascon_kmac_init(), ascon_kmac_absorb()
  */
 void ascon_kmac_squeeze
     (ascon_kmac_state_t *state, unsigned char *out, size_t outlen);
@@ -244,7 +244,7 @@ void ascon_kmaca_absorb
  * \param out Points to the output buffer to receive the squeezed data.
  * \param outlen Number of bytes of data to squeeze out of the state.
  *
- * \sa ascon_kmaca_init(), ascon_kmaca_update(), ascon_kmaca_finalize()
+ * \sa ascon_kmaca_init(), ascon_kmaca_absorb()
  */
 void ascon_kmaca_squeeze
     (ascon_kmaca_state_t *state, unsigned char *out, size_t outlen);

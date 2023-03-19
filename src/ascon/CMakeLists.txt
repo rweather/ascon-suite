@@ -6,9 +6,10 @@ list(APPEND ASCON_HEADERS
     hkdf.h
     hmac.h
     isap.h
+    kdf.h
     kmac.h
-    pbkdf2.h
     masking.h
+    pbkdf2.h
     permutation.h
     prf.h
     random.h

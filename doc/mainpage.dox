@@ -53,11 +53,12 @@ Patches are welcome to provide new permutation and TRNG backends.
 \li \ref hash.h "Hashing"
 \li \ref prf.h "Pseudorandom Function (PRF)"
 \li \ref prf.h "Message Authentication Code (MAC)"
-\li \ref hkdf.h "HMAC-based Key Derivation Function (HKDF)"
-\li \ref hmac.h "Hashed Message Authentication Code (HMAC)"
 \li \ref isap.h "ISAP AEAD Mode with Side Channel Protections"
+\li \ref kdf.h "Key Derivation Function (KDF)"
 \li \ref kmac.h "Keyed Message Authentication Code (KMAC)"
 \li \ref pbkdf2.h "Password-Based Key Derivation Function (PBKDF2)"
+\li \ref hkdf.h "HMAC-based Key Derivation Function (HKDF)"
+\li \ref hmac.h "Hashed Message Authentication Code (HMAC)"
 \li \ref random.h "Pseudorandom Number Generation (PRNG)"
 \li \ref siv.h "Synthetic Initialization Vector (SIV)"
 \li \ref xof.h "Extensible Output Functions (XOF)"
@@ -139,7 +140,7 @@ See the \ref siv "SIV page" for more information.
 protection against side channel leakage.
 \li Customizable hashing with ASCON-cXOF.  See \ref cxof "this page" for
 more information on ASCON-cXOF.
-\li KMAC modes for keyed hashing built around ASCON-cXOF.  See the
+\li KMAC and KDF modes for keyed hashing built around ASCON-cXOF.  See the
 \ref kmac "KMAC page" for more information on ASCON-KMAC.
 \li HMAC modes for keyed hashing built around ASCON-HASH.
 \li ASCON-PRNG for generating an arbitary sequence of random data from
