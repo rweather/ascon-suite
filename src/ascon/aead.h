@@ -251,6 +251,31 @@ int ascon80pq_aead_decrypt
      const unsigned char *k);
 
 /* ---------------------------------------------------------------- */
+/*            Utility functions for use with AEAD modes             */
+/* ---------------------------------------------------------------- */
+
+/**
+ * \brief Sets a 128-bit nonce value to a 64-bit packet sequence counter.
+ *
+ * \param npub The nonce value to be set.
+ * \param n The 64-bit packet sequence counter to set.
+ *
+ * The value in \a npub is written in big-endian byte order with the
+ * leading 8 bytes set to zero.
+ */
+void ascon_aead_set_counter
+    (unsigned char npub[ASCON128_NONCE_SIZE], uint64_t n);
+
+/**
+ * \brief Increments a 128-bit nonce value as a packet sequence counter.
+ *
+ * \param npub The nonce value to be incremented.
+ *
+ * The value in \a npub is interpreted in big-endian byte order.
+ */
+void ascon_aead_increment_nonce(unsigned char npub[ASCON128_NONCE_SIZE]);
+
+/* ---------------------------------------------------------------- */
 /*            Incremental API's for the AEAD modes below            */
 /* ---------------------------------------------------------------- */
 
