@@ -28,16 +28,39 @@
 static uint8_t const ASCON128_IV[8] =
     {0x80, 0x40, 0x0c, 0x06, 0x00, 0x00, 0x00, 0x00};
 
+void ascon128_aead_init
+    (ascon128_state_t *state, const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon_init(&(state->state));
+    ascon_release(&(state->state));
+    ascon128_aead_reinit(state, npub, k);
+}
+
+void ascon128_aead_reinit
+    (ascon128_state_t *state, const unsigned char *npub,
+     const unsigned char *k)
+{
+    if (k)
+        memcpy(state->key, k, ASCON128_KEY_SIZE);
+    else
+        memset(state->key, 0, ASCON128_KEY_SIZE);
+    if (npub)
+        memcpy(state->nonce, npub, ASCON128_NONCE_SIZE);
+    else
+        memset(state->nonce, 0, ASCON128_NONCE_SIZE);
+    state->posn = 0;
+}
+
 void ascon128_aead_start
-    (ascon128_state_t *state, const unsigned char *ad, size_t adlen,
-     const unsigned char *npub, const unsigned char *k)
+    (ascon128_state_t *state, const unsigned char *ad, size_t adlen)
 {
     /* Initialize the ASCON state */
-    memcpy(state->key, k, ASCON128_KEY_SIZE);
-    ascon_init(&(state->state));
+    ascon_acquire(&(state->state));
     ascon_overwrite_bytes(&(state->state), ASCON128_IV, 0, 8);
     ascon_overwrite_bytes(&(state->state), state->key, 8, ASCON128_KEY_SIZE);
-    ascon_overwrite_bytes(&(state->state), npub, 24, ASCON128_NONCE_SIZE);
+    ascon_overwrite_bytes
+        (&(state->state), state->nonce, 24, ASCON128_NONCE_SIZE);
     ascon_permute(&(state->state), 0);
     ascon_absorb_16(&(state->state), state->key, 24);
 
@@ -51,9 +74,12 @@ void ascon128_aead_start
     /* Prepare for encryption or decryption */
     ascon_release(&(state->state));
     state->posn = 0;
+
+    /* Increment the nonce for the next packet */
+    ascon_aead_increment_nonce(state->nonce);
 }
 
-void ascon128_aead_abort(ascon128_state_t *state)
+void ascon128_aead_free(ascon128_state_t *state)
 {
     if (state) {
         ascon_acquire(&(state->state));
@@ -84,10 +110,7 @@ void ascon128_aead_encrypt_finalize
     ascon_permute(&(state->state), 0);
     ascon_absorb_16(&(state->state), state->key, 24);
     ascon_squeeze_partial(&(state->state), tag, 24, ASCON128_TAG_SIZE);
-
-    /* Clean up */
-    ascon_free(&(state->state));
-    ascon_clean(state, sizeof(ascon128_state_t));
+    ascon_release(&(state->state));
 }
 
 void ascon128_aead_decrypt_block
@@ -115,11 +138,10 @@ int ascon128_aead_decrypt_finalize
     ascon_permute(&(state->state), 0);
     ascon_absorb_16(&(state->state), state->key, 24);
     ascon_squeeze_16(&(state->state), tag2, 24);
+    ascon_release(&(state->state));
     result = ascon_aead_check_tag(0, 0, tag2, tag, ASCON128_TAG_SIZE);
 
     /* Clean up */
     ascon_clean(tag2, sizeof(tag2));
-    ascon_free(&(state->state));
-    ascon_clean(state, sizeof(ascon128_state_t));
     return result;
 }

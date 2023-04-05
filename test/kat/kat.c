@@ -181,7 +181,8 @@ static void incremental_aead_cipher_encrypt
      const unsigned char *k)
 {
     size_t posn, temp;
-    (*(alg->start_inc))(state, ad, adlen, npub, k);
+    (*(alg->init_inc))(state, npub, k);
+    (*(alg->start_inc))(state, ad, adlen);
     if (increment == 0) {
         /* Encrypt everything in one go */
         (*(alg->encrypt_inc))(state, m, c, mlen);
@@ -196,6 +197,7 @@ static void incremental_aead_cipher_encrypt
     }
     *clen = mlen + alg->tag_len;
     (*(alg->encrypt_fin))(state, c + mlen);
+    (*(alg->pk_free))(state);
 }
 
 /* Wrap incremental decryption to make it look like an all-in-one cipher */
@@ -208,9 +210,11 @@ static int incremental_aead_cipher_decrypt
      const unsigned char *k)
 {
     size_t posn, temp;
+    int result;
     if (clen < alg->tag_len)
         return -1;
-    (*(alg->start_inc))(state, ad, adlen, npub, k);
+    (*(alg->init_inc))(state, npub, k);
+    (*(alg->start_inc))(state, ad, adlen);
     *mlen = clen - alg->tag_len;
     if (increment == 0) {
         /* Decrypt everything in one go */
@@ -224,7 +228,9 @@ static int incremental_aead_cipher_decrypt
             (*(alg->decrypt_inc))(state, c + posn, m + posn, temp);
         }
     }
-    return (*(alg->decrypt_fin))(state, c + clen - alg->tag_len);
+    result = (*(alg->decrypt_fin))(state, c + clen - alg->tag_len);
+    (*(alg->pk_free))(state);
+    return result;
 }
 
 /* Test a cipher algorithm on a specific test vector */

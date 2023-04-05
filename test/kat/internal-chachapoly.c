@@ -33,7 +33,7 @@ aead_cipher_t const internal_chachapoly_cipher = {
     AEAD_FLAG_LITTLE_ENDIAN,
     internal_chachapoly_aead_encrypt,
     internal_chachapoly_aead_decrypt,
-    0, 0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 /**

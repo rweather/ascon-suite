@@ -101,18 +101,26 @@ typedef void (*aead_cipher_pk_init_t)
 typedef void (*aead_cipher_pk_free_t)(unsigned char *pk);
 
 /**
- * \brief Starts encrypting or decrypting a packet with in incremental mode.
+ * \brief Initialises encrypting or decrypting a packet in
+ * incremental mode.
+ *
+ * \param state State to initialize for incremental operations.
+ * \param npub Points to the public nonce for the packet.
+ * \param k Points to the key.
+ */
+typedef void (*aead_cipher_inc_init_t)
+    (void *state, const unsigned char *npub, const unsigned char *k);
+
+/**
+ * \brief Starts encrypting or decrypting a packet in incremental mode.
  *
  * \param state State to initialize for incremental operations.
  * \param ad Buffer that contains associated data to authenticate
  * along with the packet but which does not need to be encrypted.
  * \param adlen Length of the associated data in bytes.
- * \param npub Points to the public nonce for the packet.
- * \param k Points to the key.
  */
 typedef void (*aead_cipher_inc_start_t)
-    (void *state, const unsigned char *ad, size_t adlen,
-     const unsigned char *npub, const unsigned char *k);
+    (void *state, const unsigned char *ad, size_t adlen);
 
 /**
  * \brief Encrypts a block of data incremental mode.
@@ -380,6 +388,7 @@ typedef struct
     aead_cipher_pk_init_t pk_init;  /**< AEAD pre-computed init function */
     aead_cipher_pk_free_t pk_free;  /**< Free pre-computed AEAD key */
     unsigned inc_state_len;         /**< Length of the incremental state */
+    aead_cipher_inc_init_t init_inc;   /**< Initialize incremental mode */
     aead_cipher_inc_start_t start_inc; /**< Start incremental mode */
     aead_cipher_enc_inc_t encrypt_inc; /**< Incremental encryption */
     aead_cipher_enc_fin_t encrypt_fin; /**< Finalize encryption */

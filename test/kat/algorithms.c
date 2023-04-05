@@ -41,7 +41,7 @@ aead_cipher_t const ascon128_cipher = {
     AEAD_FLAG_NONE,
     ascon128_aead_encrypt,
     ascon128_aead_decrypt,
-    0, 0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128a_cipher = {
@@ -52,7 +52,7 @@ aead_cipher_t const ascon128a_cipher = {
     AEAD_FLAG_NONE,
     ascon128a_aead_encrypt,
     ascon128a_aead_decrypt,
-    0, 0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon80pq_cipher = {
@@ -63,7 +63,7 @@ aead_cipher_t const ascon80pq_cipher = {
     AEAD_FLAG_NONE,
     ascon80pq_aead_encrypt,
     ascon80pq_aead_decrypt,
-    0, 0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_hash_algorithm_t const ascon_hash_algorithm = {
@@ -164,7 +164,7 @@ aead_cipher_t const ascon128_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon128_siv_encrypt,
     ascon128_siv_decrypt,
-    0, 0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128a_siv_cipher = {
@@ -175,7 +175,7 @@ aead_cipher_t const ascon128a_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon128a_siv_encrypt,
     ascon128a_siv_decrypt,
-    0, 0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon80pq_siv_cipher = {
@@ -186,7 +186,7 @@ aead_cipher_t const ascon80pq_siv_cipher = {
     AEAD_FLAG_NONE,
     ascon80pq_siv_encrypt,
     ascon80pq_siv_decrypt,
-    0, 0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128a_isap_cipher = {
@@ -200,7 +200,7 @@ aead_cipher_t const ascon128a_isap_cipher = {
     sizeof(ascon128a_isap_aead_key_t),
     (aead_cipher_pk_init_t)ascon128a_isap_aead_init,
     (aead_cipher_pk_free_t)ascon128a_isap_aead_free,
-    0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128_isap_cipher = {
@@ -214,7 +214,7 @@ aead_cipher_t const ascon128_isap_cipher = {
     sizeof(ascon128_isap_aead_key_t),
     (aead_cipher_pk_init_t)ascon128_isap_aead_init,
     (aead_cipher_pk_free_t)ascon128_isap_aead_free,
-    0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon80pq_isap_cipher = {
@@ -228,7 +228,7 @@ aead_cipher_t const ascon80pq_isap_cipher = {
     sizeof(ascon80pq_isap_aead_key_t),
     (aead_cipher_pk_init_t)ascon80pq_isap_aead_init,
     (aead_cipher_pk_free_t)ascon80pq_isap_aead_free,
-    0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128_inc_cipher = {
@@ -239,8 +239,10 @@ aead_cipher_t const ascon128_inc_cipher = {
     AEAD_FLAG_NONE,
     ascon128_aead_encrypt,
     ascon128_aead_decrypt,
-    0, 0, 0,
+    0, 0,
+    (aead_cipher_pk_free_t)ascon128_aead_free,
     sizeof(ascon128_state_t),
+    (aead_cipher_inc_init_t)ascon128_aead_init,
     (aead_cipher_inc_start_t)ascon128_aead_start,
     (aead_cipher_enc_inc_t)ascon128_aead_encrypt_block,
     (aead_cipher_enc_fin_t)ascon128_aead_encrypt_finalize,
@@ -256,8 +258,10 @@ aead_cipher_t const ascon128a_inc_cipher = {
     AEAD_FLAG_NONE,
     ascon128a_aead_encrypt,
     ascon128a_aead_decrypt,
-    0, 0, 0,
+    0, 0,
+    (aead_cipher_pk_free_t)ascon128a_aead_free,
     sizeof(ascon128a_state_t),
+    (aead_cipher_inc_init_t)ascon128a_aead_init,
     (aead_cipher_inc_start_t)ascon128a_aead_start,
     (aead_cipher_enc_inc_t)ascon128a_aead_encrypt_block,
     (aead_cipher_enc_fin_t)ascon128a_aead_encrypt_finalize,
@@ -273,8 +277,10 @@ aead_cipher_t const ascon80pq_inc_cipher = {
     AEAD_FLAG_NONE,
     ascon80pq_aead_encrypt,
     ascon80pq_aead_decrypt,
-    0, 0, 0,
+    0, 0,
+    (aead_cipher_pk_free_t)ascon80pq_aead_free,
     sizeof(ascon80pq_state_t),
+    (aead_cipher_inc_init_t)ascon80pq_aead_init,
     (aead_cipher_inc_start_t)ascon80pq_aead_start,
     (aead_cipher_enc_inc_t)ascon80pq_aead_encrypt_block,
     (aead_cipher_enc_fin_t)ascon80pq_aead_encrypt_finalize,
@@ -293,7 +299,7 @@ aead_cipher_t const ascon128_masked_cipher = {
     sizeof(ascon_masked_key_128_t),
     (aead_cipher_pk_init_t)ascon_masked_key_128_init,
     (aead_cipher_pk_free_t)ascon_masked_key_128_free,
-    0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon128a_masked_cipher = {
@@ -307,7 +313,7 @@ aead_cipher_t const ascon128a_masked_cipher = {
     sizeof(ascon_masked_key_128_t),
     (aead_cipher_pk_init_t)ascon_masked_key_128_init,
     (aead_cipher_pk_free_t)ascon_masked_key_128_free,
-    0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0
 };
 
 aead_cipher_t const ascon80pq_masked_cipher = {
@@ -321,7 +327,7 @@ aead_cipher_t const ascon80pq_masked_cipher = {
     sizeof(ascon_masked_key_160_t),
     (aead_cipher_pk_init_t)ascon_masked_key_160_init,
     (aead_cipher_pk_free_t)ascon_masked_key_160_free,
-    0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0
 };
 
 static void ascon_prf_compute_wrapper

@@ -488,9 +488,8 @@ static int encrypt_file(const char *infilename, const char *outfilename)
     }
 
     /* Read the input file, encrypt it, and write to the output file */
-    ascon80pq_aead_start
-        (&state, (const unsigned char *)&siv, sizeof(siv),
-         siv_copy.nonce, siv_copy.key);
+    ascon80pq_aead_init(&state, siv_copy.nonce, siv_copy.key);
+    ascon80pq_aead_start(&state, (const unsigned char *)&siv, sizeof(siv));
     size = 0;
     while (exit_val) {
         len = safe_file_read(&input, data, sizeof(data));
@@ -513,6 +512,7 @@ static int encrypt_file(const char *infilename, const char *outfilename)
         }
     }
     ascon80pq_aead_encrypt_finalize(&state, data);
+    ascon80pq_aead_free(&state);
     if (exit_val) {
         if (!safe_file_write(&output, data, ASCON80PQ_TAG_SIZE))
             exit_val = 0;
@@ -547,6 +547,7 @@ static int decrypt_file(const char *infilename, const char *outfilename)
     unsigned char data[ASCON_BUFSIZ];
     uint64_t size;
     int len;
+    int result;
 
     /* Open the input and output files.  If we can't do this then
      * there is nothing we can do - bail out. */
@@ -600,9 +601,9 @@ static int decrypt_file(const char *infilename, const char *outfilename)
     }
 
     /* Read the input file, decrypt it, and write to the output file */
+    ascon80pq_aead_init(&state, header.siv.nonce, header.siv.key);
     ascon80pq_aead_start
-        (&state, (const unsigned char *)&siv_copy, sizeof(siv_copy),
-         header.siv.nonce, header.siv.key);
+        (&state, (const unsigned char *)&siv_copy, sizeof(siv_copy));
     size = 0;
     exit_val = 1;
     while (exit_val) {
@@ -626,7 +627,9 @@ static int decrypt_file(const char *infilename, const char *outfilename)
                 break; /* Short last block - we're done */
         }
     }
-    if (ascon80pq_aead_decrypt_finalize(&state, data) != 0 && exit_val) {
+    result = ascon80pq_aead_decrypt_finalize(&state, data);
+    ascon80pq_aead_free(&state);
+    if (result != 0 && exit_val) {
         exit_val = 0;
         fprintf(stderr, "%s: file is corrupt and failed to decrypt\n",
                 infilename);

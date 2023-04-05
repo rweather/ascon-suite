@@ -282,15 +282,21 @@ void ascon_aead_increment_nonce(unsigned char npub[ASCON128_NONCE_SIZE]);
 /**
  * \brief State information for the incremental version of ASCON-128.
  *
- * This structure should be treated as opaque by the application.
+ * Except for the "nonce" field, this structure should be treated as
+ * opaque by the application.  The application can update the "nonce"
+ * field between packets if the simple incrementing algorithm is
+ * not sufficient; e.g. for datagram transports.
  */
 typedef struct
 {
     /** ASCON permutation state */
     ascon_state_t state;
 
-    /** Key to use to authenticate the payload during finalization */
+    /** Key to use to encrypt and decrypt packets using this state */
     unsigned char key[ASCON128_KEY_SIZE];
+
+    /** Nonce value for the next packet */
+    unsigned char nonce[ASCON128_NONCE_SIZE];
 
     /** Position within the current block for partial blocks */
     unsigned char posn;
@@ -300,15 +306,21 @@ typedef struct
 /**
  * \brief State information for the incremental version of ASCON-128a.
  *
- * This structure should be treated as opaque by the application.
+ * Except for the "nonce" field, this structure should be treated as
+ * opaque by the application.  The application can update the "nonce"
+ * field between packets if the simple incrementing algorithm is
+ * not sufficient; e.g. for datagram transports.
  */
 typedef struct
 {
     /** ASCON permutation state */
     ascon_state_t state;
 
-    /** Key to use to authenticate the payload during finalization */
+    /** Key to use to encrypt and decrypt packets using this state */
     unsigned char key[ASCON128_KEY_SIZE];
+
+    /** Nonce value for the next packet */
+    unsigned char nonce[ASCON128_NONCE_SIZE];
 
     /** Position within the current block for partial blocks */
     unsigned char posn;
@@ -318,15 +330,21 @@ typedef struct
 /**
  * \brief State information for the incremental version of ASCON-80pq.
  *
- * This structure should be treated as opaque by the application.
+ * Except for the "nonce" field, this structure should be treated as
+ * opaque by the application.  The application can update the "nonce"
+ * field between packets if the simple incrementing algorithm is
+ * not sufficient; e.g. for datagram transports.
  */
 typedef struct
 {
     /** ASCON permutation state */
     ascon_state_t state;
 
-    /** Key to use to authenticate the payload during finalization */
+    /** Key to use to encrypt and decrypt packets using this state */
     unsigned char key[ASCON80PQ_KEY_SIZE];
+
+    /** Nonce value for the next packet */
+    unsigned char nonce[ASCON80PQ_NONCE_SIZE];
 
     /** Position within the current block for partial blocks */
     unsigned char posn;
@@ -334,16 +352,16 @@ typedef struct
 } ascon80pq_state_t;
 
 /**
- * \brief Starts encrypting or decrypting a packet with ASCON-128 in
+ * \brief Initializes ASCON-128 for encrypting or decrypting packets in
  * incremental mode.
  *
  * \param state State to initialize for ASCON-128 operations.
- * \param ad Buffer that contains associated data to authenticate
- * along with the packet but which does not need to be encrypted.
- * \param adlen Length of the associated data in bytes.
  * \param npub Points to the public nonce for the packet which must
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
+ *
+ * If \a npub is NULL, then the initial nonce will be set to all-zeroes.
+ * If \a k is NULL, then the initial key will be set to all-zeroes.
  *
  * The following sequence can be used to encrypt a list of i plaintext
  * message blocks (m) to produce i ciphertext message blocks (c)
@@ -351,7 +369,8 @@ typedef struct
  *
  * \code
  * ascon128_state_t state;
- * ascon128_aead_start(&state, ad, adlen, npub, k);
+ * ascon128_aead_init(&state, npub, k);
+ * ascon128_aead_start(&state, ad, adlen);
  * ascon128_aead_encrypt_block(&state, m1, c1, m1_len);
  * ascon128_aead_encrypt_block(&state, m2, c2, m2_len);
  * ...;
@@ -359,11 +378,23 @@ typedef struct
  * ascon128_aead_encrypt_finalize(&state, t);
  * \endcode
  *
- * Decryption uses a similar sequence:
+ * Subsequent packets can be encrypted by calling ascon128_aead_start() again.
+ * The nonce is automatically incremented by ascon128_aead_start() so
+ * that the caller doesn't accidentally encrypt two or more packets with the
+ * same nonce.
+ *
+ * \code
+ * ascon128_aead_start(&state, ad2, ad2len);
+ * ascon128_aead_encrypt_block(&state, mj, cj, mj_len);
+ * ascon128_aead_encrypt_finalize(&state, t2);
+ * \endcode
+ *
+ * Decryption follows a similar sequence:
  *
  * \code
  * ascon128_state_t state;
- * ascon128_aead_start(&state, ad, adlen, npub, k);
+ * ascon128_aead_init(&state, npub, k);
+ * ascon128_aead_start(&state, ad, adlen);
  * ascon128_aead_decrypt_block(&state, c1, m1, c1_len);
  * ascon128_aead_decrypt_block(&state, c2, m2, c2_len);
  * ...;
@@ -376,23 +407,60 @@ typedef struct
  * discarded if the authentication tag fails to verify.  Applications
  * should not use any of the data before verifying the tag.
  *
+ * When there are no more packets left to encrypt or decrypt,
+ * call ascon128_aead_free():
+ *
+ * \code
+ * ascon128_aead_free(&state);
+ * \endcode
+ *
+ * \sa ascon128_aead_start(), ascon128_aead_free(), ascon128_aead_reinit()
+ */
+void ascon128_aead_init
+    (ascon128_state_t *state, const unsigned char *npub,
+     const unsigned char *k);
+
+/**
+ * \brief Re-initializes ASCON-128 incremental mode with a new key and nonce.
+ *
+ * \param state State to initialize for ASCON-128 operations.
+ * \param npub Points to the public nonce for the packet which must
+ * be 16 bytes in length.
+ * \param k Points to the 16 bytes of the key to use to encrypt the packet.
+ *
+ * If \a npub is NULL, then the initial nonce will be set to all-zeroes.
+ * If \a k is NULL, then the initial key will be set to all-zeroes.
+ *
+ * \sa ascon128_aead_init()
+ */
+void ascon128_aead_reinit
+    (ascon128_state_t *state, const unsigned char *npub,
+     const unsigned char *k);
+
+/**
+ * \brief Starts encrypting or decrypting a packet with ASCON-128 in
+ * incremental mode.
+ *
+ * \param state State to initialize for ASCON-128 operations.
+ * \param ad Buffer that contains associated data to authenticate
+ * along with the packet but which does not need to be encrypted.
+ * \param adlen Length of the associated data in bytes.
+ *
  * \sa ascon128_aead_encrypt_block(), ascon128_aead_decrypt_block(),
  * ascon128_aead_encrypt_finalize(), ascon128_aead_decrypt_finalize()
  */
 void ascon128_aead_start
-    (ascon128_state_t *state, const unsigned char *ad, size_t adlen,
-     const unsigned char *npub, const unsigned char *k);
+    (ascon128_state_t *state, const unsigned char *ad, size_t adlen);
 
 /**
- * \brief Aborts use of ASCON-128 in incremental mode.
+ * \brief Frees an incremental ASCON-128 state, destroying any sensitive
+ * material in the state.
  *
- * \param state State to abort.
+ * \param state The state to free.
  *
- * This function may be used any time after ascon128_aead_start() and
- * before the encryption or decryption process is finalized to abort
- * the process entirely and free the \a state.
+ * \sa ascon128_aead_init()
  */
-void ascon128_aead_abort(ascon128_state_t *state);
+void ascon128_aead_free(ascon128_state_t *state);
 
 /**
  * \brief Encrypts a block of data with ASCON-128 in incremental mode.
@@ -417,9 +485,6 @@ void ascon128_aead_encrypt_block
  * \param state State to use for ASCON-128 encryption operations.
  * \param tag Points to the buffer to receive the authentication tag.
  * Must be at least ASCON128_TAG_SIZE bytes in length.
- *
- * The contents of \a state will be freed by this function, destroying
- * any sensitive material that may be present.
  *
  * \sa ascon128_aead_encrypt_block(), ascon128_aead_start()
  */
@@ -453,25 +518,22 @@ void ascon128_aead_decrypt_block
  * \return 0 on success, -1 if the authentication tag was incorrect,
  * or some other negative number if there was an error in the parameters.
  *
- * The contents of \a state will be freed by this function, destroying
- * any sensitive material that may be present.
- *
  * \sa ascon128_aead_decrypt_block(), ascon128_aead_start()
  */
 int ascon128_aead_decrypt_finalize
     (ascon128_state_t *state, const unsigned char *tag);
 
 /**
- * \brief Starts encrypting or decrypting a packet with ASCON-128a in
+ * \brief Initializes ASCON-128a for encrypting or decrypting packets in
  * incremental mode.
  *
  * \param state State to initialize for ASCON-128a operations.
- * \param ad Buffer that contains associated data to authenticate
- * along with the packet but which does not need to be encrypted.
- * \param adlen Length of the associated data in bytes.
  * \param npub Points to the public nonce for the packet which must
  * be 16 bytes in length.
  * \param k Points to the 16 bytes of the key to use to encrypt the packet.
+ *
+ * If \a npub is NULL, then the initial nonce will be set to all-zeroes.
+ * If \a k is NULL, then the initial key will be set to all-zeroes.
  *
  * The following sequence can be used to encrypt a list of i plaintext
  * message blocks (m) to produce i ciphertext message blocks (c)
@@ -479,7 +541,8 @@ int ascon128_aead_decrypt_finalize
  *
  * \code
  * ascon128a_state_t state;
- * ascon128a_aead_start(&state, ad, adlen, npub, k);
+ * ascon128a_aead_init(&state, npub, k);
+ * ascon128a_aead_start(&state, ad, adlen);
  * ascon128a_aead_encrypt_block(&state, m1, c1, m1_len);
  * ascon128a_aead_encrypt_block(&state, m2, c2, m2_len);
  * ...;
@@ -487,11 +550,23 @@ int ascon128_aead_decrypt_finalize
  * ascon128a_aead_encrypt_finalize(&state, t);
  * \endcode
  *
- * Decryption uses a similar sequence:
+ * Subsequent packets can be encrypted by calling ascon128_aead_start() again.
+ * The nonce is automatically incremented by ascon128_aead_start() so
+ * that the caller doesn't accidentally encrypt two or more packets with the
+ * same nonce.
+ *
+ * \code
+ * ascon128a_aead_start(&state, ad2, ad2len);
+ * ascon128a_aead_encrypt_block(&state, mj, cj, mj_len);
+ * ascon128a_aead_encrypt_finalize(&state, t2);
+ * \endcode
+ *
+ * Decryption follows a similar sequence:
  *
  * \code
  * ascon128a_state_t state;
- * ascon128a_aead_start(&state, ad, adlen, npub, k);
+ * ascon128a_aead_init(&state, npub, k);
+ * ascon128a_aead_start(&state, ad, adlen);
  * ascon128a_aead_decrypt_block(&state, c1, m1, c1_len);
  * ascon128a_aead_decrypt_block(&state, c2, m2, c2_len);
  * ...;
@@ -504,23 +579,60 @@ int ascon128_aead_decrypt_finalize
  * discarded if the authentication tag fails to verify.  Applications
  * should not use any of the data before verifying the tag.
  *
+ * When there are no more packets left to encrypt or decrypt,
+ * call ascon128a_aead_free():
+ *
+ * \code
+ * ascon128a_aead_free(&state);
+ * \endcode
+ *
+ * \sa ascon128a_aead_start(), ascon128a_aead_free(), ascon128a_aead_reinit()
+ */
+void ascon128a_aead_init
+    (ascon128a_state_t *state, const unsigned char *npub,
+     const unsigned char *k);
+
+/**
+ * \brief Re-initializes ASCON-128a incremental mode with a new key and nonce.
+ *
+ * \param state State to initialize for ASCON-128a operations.
+ * \param npub Points to the public nonce for the packet which must
+ * be 16 bytes in length.
+ * \param k Points to the 16 bytes of the key to use to encrypt the packet.
+ *
+ * If \a npub is NULL, then the initial nonce will be set to all-zeroes.
+ * If \a k is NULL, then the initial key will be set to all-zeroes.
+ *
+ * \sa ascon128a_aead_init()
+ */
+void ascon128a_aead_reinit
+    (ascon128a_state_t *state, const unsigned char *npub,
+     const unsigned char *k);
+
+/**
+ * \brief Starts encrypting or decrypting a packet with ASCON-128a in
+ * incremental mode.
+ *
+ * \param state State to initialize for ASCON-128a operations.
+ * \param ad Buffer that contains associated data to authenticate
+ * along with the packet but which does not need to be encrypted.
+ * \param adlen Length of the associated data in bytes.
+ *
  * \sa ascon128a_aead_encrypt_block(), ascon128a_aead_decrypt_block(),
  * ascon128a_aead_encrypt_finalize(), ascon128a_aead_decrypt_finalize()
  */
 void ascon128a_aead_start
-    (ascon128a_state_t *state, const unsigned char *ad, size_t adlen,
-     const unsigned char *npub, const unsigned char *k);
+    (ascon128a_state_t *state, const unsigned char *ad, size_t adlen);
 
 /**
- * \brief Aborts use of ASCON-128a in incremental mode.
+ * \brief Frees an incremental ASCON-128a state, destroying any sensitive
+ * material in the state.
  *
- * \param state State to abort.
+ * \param state The state to free.
  *
- * This function may be used any time after ascon128a_aead_start() and
- * before the encryption or decryption process is finalized to abort
- * the process entirely and free the \a state.
+ * \sa ascon128a_aead_init()
  */
-void ascon128a_aead_abort(ascon128a_state_t *state);
+void ascon128a_aead_free(ascon128a_state_t *state);
 
 /**
  * \brief Encrypts a block of data with ASCON-128a in incremental mode.
@@ -594,12 +706,12 @@ int ascon128a_aead_decrypt_finalize
  * incremental mode.
  *
  * \param state State to initialize for ASCON-80pq operations.
- * \param ad Buffer that contains associated data to authenticate
- * along with the packet but which does not need to be encrypted.
- * \param adlen Length of the associated data in bytes.
  * \param npub Points to the public nonce for the packet which must
  * be 16 bytes in length.
  * \param k Points to the 20 bytes of the key to use to encrypt the packet.
+ *
+ * If \a npub is NULL, then the initial nonce will be set to all-zeroes.
+ * If \a k is NULL, then the initial key will be set to all-zeroes.
  *
  * The following sequence can be used to encrypt a list of i plaintext
  * message blocks (m) to produce i ciphertext message blocks (c)
@@ -607,7 +719,8 @@ int ascon128a_aead_decrypt_finalize
  *
  * \code
  * ascon80pq_state_t state;
- * ascon80pq_aead_start(&state, ad, adlen, npub, k);
+ * ascon80pq_aead_init(&state, npub, k);
+ * ascon80pq_aead_start(&state, ad, adlen);
  * ascon80pq_aead_encrypt_block(&state, m1, c1, m1_len);
  * ascon80pq_aead_encrypt_block(&state, m2, c2, m2_len);
  * ...;
@@ -615,11 +728,23 @@ int ascon128a_aead_decrypt_finalize
  * ascon80pq_aead_encrypt_finalize(&state, t);
  * \endcode
  *
- * Decryption uses a similar sequence:
+ * Subsequent packets can be encrypted by calling ascon128_aead_start() again.
+ * The nonce is automatically incremented by ascon128_aead_start() so
+ * that the caller doesn't accidentally encrypt two or more packets with the
+ * same nonce.
+ *
+ * \code
+ * ascon80pq_aead_start(&state, ad2, ad2len);
+ * ascon80pq_aead_encrypt_block(&state, mj, cj, mj_len);
+ * ascon80pq_aead_encrypt_finalize(&state, t2);
+ * \endcode
+ *
+ * Decryption follows a similar sequence:
  *
  * \code
  * ascon80pq_state_t state;
- * ascon80pq_aead_start(&state, ad, adlen, npub, k);
+ * ascon80pq_aead_init(&state, npub, k);
+ * ascon80pq_aead_start(&state, ad, adlen);
  * ascon80pq_aead_decrypt_block(&state, c1, m1, c1_len);
  * ascon80pq_aead_decrypt_block(&state, c2, m2, c2_len);
  * ...;
@@ -632,23 +757,60 @@ int ascon128a_aead_decrypt_finalize
  * discarded if the authentication tag fails to verify.  Applications
  * should not use any of the data before verifying the tag.
  *
+ * When there are no more packets left to encrypt or decrypt,
+ * call ascon80pq_aead_free():
+ *
+ * \code
+ * ascon80pq_aead_free(&state);
+ * \endcode
+ *
+ * \sa ascon80pq_aead_start(), ascon80pq_aead_free(), ascon80pq_aead_reinit()
+ */
+void ascon80pq_aead_init
+    (ascon80pq_state_t *state, const unsigned char *npub,
+     const unsigned char *k);
+
+/**
+ * \brief Re-initializes ASCON-80pq incremental mode with a new key and nonce.
+ *
+ * \param state State to initialize for ASCON-80pq operations.
+ * \param npub Points to the public nonce for the packet which must
+ * be 16 bytes in length.
+ * \param k Points to the 20 bytes of the key to use to encrypt the packet.
+ *
+ * If \a npub is NULL, then the initial nonce will be set to all-zeroes.
+ * If \a k is NULL, then the initial key will be set to all-zeroes.
+ *
+ * \sa ascon80pq_aead_init()
+ */
+void ascon80pq_aead_reinit
+    (ascon80pq_state_t *state, const unsigned char *npub,
+     const unsigned char *k);
+
+/**
+ * \brief Starts encrypting or decrypting a packet with ASCON-80pq in
+ * incremental mode.
+ *
+ * \param state State to initialize for ASCON-80pq operations.
+ * \param ad Buffer that contains associated data to authenticate
+ * along with the packet but which does not need to be encrypted.
+ * \param adlen Length of the associated data in bytes.
+ *
  * \sa ascon80pq_aead_encrypt_block(), ascon80pq_aead_decrypt_block(),
  * ascon80pq_aead_encrypt_finalize(), ascon80pq_aead_decrypt_finalize()
  */
 void ascon80pq_aead_start
-    (ascon80pq_state_t *state, const unsigned char *ad, size_t adlen,
-     const unsigned char *npub, const unsigned char *k);
+    (ascon80pq_state_t *state, const unsigned char *ad, size_t adlen);
 
 /**
- * \brief Aborts use of ASCON-80pq in incremental mode.
+ * \brief Frees an incremental ASCON-80pq state, destroying any sensitive
+ * material in the state.
  *
- * \param state State to abort.
+ * \param state The state to free.
  *
- * This function may be used any time after ascon80pq_aead_start() and
- * before the encryption or decryption process is finalized to abort
- * the process entirely and free the \a state.
+ * \sa ascon80pq_aead_init()
  */
-void ascon80pq_aead_abort(ascon80pq_state_t *state);
+void ascon80pq_aead_free(ascon80pq_state_t *state);
 
 /**
  * \brief Encrypts a block of data with ASCON-80pq in incremental mode.
