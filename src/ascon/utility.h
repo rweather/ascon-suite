@@ -282,6 +282,21 @@ static inline byte_array bytes_from_hex(const char *str)
     return bytes_from_hex(str, str ? ::strlen(str) : 0);
 }
 
+/**
+ * \brief Converts a C array of bytes into a C++ array.
+ *
+ * \param data Points to the data to convert.
+ * \param len Number of bytes of data.
+ *
+ * \return A C++ byte array containing the data.
+ */
+static inline byte_array bytes_from_data(const unsigned char *data, size_t len)
+{
+    byte_array result(len);
+    ::memcpy(result.data(), data, len);
+    return result;
+}
+
 #if !defined(ASCON_NO_STL) || defined(ASCON_SUITE_DOC)
 
 /**
@@ -383,6 +398,13 @@ static inline byte_array bytes_from_hex(const char *str)
 static inline byte_array bytes_from_hex(const String &str)
 {
     return bytes_from_hex(str.c_str(), str.length());
+}
+
+static inline byte_array bytes_from_data(const unsigned char *data, size_t len)
+{
+    byte_array result(len);
+    ::memcpy(result.data(), data, len);
+    return result;
 }
 
 } /* namespace ascon */

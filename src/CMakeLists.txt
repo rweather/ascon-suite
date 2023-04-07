@@ -40,8 +40,12 @@ list(APPEND ASCON_SOURCES
     core/ascon-util.h
     core/ascon-util-snp.h
     core/ascon-version.c
+    cplusplus/ascon-aead-cpp.cpp
+    cplusplus/ascon-aead-masked-cpp.cpp
     cplusplus/ascon-byte-array.cpp
     cplusplus/ascon-cplusplus.cpp
+    cplusplus/ascon-isap-cpp.cpp
+    cplusplus/ascon-siv-cpp.cpp
     hash/ascon-hasha.c
     hash/ascon-hash.c
     hash/ascon-xofa.c

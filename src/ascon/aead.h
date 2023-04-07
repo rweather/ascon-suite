@@ -881,6 +881,503 @@ int ascon80pq_aead_decrypt_finalize
 
 #ifdef __cplusplus
 }
-#endif
+
+#include <ascon/utility.h>
+
+namespace ascon
+{
+
+/**
+ * \brief Common base class for encrypting or decrypting sequential
+ * packets with ASCON.
+ *
+ * Subclasses of this class provide a convenient API for encrypting
+ * sequential packets in a session using ASCON.  The state consists of
+ * the key and a nonce.  After each packet is encrypted or decrypted,
+ * the nonce is incremented for the next packet automatically.
+ *
+ * The following example demonstrates encrypting three packets in a
+ * session starting with a nonce value of zero:
+ *
+ * \code
+ * unsigned char key[16] = {...};
+ *
+ * ascon::aead128 cipher;
+ * cipher.set_key(key, sizeof(key));
+ *
+ * // nonce = 0
+ * ascon::byte_array m1 = ascon::bytes_from_data(plaintext1, plaintext1_len);
+ * cipher.encrypt(c1, m1);
+ *
+ * // nonce = 1
+ * ascon::byte_array m2 = ascon::bytes_from_data(plaintext2, plaintext2_len);
+ * cipher.encrypt(c2, m2);
+ *
+ * // nonce = 2
+ * ascon::byte_array m3 = ascon::bytes_from_data(plaintext3, plaintext3_len);
+ * cipher.encrypt(c3, m3);
+ * \endcode
+ *
+ * To decrypt the above packets, the object must be re-initialised
+ * with the starting nonce / counter value:
+ *
+ * \code
+ * cipher.set_counter(0);
+ *
+ * // nonce = 0
+ * ascon::byte_array p1;
+ * cipher.encrypt(p1, c1);
+ *
+ * // nonce = 1
+ * cipher.encrypt(p2, c2);
+ *
+ * // nonce = 2
+ * cipher.encrypt(p3, c3);
+ * \endcode
+ *
+ * The set_counter() function provides a convenient method to set the
+ * nonce to a 64-bit counter value.
+ *
+ * The above example is for sequential packets on reliable transports
+ * where the nonce is always incrementing.  For unreliable datagram
+ * transports, the application will need to explicitly call set_nonce()
+ * or set_counter() for each packet.
+ */
+class aead
+{
+    /* Disable copy operations */
+    inline aead(const aead &) {}
+    inline aead& operator=(const aead &) { return *this; }
+public:
+    /**
+     * \brief Destroys this AEAD object and all sensitive material within.
+     */
+    virtual ~aead();
+
+    /**
+     * \brief Gets the size of the key for this AEAD object.
+     *
+     * \return The size of the key in bytes.
+     */
+    virtual size_t key_size() const = 0;
+
+    /**
+     * \brief Gets the size of the tag for this AEAD object.
+     *
+     * \return The size of the tag in bytes.
+     */
+    virtual size_t tag_size() const = 0;
+
+    /**
+     * \brief Gets the size of the nonce for this AEAD object.
+     *
+     * \return The size of the nonce in bytes.
+     */
+    virtual size_t nonce_size() const = 0;
+
+    /**
+     * \brief Sets a new key for this AEAD object while leaving the
+     * nonce value as-is.
+     *
+     * \param key Points to the key to use to encrypt or decrypt packets.
+     * \param len Length of the key in bytes.
+     *
+     * \return Returns true if the key was set, or false if \a key or
+     * \a len are invalid.
+     *
+     * All subclasses must support a key length of zero to mean
+     * "set the key to all-zeroes".  Otherwise the key length is
+     * expected to be the same as key_size().  The subclass may
+     * support other key sizes but this isn't guaranteed.
+     *
+     * \sa set_nonce()
+     */
+    virtual bool set_key(const unsigned char *key, size_t len) = 0;
+
+    /**
+     * \brief Sets a new nonce for this AEAD object while leaving the
+     * key value as-is.
+     *
+     * \param nonce Points to the nonce to use to encrypt or decrypt the
+     * next packet.
+     * \param len The length of the nonce in bytes.
+     *
+     * If \a len is less than nonce_size(), then the value will be padded
+     * on the left with zero bytes.  If \a len is greater than nonce_size(),
+     * then the value will be truncated to the first nonce_size() bytes.
+     *
+     * \sa set_key(), set_counter()
+     */
+    virtual void set_nonce(const unsigned char *nonce, size_t len) = 0;
+
+    /**
+     * \brief Sets the nonce in this AEAD object to a 64-bit counter
+     * value while leaving the key value as-is.
+     *
+     * \param n The 64-bit counter value to set.
+     *
+     * The \a n value will be formatted into the nonce as a big-endian
+     * value with leading zeroes to make up the full nonce_size() bytes.
+     *
+     * \sa set_key(), set_nonce()
+     */
+    virtual void set_counter(uint64_t n) = 0;
+
+    /**
+     * \brief Encrypts and authenticates a packet with ASCON.
+     *
+     * \param c Buffer to receive the output ciphertext, which must be
+     * large enough to hold \a len + 16 bytes.
+     * \param m Buffer that contains the plaintext message to encrypt.
+     * \param len Length of the plaintext message in bytes.
+     * \param ad Buffer that contains associated data to authenticate
+     * along with the packet but which does not need to be encrypted.
+     * \param adlen Length of the associated data in bytes.
+     *
+     * \return The number of ciphertext bytes that were written to \a c.
+     *
+     * This function will increment the nonce value so that the next
+     * packet will be encrypted (or decrypted) with the next nonce value.
+     *
+     * \sa decrypt()
+     */
+    inline int encrypt(unsigned char *c, const unsigned char *m, size_t len,
+                       const unsigned char *ad = 0, size_t adlen = 0)
+    {
+        return do_encrypt(c, m, len, ad, adlen);
+    }
+
+    /**
+     * \brief Encrypts and authenticates a packet with ASCON.
+     *
+     * \param c Byte array to receive the ciphertext output.  This array
+     * will be resized to the correct size by this function.
+     * \param m Byte array that contains the plaintext message to be encrypted.
+     *
+     * This function will increment the nonce value so that the next
+     * packet will be encrypted (or decrypted) with the next nonce value.
+     *
+     * The \a c object should not be the same as \a m.
+     *
+     * \sa decrypt()
+     */
+    void encrypt(ascon::byte_array &c, const ascon::byte_array &m);
+
+    /**
+     * \brief Encrypts and authenticates a packet with ASCON.
+     *
+     * \param c Byte array to receive the ciphertext output.  This array
+     * will be resized to the correct size by this function.
+     * \param m Byte array that contains the plaintext message to be encrypted.
+     * \param ad Byte array that contains the associated data.
+     *
+     * This function will increment the nonce value so that the next
+     * packet will be encrypted (or decrypted) with the next nonce value.
+     *
+     * The \a c object should not be the same as either \a m or \a ad.
+     *
+     * \sa decrypt()
+     */
+    void encrypt(ascon::byte_array &c, const ascon::byte_array &m,
+                 const ascon::byte_array &ad);
+
+    /**
+     * \brief Decrypts and authenticates a packet with ASCON.
+     *
+     * \param m Buffer to receive the plaintext message on output.
+     * \param c Buffer that contains the ciphertext and authentication
+     * tag to decrypt.
+     * \param len Length of the input data in bytes, which includes the
+     * ciphertext and the 16 byte authentication tag.
+     * \param ad Buffer that contains associated data to authenticate
+     * along with the packet but which does not need to be encrypted.
+     * \param adlen Length of the associated data in bytes.
+     *
+     * \return The length of the plaintext on success.  Returns -1 if the
+     * authentication tag was incorrect or \a len is too short to be a
+     * valid ciphertext.
+     *
+     * On success, this function will increment the nonce value so that the
+     * next packet will be decrypted (or encrypted) with the next nonce value.
+     * The nonce will not be incremented if decryption fails.
+     *
+     * \sa encrypt()
+     */
+    inline int decrypt(unsigned char *m, const unsigned char *c, size_t len,
+                       const unsigned char *ad = 0, size_t adlen = 0)
+    {
+        return do_decrypt(m, c, len, ad, adlen);
+    }
+
+    /**
+     * \brief Decrypts and authenticates a packet with ASCON.
+     *
+     * \param m Byte array to receive the plaintext output.  This array
+     * will be resized to the correct size by this function.
+     * \param c Byte array that contains the ciphertext to be decrypted.
+     *
+     * \return Returns true if \a c was decrypted successfully or false
+     * if the ciphertext is invalid.
+     *
+     * On success, this function will increment the nonce value so that the
+     * next packet will be decrypted (or encrypted) with the next nonce value.
+     * The nonce will not be incremented if decryption fails.
+     *
+     * The \a m object should not be the same as \a c.
+     *
+     * \sa encrypt()
+     */
+    bool decrypt(ascon::byte_array &m, const ascon::byte_array &c);
+
+    /**
+     * \brief Decrypts and authenticates a packet with ASCON.
+     *
+     * \param m Byte array to receive the plaintext output.  This array
+     * will be resized to the correct size by this function.
+     * \param c Byte array that contains the ciphertext to be decrypted.
+     * \param ad Byte array that contains the associated data.
+     *
+     * \return Returns true if \a c was decrypted successfully or false
+     * if the ciphertext is invalid.
+     *
+     * On success, this function will increment the nonce value so that the
+     * next packet will be decrypted (or encrypted) with the next nonce value.
+     * The nonce will not be incremented if decryption fails.
+     *
+     * The \a m object should not be the same as either \a c or \a ad.
+     *
+     * \sa encrypt()
+     */
+    bool decrypt(ascon::byte_array &m, const ascon::byte_array &c,
+                 const ascon::byte_array &ad);
+
+    /**
+     * \brief Clears all sensitive material from this AEAD object.
+     *
+     * The key and nonce will be in an unknown state after calling this
+     * function.  The application must call set_key() and set_nonce()
+     * to be able to use this object again.
+     */
+    virtual void clear() = 0;
+
+protected:
+    /**
+     * \brief Constructs a new AEAD object.
+     */
+    inline aead() {}
+
+    /**
+     * \brief Subclass implementation of ASCON encryption.
+     *
+     * \param c Buffer to receive the output ciphertext, which must be
+     * large enough to hold \a len + 16 bytes.
+     * \param m Buffer that contains the plaintext message to encrypt.
+     * \param len Length of the plaintext message in bytes.
+     * \param ad Buffer that contains associated data to authenticate
+     * along with the packet but which does not need to be encrypted.
+     * \param adlen Length of the associated data in bytes.
+     *
+     * \return The number of ciphertext bytes that were written to \a c.
+     *
+     * \sa do_decrypt()
+     */
+    virtual int do_encrypt
+        (unsigned char *c, const unsigned char *m, size_t len,
+         const unsigned char *ad, size_t adlen) = 0;
+
+    /**
+     * \brief Subclass implementation of ASCON decryption.
+     *
+     * \param m Buffer to receive the plaintext message on output.
+     * \param c Buffer that contains the ciphertext and authentication
+     * tag to decrypt.
+     * \param len Length of the input data in bytes, which includes the
+     * ciphertext and the 16 byte authentication tag.
+     * \param ad Buffer that contains associated data to authenticate
+     * along with the packet but which does not need to be encrypted.
+     * \param adlen Length of the associated data in bytes.
+     *
+     * \return The length of the plaintext on success.  Returns -1 if the
+     * authentication tag was incorrect or \a len is too short to be a
+     * valid ciphertext.
+     *
+     * \sa do_encrypt()
+     */
+    virtual int do_decrypt
+        (unsigned char *m, const unsigned char *c, size_t len,
+         const unsigned char *ad, size_t adlen) = 0;
+};
+
+/**
+ * \brief Encrypts or decrypts sequential packets with ASCON-128.
+ */
+class aead128 : public aead
+{
+    /* Disable copy operations */
+    inline aead128(const aead128 &) : aead() {}
+    inline aead128& operator=(const aead128 &) { return *this; }
+public:
+    /**
+     * \brief Constructs a new ASCON-128 object.
+     *
+     * The key and nonce will be initially set to all-zeroes.  Use set_key()
+     * and set_nonce() to set specific key and nonce values.
+     */
+    aead128();
+
+    /**
+     * \brief Constructs a new ASCON-128 object with an initial key.
+     *
+     * \param key The key to use to encrypt or decrypt packets.
+     *
+     * The nonce will be initially set to all-zeroes.  Use set_nonce() or
+     * set_counter() to set a specific nonce value.
+     *
+     * The key will be set to all-zeroes if \a key is NULL.
+     */
+    explicit aead128(const unsigned char key[ASCON128_KEY_SIZE]);
+
+    /**
+     * \brief Destroys this ASCON-128 object and all sensitive material within.
+     */
+    ~aead128();
+
+    /* Override virtual methods */
+    size_t key_size() const;
+    size_t tag_size() const;
+    size_t nonce_size() const;
+    bool set_key(const unsigned char *key, size_t len);
+    void set_nonce(const unsigned char *nonce, size_t len);
+    void set_counter(uint64_t n);
+    void clear();
+
+protected:
+    int do_encrypt(unsigned char *c, const unsigned char *m, size_t len,
+                   const unsigned char *ad, size_t adlen);
+    int do_decrypt(unsigned char *m, const unsigned char *c, size_t len,
+                   const unsigned char *ad, size_t adlen);
+
+private:
+    struct {
+        unsigned char key[ASCON128_KEY_SIZE];       /**< Key */
+        unsigned char nonce[ASCON128_NONCE_SIZE];   /**< Nonce */
+    } m_state; /**< Internal AEAD state */
+};
+
+/**
+ * \brief Encrypts or decrypts sequential packets with ASCON-128a.
+ */
+class aead128a : public aead
+{
+    /* Disable copy operations */
+    inline aead128a(const aead128a &) : aead() {}
+    inline aead128a& operator=(const aead128a &) { return *this; }
+public:
+    /**
+     * \brief Constructs a new ASCON-128a object.
+     *
+     * The key and nonce will be initially set to all-zeroes.  Use set_key()
+     * and set_nonce() to set specific key and nonce values.
+     */
+    aead128a();
+
+    /**
+     * \brief Constructs a new ASCON-128a object with an initial key.
+     *
+     * \param key The key to use to encrypt or decrypt packets.
+     *
+     * The nonce will be initially set to all-zeroes.  Use set_nonce() or
+     * set_counter() to set a specific nonce value.
+     *
+     * The key will be set to all-zeroes if \a key is NULL.
+     */
+    explicit aead128a(const unsigned char key[ASCON128_KEY_SIZE]);
+
+    /**
+     * \brief Destroys this ASCON-128a object and all sensitive material within.
+     */
+    ~aead128a();
+
+    /* Override virtual methods */
+    size_t key_size() const;
+    size_t tag_size() const;
+    size_t nonce_size() const;
+    bool set_key(const unsigned char *key, size_t len);
+    void set_nonce(const unsigned char *nonce, size_t len);
+    void set_counter(uint64_t n);
+    void clear();
+
+protected:
+    int do_encrypt(unsigned char *c, const unsigned char *m, size_t len,
+                   const unsigned char *ad, size_t adlen);
+    int do_decrypt(unsigned char *m, const unsigned char *c, size_t len,
+                   const unsigned char *ad, size_t adlen);
+
+private:
+    struct {
+        unsigned char key[ASCON128_KEY_SIZE];       /**< Key */
+        unsigned char nonce[ASCON128_NONCE_SIZE];   /**< Nonce */
+    } m_state; /**< Internal AEAD state */
+};
+
+/**
+ * \brief Encrypts or decrypts sequential packets with ASCON-80pq.
+ */
+class aead80pq : public aead
+{
+    /* Disable copy operations */
+    inline aead80pq(const aead80pq &) : aead() {}
+    inline aead80pq& operator=(const aead80pq &) { return *this; }
+public:
+    /**
+     * \brief Constructs a new ASCON-80pq object.
+     *
+     * The key and nonce will be initially set to all-zeroes.  Use set_key()
+     * and set_nonce() to set specific key and nonce values.
+     */
+    aead80pq();
+
+    /**
+     * \brief Constructs a new ASCON-80pq object with an initial key.
+     *
+     * \param key The key to use to encrypt or decrypt packets.
+     *
+     * The nonce will be initially set to all-zeroes.  Use set_nonce() or
+     * set_counter() to set a specific nonce value.
+     *
+     * The key will be set to all-zeroes if \a key is NULL.
+     */
+    explicit aead80pq(const unsigned char key[ASCON80PQ_KEY_SIZE]);
+
+    /**
+     * \brief Destroys this ASCON-80pq object and all sensitive material within.
+     */
+    ~aead80pq();
+
+    /* Override virtual methods */
+    size_t key_size() const;
+    size_t tag_size() const;
+    size_t nonce_size() const;
+    bool set_key(const unsigned char *key, size_t len);
+    void set_nonce(const unsigned char *nonce, size_t len);
+    void set_counter(uint64_t n);
+    void clear();
+
+protected:
+    int do_encrypt(unsigned char *c, const unsigned char *m, size_t len,
+                   const unsigned char *ad, size_t adlen);
+    int do_decrypt(unsigned char *m, const unsigned char *c, size_t len,
+                   const unsigned char *ad, size_t adlen);
+
+private:
+    struct {
+        unsigned char key[ASCON80PQ_KEY_SIZE];      /**< Key */
+        unsigned char nonce[ASCON80PQ_NONCE_SIZE];  /**< Nonce */
+    } m_state; /**< Internal AEAD state */
+};
+
+} /* namespace ascon */
+
+#endif /* __cplusplus */
 
 #endif

@@ -46,7 +46,7 @@ void ascon80pq_aead_reinit
         memset(state->key, 0, ASCON80PQ_KEY_SIZE);
     if (npub)
         memcpy(state->nonce, npub, ASCON80PQ_NONCE_SIZE);
-    else
+    else if (npub != state->nonce)
         memset(state->nonce, 0, ASCON80PQ_NONCE_SIZE);
     state->posn = 0;
 }

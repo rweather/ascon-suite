@@ -163,8 +163,8 @@ bool testCipher_N(const struct TestVector *test, size_t inc)
     } else {
         // Use the incremental version of the encryption algorithm.
         memset(&testState, 0x77, sizeof(&testState));
-        ascon128_aead_start
-            (&testState, test->authdata, test->authsize, test->iv, test->key);
+        ascon128_aead_init(&testState, test->iv, test->key);
+        ascon128_aead_start(&testState, test->authdata, test->authsize);
         for (posn = 0; posn < test->datasize; posn += inc) {
             size_t len = test->datasize - posn;
             if (len > inc)
@@ -173,6 +173,7 @@ bool testCipher_N(const struct TestVector *test, size_t inc)
                 (&testState, test->plaintext + posn, buffer + posn, len);
         }
         ascon128_aead_encrypt_finalize(&testState, buffer + test->datasize);
+        ascon128_aead_free(&testState);
     }
 
     if (clen != (test->datasize + 16) ||
@@ -195,8 +196,8 @@ bool testCipher_N(const struct TestVector *test, size_t inc)
     } else {
         // Use the incremental version of the decryption algorithm.
         memset(&testState, 0x55, sizeof(&testState));
-        ascon128_aead_start
-            (&testState, test->authdata, test->authsize, test->iv, test->key);
+        ascon128_aead_init(&testState, test->iv, test->key);
+        ascon128_aead_start(&testState, test->authdata, test->authsize);
         for (posn = 0; posn < test->datasize; posn += inc) {
             size_t len = test->datasize - posn;
             if (len > inc)
@@ -206,6 +207,7 @@ bool testCipher_N(const struct TestVector *test, size_t inc)
         }
         result = ascon128_aead_decrypt_finalize
             (&testState, buffer + test->datasize);
+        ascon128_aead_free(&testState);
     }
 
     if (result < 0 || mlen != test->datasize ||

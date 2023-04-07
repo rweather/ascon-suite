@@ -432,6 +432,215 @@ int ascon80pq_isap_aead_decrypt
 
 #ifdef __cplusplus
 }
-#endif
+
+#include <ascon/aead.h>
+
+namespace ascon
+{
+
+/**
+ * \brief Encrypts or decrypts sequential packets with ISAP-A-128.
+ */
+class isap128 : public aead
+{
+    /* Disable copy operations */
+    inline isap128(const isap128 &) : aead() {}
+    inline isap128& operator=(const isap128 &) { return *this; }
+public:
+    /**
+     * \brief Constructs a new ISAP-A-128 object.
+     *
+     * The key and nonce will be initially set to all-zeroes.  Use set_key()
+     * and set_nonce() to set specific key and nonce values.
+     */
+    isap128();
+
+    /**
+     * \brief Constructs a new ISAP-A-128 object with an initial key.
+     *
+     * \param key The key to use to encrypt or decrypt packets.
+     * \param len The length of the key in bytes, 16 or 80.
+     *
+     * The nonce will be initially set to all-zeroes.  Use set_nonce() or
+     * set_counter() to set a specific nonce value.
+     *
+     * The key will be set to all-zeroes if \a len is 0.
+     *
+     * If \a len is 80, then it indicates the ISAP "save key" format.
+     */
+    explicit isap128(const unsigned char *key, size_t len);
+
+    /**
+     * \brief Destroys this ISAP-A-128 object and all sensitive
+     * material within.
+     */
+    ~isap128();
+
+    /**
+     * \brief Gets the key value from this object as a "save key".
+     *
+     * \param key Buffer to fill with the save key.
+     *
+     * Save keys can be set using set_key().
+     */
+    void save_key(unsigned char key[ASCON_ISAP_SAVED_KEY_SIZE]);
+
+    /* Override virtual methods */
+    size_t key_size() const;
+    size_t tag_size() const;
+    size_t nonce_size() const;
+    bool set_key(const unsigned char *key, size_t len);
+    void set_nonce(const unsigned char *nonce, size_t len);
+    void set_counter(uint64_t n);
+    void clear();
+
+protected:
+    int do_encrypt(unsigned char *c, const unsigned char *m, size_t len,
+                   const unsigned char *ad, size_t adlen);
+    int do_decrypt(unsigned char *m, const unsigned char *c, size_t len,
+                   const unsigned char *ad, size_t adlen);
+
+private:
+    ascon128_isap_aead_key_t m_key; /**< Key */
+    unsigned char m_nonce[ASCON_ISAP_NONCE_SIZE]; /**< Nonce */
+};
+
+/**
+ * \brief Encrypts or decrypts sequential packets with ISAP-A-128A.
+ */
+class isap128a : public aead
+{
+    /* Disable copy operations */
+    inline isap128a(const isap128a &) : aead() {}
+    inline isap128a& operator=(const isap128a &) { return *this; }
+public:
+    /**
+     * \brief Constructs a new ISAP-A-128A object.
+     *
+     * The key and nonce will be initially set to all-zeroes.  Use set_key()
+     * and set_nonce() to set specific key and nonce values.
+     */
+    isap128a();
+
+    /**
+     * \brief Constructs a new ISAP-A-128A object with an initial key.
+     *
+     * \param key The key to use to encrypt or decrypt packets.
+     * \param len The length of the key in bytes, 16 or 80.
+     *
+     * The nonce will be initially set to all-zeroes.  Use set_nonce() or
+     * set_counter() to set a specific nonce value.
+     *
+     * The key will be set to all-zeroes if \a len is 0.
+     *
+     * If \a len is 80, then it indicates the ISAP "save key" format.
+     */
+    explicit isap128a(const unsigned char *key, size_t len);
+
+    /**
+     * \brief Destroys this ISAP-A-128A object and all sensitive
+     * material within.
+     */
+    ~isap128a();
+
+    /**
+     * \brief Gets the key value from this object as a "save key".
+     *
+     * \param key Buffer to fill with the save key.
+     *
+     * Save keys can be set using set_key().
+     */
+    void save_key(unsigned char key[ASCON_ISAP_SAVED_KEY_SIZE]);
+
+    /* Override virtual methods */
+    size_t key_size() const;
+    size_t tag_size() const;
+    size_t nonce_size() const;
+    bool set_key(const unsigned char *key, size_t len);
+    void set_nonce(const unsigned char *nonce, size_t len);
+    void set_counter(uint64_t n);
+    void clear();
+
+protected:
+    int do_encrypt(unsigned char *c, const unsigned char *m, size_t len,
+                   const unsigned char *ad, size_t adlen);
+    int do_decrypt(unsigned char *m, const unsigned char *c, size_t len,
+                   const unsigned char *ad, size_t adlen);
+
+private:
+    ascon128a_isap_aead_key_t m_key; /**< Key */
+    unsigned char m_nonce[ASCON_ISAP_NONCE_SIZE]; /**< Nonce */
+};
+
+/**
+ * \brief Encrypts or decrypts sequential packets with ISAP-A-80PQ.
+ */
+class isap80pq : public aead
+{
+    /* Disable copy operations */
+    inline isap80pq(const isap80pq &) : aead() {}
+    inline isap80pq& operator=(const isap80pq &) { return *this; }
+public:
+    /**
+     * \brief Constructs a new ISAP-A-80PQ object.
+     *
+     * The key and nonce will be initially set to all-zeroes.  Use set_key()
+     * and set_nonce() to set specific key and nonce values.
+     */
+    isap80pq();
+
+    /**
+     * \brief Constructs a new ISAP-A-80PQ object with an initial key.
+     *
+     * \param key The key to use to encrypt or decrypt packets.
+     * \param len The length of the key in bytes, 16 or 80.
+     *
+     * The nonce will be initially set to all-zeroes.  Use set_nonce() or
+     * set_counter() to set a specific nonce value.
+     *
+     * The key will be set to all-zeroes if \a len is 0.
+     *
+     * If \a len is 80, then it indicates the ISAP "save key" format.
+     */
+    explicit isap80pq(const unsigned char *key, size_t len);
+
+    /**
+     * \brief Destroys this ISAP-A-80PQ object and all sensitive
+     * material within.
+     */
+    ~isap80pq();
+
+    /**
+     * \brief Gets the key value from this object as a "save key".
+     *
+     * \param key Buffer to fill with the save key.
+     *
+     * Save keys can be set using set_key().
+     */
+    void save_key(unsigned char key[ASCON_ISAP_SAVED_KEY_SIZE]);
+
+    /* Override virtual methods */
+    size_t key_size() const;
+    size_t tag_size() const;
+    size_t nonce_size() const;
+    bool set_key(const unsigned char *key, size_t len);
+    void set_nonce(const unsigned char *nonce, size_t len);
+    void set_counter(uint64_t n);
+    void clear();
+
+protected:
+    int do_encrypt(unsigned char *c, const unsigned char *m, size_t len,
+                   const unsigned char *ad, size_t adlen);
+    int do_decrypt(unsigned char *m, const unsigned char *c, size_t len,
+                   const unsigned char *ad, size_t adlen);
+
+private:
+    ascon80pq_isap_aead_key_t m_key; /**< Key */
+    unsigned char m_nonce[ASCON_ISAP_NONCE_SIZE]; /**< Nonce */
+};
+
+} /* namespace ascon */
+
+#endif /* __cplusplus */
 
 #endif

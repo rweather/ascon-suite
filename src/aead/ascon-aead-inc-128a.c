@@ -47,7 +47,7 @@ void ascon128a_aead_reinit
         memset(state->key, 0, ASCON128_KEY_SIZE);
     if (npub)
         memcpy(state->nonce, npub, ASCON128_NONCE_SIZE);
-    else
+    else if (npub != state->nonce)
         memset(state->nonce, 0, ASCON128_NONCE_SIZE);
     state->posn = 0;
 }

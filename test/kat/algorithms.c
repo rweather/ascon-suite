@@ -550,6 +550,154 @@ aead_auth_algorithm_t const ascon_kmaca_auth = {
 
 /* Test the C++ bindings for the algorithms */
 
+extern void ascon128_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon128_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern void ascon128a_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon128a_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern void ascon80pq_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon80pq_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+
+extern void ascon128_masked_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon128_masked_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern void ascon128a_masked_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon128a_masked_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern void ascon80pq_masked_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon80pq_masked_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+
+extern void ascon128_isap_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon128_isap_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern void ascon128a_isap_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon128a_isap_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern void ascon80pq_isap_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon80pq_isap_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+
+extern void ascon128_siv_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon128_siv_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern void ascon128a_siv_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon128a_siv_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern void ascon80pq_siv_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+extern int ascon80pq_siv_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k);
+
 extern void ascon_hash_cpp
     (unsigned char *out, const unsigned char *in, size_t inlen);
 extern void ascon_hash_init_cpp(void *state);
@@ -583,6 +731,138 @@ extern void ascon_xofa_absorb_cpp
     (void *state, const unsigned char *in, size_t inlen);
 extern void ascon_xofa_squeeze_cpp
     (void *state, unsigned char *out, size_t outlen);
+
+aead_cipher_t const ascon128_cpp_cipher = {
+    "ASCON-128-cpp",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon128_aead_encrypt_cpp,
+    ascon128_aead_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128a_cpp_cipher = {
+    "ASCON-128a-cpp",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon128a_aead_encrypt_cpp,
+    ascon128a_aead_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon80pq_cpp_cipher = {
+    "ASCON-80pq-cpp",
+    ASCON80PQ_KEY_SIZE,
+    ASCON80PQ_NONCE_SIZE,
+    ASCON80PQ_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon80pq_aead_encrypt_cpp,
+    ascon80pq_aead_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128_masked_cpp_cipher = {
+    "ASCON-128-masked-cpp",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_ALL,
+    ascon128_masked_aead_encrypt_cpp,
+    ascon128_masked_aead_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128a_masked_cpp_cipher = {
+    "ASCON-128a-masked-cpp",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_ALL,
+    ascon128a_masked_aead_encrypt_cpp,
+    ascon128a_masked_aead_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon80pq_masked_cpp_cipher = {
+    "ASCON-80pq-masked-cpp",
+    ASCON80PQ_KEY_SIZE,
+    ASCON80PQ_NONCE_SIZE,
+    ASCON80PQ_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_ALL,
+    ascon80pq_masked_aead_encrypt_cpp,
+    ascon80pq_masked_aead_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128a_isap_cpp_cipher = {
+    "ISAP-A-128A-cpp",
+    ASCON128_ISAP_KEY_SIZE,
+    ASCON_ISAP_NONCE_SIZE,
+    ASCON_ISAP_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_KEY | AEAD_FLAG_SLOW,
+    ascon128a_isap_encrypt_cpp,
+    ascon128a_isap_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128_isap_cpp_cipher = {
+    "ISAP-A-128-cpp",
+    ASCON128_ISAP_KEY_SIZE,
+    ASCON_ISAP_NONCE_SIZE,
+    ASCON_ISAP_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_KEY | AEAD_FLAG_SLOW,
+    ascon128_isap_encrypt_cpp,
+    ascon128_isap_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon80pq_isap_cpp_cipher = {
+    "ISAP-A-80PQ-cpp",
+    ASCON80PQ_ISAP_KEY_SIZE,
+    ASCON_ISAP_NONCE_SIZE,
+    ASCON_ISAP_TAG_SIZE,
+    AEAD_FLAG_SC_PROTECT_KEY | AEAD_FLAG_SLOW,
+    ascon80pq_isap_encrypt_cpp,
+    ascon80pq_isap_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128_siv_cpp_cipher = {
+    "ASCON-128-SIV-cpp",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon128_siv_encrypt_cpp,
+    ascon128_siv_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon128a_siv_cpp_cipher = {
+    "ASCON-128a-SIV-cpp",
+    ASCON128_KEY_SIZE,
+    ASCON128_NONCE_SIZE,
+    ASCON128_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon128a_siv_encrypt_cpp,
+    ascon128a_siv_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+aead_cipher_t const ascon80pq_siv_cpp_cipher = {
+    "ASCON-80pq-SIV-cpp",
+    ASCON80PQ_KEY_SIZE,
+    ASCON80PQ_NONCE_SIZE,
+    ASCON80PQ_TAG_SIZE,
+    AEAD_FLAG_NONE,
+    ascon80pq_siv_encrypt_cpp,
+    ascon80pq_siv_decrypt_cpp,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
 
 aead_hash_algorithm_t const ascon_hash_cpp_algorithm = {
     "ASCON-HASH-cpp",
@@ -661,6 +941,18 @@ static const aead_cipher_t *const ciphers[] = {
     &ascon128_masked_cipher,
     &ascon128a_masked_cipher,
     &ascon80pq_masked_cipher,
+    &ascon128_cpp_cipher,
+    &ascon128a_cpp_cipher,
+    &ascon80pq_cpp_cipher,
+    &ascon128_masked_cpp_cipher,
+    &ascon128a_masked_cpp_cipher,
+    &ascon80pq_masked_cpp_cipher,
+    &ascon128a_isap_cpp_cipher,
+    &ascon128_isap_cpp_cipher,
+    &ascon80pq_isap_cpp_cipher,
+    &ascon128_siv_cpp_cipher,
+    &ascon128a_siv_cpp_cipher,
+    &ascon80pq_siv_cpp_cipher,
     0
 };
 

@@ -29,6 +29,21 @@ ASCON Suite provides inline wrapper classes for the functionality
 in the C API.  The resulting API is intended to be more in keeping
 with C++ naming and coding conventions.
 
+\section cpp_aead Encryption
+
+\li ascon::aead128
+\li ascon::aead128a
+\li ascon::aead80pq
+\li ascon::aead128_masked
+\li ascon::aead128a_masked
+\li ascon::aead80pq_masked
+\li ascon::isap128
+\li ascon::isap128a
+\li ascon::isap80pq
+\li ascon::siv128
+\li ascon::siv128a
+\li ascon::siv80pq
+
 \section cpp_hash Hashing
 
 \li ascon::hash

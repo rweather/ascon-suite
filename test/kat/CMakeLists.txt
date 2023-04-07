@@ -52,18 +52,23 @@ function(kat_test algorithm kat_file gen_opts)
     add_test(NAME kat-gen-${algorithm} COMMAND bash -c "${CMAKE_CURRENT_BINARY_DIR}/kat-gen ${gen_opts} ${algorithm} - | diff --strip-trailing-cr -q - ${CMAKE_CURRENT_LIST_DIR}/${kat_file}")
 
     # Add a custom command to run performance tests on the algorithm.
-    add_custom_command(
-        OUTPUT kat-perf-${algorithm}
-        COMMAND bash -c "${CMAKE_CURRENT_BINARY_DIR}/kat --performance ${algorithm} - <${CMAKE_CURRENT_LIST_DIR}/${kat_file}"
-    )
-    list(APPEND PERF_RULES kat-perf-${algorithm})
-    set(PERF_RULES ${PERF_RULES} PARENT_SCOPE)
+    if(NOT algorithm MATCHES "-cpp$")
+        add_custom_command(
+            OUTPUT kat-perf-${algorithm}
+            COMMAND bash -c "${CMAKE_CURRENT_BINARY_DIR}/kat --performance ${algorithm} - <${CMAKE_CURRENT_LIST_DIR}/${kat_file}"
+        )
+        list(APPEND PERF_RULES kat-perf-${algorithm})
+        set(PERF_RULES ${PERF_RULES} PARENT_SCOPE)
+    endif()
 endfunction()
 
 # Perform all of the Known Answer Tests (KAT's).
 kat_test(ASCON-128 ASCON-128.txt "")
 kat_test(ASCON-128a ASCON-128a.txt "")
 kat_test(ASCON-80pq ASCON-80pq.txt "")
+kat_test(ASCON-128-cpp ASCON-128.txt "")
+kat_test(ASCON-128a-cpp ASCON-128a.txt "")
+kat_test(ASCON-80pq-cpp ASCON-80pq.txt "")
 kat_test(ASCON-128-incremental ASCON-128.txt "")
 kat_test(ASCON-128a-incremental ASCON-128a.txt "")
 kat_test(ASCON-80pq-incremental ASCON-80pq.txt "")
@@ -80,12 +85,21 @@ kat_test(ASCON-XOFA-fixed-length ASCON-HASHA.txt "")
 kat_test(ASCON-128-SIV ASCON-128-SIV.txt "")
 kat_test(ASCON-128a-SIV ASCON-128a-SIV.txt "")
 kat_test(ASCON-80pq-SIV ASCON-80pq-SIV.txt "")
+kat_test(ASCON-128-SIV-cpp ASCON-128-SIV.txt "")
+kat_test(ASCON-128a-SIV-cpp ASCON-128a-SIV.txt "")
+kat_test(ASCON-80pq-SIV-cpp ASCON-80pq-SIV.txt "")
 kat_test(ISAP-A-128 ISAP-A-128.txt "")
 kat_test(ISAP-A-128A ISAP-A-128A.txt "")
 kat_test(ISAP-A-80PQ ISAP-A-80PQ.txt "")
+kat_test(ISAP-A-128-cpp ISAP-A-128.txt "")
+kat_test(ISAP-A-128A-cpp ISAP-A-128A.txt "")
+kat_test(ISAP-A-80PQ-cpp ISAP-A-80PQ.txt "")
 kat_test(ASCON-128-masked ASCON-128.txt "")
 kat_test(ASCON-128a-masked ASCON-128a.txt "")
 kat_test(ASCON-80pq-masked ASCON-80pq.txt "")
+kat_test(ASCON-128-masked-cpp ASCON-128.txt "")
+kat_test(ASCON-128a-masked-cpp ASCON-128a.txt "")
+kat_test(ASCON-80pq-masked-cpp ASCON-80pq.txt "")
 kat_test(ASCON-Prf ASCON-Prf.txt "")
 kat_test(ASCON-PrfShort ASCON-PrfShort.txt "--max-msg=16")
 kat_test(ASCON-Mac ASCON-Mac.txt "")

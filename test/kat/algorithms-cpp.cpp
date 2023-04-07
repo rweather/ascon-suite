@@ -21,6 +21,10 @@
  */
 
 #include "aead-metadata.h"
+#include <ascon/aead.h>
+#include <ascon/aead-masked.h>
+#include <ascon/isap.h>
+#include <ascon/siv.h>
 #include <ascon/hash.h>
 #include <ascon/xof.h>
 
@@ -28,6 +32,377 @@ extern "C"
 {
 
 static unsigned method = 0;
+
+static void ascon_aead_encrypt_cpp
+    (ascon::aead *cipher, unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::byte_array in, out;
+
+    // Set up to encrypt.
+    cipher->set_key(k, cipher->key_size());
+    cipher->set_nonce(npub, cipher->nonce_size());
+    *clen = mlen + cipher->tag_size();
+
+    // Use various methods from the ascon::aead class to do the encryption.
+    switch ((method++) % 2) {
+    case 0:
+        cipher->encrypt(c, m, mlen, ad, adlen);
+        break;
+    default:
+        in = ascon::bytes_from_data(m, mlen);
+        if (adlen > 0)
+            cipher->encrypt(out, in, ascon::bytes_from_data(ad, adlen));
+        else
+            cipher->encrypt(out, in);
+        *clen = out.size();
+        ::memcpy(c, out.data(), out.size());
+        break;
+    }
+
+    // A second encryption should produce a different outcome because the
+    // nonce has been incremented.  Fail it returns the same output.
+    in = ascon::bytes_from_data(m, mlen);
+    cipher->encrypt(out, in, ascon::bytes_from_data(ad, adlen));
+    if (out.size() != *clen || ::memcmp(out.data(), c, *clen) == 0) {
+        // Force the calling test to fail.
+        ::memset(c, 0xAA, *clen);
+    }
+}
+
+static int ascon_aead_decrypt_cpp
+    (ascon::aead *cipher, unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::byte_array in, out;
+    int result;
+
+    // Set up to decrypt.
+    cipher->set_key(k, cipher->key_size());
+    cipher->set_nonce(npub, cipher->nonce_size());
+
+    // Use various methods from the ascon::aead class to do the decryption.
+    switch ((method++) % 2) {
+    case 0:
+        result = cipher->decrypt(m, c, clen, ad, adlen);
+        break;
+    default:
+        in = ascon::bytes_from_data(c, clen);
+        bool ok;
+        if (adlen > 0)
+            ok = cipher->decrypt(out, in, ascon::bytes_from_data(ad, adlen));
+        else
+            ok = cipher->decrypt(out, in);
+        if (ok) {
+            ::memcpy(m, out.data(), out.size());
+            result = out.size();
+        } else {
+            if (clen >= 16)
+                ::memset(m, 0, clen - 16);
+            result = -1;
+        }
+        break;
+    }
+
+    // A second decryption should fail because the nonce has been incremented.
+    if (result >= 0) {
+        in = ascon::bytes_from_data(c, clen);
+        if (cipher->decrypt(out, in, ascon::bytes_from_data(ad, adlen))) {
+            // Decryption succeeded with a new nonce when it should have failed!
+            ::memset(m, 0xAA, result);
+            return -1;
+        }
+    }
+
+    // Return the result.
+    if (result >= 0) {
+        *mlen = (size_t)result;
+        return 0;
+    }
+    return result;
+}
+
+void ascon128_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead128 cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon128_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead128 cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon128a_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead128a cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon128a_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead128a cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon80pq_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead80pq cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon80pq_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead80pq cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon128_masked_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead128_masked cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon128_masked_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead128_masked cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon128a_masked_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead128a_masked cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon128a_masked_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead128a_masked cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon80pq_masked_aead_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead80pq_masked cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon80pq_masked_aead_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::aead80pq_masked cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon128_isap_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::isap128 cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon128_isap_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::isap128 cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon128a_isap_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::isap128a cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon128a_isap_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::isap128a cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon80pq_isap_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::isap80pq cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon80pq_isap_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::isap80pq cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon128_siv_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::siv128 cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon128_siv_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::siv128 cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon128a_siv_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::siv128a cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon128a_siv_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::siv128a cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
+
+void ascon80pq_siv_encrypt_cpp
+    (unsigned char *c, size_t *clen,
+     const unsigned char *m, size_t mlen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::siv80pq cipher;
+    ascon_aead_encrypt_cpp(&cipher, c, clen, m, mlen, ad, adlen, npub, k);
+}
+
+int ascon80pq_siv_decrypt_cpp
+    (unsigned char *m, size_t *mlen,
+     const unsigned char *c, size_t clen,
+     const unsigned char *ad, size_t adlen,
+     const unsigned char *npub,
+     const unsigned char *k)
+{
+    ascon::siv80pq cipher;
+    return ascon_aead_decrypt_cpp
+        (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
+}
 
 void ascon_hash_cpp(unsigned char *out, const unsigned char *in, size_t inlen)
 {
