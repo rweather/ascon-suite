@@ -174,14 +174,12 @@ bool testCipher_N(const struct TestVector *test, size_t inc)
         }
         ascon128_aead_encrypt_finalize(&testState, buffer + test->datasize);
         ascon128_aead_free(&testState);
+        clen = test->datasize + 16;
     }
 
     if (clen != (test->datasize + 16) ||
             memcmp(buffer, test->ciphertext, test->datasize) != 0 ||
             memcmp(buffer + test->datasize, test->tag, 16) != 0) {
-        Serial.print(buffer[0], HEX);
-        Serial.print("->");
-        Serial.print(test->ciphertext[0], HEX);
         return false;
     }
 
@@ -205,9 +203,9 @@ bool testCipher_N(const struct TestVector *test, size_t inc)
             ascon128_aead_decrypt_block
                 (&testState, test->ciphertext + posn, buffer + posn, len);
         }
-        result = ascon128_aead_decrypt_finalize
-            (&testState, buffer + test->datasize);
+        result = ascon128_aead_decrypt_finalize(&testState, test->tag);
         ascon128_aead_free(&testState);
+        mlen = test->datasize;
     }
 
     if (result < 0 || mlen != test->datasize ||
@@ -229,12 +227,12 @@ void testCipher(const struct TestVector *test)
     Serial.print(" ... ");
 
     ok  = testCipher_N(test, test->datasize);
-    //ok &= testCipher_N(test, 1);
-    //ok &= testCipher_N(test, 2);
-    //ok &= testCipher_N(test, 5);
-    //ok &= testCipher_N(test, 8);
-    //ok &= testCipher_N(test, 13);
-    //ok &= testCipher_N(test, 16);
+    ok &= testCipher_N(test, 1);
+    ok &= testCipher_N(test, 2);
+    ok &= testCipher_N(test, 5);
+    ok &= testCipher_N(test, 8);
+    ok &= testCipher_N(test, 13);
+    ok &= testCipher_N(test, 16);
 
     if (ok)
         Serial.println("Passed");
