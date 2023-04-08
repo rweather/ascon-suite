@@ -1,0 +1,143 @@
+/*
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file trng.dox
+\page porting_trng Porting the TRNG to new platforms
+\tableofcontents
+
+Applications should use the \ref random.h "PRNG API" to get random data.
+In particular, the ascon_random() function provides a quick method to get
+random data that has a uniform spread of entropy and has had any
+vendor watermarks or bias removed.
+
+The functions in the backend TRNG API are how the library harvests
+entropy from the system, but that entropy should not be used directly
+by applications.  It may be of poor quality or the CPU vendor may be
+untrustworthy.
+
+The rest of this page is only of interest to people who want to port
+the library to a new microcontroller that has a built-in random
+number generator peripheral.
+
+\section trng_backends Backends
+
+The library contains several TRNG backends for interfacing to the system's
+random number generator in the <tt>src/random</tt> subdirectory:
+
+<table>
+<tr><td><b>Backend</b></td><td><b>Platforms</b></td</tr>
+<tr><td>dev-random</td><td>Linux, FreeBSD, OpenBSD, and other Unix-like
+systems with a /dev/urandom device.</td></tr>
+<tr><td>due</td><td>Arudino Due / SAM3X8E</td></tr>
+<tr><td>esp</td><td>ESP8266 and ESP32 modules</td></tr>
+<tr><td>none</td><td>Default if the platform is not recognised</td></tr>
+<tr><td>stm32</td><td>STM32 platforms with the HAL_RNG_GenerateRandomNumber() function</td></tr>
+<tr><td>windows</td><td>Windows systems using the CryptGenRandom() function</td></tr>
+<tr><td>zephyr</td><td>Zephyr RTOS systems with either sys_csrand_get() or bt_rand() configured</td></tr>
+</table>
+
+The file \ref ascon-select-trng.h "ascon-select-trng.h" contains
+<tt>\#ifdef</tt>'s to select the specific backend.  You will need to
+modify this file when adding a new backend.
+
+The "dev-random" backend will use the <tt>getrandom()</tt> or
+<tt>genentropy()</tt> functions instead of /dev/urandom, if one of
+those functions is present on the system.
+
+On Arduino systems, the "none" backend will harvest a very small amount of
+entropy from the <tt>millis()</tt> and <tt>micros()</tt> functions but
+the result will not be very good against a determined adversary.
+
+Patches welcome to add support for TRNG peripherals on other microcontrollers.
+
+\section trng_porting Porting to a new platform
+
+There are two separate TRNG API's declared in \ref ascon-trng.h "ascon-trng.h".
+
+The first API is the function ascon_trng_generate() which generates a
+buffer of random bytes and returns them to the caller.  This is called
+from the \ref random.h "PRNG API" in various places to request 256 bits
+of random data to initialize or re-seed the PRNG.
+
+The following example is from the "esp" backend, which uses the Espressif SDK
+function <tt>esp_random()</tt> to acquire 32-bit random values:
+
+\snippet ascon-trng-esp.c snippet_trng_generate
+
+The ascon_trng_generate() function should return non-zero if the backend
+judges that the random noise source is good.  If the noise source is
+not present or is inoperable for some reason, the function should return zero.
+Since it isn't possible to determine if <tt>esp_random()</tt> is working
+correctly or not we have to simply assume that it works and return 1.
+
+The second TRNG API defines the functions ascon_trng_init(),
+ascon_trng_free(), ascon_trng_generate_32(), ascon_trng_generate_64(), and
+ascon_trng_reseed().  These are used by masked ciphers to generate
+random masking material at a high data rate.
+
+Whereas ascon_trng_generate() can take its time to generate high-quality
+random data, ascon_trng_generate_32() and ascon_trng_generate_64() must
+operate as fast as possible.  In the case of the "esp" backend, the
+<tt>esp_random()</tt> function is as fast as we're going to get:
+
+\snippet ascon-trng-esp.c snippet_trng_generate_32
+
+On some platforms, the normal random source is too slow for masking.
+Such backends define <tt>ASCON_TRNG_MIXER</tt> and implement a simple
+PRNG based on the ASCON permutation to stretch an initial seed out into an
+arbitrary amount of masking material.  The mixer is implemented in the
+ascon-trng-mixer.c file.
+
+On systems that use a mixer, the function ascon_trng_reseed() should
+request a new seed using the same method as ascon_trng_generate() and
+mix the new seed into the mixer state.  This provides freshness to the
+random state over time when very large amounts of masking material are
+being generated.  For the "esp", no re-seeding is required (or possible):
+
+\snippet ascon-trng-esp.c snippet_trng_reseed
+
+\section trng_escape_hatch Escape hatch
+
+The "none" backend provides a weak function called ascon_trng_get_bytes()
+that allows the application to provide its own noise source if the library
+was unable to find a suitable backend:
+
+\code
+int ascon_trng_get_bytes(unsigned char *out, size_t outlen)
+{
+    // populate the "out" buffer with "outlen" bytes of noise
+    ...;
+
+    // return 1 to indicate that the noise is good, 0 if the
+    // noise source is not available or inoperable.
+    return 1;
+}
+\endcode
+
+The "none" backend will mix the noise data that comes from the application
+with system timers just in case the application noise source fails.
+
+The escape hatch only works with the "none" backend.  The weak function
+will be ignored if some other backend has been selected.
+
+*/

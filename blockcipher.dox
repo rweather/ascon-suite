@@ -1,0 +1,147 @@
+/*
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file blockcipher.dox
+\page blockcipher Building a block cipher with the ASCON permutation
+
+The <tt>block-cipher</tt> example in the <tt>examples</tt> directory
+uses the Luby-Rackoff construction to convert the ASCON
+permutation into a tweakable block cipher.  Luby-Rackoff showed
+in 1988 that if you have a pseudorandom function, then you can turn
+that into a Feistel block cipher.
+
+Follow-up work from Jacques Patarin in 2003 showed that 4 Feistel rounds
+are sufficient to protect against known plaintext attacks, 7 rounds are
+sufficient to also protect against adaptive chosen plaintext attacks, and 10
+rounds are sufficient to also protect against chosen ciphertext attacks.
+
+In this example we implement encryption for our tweakable block
+cipher as follows:
+
+\li Break the 128-bit plaintext into two 64-bit halves L and R.
+\li Form an input block B for the permutation by concatenating
+R, the 128-bit round key K(i), the 96-bit tweak T, and a 32-bit
+round constant.
+\li Compute B' = ASCON(B) and XOR the first 8 bytes of B' with L.
+\li Swap L and R on all rounds except the last.
+\li Repeat the steps above for the remaining 9 rounds.
+\li Concatenate the final L and R to produce the 128-bit ciphertext.
+
+The round keys of the key schedule are computed as follows:
+
+\li K(0) is the 128-bit input key K.
+\li K(i) is <i>dbl</i>(K(i-1)) where <i>dbl</i> is the doubling
+operation in the GF(128) field.  This makes all of the round keys unique
+under the same tweak.
+
+We use the 32-bit round constants from SHA-256 in this example
+(our version of <a href="https://en.wikipedia.org/wiki/Nothing-up-my-sleeve_number">nothing up my sleeve numbers</a>).
+
+Other choices for key schedule expansion and the round constants
+could have been made.  The tweak could also have been modified
+per-round with doubling in GF(96) or some other function.
+
+This example demonstrates the possibility of using ASCON this way.
+A lot of work is needed to prove this construction secure for ASCON
+and to choose appropriate parameters.
+
+The example block cipher is about 5 times slower per byte than ASCON-128.
+This could be improved by reducing the number of rounds of the
+ASCON permutation that is used each Feistel round (currently 6).
+
+References:
+
+\li M. Luby and C. Rackoff. <i>How to construct pseudorandom permutations
+from pseudorandom functions</i>. SIAM J. Comput., 17(2):373–386, 1988.
+https://inst.eecs.berkeley.edu/~cs276/fa20/notes/Luby_Rackoff_paper.pdf
+\li J. Patarin. <i>Luby-Rackoff: 7 rounds are enough for 2n(1-epsilon)
+security</i>. In Dan Boneh, editor, Advances in Cryptology - CRYPTO 2003,
+23rd Annual International Cryptology Conference, Santa Barbara,
+California, USA, August 17-21, 2003, Proceedings, volume 2729 of Lecture
+Notes in Computer Science, pages 513–529. Springer, 2003.
+https://iacr.org/archive/crypto2003/27290510/27290510.pdf
+
+\section blockcipher_motivation Motivation
+
+The motivation for turning ASCON into a block cipher is on-the-fly
+encryption of data on memory buses inside a CPU.  Existing microcontrollers
+typically do this with AES operating in a tweaked block cipher mode
+where the address in memory is the tweak.
+
+XOR-based stream ciphers like ASCON-128 don't work for this situation.
+Using the nonce to hold the tweak would involve reusing the same nonce
+with the same key.  Reuse of the nonce allows a stream cipher to be
+trivially broken.
+
+Tweakable block ciphers operating in ECB mode don't have the same problem.
+If the plaintext is different in even a single bit, the resulting ciphertext
+will be very different under the same key and tweak.  If the same
+plaintext is written again to the same block, then the scheme will only
+leak that the same plaintext has been written.  It will not leak the
+plaintext itself as a stream cipher might.
+
+So how would we do memory encryption in a hypothetical low-power embedded
+microcontroller that uses ASCON permutation as its main encryption and
+hashing primitive?  Luby-Rackoff allows us to turn the ASCON permutation
+into a tweakable block cipher and memory encryption becomes possible.
+Without this the microcontroller would have to embed a second encryption
+core, such as AES, for the memory encryption case.
+
+\section blockcipher_design Motivation of design choices
+
+Other than the structure of the Luby-Rackoff construction itself, the other
+design choices were largely arbitrary.
+
+The same key could have been used every round but that made me uneasy.
+Other LWC submissions like COMET, GIFT-COFB, HYENA, ORANGE, and
+Pyjamask use doubling in a GF field to adjust values from block to block to
+avoid using the same value repeatedly.  So doubling in GF(128) seemed a
+reasonable choice.
+
+Other methods could be used to modify the key from one round to
+the next.  The round schedule of SKINNY-128 permutes the key bytes from
+round to round in a manner that is simple to fast-forward to the end
+of the schedule and reverse for decryption in low memory environments.
+
+Even though the key changes every round there is still a problem with
+slide attacks.  Without round constants, round n of encrypting with the
+key K uses the same key as round n-1 of encrypting with the key
+<i>dbl</i>(K).  The SHA-256 round constants were added to mitigate the
+potential for slide attacks.  Other round constants could be used instead.
+
+The tweak could have been modified from round to round but it makes
+decryption harder to implement.  The tweak must first be fast-forwarded
+to the end of the schedule, and then wound backwards round by round.
+This may not be a problem if the block operation is only used in the
+forward direction, but that is not the case for memory encryption.
+
+\section blockcipher_other_uses Other uses for ASCON as a block cipher
+
+Disk encryption and other forms of data-at-rest can also benefit from a
+tweakable block cipher.
+
+If the storage for the data-at-rest has space for a 128-bit authentication
+tag for each block, then an ASCON AEAD in \ref siv "SIV mode" may be a
+better option.
+
+*/

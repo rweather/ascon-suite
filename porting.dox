@@ -1,0 +1,151 @@
+/*
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file porting.dox
+\page porting Porting the ASCON permutation
+\tableofcontents
+
+Most of ASCON Suite is written in C and provides high-level API's
+for encryption, hashing, and other modes.  The main exception is the
+core ASCON permutation which is implemented in C or assembly code
+depending on the platform.
+
+The backend permutation implementations are located in the <tt>src/core</tt>
+directory.  Each backend provides a "state and permutation" (SnP) interface
+to the rest of the library and user applications.  See the
+\ref permutation "Permutation" page for more information on using the
+SnP API directly in your own code.
+
+With the assembly code backends, the core permutation is implemented in
+assembly code but some of the SnP utility functions may still be in C.
+Only some of the backends have masked versions for side channel
+protection at present.
+
+<table>
+<tr><td><b>Backend</b></td><td><b>Language</b></td><td><b>Word Representation</b></td><td><b>Masked<br/>Version?</b></td><td><b>Platforms</b></td></tr>
+<tr><td>c32</td><td>C</td><td>Sliced 32-bit</td><td>Yes</td><td>Default plain C implementation for 32-bit systems</td></tr>
+<tr><td>c64</td><td>C</td><td>Host 64-bit</td><td>Yes</td><td>Default plain C implementation for 64-bit systems</td></tr>
+<tr><td>armv6</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>ARMv6, e.g. Raspberry Pi 3 running the 32-bit Raspberry Pi OS</td></tr>
+<tr><td>armv6m</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>ARM Cortex M0 and M0+</td></tr>
+<tr><td>armv7m</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>ARM Cortex M3, M4, and M7</td></tr>
+<tr><td>armv7a</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>ARM Cortex A7 (uses armv7m backend)</td></tr>
+<tr><td>armv8m</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>ARM Cortex M33 (uses armv7m backend)</td></tr>
+<tr><td>armv8a-64</td><td>ASM</td><td>Host 64-bit</td><td> </td><td>64-bit ARMv8-A; e.g. Raspberry Pi 4 running the 64-bit Raspberry Pi OS</td></tr>
+<tr><td>avr5</td><td>ASM</td><td>8-bit</td><td>2 or 3 shares only</td><td>AVR5 and higher; e.g. ATmega328P (Arduino Uno), ATmega2560 (Arduino Mega 2560), etc.  The masked version only supports 2 or 3 shares at present.</td></tr>
+<tr><td>i386</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>32-bit x86 systems (i386/i486/i586/i686)</td></tr>
+<tr><td>m68k</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>32-bit 680x0 and ColdFire systems</td></tr>
+<tr><td>riscv32e</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>32-bit RISC-V systems, RV32E base integer instruction set</td></tr>
+<tr><td>riscv32i</td><td>ASM</td><td>Sliced 32-bit</td><td> </td><td>32-bit RISC-V systems, RV32I base integer instruction set</td></tr>
+<tr><td>riscv64i</td><td>ASM</td><td>Host 64-bit</td><td> </td><td>64-bit RISC-V systems, RV64I base integer instruction set</td></tr>
+<tr><td>x86-64</td><td>ASM</td><td>Host 64-bit</td><td>Yes</td><td>64-bit x86-64 systems</td></tr>
+<tr><td>xtensa</td><td>ASM</td><td>Host 64-bit</td><td> </td><td>Xtensa, as used on ESP32 and ESP8266 modules, using funnel shifts for 64-bit word rotations</td></tr>
+</table>
+
+The "armv7m" backend can run unmodified on many higher-spec'ed 32-bit
+ARM processors.  In fact, the "armv7a" and "armv8m" backends are
+just the "armv7m" backend compiled for a different architecture.
+This may change in the future if there are advantages in creating
+specific optimised backends for ARMv7-A and ARMv8-M.
+
+If the "armv7m" backend does not work on an unsupported 32-bit ARM processor,
+then it is possible that "armv6" or "armv6m" will work instead (the "armv6"
+backend is faster).  Performance may not be as good as writing a tailored
+backend for the new processor.
+
+The specific permutation implementation is selected by the include file
+ascon-select-backend.h which defines the macro <tt>ASCON\_BACKEND\_XYZ</tt> to
+select the <tt>XYZ</tt> backend.  You may need to modify the <tt>\#ifdef</tt>'s
+in this file if your preferred backend is not recognised.
+
+The ascon-select-backend.h file may also define one of the following
+extra macros to select the SnP utility implementation to use:
+
+\li <tt>ASCON\_BACKEND\_DIRECT\_XOR</tt> - Bytes can be directly XOR'ed
+with the ASCON state to absorb data, and directly copied out to squeeze data.
+This can only be used on platforms that use the big-endian word order of
+the ASCON standard.  Most backends use host byte order instead to avoid
+the overhead of converting back and forth between little-endian and
+big-endian.
+\li <tt>ASCON\_BACKEND\_SLICED32</tt> - The backend uses the 32-bit
+bit-sliced method to represent the state.  64-bit words in the ASCON state
+are split into two 32-bit halves.  The even and odd bits are placed into
+different words.  This representation usually works best on 32-bit systems.
+\li <tt>ASCON\_BACKEND\_SLICED64</tt> - The backend uses 64-bit words but
+they are stored in host byte order instead of the canonical big-endian
+byte order of the ASCON specification.  This representation usually works
+best on 64-bit systems.
+\li <tt>ASCON\_BACKEND\_INIT</tt> - The backend has a ascon_backend_init()
+function that must be called to initialize the permutation as the
+initialization is more complex than simply clearing the state to zeroes.
+\li <tt>ASCON\_BACKEND\_FREE</tt> - The backend has a ascon_backend_free()
+function that must be called to free the permutation and destroy
+sensitive information in registers and on the stack.
+
+The encryption, hashing, and other modes that are implemented in the
+library have direct knowledge of the underlying word representation of
+the selected permutation.  This allows them to avoid the SnP function
+call overhead in some cases.  User applications do not have access to
+this information.  This keeps the public API simple and makes it easier
+to enforce binary compatibilty across library versions.
+
+Most user applications have no need for the SnP API because they can use
+the relevant encryption or hashing API from the library directly.
+The public SnP API is provided just in case an application has a specific
+requirement that isn't met by the standard modes.  If the new mode is
+truly useful, then it may be incorporated directly into a future
+version of the library.
+
+If ascon-select-backend.h cannot locate an assembly code
+implementation, it will fall back to ascon-c64.c on recognised
+64-bit platforms.  Otherwise it will fall back to ascon-c32.c.
+
+The assembly code implementations were generated using the programs
+under the <tt>tools</tt> directory.  These tools make it easier to audit the
+implementation for correctness and to apply incremental optimisations
+over time.
+
+The generator tools can also be reused across similar platforms; for example,
+the <tt>armv6</tt> backend is generated by the same tool as the <tt>armv7m</tt>
+backend because other than the ARM-vs-thumb instruction encoding issue,
+the code is almost identical.  The <tt>armv7m</tt> backend took quite
+some time to evolve into its current state.  The <tt>armv6</tt> backend
+was done in a few hours.
+
+If you wish to submit a new backend implementation, please consider writing a
+generator tool for your platform rather than writing the assembly code by hand.
+Or modify one of the existing tools that is close enough to almost work.
+
+In the future it may be the case that CPU manufacturers will provide
+accelerated ASCON encryption and hashing modes in silicon.  Depending
+upon how the silicon is implemented, this may involve writing a new
+permutation backend or it may involve completely replacing the high-level
+modes themselves.
+
+Existing accelerators for AES and SHA-256 tend to operate at the mode
+level rather than the block level.  So it is likely that future
+ASCON accelerators will too.  This library can in theory support
+complete mode replacment by <tt>\#ifdef</tt>'ing out the C version
+of the mode and providing an alternative implementation.  We'll cross
+that bridge when we come to it.
+
+*/

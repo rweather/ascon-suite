@@ -1,0 +1,167 @@
+/*
+ * Copyright (C) 2022 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file asconcrypt.dox
+\page asconcrypt Encrypting and decrypting files with ASCONcrypt
+\tableofcontents
+
+The <tt>asconcrypt</tt> program in the <tt>apps</tt> directory demonstrates
+how to use ASCON-80pq, ASCON-80pq-SIV, and ASCON-PBKDF2 to create a
+password-based file encryption and decryption utility.  The incremental
+version of ASCON-80pq is used, which permits large files up to 1 terabyte
+in size to be encrypted.
+
+ASCONcrypt is inspired <a href="https://www.aescrypt.com/">AES Crypt</a>
+which provides a simple password-based file encryption method using
+AES-256 in CBC mode.  The file format for ASCONcrypt and the differences
+with AES Crypt are described below.
+
+The program is installed by "make install" as part of the library build.
+
+\section asconcrypt_using Using ASCONcrypt
+
+Files are encrypted by passing them directly to the <tt>asconcrypt</tt>
+program.  If the system supports it, the user will be prompted for a
+password and the file is then encrypted into a file with the ".ascon"
+file extension:
+
+\verbatim
+$ ls
+MySecretDocument.txt
+$ asconcrypt MySecretDocument.txt
+Password:
+Confirm Password:
+$ ls
+MySecretDocument.txt.ascon MySecretDocument.txt
+\endverbatim
+
+The password can also be supplied on the command-line or in a "key file":
+
+\verbatim
+$ asconcrypt -p Hello MySecretDocument.txt
+$ asconcrypt -k key MySecretDocument.txt
+\endverbatim
+
+Decrypting a file whose name ends in ".ascon" is similar:
+
+\verbatim
+$ ls
+MySecretDocument.txt.ascon
+$ asconcrypt MySecretDocument.txt.ascon
+Password:
+$ ls
+MySecretDocument.txt.ascon MySecretDocument.txt
+\endverbatim
+
+In the examples above, the <tt>asconcrypt</tt> command is able to detect
+whether to encrypt or decrypt based on the file extension.  If the file
+extension is not clear, then use the "-e" or "-d" options to clarify
+whether encryption or decryption is required.  The "-o" option can
+also be used to specify an explicit output file:
+
+\verbatim
+$ asconcrypt -d -o MySecretDocument.txt -p Hello MySecretDocument.bin
+\endverbatim
+
+Key files consist of a single line of text with the password, so they
+are easy to create:
+
+\verbatim
+$ echo "This is a long password!" >key
+$ asconcrypt -k key MySecretDocument.txt
+\endverbatim
+
+The <tt>asconcrypt</tt> program can also generate a random 40 character
+password for you using the "-g" (generate) option:
+
+\verbatim
+$ asconcrypt -g key
+$ asconcrypt -k key MySecretDocument.txt
+$ cat key
+JqEm5mqJUt9mA0wvT3yaoR00knLNVXGD8cwEEpyk
+\endverbatim
+
+\ref asconcrypt/asconcrypt.c "Source code for the asconcrypt program"
+\section asconcrypt_file_format ASCONcrypt file format
+
+The ASCONcrypt file format was inspired in part by
+<a href="https://www.aescrypt.com/">AES Crypt</a>.  That format has several
+sections of interest:
+
+\li Identification string and version for the file format.
+\li Metadata extension blocks in plaintext.
+\li Random initialization vector (essentially a salt).
+\li Key and IV for AES-CBC, encrypted under the password and salt.
+\li HMAC value to validate the encrypted key and IV.
+\li File contents, encrypted with AES-CBC.
+\li HMAC value for the encrypted file contents.
+
+ASCONcrypt files contain the following sections:
+
+\li 10 bytes containing the characters "ASCONcrypt".
+\li 2 bytes containing the 16-bit version number in big endian format.
+For the current version of the format, this should be 0x0001.
+\li 16 byte salt value, allocated randomly.
+\li 52 byte "SIV block" as described below.
+\li File contents, encrypted with ASCON-80pq as described below.
+\li 16 byte authentication tag computed over the encrypted file contents.
+
+The size of the input file will increase by 96 bytes when it is encrypted.
+
+We don't support plaintext metadata in this format.  It makes the
+decryption process complicated to skip arbitrary-sized metadata blocks.
+The only metadata item that "AES Crypt" seemed to support was a
+"CREATED_BY" tag for the name and version of the encryption software.
+
+If metadata is important, then it should be placed into the encrypted
+payload or distributed separately.
+
+The "SIV block" contains the key and nonce, encrypted with the password
+and salt.  The block is formed as follows:
+
+\li Let (k1,n1) be the first 36 bytes of output from
+<tt>ASCON-PBKDF2(password, salt, 8192)</tt> where k1 is 20 bytes in
+length and n1 is 16 bytes in length.
+\li Generate the 36 byte sequence (k2,n2) randomly.  Once again,
+k2 is 20 bytes in length and n2 is 16 bytes in length.
+\li Encrypt the sequence (k2,n2) with ASCON-80pq-SIV using the key k1
+and the nonce n1.  The associated data is everything from the first
+byte of the file to the last byte of the salt.
+\li The 52 byte output of ASCON-80pq-SIV (encrypted data plus tag)
+is written to the "SIV block" section in the output file.
+
+The file's contents are encrypted with ASCON-80pq using the key k2
+and the nonce n2.  The associated data is the 52 bytes of the SIV block.
+
+The SIV block "wraps" the actual encryption key and nonce.  When the file
+is decrypted, the 16 byte authentication tag on the SIV block can be
+used to verify that the password is correct before attempting to decrypt
+the rest of the file.
+
+The ASCON specification indicates that no more than 2<sup>67</sup>
+bytes of data should be encrypted under the same key with ASCON-80pq.
+For safety, the encryption process is aborted if more than 2<sup>40</sup>
+bytes or 1 terabyte are encountered.  Larger files will need to be
+split into smaller sections.
+
+*/
