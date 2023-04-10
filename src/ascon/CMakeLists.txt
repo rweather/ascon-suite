@@ -14,6 +14,7 @@ list(APPEND ASCON_HEADERS
     prf.h
     random.h
     siv.h
+    storage.h
     utility.h
     xof.h
 )

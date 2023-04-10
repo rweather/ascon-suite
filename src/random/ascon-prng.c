@@ -141,3 +141,54 @@ void ascon_random_feed
         ascon_random_rekey(state);
     }
 }
+
+int ascon_random_save_seed
+    (ascon_random_state_t *state, const ascon_storage_t *storage)
+{
+    unsigned char seed[ASCON_RANDOM_SAVED_SEED_SIZE];
+    int written;
+
+    /* Validate the parameters */
+    if (!state || !storage || storage->size < ASCON_RANDOM_SAVED_SEED_SIZE)
+        return -1;
+
+    /* Generate some output from the generator to save as the seed */
+    ascon_random_fetch(state, seed, sizeof(seed));
+
+    /* Save the seed in the provided non-volatile storage region */
+    written = (*(storage->write))
+        (storage, 0, seed, sizeof(seed), (storage->erase_size != 0));
+    ascon_clean(seed, sizeof(seed));
+    return written == ASCON_RANDOM_SAVED_SEED_SIZE;
+}
+
+int ascon_random_load_seed
+    (ascon_random_state_t *state, const ascon_storage_t *storage)
+{
+    unsigned char seed[ASCON_RANDOM_SAVED_SEED_SIZE];
+    int read;
+
+    /* Validate the parameters */
+    if (!state || !storage || storage->size < ASCON_RANDOM_SAVED_SEED_SIZE)
+        return -1;
+
+    /* Load the seed from the non-volatile storage region */
+    read = (*(storage->read))(storage, 0, seed, sizeof(seed));
+
+    /* Feed the seed into the pseudorandom number generator state */
+    if (read == ASCON_RANDOM_SAVED_SEED_SIZE)
+        ascon_random_feed(state, seed, sizeof(seed));
+
+    /* Load some new data from the system TRNG to mix things up a bit */
+    ascon_random_reseed(state);
+
+    /* Generate and save a new seed.  This ensures that if power is lost
+     * before the next explicit save, we won't restart in the same state. */
+    ascon_random_fetch(state, seed, sizeof(seed));
+    (*(storage->write))
+        (storage, 0, seed, sizeof(seed), (storage->erase_size != 0));
+
+    /* Clean up and exit */
+    ascon_clean(seed, sizeof(seed));
+    return read == ASCON_RANDOM_SAVED_SEED_SIZE;
+}

@@ -24,6 +24,7 @@
 #define ASCON_RANDOM_H
 
 #include <ascon/xof.h>
+#include <ascon/storage.h>
 
 /**
  * \file random.h
@@ -39,6 +40,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * \brief Size of a seed that has been saved in non-volatile memory.
+ */
+#define ASCON_RANDOM_SAVED_SEED_SIZE 32
 
 /**
  * \brief State information for a pseudorandom number generator.
@@ -162,6 +168,50 @@ int ascon_random_reseed(ascon_random_state_t *state);
  */
 void ascon_random_feed
     (ascon_random_state_t *state, const unsigned char *entropy, size_t size);
+
+/**
+ * \brief Saves a seed value in non-volatile storage.
+ *
+ * \param state The pseudorandom number generator to save the seed for.
+ * \param storage The non-volatile storage region to use to save the seed.
+ * The seed is saved at offset zero within the region.
+ *
+ * \param Zero if the seed was saved, or -1 if non-volatile storage failed.
+ *
+ * This function and the companion function ascon_random_load_seed() can be
+ * used to preserve some entropy across power restarts, especially on systems
+ * that have very slow or poor random number sources.
+ *
+ * If the saved seed is captured by an adversary, then the value could
+ * be used to predict random output prior to the collection of new entropy.
+ * This mechanism is not a substitute for entropy collection.
+ *
+ * The seed value in non-volatile storage is ASCON_RANDOM_SAVED_SEED_SIZE
+ * bytes in size.
+ */
+int ascon_random_save_seed
+    (ascon_random_state_t *state, const ascon_storage_t *storage);
+
+/**
+ * \brief Loads a saved seed value from non-volatile storage.
+ *
+ * \param state The pseudorandom number generator to load the seed into.
+ * \param storage The non-volatile storage region to use to load the seed.
+ * The seed is loaded from offset zero within the region.
+ *
+ * \param Zero if the seed was loaded, or -1 if non-volatile storage failed.
+ *
+ * The seed value in non-volatile storage is ASCON_RANDOM_SAVED_SEED_SIZE
+ * bytes in size.  If no seed was previously saved, then whatever rubbish
+ * was in the non-volatile storage region previously will be used as the seed.
+ *
+ * \note After loading the seed, this function will generate a new seed
+ * and save it over the top of the previous one.  This ensures that the
+ * PRNG won't restart in the same state if the device loses power before
+ * the next explicit save.
+ */
+int ascon_random_load_seed
+    (ascon_random_state_t *state, const ascon_storage_t *storage);
 
 #ifdef __cplusplus
 }
