@@ -728,27 +728,38 @@ static int perf_cipher(const aead_cipher_t *alg)
 static int test_hash_inner
     (const aead_hash_algorithm_t *alg, const test_vector_t *vec)
 {
-    unsigned char out[alg->hash_len];
+    unsigned char *out;
     void *state;
     const test_string_t *msg;
     const test_string_t *md;
+    unsigned hash_len;
     size_t index;
     size_t inc;
 
     /* Get the parameters for the test */
     msg = get_test_string(vec, "Msg");
     md = get_test_string(vec, "MD");
-    if (md->size != alg->hash_len) {
-        test_print_error(alg->name, vec, "incorrect hash size in test data");
-        return 0;
+
+    /* Allocate the output buffer */
+    hash_len = md->size;
+    if (!alg->squeeze) {
+        if (hash_len != alg->hash_len) {
+            test_print_error
+                (alg->name, vec, "incorrect hash size in test data");
+            return 0;
+        }
     }
+    out = malloc(hash_len);
+    if (!out)
+        exit(2);
 
     /* Hash the input message with the all-in-one function */
-    if (!alg->init_fixed) {
+    if (!alg->init_fixed && hash_len == alg->hash_len) {
         memset(out, 0xAA, alg->hash_len);
         (*(alg->hash))(out, msg->data, msg->size);
         if (!test_compare(out, md->data, md->size)) {
             test_print_error(alg->name, vec, "all-in-one hash failed");
+            free(out);
             return 0;
         }
     }
@@ -760,7 +771,8 @@ static int test_hash_inner
     state = malloc(alg->state_size);
     if (!state)
         exit(2);
-    if (alg->init && alg->update && alg->finalize) {
+    if (alg->init && alg->update && alg->finalize &&
+            hash_len == alg->hash_len) {
         /* Incremental hashing with single finalize step */
         for (inc = 1; inc <= msg->size; ADVANCE_INC(inc)) {
             (*(alg->init))(state);
@@ -770,13 +782,14 @@ static int test_hash_inner
                     temp = inc;
                 (*(alg->update))(state, msg->data + index, temp);
             }
-            memset(out, 0xAA, alg->hash_len);
+            memset(out, 0xAA, hash_len);
             (*(alg->finalize))(state, out);
             if (alg->free)
                 (*(alg->free))(state);
             if (!test_compare(out, md->data, md->size)) {
                 test_print_error(alg->name, vec, "incremental hash failed");
                 free(state);
+                free(out);
                 return 0;
             }
         }
@@ -785,7 +798,7 @@ static int test_hash_inner
         /* Incremental absorb with all-in-one squeeze output */
         for (inc = 1; inc <= msg->size; ADVANCE_INC(inc)) {
             if (alg->init_fixed)
-                (*(alg->init_fixed))(state, alg->hash_len);
+                (*(alg->init_fixed))(state, hash_len);
             else
                 (*(alg->init))(state);
             for (index = 0; index < msg->size; index += inc) {
@@ -794,13 +807,14 @@ static int test_hash_inner
                     temp = inc;
                 (*(alg->absorb))(state, msg->data + index, temp);
             }
-            memset(out, 0xAA, alg->hash_len);
-            (*(alg->squeeze))(state, out, alg->hash_len);
+            memset(out, 0xAA, hash_len);
+            (*(alg->squeeze))(state, out, hash_len);
             if (alg->free)
                 (*(alg->free))(state);
             if (!test_compare(out, md->data, md->size)) {
                 test_print_error(alg->name, vec, "incremental absorb failed");
                 free(state);
+                free(out);
                 return 0;
             }
         }
@@ -808,11 +822,11 @@ static int test_hash_inner
         /* All-in-one absorb with incremental squeeze output */
         for (inc = 1; inc <= md->size; ADVANCE_INC(inc)) {
             if (alg->init_fixed)
-                (*(alg->init_fixed))(state, alg->hash_len);
+                (*(alg->init_fixed))(state, hash_len);
             else
                 (*(alg->init))(state);
             (*(alg->absorb))(state, msg->data, msg->size);
-            memset(out, 0xAA, alg->hash_len);
+            memset(out, 0xAA, hash_len);
             for (index = 0; index < md->size; index += inc) {
                 size_t temp = md->size - index;
                 if (temp > inc)
@@ -824,11 +838,13 @@ static int test_hash_inner
             if (!test_compare(out, md->data, md->size)) {
                 test_print_error(alg->name, vec, "incremental squeeze failed");
                 free(state);
+                free(out);
                 return 0;
             }
         }
     }
     free(state);
+    free(out);
 
     /* All tests passed for this test vector */
     return 1;
@@ -965,13 +981,14 @@ static int perf_hash(const aead_hash_algorithm_t *alg)
 static int test_auth_inner
     (const aead_auth_algorithm_t *alg, const test_vector_t *vec)
 {
-    unsigned char out[alg->tag_len];
+    unsigned char *out;
     void *state;
     const test_string_t *key;
     const test_string_t *msg;
     const test_string_t *tag;
     const unsigned char *custom = 0;
     size_t customlen = 0;
+    size_t outlen;
     size_t index;
     size_t inc;
 
@@ -989,18 +1006,23 @@ static int test_auth_inner
         test_print_error(alg->name, vec, "incorrect key size in test data");
         return 0;
     }
-    if (tag->size != alg->tag_len) {
+    outlen = tag->size;
+    if (outlen < alg->tag_len) {
         test_print_error(alg->name, vec, "incorrect tag size in test data");
         return 0;
     }
+    out = malloc(outlen);
+    if (!out)
+        exit(2);
 
     /* Compute the result with the all-in-one function */
-    memset(out, 0xAA, alg->tag_len);
+    memset(out, 0xAA, outlen);
     (*(alg->compute))
         (out, tag->size, key->data, key->size, msg->data, msg->size,
          custom, customlen);
     if (!test_compare(out, tag->data, tag->size)) {
         test_print_error(alg->name, vec, "all-in-one auth failed");
+        free(out);
         return 0;
     }
 
@@ -1010,6 +1032,7 @@ static int test_auth_inner
                 (out, tag->size, key->data, key->size,
                  msg->data, msg->size, custom, customlen) != 0) {
             test_print_error(alg->name, vec, "all-in-one auth verify failed");
+            free(out);
             return 0;
         }
         out[2] ^= 0x01; /* Deliberately corrupt the tag */
@@ -1017,6 +1040,7 @@ static int test_auth_inner
                 (out, tag->size, key->data, key->size,
                  msg->data, msg->size, custom, customlen) == 0) {
             test_print_error(alg->name, vec, "all-in-one auth verify succeeded when it should not have");
+            free(out);
             return 0;
         }
     }
@@ -1031,10 +1055,9 @@ static int test_auth_inner
         for (inc = 1; inc <= msg->size; ADVANCE_INC(inc)) {
             if (alg->init_custom) {
                 (*(alg->init_custom))
-                    (state, key->data, key->size, custom, customlen,
-                     alg->tag_len);
+                    (state, key->data, key->size, custom, customlen, outlen);
             } else if (alg->init_fixed) {
-                (*(alg->init_fixed))(state, key->data, key->size, alg->tag_len);
+                (*(alg->init_fixed))(state, key->data, key->size, outlen);
             } else {
                 (*(alg->init))(state, key->data, key->size);
             }
@@ -1044,34 +1067,34 @@ static int test_auth_inner
                     temp = inc;
                 (*(alg->absorb))(state, msg->data + index, temp);
             }
-            memset(out, 0xAA, alg->tag_len);
+            memset(out, 0xAA, outlen);
             if (alg->hmac_finalize)
                 (*(alg->hmac_finalize))(state, key->data, key->size, out);
             else
-                (*(alg->squeeze))(state, out, alg->tag_len);
+                (*(alg->squeeze))(state, out, outlen);
             if (alg->free)
                 (*(alg->free))(state);
             if (!test_compare(out, tag->data, tag->size)) {
                 test_print_error(alg->name, vec, "incremental absorb failed");
+                free(out);
                 free(state);
                 return 0;
             }
         }
 
         /* All-in-one absorb with incremental squeeze output */
-        for (inc = 1; inc <= alg->tag_len && alg->squeeze; ADVANCE_INC(inc)) {
+        for (inc = 1; inc <= outlen && alg->squeeze; ADVANCE_INC(inc)) {
             if (alg->init_custom) {
                 (*(alg->init_custom))
-                    (state, key->data, key->size, custom, customlen,
-                     alg->tag_len);
+                    (state, key->data, key->size, custom, customlen, outlen);
             } else if (alg->init_fixed) {
-                (*(alg->init_fixed))(state, key->data, key->size, alg->tag_len);
+                (*(alg->init_fixed))(state, key->data, key->size, outlen);
             } else {
                 (*(alg->init))(state, key->data, key->size);
             }
             (*(alg->absorb))(state, msg->data, msg->size);
-            memset(out, 0xAA, alg->tag_len);
-            for (index = 0; index < alg->tag_len; index += inc) {
+            memset(out, 0xAA, outlen);
+            for (index = 0; index < outlen; index += inc) {
                 size_t temp = tag->size - index;
                 if (temp > inc)
                     temp = inc;
@@ -1081,11 +1104,13 @@ static int test_auth_inner
                 (*(alg->free))(state);
             if (!test_compare(out, tag->data, tag->size)) {
                 test_print_error(alg->name, vec, "incremental squeeze failed");
+                free(out);
                 free(state);
                 return 0;
             }
         }
     }
+    free(out);
     free(state);
 
     /* All tests passed for this test vector */
@@ -1145,7 +1170,7 @@ int main(int argc, char *argv[])
         ++argv;
     }
     if (argc < 3) {
-        fprintf(stderr, "Usage: %s Algorithm KAT-file [perf]\n", progname);
+        fprintf(stderr, "Usage: %s [--performance] Algorithm KAT-file\n", progname);
         return 1;
     }
 

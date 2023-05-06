@@ -38,6 +38,7 @@ static int min_msg = 0;
 static int max_msg = 1024;
 static int min_custom = 0;
 static int max_custom = 32;
+static int output_length = 0;
 static const char *alg_name = 0;
 static const char *output_filename = 0;
 static const aead_cipher_t *alg_cipher = 0;
@@ -80,7 +81,7 @@ static void rng_init(const char *seed)
                (((unsigned long)(data[3])) << 24);
         snprintf(new_seed, sizeof(new_seed), "%lu", value);
         printf("SEED: %lu\n", value);
-        ascon_xof_init(&rng_state);
+        ascon_xof_reinit(&rng_state);
         ascon_xof_absorb
             (&rng_state, (unsigned char *)new_seed, strlen(new_seed));
     }
@@ -163,6 +164,8 @@ static int parse_command_line(int argc, char **argv)
             continue;
         if (parse_option(name, "max-custom", &max_custom))
             continue;
+        if (parse_option(name, "output-length", &output_length))
+            continue;
         if (!strcmp(name, "random")) {
             rng_init(0);
             continue;
@@ -231,6 +234,9 @@ static void usage(const char *progname)
 
     fprintf(stderr, "    --max-custom=SIZE\n");
     fprintf(stderr, "        Set the maximum customization string size, default is 32.\n\n");
+
+    fprintf(stderr, "    --output-length=SIZE\n");
+    fprintf(stderr, "        Set the output length for XOF functions, 0 for default output length.\n\n");
 
     fprintf(stderr, "    --random\n");
     fprintf(stderr, "    --random=SEED\n");
@@ -335,11 +341,18 @@ static void generate_kats_for_hash(const aead_hash_algorithm_t *alg, FILE *file)
 {
     int count = 1;
     int msg_len;
+    int hash_len;
+
+    /* Determine the output length if different from the default */
+    if (output_length != 0 && (alg->init_fixed || alg->squeeze))
+        hash_len = output_length;
+    else
+        hash_len = alg->hash_len;
 
     /* Allocate space for the temporary buffers we will need */
     unsigned char *state = (unsigned char *)malloc(alg->state_size);
     unsigned char *msg = (unsigned char *)malloc(max_msg);
-    unsigned char *hash = (unsigned char *)malloc(alg->hash_len);
+    unsigned char *hash = (unsigned char *)malloc(hash_len);
     if (!state || !msg || !hash) {
         fprintf(stderr, "Out of memory\n");
         exit(1);
@@ -353,19 +366,27 @@ static void generate_kats_for_hash(const aead_hash_algorithm_t *alg, FILE *file)
         /* Produce the hash output */
         if (alg->init_fixed) {
             /* XOF with an explicitly-specified fixed length */
-            (*(alg->init_fixed))(state, alg->hash_len);
+            (*(alg->init_fixed))(state, hash_len);
             (*(alg->absorb))(state, msg, msg_len);
-            (*(alg->squeeze))(state, hash, alg->hash_len);
+            (*(alg->squeeze))(state, hash, hash_len);
+            if (alg->free)
+                (*(alg->free))(state);
+        } else if (alg->squeeze) {
+            /* XOF with a possibly arbitrary-length output */
+            (*(alg->init))(state);
+            (*(alg->absorb))(state, msg, msg_len);
+            (*(alg->squeeze))(state, hash, hash_len);
             if (alg->free)
                 (*(alg->free))(state);
         } else {
+            /* Ordinary hash function with a fixed-length output */
             (*(alg->hash))(hash, msg, msg_len);
         }
 
         /* Write out the results */
         fprintf(file, "Count = %d\n", count++);
         write_hex(file, "Msg", msg, msg_len);
-        write_hex(file, "MD", hash, alg->hash_len);
+        write_hex(file, "MD", hash, hash_len);
         fprintf(file, "\n");
     }
 
@@ -386,11 +407,12 @@ static void generate_kats_for_auth(const aead_auth_algorithm_t *alg, FILE *file)
     int count = 1;
     int msg_len;
     int cust_len;
+    int tag_len = output_length ? output_length : (int)(alg->tag_len);
 
     /* Allocate space for the temporary buffers we will need */
     unsigned char *state = (unsigned char *)malloc(alg->state_size);
     unsigned char *msg = (unsigned char *)malloc(max_msg);
-    unsigned char *tag = (unsigned char *)malloc(alg->tag_len);
+    unsigned char *tag = (unsigned char *)malloc(tag_len);
     unsigned char *key = (unsigned char *)malloc(alg->key_len);
     unsigned char *custom = 0;
     if (!state || !msg || !tag || !key) {
@@ -414,13 +436,13 @@ static void generate_kats_for_auth(const aead_auth_algorithm_t *alg, FILE *file)
 
             /* Produce the authentication output */
             (*(alg->compute))
-                (tag, alg->tag_len, key, alg->key_len, msg, msg_len, 0, 0);
+                (tag, tag_len, key, alg->key_len, msg, msg_len, 0, 0);
 
             /* Write out the results */
             fprintf(file, "Count = %d\n", count++);
             write_hex(file, "Key", key, alg->key_len);
             write_hex(file, "Msg", msg, msg_len);
-            write_hex(file, "Tag", tag, alg->tag_len);
+            write_hex(file, "Tag", tag, tag_len);
             fprintf(file, "\n");
         }
     } else {
@@ -433,7 +455,7 @@ static void generate_kats_for_auth(const aead_auth_algorithm_t *alg, FILE *file)
 
                 /* Produce the authentication output */
                 (*(alg->compute))
-                    (tag, alg->tag_len, key, alg->key_len, msg, msg_len,
+                    (tag, tag_len, key, alg->key_len, msg, msg_len,
                      cust_len ? custom : 0, cust_len);
 
                 /* Write out the results */
@@ -441,7 +463,7 @@ static void generate_kats_for_auth(const aead_auth_algorithm_t *alg, FILE *file)
                 write_hex(file, "Key", key, alg->key_len);
                 write_hex(file, "Msg", msg, msg_len);
                 write_hex(file, "Custom", custom, cust_len);
-                write_hex(file, "Tag", tag, alg->tag_len);
+                write_hex(file, "Tag", tag, tag_len);
                 fprintf(file, "\n");
             }
         }
