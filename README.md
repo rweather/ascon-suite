@@ -23,6 +23,30 @@ API's are provided for the following areas:
 See the [HTML documentation](https://rweather.github.io/ascon-suite/index.html)
 for more information on the suite.
 
+Update (November 2024)
+----------------------
+
+NIST has released the [Initial Public Draft](https://csrc.nist.gov/pubs/sp/800/232/ipd)
+of NIST SP 800-232, which defines the proposed standard version of ASCON.
+There are some differences with the final round ASCON version from the
+lightweight cryptography competition:
+
+* The suite of core algorithms has been reduced to four: ASCON-AEAD128,
+ASCON-Hash256, Ascon-XOF128, and ASCON-CXOF128.
+* Little-endian representation of words instead of the original big-endian.
+* Changed round constants and initialization vectors.
+* Extension of the ASCON permutation to 16 rounds for future use.
+* A new customizable XOF function, ASCON-CXOF128.
+
+This repository currently implements the final round version of ASCON,
+not the proposed NIST standard.  I am studying the proposed standard
+and am working to modify this library to implement the standard version.
+
+The original final round version of ASCON Suite has been check-pointed
+in the `final-round` branch.  Work on the proposed standard is in the
+`proposed-standard` branch, which will be merged into `master`
+once it matures.
+
 Building
 --------
 
