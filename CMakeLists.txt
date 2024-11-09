@@ -121,6 +121,7 @@ if(NOT MINIMAL)
     add_subdirectory(apps)
     add_subdirectory(test)
     add_subdirectory(examples EXCLUDE_FROM_ALL)
+    add_subdirectory(simple)
 endif()
 
 # Enable testing support.
