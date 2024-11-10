@@ -76,13 +76,6 @@ static HashFuncs const alg_ascon_hash = {
     .update = (hash_update_t)ascon_hash_update,
     .finalize = (hash_finalize_t)ascon_hash_finalize
 };
-static HashFuncs const alg_ascon_hasha = {
-    .state_size = sizeof(ascon_hash_state_t),
-    .init = (hash_init_t)ascon_hasha_init,
-    .free = (hash_free_t)ascon_hasha_free,
-    .update = (hash_update_t)ascon_hasha_update,
-    .finalize = (hash_finalize_t)ascon_hasha_finalize
-};
 
 typedef void (*hmac_func_t)
     (unsigned char *out,
@@ -187,13 +180,6 @@ int main(int argc, char *argv[])
         (&alg_ascon_hash, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_2, 32, 64);
     test_hmac_vector
         (&alg_ascon_hash, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_3, 32, 64);
-
-    test_hmac_vector
-        (&alg_ascon_hasha, "ASCON-HMACA", ascon_hmaca, &testVectorHMAC_1, 32, 64);
-    test_hmac_vector
-        (&alg_ascon_hasha, "ASCON-HMACA", ascon_hmaca, &testVectorHMAC_2, 32, 64);
-    test_hmac_vector
-        (&alg_ascon_hasha, "ASCON-HMACA", ascon_hmaca, &testVectorHMAC_3, 32, 64);
 
     return test_exit_result;
 }

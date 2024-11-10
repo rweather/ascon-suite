@@ -39,16 +39,6 @@ extern "C" {
 void ascon_xof_absorb_custom
     (ascon_xof_state_t *state, const unsigned char *custom, size_t customlen);
 
-/**
- * \brief Absorbs a customization string into an ASCON-XOFA state.
- *
- * \param state XOF state to be updated.
- * \param custom Points to the customization string.
- * \param customlen Number of bytes in the customization string.
- */
-void ascon_xofa_absorb_custom
-    (ascon_xofa_state_t *state, const unsigned char *custom, size_t customlen);
-
 #ifdef __cplusplus
 }
 #endif

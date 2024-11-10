@@ -25,7 +25,7 @@
 \page asconsum Computing file checksums with ASCON-HASH
 
 The <tt>asconsum</tt> program in the <tt>apps</tt> directory demonstrates
-how to use ASCON-HASH and ASCON-HASHA to generate checksums for files.
+how to use ASCON-HASH and ASCON-XOF to generate checksums for files.
 It operates in a similar manner to system utilities like <tt>md5sum</tt>,
 <tt>sha256sum</tt>, and so on.
 
@@ -48,24 +48,12 @@ README.md: OK
 \endverbatim
 
 The default mode uses ASCON-HASH for hashing.  You can switch to
-ASCON-HASHA using the -a option:
-
-\verbatim
-$ asconsum -a LICENSE README.md
-b9ea1017b2a0fe8a7dfcefb586f71209dd03ec7cb6c9203d8c9122ef73d62b62  LICENSE
-305fafa06d8d892a1f4e57a5b2d91f7695343b7c9caaaae2ea8943deedf696f6  README.md
-\endverbatim
-
-The -x and -y options select ASCON-XOF and ASCON-XOFA respectively:
+ASCON-XOF using the -x option:
 
 \verbatim
 $ asconsum -x LICENSE README.md
 574e8590d800c992d8a770cdac51161501124c00a25b4d79f354f743758e034c  LICENSE
 c0e9cdf45101fdd0cf9aaff45826ff7f1ca67d5679ca803fb962adcc8c72b26d  README.md
-
-$ asconsum -y LICENSE README.md
-79d2a716aa6884ca4670603334206d6a95e1733c998ac99424c6ca28783b2feb  LICENSE
-b990ba69fa5e4f8177f11c02c7dafebf6f64c7a8a2a6b8f122b93a53218ffce8  README.md
 \endverbatim
 
 \ref asconsum/asconsum.c "Full source code for the asconsum program"

@@ -418,43 +418,21 @@ void setup()
     //      PT = 000102030405060708090A0B0C0D0E0F10111213141516  (size = 23)
     //      AD = 000102030405060708090A                          (size = 11)
     // Usually this is "Count = 771" in the standard NIST KAT vectors.
-    perfCipher("ASCON-128", ascon128_aead_encrypt, ascon128_aead_decrypt,
-               "76807B6448896CE58842CB4AED6C41041D6DEC3B3A0DD69901F988A337A7239C411A18313622FC");
     perfCipher("ASCON-128a", ascon128a_aead_encrypt, ascon128a_aead_decrypt,
                "C52E4E39F5EF9F8461912AED7ABBA1B8EB8AD7ACD54637D193C5371279753F2177BFC76E5FC300");
-    perfCipher("ASCON-80pq", ascon80pq_aead_encrypt, ascon80pq_aead_decrypt,
-               "368D3F1F3BA75BA929D4A5327E8DE42A55383F238CCC04F75BF026EF5BE70D67741B339B908B04");
 
-    perfCipher("ASCON-128-SIV", ascon128_siv_encrypt, ascon128_siv_decrypt,
-               "800A4B5581E640EDC9B3CFB1311BB5FADF412013FD9658820534BA25D617235573AEBEEE3EC415");
     perfCipher("ASCON-128a-SIV", ascon128a_siv_encrypt, ascon128a_siv_decrypt,
                "5D20209930C3DF4FAED4472BA266FAC0E9A465F40BF209849DA61D2A40710289A13266D4DE563B");
-    perfCipher("ASCON-80pq-SIV", ascon80pq_siv_encrypt, ascon80pq_siv_decrypt,
-               "4B567E83664C14BF9384C858AF5A6D96B95761DDD95E6F400B7A7432BB9F6D09D95E10D82CEAF4");
 
     perfHash("ASCON-HASH", ascon_hash);
-    perfHash("ASCON-HASHA", ascon_hasha);
     perfHash("ASCON-XOF", ascon_xof);
-    perfHash("ASCON-XOFA", ascon_xofa);
 
-    perfCipherPK("ASCON-128-masked", sizeof(ascon_masked_key_128_t),
-                 (aead_cipher_encrypt_t)ascon128_masked_aead_encrypt,
-                 (aead_cipher_decrypt_t)ascon128_masked_aead_decrypt,
-                 (aead_cipher_pk_init_t)ascon_masked_key_128_init,
-                 (aead_cipher_pk_free_t)ascon_masked_key_128_free,
-                 "76807B6448896CE58842CB4AED6C41041D6DEC3B3A0DD69901F988A337A7239C411A18313622FC");
     perfCipherPK("ASCON-128a-masked", sizeof(ascon_masked_key_128_t),
                  (aead_cipher_encrypt_t)ascon128a_masked_aead_encrypt,
                  (aead_cipher_decrypt_t)ascon128a_masked_aead_decrypt,
                  (aead_cipher_pk_init_t)ascon_masked_key_128_init,
                  (aead_cipher_pk_free_t)ascon_masked_key_128_free,
                  "C52E4E39F5EF9F8461912AED7ABBA1B8EB8AD7ACD54637D193C5371279753F2177BFC76E5FC300");
-    perfCipherPK("ASCON-80pq-masked", sizeof(ascon_masked_key_160_t),
-                 (aead_cipher_encrypt_t)ascon80pq_masked_aead_encrypt,
-                 (aead_cipher_decrypt_t)ascon80pq_masked_aead_decrypt,
-                 (aead_cipher_pk_init_t)ascon_masked_key_160_init,
-                 (aead_cipher_pk_free_t)ascon_masked_key_160_free,
-                 "368D3F1F3BA75BA929D4A5327E8DE42A55383F238CCC04F75BF026EF5BE70D67741B339B908B04");
 }
 
 void loop()

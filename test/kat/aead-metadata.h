@@ -159,7 +159,7 @@ typedef void (*aead_cipher_dec_inc_t)
  * \brief Finalizes an incremental decryption operation and
  * checks the authentication tag.
  *
- * \param state State to use for ASCON-80pq encryption operations.
+ * \param state State to use for incremental encryption operations.
  * \param tag Points to the buffer containing the ciphertext's
  * authentication tag.
  *
@@ -444,19 +444,9 @@ typedef struct
 } aead_auth_algorithm_t;
 
 /**
- * \brief Meta-information block for the ASCON-128 cipher.
- */
-extern aead_cipher_t const ascon128_cipher;
-
-/**
  * \brief Meta-information block for the ASCON-128a cipher.
  */
 extern aead_cipher_t const ascon128a_cipher;
-
-/**
- * \brief Meta-information block for the ASCON-80pq cipher.
- */
-extern aead_cipher_t const ascon80pq_cipher;
 
 /**
  * \brief Meta-information block for the ASCON-HASH algorithm.
@@ -464,24 +454,9 @@ extern aead_cipher_t const ascon80pq_cipher;
 extern aead_hash_algorithm_t const ascon_hash_algorithm;
 
 /**
- * \brief Meta-information block for the ASCON-HASHA algorithm.
- */
-extern aead_hash_algorithm_t const ascon_hasha_algorithm;
-
-/**
  * \brief Meta-information block for the ASCON-XOF algorithm.
  */
 extern aead_hash_algorithm_t const ascon_xof_algorithm;
-
-/**
- * \brief Meta-information block for the ASCON-XOFA algorithm.
- */
-extern aead_hash_algorithm_t const ascon_xofa_algorithm;
-
-/**
- * \brief Meta-information block for the masked ASCON-128 cipher.
- */
-extern aead_cipher_t const ascon128_masked_cipher;
 
 /**
  * \brief Meta-information block for the masked ASCON-128a cipher.
@@ -489,24 +464,9 @@ extern aead_cipher_t const ascon128_masked_cipher;
 extern aead_cipher_t const ascon128a_masked_cipher;
 
 /**
- * \brief Meta-information block for the masked ASCON-80pq cipher.
- */
-extern aead_cipher_t const ascon80pq_masked_cipher;
-
-/**
- * \brief Meta-information block for the ASCON-128-SIV cipher.
- */
-extern aead_cipher_t const ascon128_siv_cipher;
-
-/**
  * \brief Meta-information block for the ASCON-128a-SIV cipher.
  */
 extern aead_cipher_t const ascon128a_siv_cipher;
-
-/**
- * \brief Meta-information block for the ASCON-80pq-SIV cipher.
- */
-extern aead_cipher_t const ascon80pq_siv_cipher;
 
 /**
  * \brief Meta-information block for the ASCON-Prf pseudorandom function.

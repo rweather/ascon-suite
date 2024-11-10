@@ -411,14 +411,14 @@ static const char *add_suffix(const char *filename, const char *suffix)
 struct asconcrypt_header
 {
     char magic[10];             /* "ASCONcrypt" */
-    unsigned char version[2];   /* Version number */
+    unsigned char version[2];   /* Version number, little-endian byte order */
     unsigned char salt[16];     /* Salt value */
 };
 
 /* Bytes to be written to the "SIV block" portion of the file */
 struct asconcrypt_siv_block
 {
-    unsigned char key[20];      /* Key value for the payload */
+    unsigned char key[16];      /* Key value for the payload */
     unsigned char nonce[16];    /* Nonce value for the payload */
     unsigned char tag[16];      /* Tag value to authenticate the block */
 };
@@ -436,12 +436,12 @@ static int encrypt_file(const char *infilename, const char *outfilename)
     struct asconcrypt_header header;
     struct asconcrypt_siv_block siv;
     struct asconcrypt_siv_block siv_copy;
-    unsigned char kn[20 + 16];
+    unsigned char kn[16 + 16];
     int exit_val = 0;
     size_t clen = 0;
     SAFEFILE input;
     SAFEFILE output;
-    ascon80pq_state_t state;
+    ascon128a_state_t state;
     unsigned char data[ASCON_BUFSIZ];
     uint64_t size;
     int len;
@@ -458,8 +458,8 @@ static int encrypt_file(const char *infilename, const char *outfilename)
 
     /* Format the header */
     memcpy(header.magic, "ASCONcrypt", 10);
-    header.version[0] = 0;
-    header.version[1] = 1;
+    header.version[0] = 1;
+    header.version[1] = 0;
 
     /* Allocate the salt, key, and nonce randomly */
     memset(&siv, 0, sizeof(siv));
@@ -476,9 +476,9 @@ static int encrypt_file(const char *infilename, const char *outfilename)
                  header.salt, sizeof(header.salt), ASCON_PBKDF2_ROUNDS);
 
     /* Encrypt the SIV block and generate the tag */
-    ascon80pq_siv_encrypt
+    ascon128a_siv_encrypt
         (siv.key, &clen, siv.key, sizeof(siv.key) + sizeof(siv.nonce),
-         (const unsigned char *)&header, sizeof(header), kn + 20, kn);
+         (const unsigned char *)&header, sizeof(header), kn + 16, kn);
 
     /* Write the header and SIV block to the output file */
     exit_val = 1;
@@ -488,8 +488,8 @@ static int encrypt_file(const char *infilename, const char *outfilename)
     }
 
     /* Read the input file, encrypt it, and write to the output file */
-    ascon80pq_aead_init(&state, siv_copy.nonce, siv_copy.key);
-    ascon80pq_aead_start(&state, (const unsigned char *)&siv, sizeof(siv));
+    ascon128a_aead_init(&state, siv_copy.nonce, siv_copy.key);
+    ascon128a_aead_start(&state, (const unsigned char *)&siv, sizeof(siv));
     size = 0;
     while (exit_val) {
         len = safe_file_read(&input, data, sizeof(data));
@@ -504,17 +504,17 @@ static int encrypt_file(const char *infilename, const char *outfilename)
                 exit_val = 0;
                 break;
             }
-            ascon80pq_aead_encrypt_block(&state, data, data, len);
+            ascon128a_aead_encrypt_block(&state, data, data, len);
             if (!safe_file_write(&output, data, len))
                 exit_val = 0;
             if (len < (int)sizeof(data))
                 break; /* Short last block - we're done */
         }
     }
-    ascon80pq_aead_encrypt_finalize(&state, data);
-    ascon80pq_aead_free(&state);
+    ascon128a_aead_encrypt_finalize(&state, data);
+    ascon128a_aead_free(&state);
     if (exit_val) {
-        if (!safe_file_write(&output, data, ASCON80PQ_TAG_SIZE))
+        if (!safe_file_write(&output, data, ASCON128_TAG_SIZE))
             exit_val = 0;
     }
 
@@ -537,13 +537,13 @@ static int decrypt_file(const char *infilename, const char *outfilename)
 {
     struct asconcrypt_full_header header;
     struct asconcrypt_siv_block siv_copy;
-    unsigned char kn[20 + 16];
+    unsigned char kn[16 + 16];
     int exit_val = 0;
     size_t mlen = 0;
     int bad_format;
     SAFEFILE input;
     SAFEFILE output;
-    ascon80pq_state_t state;
+    ascon128a_state_t state;
     unsigned char data[ASCON_BUFSIZ];
     uint64_t size;
     int len;
@@ -565,8 +565,8 @@ static int decrypt_file(const char *infilename, const char *outfilename)
         bad_format = 1;
     } else {
         if (memcmp(header.header.magic, "ASCONcrypt", 10) != 0 ||
-                header.header.version[0] != 0 ||
-                header.header.version[1] != 1) {
+                header.header.version[0] != 1 ||
+                header.header.version[1] != 0) {
             bad_format = 1;
         }
     }
@@ -584,10 +584,10 @@ static int decrypt_file(const char *infilename, const char *outfilename)
 
     /* Decrypt the SIV block and check the tag */
     siv_copy = header.siv;
-    if (ascon80pq_siv_decrypt
+    if (ascon128a_siv_decrypt
             (header.siv.key, &mlen, header.siv.key, sizeof(header.siv),
              (const unsigned char *)&(header.header), sizeof(header.header),
-             kn + 20, kn) != 0) {
+             kn + 16, kn) != 0) {
         fprintf(stderr, "%s: password is incorrect\n", infilename);
         goto cleanup;
     }
@@ -601,8 +601,8 @@ static int decrypt_file(const char *infilename, const char *outfilename)
     }
 
     /* Read the input file, decrypt it, and write to the output file */
-    ascon80pq_aead_init(&state, header.siv.nonce, header.siv.key);
-    ascon80pq_aead_start
+    ascon128a_aead_init(&state, header.siv.nonce, header.siv.key);
+    ascon128a_aead_start
         (&state, (const unsigned char *)&siv_copy, sizeof(siv_copy));
     size = 0;
     exit_val = 1;
@@ -619,7 +619,7 @@ static int decrypt_file(const char *infilename, const char *outfilename)
                 exit_val = 0;
                 break;
             }
-            ascon80pq_aead_decrypt_block(&state, data, data, len);
+            ascon128a_aead_decrypt_block(&state, data, data, len);
             if (!safe_file_write(&output, data, len))
                 exit_val = 0;
             memmove(data, data + len, 16);
@@ -627,8 +627,8 @@ static int decrypt_file(const char *infilename, const char *outfilename)
                 break; /* Short last block - we're done */
         }
     }
-    result = ascon80pq_aead_decrypt_finalize(&state, data);
-    ascon80pq_aead_free(&state);
+    result = ascon128a_aead_decrypt_finalize(&state, data);
+    ascon128a_aead_free(&state);
     if (result != 0 && exit_val) {
         exit_val = 0;
         fprintf(stderr, "%s: file is corrupt and failed to decrypt\n",

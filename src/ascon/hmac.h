@@ -53,11 +53,6 @@ extern "C" {
 #define ASCON_HMAC_SIZE ASCON_HASH_SIZE
 
 /**
- * \brief Default size of the output for ASCON-HMACA.
- */
-#define ASCON_HMACA_SIZE ASCON_HASHA_SIZE
-
-/**
  * \brief State information for the ASCON-HMAC incremental mode.
  */
 typedef struct
@@ -65,15 +60,6 @@ typedef struct
     ascon_hash_state_t hash;    /**< Internal ASCON-HASH state */
 
 } ascon_hmac_state_t;
-
-/**
- * \brief State information for the ASCON-HMACA incremental mode.
- */
-typedef struct
-{
-    ascon_hasha_state_t hash;   /**< Internal ASCON-HASHA state */
-
-} ascon_hmaca_state_t;
 
 /**
  * \brief Computes a HMAC value using ASCON-HASH.
@@ -155,88 +141,6 @@ void ascon_hmac_update
  */
 void ascon_hmac_finalize
     (ascon_hmac_state_t *state, const unsigned char *key, size_t keylen,
-     unsigned char *out);
-
-/**
- * \brief Computes a HMAC value using ASCON-HASHA.
- *
- * \param out Buffer to receive the output HMAC value; must be at least
- * ASCON_HMACA_SIZE bytes in length.
- * \param key Points to the key.
- * \param keylen Number of bytes in the key.
- * \param in Points to the data to authenticate.
- * \param inlen Number of bytes of data to authenticate.
- */
-void ascon_hmaca
-    (unsigned char *out,
-     const unsigned char *key, size_t keylen,
-     const unsigned char *in, size_t inlen);
-
-/**
- * \brief Initializes an incremental HMAC state using ASCON-HASHA.
- *
- * \param state Points to the state to be initialized.
- * \param key Points to the key.
- * \param keylen Number of bytes in the key.
- *
- * The \a key needs to be preserved until the ascon_hmaca_finalize() call
- * to provide the outer HMAC hashing key.
- *
- * \sa ascon_hmaca_update(), ascon_hmaca_finalize()
- */
-void ascon_hmaca_init
-    (ascon_hmaca_state_t *state, const unsigned char *key, size_t keylen);
-
-/**
- * \brief Re-initializes an incremental HMAC state using ASCON-HASHA.
- *
- * \param state Points to the state to be re-initialized.
- * \param key Points to the key.
- * \param keylen Number of bytes in the key.
- *
- * The \a key needs to be preserved until the ascon_hmaca_finalize() call
- * to provide the outer HMAC hashing key.
- *
- * This function is equivalent to calling ascon_hmaca_free() followed by
- * ascon_hmaca_init().
- *
- * \sa ascon_hmac_init()
- */
-void ascon_hmaca_reinit
-    (ascon_hmaca_state_t *state, const unsigned char *key, size_t keylen);
-
-/**
- * \brief Frees the ASCON-HMACA state and destroys any sensitive material.
- *
- * \param state HMAC state to be freed.
- */
-void ascon_hmaca_free(ascon_hmaca_state_t *state);
-
-/**
- * \brief Updates an incremental ASCON-HMACA state with more input data.
- *
- * \param state HMAC state to be updated.
- * \param in Points to the input data to be incorporated into the state.
- * \param inlen Length of the input data to be incorporated into the state.
- *
- * \sa ascon_hmaca_init(), ascon_hmaca_finalize()
- */
-void ascon_hmaca_update
-    (ascon_hmaca_state_t *state, const unsigned char *in, size_t inlen);
-
-/**
- * \brief Finalizes an incremental ASCON-HMACA state.
- *
- * \param state HMAC state to squeeze the output data from.
- * \param key Points to the key.
- * \param keylen Number of bytes in the key.
- * \param out Points to the output buffer to receive the HMAC value;
- * must be at least ASCON_HMACA_SIZE bytes in length.
- *
- * \sa ascon_hmaca_init(), ascon_hmaca_update()
- */
-void ascon_hmaca_finalize
-    (ascon_hmaca_state_t *state, const unsigned char *key, size_t keylen,
      unsigned char *out);
 
 #ifdef __cplusplus

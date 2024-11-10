@@ -100,15 +100,6 @@ static aead_hash_algorithm_t const ascon_xof_algorithm = {
     .squeeze = (aead_xof_squeeze_t)ascon_xof_squeeze
 };
 
-static aead_hash_algorithm_t const ascon_xofa_algorithm = {
-    .state_size = sizeof(ascon_xofa_state_t),
-    .hash_len = ASCON_HASHA_SIZE,
-    .init = (aead_hash_init_custom_t)ascon_xofa_init_custom,
-    .free = (aead_hash_free_t)ascon_xofa_free,
-    .absorb = (aead_xof_absorb_t)ascon_xofa_absorb,
-    .squeeze = (aead_xof_squeeze_t)ascon_xofa_squeeze
-};
-
 /* Simple implementation of KMAC based on a configurable XOF algorithm
  * for cross-checking the implementation in the library */
 static void simple_kmac
@@ -232,23 +223,6 @@ int main(int argc, char *argv[])
                   (kmac_free_t)ascon_kmac_free,
                   (kmac_absorb_t)ascon_kmac_absorb,
                   (kmac_squeeze_t)ascon_kmac_squeeze,
-                  &testVectorNIST_2);
-
-    test_kmac_alg("ASCON-A KMAC", &ascon_xofa_algorithm,
-                  sizeof(ascon_kmac_state_t),
-                  (kmac_allinone_t)ascon_kmaca,
-                  (kmac_init_t)ascon_kmaca_init,
-                  (kmac_free_t)ascon_kmaca_free,
-                  (kmac_absorb_t)ascon_kmaca_absorb,
-                  (kmac_squeeze_t)ascon_kmaca_squeeze,
-                  &testVectorNIST_1);
-    test_kmac_alg("ASCON-A KMAC", &ascon_xofa_algorithm,
-                  sizeof(ascon_kmac_state_t),
-                  (kmac_allinone_t)ascon_kmaca,
-                  (kmac_init_t)ascon_kmaca_init,
-                  (kmac_free_t)ascon_kmaca_free,
-                  (kmac_absorb_t)ascon_kmaca_absorb,
-                  (kmac_squeeze_t)ascon_kmaca_squeeze,
                   &testVectorNIST_2);
 
     return test_exit_result;

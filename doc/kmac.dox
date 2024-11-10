@@ -85,7 +85,4 @@ ascon_kmac_squeeze(&kmac, out1, sizeof(out1));
 ascon_kmac_squeeze(&kmac, out2, sizeof(out2));
 \endcode
 
-ASCON-KMACA has a similar API, but uses ASCON-XOFA internally instead
-of ASCON-XOF.
-
 */

@@ -26,9 +26,9 @@
 \tableofcontents
 
 The <tt>asconcrypt</tt> program in the <tt>apps</tt> directory demonstrates
-how to use ASCON-80pq, ASCON-80pq-SIV, and ASCON-PBKDF2 to create a
+how to use ASCON-128a, ASCON-128a-SIV, and ASCON-PBKDF2 to create a
 password-based file encryption and decryption utility.  The incremental
-version of ASCON-80pq is used, which permits large files up to 1 terabyte
+version of ASCON-128a is used, which permits large files up to 1 terabyte
 in size to be encrypted.
 
 ASCONcrypt is inspired <a href="https://www.aescrypt.com/">AES Crypt</a>
@@ -119,14 +119,14 @@ sections of interest:
 ASCONcrypt files contain the following sections:
 
 \li 10 bytes containing the characters "ASCONcrypt".
-\li 2 bytes containing the 16-bit version number in big endian format.
+\li 2 bytes containing the 16-bit version number in little endian format.
 For the current version of the format, this should be 0x0001.
 \li 16 byte salt value, allocated randomly.
-\li 52 byte "SIV block" as described below.
-\li File contents, encrypted with ASCON-80pq as described below.
+\li 48 byte "SIV block" as described below.
+\li File contents, encrypted with ASCON-128a as described below.
 \li 16 byte authentication tag computed over the encrypted file contents.
 
-The size of the input file will increase by 96 bytes when it is encrypted.
+The size of the input file will increase by 92 bytes when it is encrypted.
 
 We don't support plaintext metadata in this format.  It makes the
 decryption process complicated to skip arbitrary-sized metadata blocks.
@@ -139,27 +139,27 @@ payload or distributed separately.
 The "SIV block" contains the key and nonce, encrypted with the password
 and salt.  The block is formed as follows:
 
-\li Let (k1,n1) be the first 36 bytes of output from
-<tt>ASCON-PBKDF2(password, salt, 8192)</tt> where k1 is 20 bytes in
+\li Let (k1,n1) be the first 32 bytes of output from
+<tt>ASCON-PBKDF2(password, salt, 8192)</tt> where k1 is 16 bytes in
 length and n1 is 16 bytes in length.
-\li Generate the 36 byte sequence (k2,n2) randomly.  Once again,
-k2 is 20 bytes in length and n2 is 16 bytes in length.
-\li Encrypt the sequence (k2,n2) with ASCON-80pq-SIV using the key k1
+\li Generate the 32 byte sequence (k2,n2) randomly.  Once again,
+k2 is 16 bytes in length and n2 is 16 bytes in length.
+\li Encrypt the sequence (k2,n2) with ASCON-128a-SIV using the key k1
 and the nonce n1.  The associated data is everything from the first
 byte of the file to the last byte of the salt.
-\li The 52 byte output of ASCON-80pq-SIV (encrypted data plus tag)
+\li The 48 byte output of ASCON-128a-SIV (encrypted data plus tag)
 is written to the "SIV block" section in the output file.
 
-The file's contents are encrypted with ASCON-80pq using the key k2
-and the nonce n2.  The associated data is the 52 bytes of the SIV block.
+The file's contents are encrypted with ASCON-128a using the key k2
+and the nonce n2.  The associated data is the 48 bytes of the SIV block.
 
 The SIV block "wraps" the actual encryption key and nonce.  When the file
 is decrypted, the 16 byte authentication tag on the SIV block can be
 used to verify that the password is correct before attempting to decrypt
 the rest of the file.
 
-The ASCON specification indicates that no more than 2<sup>67</sup>
-bytes of data should be encrypted under the same key with ASCON-80pq.
+The ASCON specification indicates that no more than 2<sup>54</sup>
+bytes of data should be encrypted under the same key with ASCON-128a.
 For safety, the encryption process is aborted if more than 2<sup>40</sup>
 bytes or 1 terabyte are encountered.  Larger files will need to be
 split into smaller sections.

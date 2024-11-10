@@ -35,9 +35,7 @@
 #define ASCON_LINESIZ   1024
 
 #define ALG_ASCON_HASH  0
-#define ALG_ASCON_HASHA 1
-#define ALG_ASCON_XOF   2
-#define ALG_ASCON_XOFA  3
+#define ALG_ASCON_XOF   1
 
 static void usage(const char *progname);
 static int hash_file(const char *filename, int algorithm);
@@ -53,12 +51,10 @@ int main(int argc, char *argv[])
 
 #if defined(HAVE_GETOPT)
     /* Process the command-line options */
-    while ((opt = getopt(argc, argv, "haxyc")) != -1) {
+    while ((opt = getopt(argc, argv, "hxc")) != -1) {
         switch (opt) {
         case 'h': algorithm = ALG_ASCON_HASH; break;
-        case 'a': algorithm = ALG_ASCON_HASHA; break;
         case 'x': algorithm = ALG_ASCON_XOF; break;
-        case 'y': algorithm = ALG_ASCON_XOFA; break;
         case 'c': check_mode = 1; break;
         default:
             usage(progname);
@@ -74,9 +70,7 @@ int main(int argc, char *argv[])
         while ((opt = *opts++) != '\0') {
             switch (opt) {
             case 'h': algorithm = ALG_ASCON_HASH; break;
-            case 'a': algorithm = ALG_ASCON_HASHA; break;
             case 'x': algorithm = ALG_ASCON_XOF; break;
-            case 'y': algorithm = ALG_ASCON_XOFA; break;
             case 'c': check_mode = 1; break;
             default:
                 usage(progname);
@@ -115,9 +109,7 @@ static void usage(const char *progname)
     fprintf(stderr, "Usage: %s [-haxyc] FILE ...\n", progname);
     fprintf(stderr, "\n");
     fprintf(stderr, "-h  Selects ASCON-HASH (default).\n");
-    fprintf(stderr, "-a  Selects ASCON-HASHA.\n");
     fprintf(stderr, "-x  Selects ASCON-XOF.\n");
-    fprintf(stderr, "-y  Selects ASCON-XOFA.\n");
     fprintf(stderr, "-c  Read checksums from a file and checks them.\n");
     fprintf(stderr, "\n");
 }
@@ -145,29 +137,6 @@ static int ascon_hash_file
     return ok;
 }
 
-/* Hashes the contents of a file with ASCON-HASHA */
-static int ascon_hasha_file
-    (const char *filename, FILE *file, unsigned char hash[ASCON_HASH_SIZE])
-{
-    unsigned char buffer[ASCON_BUFSIZ];
-    int len, ok;
-    ascon_hasha_state_t state;
-    ascon_hasha_init(&state);
-    while ((len = fread(buffer, 1, ASCON_BUFSIZ, file)) == ASCON_BUFSIZ) {
-        ascon_hasha_update(&state, buffer, len);
-    }
-    ok = !ferror(file);
-    if (!ok) {
-        perror(filename);
-    }
-    if (len > 0) {
-        ascon_hasha_update(&state, buffer, len);
-    }
-    ascon_hasha_finalize(&state, hash);
-    ascon_hasha_free(&state);
-    return ok;
-}
-
 /* Hashes the contents of a file with ASCON-XOF */
 static int ascon_xof_file
     (const char *filename, FILE *file, unsigned char hash[ASCON_HASH_SIZE])
@@ -191,29 +160,6 @@ static int ascon_xof_file
     return ok;
 }
 
-/* Hashes the contents of a file with ASCON-XOFA */
-static int ascon_xofa_file
-    (const char *filename, FILE *file, unsigned char hash[ASCON_HASH_SIZE])
-{
-    unsigned char buffer[ASCON_BUFSIZ];
-    int len, ok;
-    ascon_xofa_state_t state;
-    ascon_xofa_init(&state);
-    while ((len = fread(buffer, 1, ASCON_BUFSIZ, file)) == ASCON_BUFSIZ) {
-        ascon_xofa_absorb(&state, buffer, len);
-    }
-    ok = !ferror(file);
-    if (!ok) {
-        perror(filename);
-    }
-    if (len > 0) {
-        ascon_xofa_absorb(&state, buffer, len);
-    }
-    ascon_xofa_squeeze(&state, hash, ASCON_HASH_SIZE);
-    ascon_xofa_free(&state);
-    return ok;
-}
-
 static int hash_file(const char *filename, int algorithm)
 {
     unsigned char hash[ASCON_HASH_SIZE] = {0};
@@ -229,12 +175,8 @@ static int hash_file(const char *filename, int algorithm)
     }
 
     /* Hash the contents of the file with the selected algorithm */
-    if (algorithm == ALG_ASCON_HASHA)
-        ok = ascon_hasha_file(filename, file, hash);
-    else if (algorithm == ALG_ASCON_XOF)
+    if (algorithm == ALG_ASCON_XOF)
         ok = ascon_xof_file(filename, file, hash);
-    else if (algorithm == ALG_ASCON_XOFA)
-        ok = ascon_xofa_file(filename, file, hash);
     else
         ok = ascon_hash_file(filename, file, hash);
 
@@ -340,12 +282,8 @@ static int check_file(const char *filename, int algorithm)
         if (!file2) {
             perror(check_filename);
             file_ok = 0;
-        } else if (algorithm == ALG_ASCON_HASHA) {
-            file_ok = ascon_hasha_file(check_filename, file2, hash2);
         } else if (algorithm == ALG_ASCON_XOF) {
             file_ok = ascon_xof_file(check_filename, file2, hash2);
-        } else if (algorithm == ALG_ASCON_XOFA) {
-            file_ok = ascon_xofa_file(check_filename, file2, hash2);
         } else {
             file_ok = ascon_hash_file(check_filename, file2, hash2);
         }

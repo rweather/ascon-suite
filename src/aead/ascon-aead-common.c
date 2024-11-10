@@ -45,23 +45,6 @@ int ascon_aead_check_tag
     return ~accum;
 }
 
-void ascon_aead_absorb_8
-    (ascon_state_t *state, const unsigned char *data,
-     size_t len, uint8_t first_round, int last_permute)
-{
-    while (len >= 8) {
-        ascon_absorb_8(state, data, 0);
-        ascon_permute(state, first_round);
-        data += 8;
-        len -= 8;
-    }
-    if (len > 0)
-        ascon_absorb_partial(state, data, 0, len);
-    ascon_pad(state, len);
-    if (last_permute)
-        ascon_permute(state, first_round);
-}
-
 void ascon_aead_absorb_16
     (ascon_state_t *state, const unsigned char *data,
      size_t len, uint8_t first_round, int last_permute)
@@ -77,40 +60,6 @@ void ascon_aead_absorb_16
     ascon_pad(state, len);
     if (last_permute)
         ascon_permute(state, first_round);
-}
-
-unsigned char ascon_aead_encrypt_8
-    (ascon_state_t *state, unsigned char *dest,
-     const unsigned char *src, size_t len, uint8_t first_round,
-     unsigned char partial)
-{
-    /* Deal with a partial left-over block from last time */
-    if (partial != 0) {
-        size_t temp = 8U - partial;
-        if (temp > len) {
-            ascon_encrypt_partial(state, dest, src, partial, len);
-            return (unsigned char)(partial + len);
-        }
-        ascon_encrypt_partial(state, dest, src, partial, temp);
-        ascon_permute(state, first_round);
-        dest += temp;
-        src += temp;
-        len -= temp;
-    }
-
-    /* Deal with full rate blocks */
-    while (len >= 8) {
-        ascon_encrypt_8(state, dest, src, 0);
-        ascon_permute(state, first_round);
-        dest += 8;
-        src += 8;
-        len -= 8;
-    }
-
-    /* Deal with the partial left-over block on the end */
-    if (len > 0)
-        ascon_encrypt_partial(state, dest, src, 0, len);
-    return (unsigned char)len;
 }
 
 unsigned char ascon_aead_encrypt_16
@@ -144,40 +93,6 @@ unsigned char ascon_aead_encrypt_16
     /* Deal with the partial left-over block on the end */
     if (len > 0)
         ascon_encrypt_partial(state, dest, src, 0, len);
-    return (unsigned char)len;
-}
-
-unsigned char ascon_aead_decrypt_8
-    (ascon_state_t *state, unsigned char *dest,
-     const unsigned char *src, size_t len, uint8_t first_round,
-     unsigned char partial)
-{
-    /* Deal with a partial left-over block from last time */
-    if (partial != 0) {
-        size_t temp = 8U - partial;
-        if (temp > len) {
-            ascon_decrypt_partial(state, dest, src, partial, len);
-            return (unsigned char)(partial + len);
-        }
-        ascon_decrypt_partial(state, dest, src, partial, temp);
-        ascon_permute(state, first_round);
-        dest += temp;
-        src += temp;
-        len -= temp;
-    }
-
-    /* Deal with full rate blocks */
-    while (len >= 8) {
-        ascon_decrypt_8(state, dest, src, 0);
-        ascon_permute(state, first_round);
-        dest += 8;
-        src += 8;
-        len -= 8;
-    }
-
-    /* Deal with the partial left-over block on the end */
-    if (len > 0)
-        ascon_decrypt_partial(state, dest, src, 0, len);
     return (unsigned char)len;
 }
 

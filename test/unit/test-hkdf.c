@@ -353,24 +353,5 @@ int main(int argc, char *argv[])
          (hkdf_expand_t)ascon_hkdf_expand,
          ascon_hmac, sizeof(ascon_hkdf_state_t));
 
-    test_hkdf_vector
-        ("ASCON-HKDFA", &testVectorHKDF_1,
-         (hkdf_all_in_one_t)ascon_hkdfa,
-         (hkdf_extract_t)ascon_hkdfa_extract,
-         (hkdf_expand_t)ascon_hkdfa_expand,
-         ascon_hmaca, sizeof(ascon_hkdfa_state_t));
-    test_hkdf_vector
-        ("ASCON-HKDFA", &testVectorHKDF_2,
-         (hkdf_all_in_one_t)ascon_hkdfa,
-         (hkdf_extract_t)ascon_hkdfa_extract,
-         (hkdf_expand_t)ascon_hkdfa_expand,
-         ascon_hmaca, sizeof(ascon_hkdfa_state_t));
-    test_hkdf_vector
-        ("ASCON-HKDFA", &testVectorHKDF_3,
-         (hkdf_all_in_one_t)ascon_hkdfa,
-         (hkdf_extract_t)ascon_hkdfa_extract,
-         (hkdf_expand_t)ascon_hkdfa_expand,
-         ascon_hmaca, sizeof(ascon_hkdfa_state_t));
-
     return test_exit_result;
 }

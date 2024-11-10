@@ -2,17 +2,11 @@
 add_subdirectory(ascon)
 
 list(APPEND ASCON_SOURCES
-    aead/ascon-aead-128.c
     aead/ascon-aead-128a.c
-    aead/ascon-aead-80pq.c
     aead/ascon-aead-common.c
     aead/ascon-aead-common.h
-    aead/ascon-aead-inc-128.c
     aead/ascon-aead-inc-128a.c
-    aead/ascon-aead-inc-80pq.c
-    aead/ascon-aead-masked-128.c
     aead/ascon-aead-masked-128a.c
-    aead/ascon-aead-masked-80pq.c
     aead/ascon-aead-masked-common.c
     aead/ascon-aead-masked-common.h
     aead/ascon-aead-util.c
@@ -46,24 +40,16 @@ list(APPEND ASCON_SOURCES
     cplusplus/ascon-cplusplus.cpp
     cplusplus/ascon-isap-cpp.cpp
     cplusplus/ascon-siv-cpp.cpp
-    hash/ascon-hasha.c
     hash/ascon-hash.c
-    hash/ascon-xofa.c
     hash/ascon-xof.c
     hash/ascon-xof-internal.h
-    isap/ascon-isap-128.c
     isap/ascon-isap-128a.c
-    isap/ascon-isap-80pq.c
     isap/ascon-isap-common.h
     kdf/ascon-hkdf.c
-    kdf/ascon-hkdfa.c
     kdf/ascon-kdf.c
-    kdf/ascon-kdfa.c
     mac/ascon-hmac.c
-    mac/ascon-hmaca.c
     mac/ascon-hmac-common.h
     mac/ascon-kmac.c
-    mac/ascon-kmaca.c
     mac/ascon-prf.c
     masking/ascon-masked-backend.h
     masking/ascon-masked-config.h
@@ -101,9 +87,7 @@ list(APPEND ASCON_SOURCES
     random/ascon-trng-stm32.h
     random/ascon-trng-windows.c
     random/ascon-trng-zephyr.c
-    siv/ascon-siv-128.c
     siv/ascon-siv-128a.c
-    siv/ascon-siv-80pq.c
 )
 
 if(NOT MINIMAL)

@@ -13,14 +13,8 @@ If there is no FILE or FILE is \- then standard input is read.
 \fB\-h\fR
 use ASCON-HASH to compute or check the digests (default)
 .TP
-\fB\-a\fR
-use ASCON-HASHA to compute or check the digests
-.TP
 \fB\-x\fR
 use ASCON-XOF to compute or check the digests
-.TP
-\fB\-y\fR
-use ASCON-XOFA to compute or check the digests
 .TP
 \fB\-c\fR
 read ASCON checksums from the FILEs and check them
@@ -29,10 +23,10 @@ read ASCON checksums from the FILEs and check them
 .BR sha256sum (1)
 .SH EXAMPLES
 .PP
-The following command computes the ASCON-HASHA digest of a string:
+The following command computes the ASCON-HASH digest of a string:
 .PP
 .EX
-$ echo -n 'Hello, World!' | asconsum -a
+$ echo -n 'Hello, World!' | asconsum
 7be799bd1ce0b6ffbd80afd54269019dfea0304a8f859c726c01b297a0b3de45
 .EE
 .PP

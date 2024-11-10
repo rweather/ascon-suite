@@ -49,20 +49,6 @@ int ascon_aead_check_tag
      const unsigned char *tag1, const unsigned char *tag2, size_t size);
 
 /**
- * \brief Absorbs data into an ASCON state with an 8-byte rate.
- *
- * \param state The state to absorb the data into.
- * \param data Points to the data to be absorbed.
- * \param len Length of the data to be absorbed.
- * \param first_round First round of the permutation to apply each block.
- * \param last_permute Non-zero to permute the last block, or zero
- * to delay the permutation.
- */
-void ascon_aead_absorb_8
-    (ascon_state_t *state, const unsigned char *data,
-     size_t len, uint8_t first_round, int last_permute);
-
-/**
  * \brief Absorbs data into an ASCON state with a 16-byte rate.
  *
  * \param state The state to absorb the data into.
@@ -75,24 +61,6 @@ void ascon_aead_absorb_8
 void ascon_aead_absorb_16
     (ascon_state_t *state, const unsigned char *data,
      size_t len, uint8_t first_round, int last_permute);
-
-/**
- * \brief Encrypts a block of data with an ASCON state and an 8-byte rate.
- *
- * \param state The state to encrypt with.
- * \param dest Points to the destination buffer.
- * \param src Points to the source buffer.
- * \param len Length of the data to encrypt from \a src into \a dest.
- * \param first_round First round of the permutation to apply each block.
- * \param partial Non-zero if the first byte to be encrypted should
- * start partway through the first block.
- *
- * \return Partial block length for the last block.
- */
-unsigned char ascon_aead_encrypt_8
-    (ascon_state_t *state, unsigned char *dest,
-     const unsigned char *src, size_t len, uint8_t first_round,
-     unsigned char partial);
 
 /**
  * \brief Encrypts a block of data with an ASCON state and a 16-byte rate.
@@ -108,24 +76,6 @@ unsigned char ascon_aead_encrypt_8
  * \return Partial block length for the last block.
  */
 unsigned char ascon_aead_encrypt_16
-    (ascon_state_t *state, unsigned char *dest,
-     const unsigned char *src, size_t len, uint8_t first_round,
-     unsigned char partial);
-
-/**
- * \brief Decrypts a block of data with an ASCON state and an 8-byte rate.
- *
- * \param state The state to decrypt with.
- * \param dest Points to the destination buffer.
- * \param src Points to the source buffer.
- * \param len Length of the data to decrypt from \a src into \a dest.
- * \param first_round First round of the permutation to apply each block.
- * \param partial Non-zero if the first byte to be decrypted should
- * start partway through the first block.
- *
- * \return Partial block length for the last block.
- */
-unsigned char ascon_aead_decrypt_8
     (ascon_state_t *state, unsigned char *dest,
      const unsigned char *src, size_t len, uint8_t first_round,
      unsigned char partial);

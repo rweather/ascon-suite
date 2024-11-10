@@ -106,8 +106,6 @@ static void format_first_block
             memcpy(block + 8, function_name, len);
         } else if (rounds == 12) {
             ascon_hash(block + 8, (const unsigned char *)function_name, len);
-        } else {
-            ascon_hasha(block + 8, (const unsigned char *)function_name, len);
         }
     }
     ascon_init(state);
@@ -170,60 +168,6 @@ static int test_cxof_inner
     return 1;
 }
 
-static int test_cxofa_inner
-    (const char *function_name, const char *custom, size_t outlen)
-{
-    const unsigned char *cust = (const unsigned char *)custom;
-    size_t custlen = custom ? strlen(custom) : 0;
-    ascon_xofa_state_t state1;
-    ascon_xofa_state_t state2;
-    unsigned char out1[ASCON_HASH_SIZE];
-    unsigned char out2[ASCON_HASH_SIZE];
-    const unsigned char *in = (const unsigned char *)"Payload Data";
-    size_t inlen = 12;
-
-    /* Use the library to compute the answer */
-    ascon_xofa_init_custom(&state1, function_name, cust, custlen, outlen);
-    ascon_xofa_absorb(&state1, in, inlen);
-    ascon_xofa_squeeze(&state1, out1, sizeof(out1));
-
-    /* Simulate the desired behaviour */
-    format_first_block(&(state2.state), function_name, outlen, 8);
-    state2.count = 0;
-    state2.mode = 0;
-    if (custlen > 0) {
-        ascon_xofa_absorb(&state2, cust, custlen);
-        ascon_acquire(&(state2.state));
-        out2[0] = 0x80; /* Padding */
-        ascon_add_bytes(&(state2.state), out2, state2.count, 1);
-        ascon_permute(&(state2.state), 4);
-        out2[0] = 0x01; /* Domain separation */
-        ascon_add_bytes(&(state2.state), out2, 39, 1);
-        ascon_release(&(state2.state));
-        state2.count = 0;
-        state2.mode = 0;
-    }
-    ascon_xofa_absorb(&state2, in, inlen);
-    ascon_xofa_squeeze(&state2, out2, sizeof(out2));
-    ascon_xofa_free(&state2);
-
-    /* Check the result */
-    if (test_memcmp(out1, out2, sizeof(out1)) != 0) {
-        ascon_xofa_free(&state1);
-        return 0;
-    }
-
-    /* Re-initialize and test again */
-    ascon_xofa_reinit_custom(&state1, function_name, cust, custlen, outlen);
-    ascon_xofa_absorb(&state1, in, inlen);
-    ascon_xofa_squeeze(&state1, out1, sizeof(out1));
-    ascon_xofa_free(&state1);
-    if (test_memcmp(out1, out2, sizeof(out1)) != 0) {
-        return 0;
-    }
-    return 1;
-}
-
 static int test_cxof(void)
 {
     size_t index;
@@ -242,24 +186,6 @@ static int test_cxof(void)
     return ok;
 }
 
-static int test_cxofa(void)
-{
-    size_t index;
-    int ok = 1;
-    for (index = 0; index < (sizeof(test_vectors) / sizeof(test_vectors[0])); ++index) {
-        const cxof_test_vector_t *vec = &(test_vectors[index]);
-        printf("ASCON-cXOFA %u ... ", (unsigned)(index + 1));
-        fflush(stdout);
-        if (!test_cxofa_inner(vec->name, vec->custom, vec->outlen)) {
-            printf("failed\n");
-            ok = 0;
-        } else {
-            printf("ok\n");
-        }
-    }
-    return ok;
-}
-
 int main(int argc, char *argv[])
 {
     (void)argc;
@@ -269,8 +195,6 @@ int main(int argc, char *argv[])
         return 1;
 
     if (!test_cxof())
-        test_exit_result = 1;
-    if (!test_cxofa())
         test_exit_result = 1;
 
     return test_exit_result;

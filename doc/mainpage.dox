@@ -117,9 +117,8 @@ The following ASCON primitives are provided:
 \li ASCON-128 authenticated encryption algorithm with a 128-bit key.
 \li ASCON-128a authenticated encryption algorithm with a 128-bit key.
 \li ASCON-80pq authenticated encryption algorithm with a 160-bit key.
-\li ASCON-HASH and ASCON-HASHA hash algorithms with a 256-bit output.
-\li ASCON-XOF and ASCON-XOFA extendable output functions (XOF) with an
-arbitrary-length output.
+\li ASCON-HASH hash algorithm with a 256-bit output.
+\li ASCON-XOF extendable output function (XOF) with an arbitrary-length output.
 \li ASCON-Prf and ASCON-PrfShort pseudorandom functions.
 \li ASCON-Mac message authentication code.
 \li Direct access to the \ref permutation "ASCON permutation itself" to

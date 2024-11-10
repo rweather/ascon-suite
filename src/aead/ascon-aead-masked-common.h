@@ -33,22 +33,6 @@
 #include <string.h>
 
 /**
- * \brief Absorbs data into a masked ASCON state with an 8-byte rate.
- *
- * \param state The state to absorb the data into.
- * \param data Points to the data to be absorbed.
- * \param len Length of the data to be absorbed.
- * \param first_round First round of the permutation to apply each block.
- * \param word Points to temporary storage for a masked word.
- * \param preserve Preserved randomness from the previous step.
- * \param trng TRNG to use to generate randomness to mask the data.
- */
-void ascon_masked_aead_absorb_8
-    (ascon_masked_state_t *state, const unsigned char *data,
-     size_t len, uint8_t first_round, ascon_masked_word_t *word,
-     uint64_t *preserve, ascon_trng_state_t *trng);
-
-/**
  * \brief Absorbs data into a masked ASCON state with a 16-byte rate.
  *
  * \param state The state to absorb the data into.
@@ -65,23 +49,6 @@ void ascon_masked_aead_absorb_16
      uint64_t *preserve, ascon_trng_state_t *trng);
 
 /**
- * \brief Encrypts a block of data with a masked ASCON state and an 8-byte rate.
- *
- * \param state The state to encrypt with.
- * \param dest Points to the destination buffer.
- * \param src Points to the source buffer.
- * \param len Length of the data to encrypt from \a src into \a dest.
- * \param first_round First round of the permutation to apply each block.
- * \param word Points to temporary storage for a masked word.
- * \param preserve Preserved randomness from the previous step.
- * \param trng TRNG to use to generate randomness to mask the data.
- */
-void ascon_masked_aead_encrypt_8
-    (ascon_masked_state_t *state, unsigned char *dest,
-     const unsigned char *src, size_t len, uint8_t first_round,
-     ascon_masked_word_t *word, uint64_t *preserve, ascon_trng_state_t *trng);
-
-/**
  * \brief Encrypts a block of data with a masked ASCON state and a 16-byte rate.
  *
  * \param state The state to encrypt with.
@@ -94,23 +61,6 @@ void ascon_masked_aead_encrypt_8
  * \param trng TRNG to use to generate randomness to mask the data.
  */
 void ascon_masked_aead_encrypt_16
-    (ascon_masked_state_t *state, unsigned char *dest,
-     const unsigned char *src, size_t len, uint8_t first_round,
-     ascon_masked_word_t *word, uint64_t *preserve, ascon_trng_state_t *trng);
-
-/**
- * \brief Decrypts a block of data with a masked ASCON state and an 8-byte rate.
- *
- * \param state The state to decrypt with.
- * \param dest Points to the destination buffer.
- * \param src Points to the source buffer.
- * \param len Length of the data to decrypt from \a src into \a dest.
- * \param first_round First round of the permutation to apply each block.
- * \param word Points to temporary storage for a masked word.
- * \param preserve Preserved randomness from the previous step.
- * \param trng TRNG to use to generate randomness to mask the data.
- */
-void ascon_masked_aead_decrypt_8
     (ascon_masked_state_t *state, unsigned char *dest,
      const unsigned char *src, size_t len, uint8_t first_round,
      ascon_masked_word_t *word, uint64_t *preserve, ascon_trng_state_t *trng);
