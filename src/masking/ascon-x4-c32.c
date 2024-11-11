@@ -92,7 +92,7 @@
     (~((uint32_t)(rc1))), (~((uint32_t)(rc2)))
 
 void ascon_x4_permute
-    (ascon_masked_state_t *state, uint8_t first_round, uint64_t *preserve)
+    (ascon_masked_state_t *state, uint8_t first_round, uint64_t preserve[3])
 {
     static const uint32_t RC[12 * 2] = {
         ROUND_CONSTANT_PAIR(12, 12),

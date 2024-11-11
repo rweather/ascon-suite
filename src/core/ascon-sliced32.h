@@ -69,15 +69,15 @@
  * \brief Sets data into the ASCON state in sliced form.
  *
  * \param state The ASCON state for the data to be absorbed into.
- * \param data Points to 8 bytes of data in big-endian byte order to set.
+ * \param data Points to 8 bytes of data in little-endian byte order to set.
  * \param offset Offset of the 64-bit word within the state to set at,
  * between 0 and 4.
  */
 #define ascon_set_sliced(state, data, offset) \
     do { \
         ascon_state_t *s = (state); \
-        uint32_t high = be_load_word32((data)); \
-        uint32_t low  = be_load_word32((data) + 4); \
+        uint32_t high = le_load_word32((data) + 4); \
+        uint32_t low  = le_load_word32((data)); \
         ascon_separate(high); \
         ascon_separate(low); \
         s->W[(offset) * 2] = (high << 16) | (low & 0x0000FFFFU); \
@@ -107,15 +107,15 @@
  * \brief Absorbs data into the ASCON state in sliced form.
  *
  * \param state The ASCON state for the data to be absorbed into.
- * \param data Points to 8 bytes of data in big-endian byte order to absorb.
+ * \param data Points to 8 bytes of data in little-endian byte order to absorb.
  * \param offset Offset of the 64-bit word within the state to absorb at,
  * between 0 and 4.
  */
 #define ascon_absorb_sliced(state, data, offset) \
     do { \
         ascon_state_t *s = (state); \
-        uint32_t high = be_load_word32((data)); \
-        uint32_t low  = be_load_word32((data) + 4); \
+        uint32_t high = le_load_word32((data) + 4); \
+        uint32_t low  = le_load_word32((data)); \
         ascon_separate(high); \
         ascon_separate(low); \
         s->W[(offset) * 2] ^= (high << 16) | (low & 0x0000FFFFU); \
@@ -145,7 +145,7 @@
  * \brief Absorbs 32 bits of data into the ASCON state in sliced form.
  *
  * \param state The ASCON state for the data to be absorbed into.
- * \param data Points to 4 bytes of data in big-endian byte order to absorb.
+ * \param data Points to 4 bytes of data in little-endian byte order to absorb.
  * \param offset Offset of the 64-bit word within the state to absorb at,
  * between 0 and 4.
  *
@@ -154,7 +154,7 @@
 #define ascon_absorb32_low_sliced(state, data, offset) \
     do { \
         ascon_state_t *s = (state); \
-        uint32_t low  = be_load_word32((data)); \
+        uint32_t low  = le_load_word32((data)); \
         ascon_separate(low); \
         s->W[(offset) * 2] ^= (low & 0x0000FFFFU); \
         s->W[(offset) * 2 + 1] ^= (low >> 16); \
@@ -164,7 +164,7 @@
  * \brief Absorbs 32 bits of data into the ASCON state in sliced form.
  *
  * \param state The ASCON state for the data to be absorbed into.
- * \param data Points to 4 bytes of data in big-endian byte order to absorb.
+ * \param data Points to 4 bytes of data in little-endian byte order to absorb.
  * \param offset Offset of the 64-bit word within the state to absorb at,
  * between 0 and 4.
  *
@@ -173,7 +173,7 @@
 #define ascon_absorb32_high_sliced(state, data, offset) \
     do { \
         ascon_state_t *s = (state); \
-        uint32_t high = be_load_word32((data)); \
+        uint32_t high = le_load_word32((data)); \
         ascon_separate(high); \
         s->W[(offset) * 2] ^= (high << 16); \
         s->W[(offset) * 2 + 1] ^= (high & 0xFFFF0000U); \
@@ -197,8 +197,8 @@
                (s->W[(offset) * 2 + 1] << 16); \
         ascon_combine(high); \
         ascon_combine(low); \
-        be_store_word32((data), high); \
-        be_store_word32((data) + 4, low); \
+        le_store_word32((data), low); \
+        le_store_word32((data) + 4, high); \
     } while (0)
 
 /**
@@ -226,16 +226,16 @@
  * \brief Encrypts data using the ASCON state in sliced form.
  *
  * \param state The ASCON state.
- * \param c Points to 8 bytes of output ciphertext in big-endian byte order.
- * \param m Points to 8 bytes of input plaintext in big-endian byte order.
+ * \param c Points to 8 bytes of output ciphertext in little-endian byte order.
+ * \param m Points to 8 bytes of input plaintext in little-endian byte order.
  * \param offset Offset of the 64-bit word within the state to absorb
  * and squeeze at, between 0 and 4.
  */
 #define ascon_encrypt_sliced(state, c, m, offset) \
     do { \
         ascon_state_t *s = (state); \
-        uint32_t high = be_load_word32((m)); \
-        uint32_t low  = be_load_word32((m) + 4); \
+        uint32_t high = le_load_word32((m) + 4); \
+        uint32_t low  = le_load_word32((m)); \
         ascon_separate(high); \
         ascon_separate(low); \
         s->W[(offset) * 2] ^= (high << 16) | (low & 0x0000FFFFU); \
@@ -246,16 +246,16 @@
                (s->W[(offset) * 2 + 1] << 16); \
         ascon_combine(high); \
         ascon_combine(low); \
-        be_store_word32((c), high); \
-        be_store_word32((c) + 4, low); \
+        le_store_word32((c), low); \
+        le_store_word32((c) + 4, high); \
     } while (0)
 
 /**
  * \brief Decrypts data using the ASCON state in sliced form.
  *
  * \param state The ASCON state.
- * \param m Points to 8 bytes of output plaintext in big-endian byte order.
- * \param c Points to 8 bytes of input ciphertext in big-endian byte order.
+ * \param m Points to 8 bytes of output plaintext in little-endian byte order.
+ * \param c Points to 8 bytes of input ciphertext in little-endian byte order.
  * \param offset Offset of the 64-bit word within the state to absorb
  * and squeeze at, between 0 and 4.
  */
@@ -263,8 +263,8 @@
     do { \
         ascon_state_t *s = (state); \
         uint32_t high, low, high2, low2; \
-        high = be_load_word32((c)); \
-        low  = be_load_word32((c) + 4); \
+        high = le_load_word32((c) + 4); \
+        low  = le_load_word32((c)); \
         ascon_separate(high); \
         ascon_separate(low); \
         high2 = high ^ ((s->W[(offset) * 2] >> 16) | \
@@ -275,8 +275,8 @@
         s->W[(offset) * 2 + 1] = (high & 0xFFFF0000U) | (low >> 16); \
         ascon_combine(high2); \
         ascon_combine(low2); \
-        be_store_word32((m), high2); \
-        be_store_word32((m) + 4, low2); \
+        le_store_word32((m), low2); \
+        le_store_word32((m) + 4, high2); \
     } while (0)
 
 /**
@@ -284,8 +284,8 @@
  * not insert the ciphertext back into the state.
  *
  * \param state The ASCON state.
- * \param m Points to 8 bytes of output plaintext in big-endian byte order.
- * \param c Points to 8 bytes of input ciphertext in big-endian byte order.
+ * \param m Points to 8 bytes of output plaintext in little-endian byte order.
+ * \param c Points to 8 bytes of input ciphertext in little-endian byte order.
  * \param offset Offset of the 64-bit word within the state to absorb
  * and squeeze at, between 0 and 4.
  */
@@ -293,8 +293,8 @@
     do { \
         const ascon_state_t *s = (state); \
         uint32_t high, low; \
-        high = be_load_word32((c)); \
-        low  = be_load_word32((c) + 4); \
+        high = le_load_word32((c) + 4); \
+        low  = le_load_word32((c)); \
         ascon_separate(high); \
         ascon_separate(low); \
         high ^= ((s->W[(offset) * 2] >> 16) | \
@@ -303,8 +303,8 @@
                  (s->W[(offset) * 2 + 1] << 16)); \
         ascon_combine(high); \
         ascon_combine(low); \
-        be_store_word32((m), high); \
-        be_store_word32((m) + 4, low); \
+        le_store_word32((m), low); \
+        le_store_word32((m) + 4, high); \
     } while (0)
 
 #endif /* ASCON_BACKEND_SLICED32 */

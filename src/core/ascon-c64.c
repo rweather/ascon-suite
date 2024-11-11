@@ -50,11 +50,11 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round)
     };
     uint64_t t0, t1, t2, t3, t4;
 #if defined(ASCON_BACKEND_C64_DIRECT_XOR)
-    uint64_t x0 = be_load_word64(state->B);
-    uint64_t x1 = be_load_word64(state->B + 8);
-    uint64_t x2 = be_load_word64(state->B + 16);
-    uint64_t x3 = be_load_word64(state->B + 24);
-    uint64_t x4 = be_load_word64(state->B + 32);
+    uint64_t x0 = le_load_word64(state->B);
+    uint64_t x1 = le_load_word64(state->B + 8);
+    uint64_t x2 = le_load_word64(state->B + 16);
+    uint64_t x3 = le_load_word64(state->B + 24);
+    uint64_t x4 = le_load_word64(state->B + 32);
 #else
     uint64_t x0 = state->S[0];
     uint64_t x1 = state->S[1];
@@ -91,11 +91,11 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round)
     }
     x2 = ~x2;
 #if defined(ASCON_BACKEND_C64_DIRECT_XOR)
-    be_store_word64(state->B,      x0);
-    be_store_word64(state->B +  8, x1);
-    be_store_word64(state->B + 16, x2);
-    be_store_word64(state->B + 24, x3);
-    be_store_word64(state->B + 32, x4);
+    le_store_word64(state->B,      x0);
+    le_store_word64(state->B +  8, x1);
+    le_store_word64(state->B + 16, x2);
+    le_store_word64(state->B + 24, x3);
+    le_store_word64(state->B + 32, x4);
 #else
     state->S[0] = x0;
     state->S[1] = x1;

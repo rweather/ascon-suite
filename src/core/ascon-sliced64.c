@@ -33,10 +33,10 @@
 /** @cond ascon_c64 */
 
 #if defined(LW_UTIL_LITTLE_ENDIAN)
+#define ASCON_C64_BYTE_FOR_OFFSET(state, offset) (state->B[(offset)])
+#else
 #define ASCON_C64_BYTE_FOR_OFFSET(state, offset) \
     (state->B[((offset) & 0x38) + (7 - (offset & 0x07))])
-#else
-#define ASCON_C64_BYTE_FOR_OFFSET(state, offset) (state->B[(offset)])
 #endif
 
 /** @endcond */

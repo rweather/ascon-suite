@@ -87,8 +87,8 @@ void ascon_masked_word_x2_load
 {
     uint32_t random1a = ascon_trng_generate_32(trng);
     uint32_t random1b = ascon_trng_generate_32(trng);
-    uint32_t high = random1a ^ be_load_word32(data);
-    uint32_t low  = random1b ^ be_load_word32(data + 4);
+    uint32_t high = random1a ^ le_load_word32(data + 4);
+    uint32_t low  = random1b ^ le_load_word32(data);
     ascon_separate(random1a);
     ascon_separate(random1b);
     ascon_separate(high);
@@ -119,22 +119,9 @@ void ascon_masked_word_x2_load_partial
     /* Load as a 64-bit word and mask with the first share */
     uint64_t random = ascon_trng_generate_64(trng);
     uint64_t masked = random;
-    if (size >= 4) {
-        masked ^= be_load_word32(data + size - 4);
-        masked = rightRotate32_64(masked);
-        random = rightRotate32_64(random);
-        size -= 4;
-    }
-    if (size >= 2) {
-        masked ^= be_load_word16(data + size - 2);
-        masked = rightRotate16_64(masked);
-        random = rightRotate16_64(random);
-        size -= 2;
-    }
-    if (size > 0) {
-        masked ^= data[0];
-        masked = rightRotate8_64(masked);
-        random = rightRotate8_64(random);
+    unsigned posn;
+    for (posn = 0; posn < size; ++posn) {
+        masked ^= ((uint64_t)(data[posn])) << (posn * 8);
     }
 
     /* Slice the shares and store to the masked word */
@@ -168,8 +155,8 @@ void ascon_masked_word_x2_load_32
 {
     uint32_t random1a = ascon_trng_generate_32(trng);
     uint32_t random1b = ascon_trng_generate_32(trng);
-    uint32_t high = random1a ^ be_load_word32(data1);
-    uint32_t low  = random1b ^ be_load_word32(data2);
+    uint32_t high = random1a ^ le_load_word32(data2);
+    uint32_t low  = random1b ^ le_load_word32(data1);
     ascon_separate(random1a);
     ascon_separate(random1b);
     ascon_separate(high);
@@ -203,8 +190,8 @@ void ascon_masked_word_x2_store
     ascon_combine(low1);
     ascon_combine(high3);
     ascon_combine(low3);
-    be_store_word32(data, high1 ^ high3);
-    be_store_word32(data + 4, low1 ^ low3);
+    le_store_word32(data + 4, high1 ^ high3);
+    le_store_word32(data, low1 ^ low3);
 }
 
 void ascon_masked_word_x2_store_partial
@@ -230,24 +217,12 @@ void ascon_masked_word_x2_store_partial
     /* Convert to 64-bit, unmask, and store the bytes */
     masked1 = (((uint64_t)high1) << 32) | low1;
     masked2 = (((uint64_t)high3) << 32) | low3;
-    if (size >= 4) {
-        masked1 = leftRotate32_64(masked1);
-        masked2 = leftRotate32_64(masked2);
-        be_store_word32(data, (uint32_t)(masked1 ^ masked2));
-        data += 4;
-        size -= 4;
-    }
-    if (size >= 2) {
-        masked1 = leftRotate16_64(masked1);
-        masked2 = leftRotate16_64(masked2);
-        be_store_word16(data, (uint16_t)(masked1 ^ masked2));
-        data += 2;
-        size -= 2;
-    }
-    if (size > 0) {
-        masked1 = leftRotate8_64(masked1);
-        masked2 = leftRotate8_64(masked2);
-        data[0] = (uint8_t)(masked1 ^ masked2);
+    masked1 ^= masked2;
+    while (size > 0) {
+        data[0] = (uint8_t)masked1;
+        masked1 >>= 8;
+        ++data;
+        --size;
     }
 }
 
@@ -273,7 +248,7 @@ void ascon_masked_word_x2_xor
 void ascon_masked_word_x2_replace
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src, unsigned size)
 {
-    uint32_t mask1 = (~((uint32_t)0)) >> (size * 4U);
+    uint32_t mask1 = (~((uint32_t)0)) << (size * 4U);
     uint32_t mask2 = ~mask1;
     dest->W[0] = (dest->W[0] & mask1) | (src->W[0] & mask2);
     dest->W[1] = (dest->W[1] & mask1) | (src->W[1] & mask2);
@@ -358,8 +333,8 @@ void ascon_masked_word_x3_load
 {
     uint32_t random1a = ascon_trng_generate_32(trng);
     uint32_t random1b = ascon_trng_generate_32(trng);
-    uint32_t high = random1a ^ be_load_word32(data);
-    uint32_t low  = random1b ^ be_load_word32(data + 4);
+    uint32_t high = random1a ^ le_load_word32(data + 4);
+    uint32_t low  = random1b ^ le_load_word32(data);
     word->W[4] = ascon_trng_generate_32(trng); /* random2a */
     word->W[5] = ascon_trng_generate_32(trng); /* random2b */
     ascon_separate(random1a);
@@ -391,22 +366,9 @@ void ascon_masked_word_x3_load_partial
     /* Load as a 64-bit word and mask with the first share */
     uint64_t random = ascon_trng_generate_64(trng);
     uint64_t masked = random;
-    if (size >= 4) {
-        masked ^= be_load_word32(data + size - 4);
-        masked = rightRotate32_64(masked);
-        random = rightRotate32_64(random);
-        size -= 4;
-    }
-    if (size >= 2) {
-        masked ^= be_load_word16(data + size - 2);
-        masked = rightRotate16_64(masked);
-        random = rightRotate16_64(random);
-        size -= 2;
-    }
-    if (size > 0) {
-        masked ^= data[0];
-        masked = rightRotate8_64(masked);
-        random = rightRotate8_64(random);
+    unsigned posn;
+    for (posn = 0; posn < size; ++posn) {
+        masked ^= ((uint64_t)(data[posn])) << (posn * 8);
     }
 
     /* Slice the shares and store to the masked word */
@@ -440,8 +402,8 @@ void ascon_masked_word_x3_load_32
 {
     uint32_t random1a = ascon_trng_generate_32(trng);
     uint32_t random1b = ascon_trng_generate_32(trng);
-    uint32_t high = random1a ^ be_load_word32(data1);
-    uint32_t low  = random1b ^ be_load_word32(data2);
+    uint32_t high = random1a ^ le_load_word32(data2);
+    uint32_t low  = random1b ^ le_load_word32(data1);
     word->W[4] = ascon_trng_generate_32(trng); /* random2a */
     word->W[5] = ascon_trng_generate_32(trng); /* random2b */
     ascon_separate(random1a);
@@ -477,8 +439,8 @@ void ascon_masked_word_x3_store
     ascon_combine(low1);
     ascon_combine(high3);
     ascon_combine(low3);
-    be_store_word32(data, high1 ^ high3);
-    be_store_word32(data + 4, low1 ^ low3);
+    le_store_word32(data + 4, high1 ^ high3);
+    le_store_word32(data, low1 ^ low3);
 }
 
 void ascon_masked_word_x3_store_partial
@@ -506,24 +468,12 @@ void ascon_masked_word_x3_store_partial
     /* Convert to 64-bit, unmask, and store the bytes */
     masked1 = (((uint64_t)high1) << 32) | low1;
     masked2 = (((uint64_t)high3) << 32) | low3;
-    if (size >= 4) {
-        masked1 = leftRotate32_64(masked1);
-        masked2 = leftRotate32_64(masked2);
-        be_store_word32(data, (uint32_t)(masked1 ^ masked2));
-        data += 4;
-        size -= 4;
-    }
-    if (size >= 2) {
-        masked1 = leftRotate16_64(masked1);
-        masked2 = leftRotate16_64(masked2);
-        be_store_word16(data, (uint16_t)(masked1 ^ masked2));
-        data += 2;
-        size -= 2;
-    }
-    if (size > 0) {
-        masked1 = leftRotate8_64(masked1);
-        masked2 = leftRotate8_64(masked2);
-        data[0] = (uint8_t)(masked1 ^ masked2);
+    masked1 ^= masked2;
+    while (size > 0) {
+        data[0] = (uint8_t)masked1;
+        masked1 >>= 8;
+        ++data;
+        --size;
     }
 }
 
@@ -554,7 +504,7 @@ void ascon_masked_word_x3_xor
 void ascon_masked_word_x3_replace
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src, unsigned size)
 {
-    uint32_t mask1 = (~((uint32_t)0)) >> (size * 4U);
+    uint32_t mask1 = (~((uint32_t)0)) << (size * 4U);
     uint32_t mask2 = ~mask1;
     dest->W[0] = (dest->W[0] & mask1) | (src->W[0] & mask2);
     dest->W[1] = (dest->W[1] & mask1) | (src->W[1] & mask2);
@@ -641,8 +591,8 @@ void ascon_masked_word_x4_load
 {
     uint32_t random1a = ascon_trng_generate_32(trng);
     uint32_t random1b = ascon_trng_generate_32(trng);
-    uint32_t high = random1a ^ be_load_word32(data);
-    uint32_t low  = random1b ^ be_load_word32(data + 4);
+    uint32_t high = random1a ^ le_load_word32(data + 4);
+    uint32_t low  = random1b ^ le_load_word32(data);
     word->W[4] = ascon_trng_generate_32(trng); /* random2a */
     word->W[5] = ascon_trng_generate_32(trng); /* random2b */
     word->W[6] = ascon_trng_generate_32(trng); /* random3a */
@@ -675,22 +625,9 @@ void ascon_masked_word_x4_load_partial
     /* Load as a 64-bit word and mask with the first share */
     uint64_t random = ascon_trng_generate_64(trng);
     uint64_t masked = random;
-    if (size >= 4) {
-        masked ^= be_load_word32(data + size - 4);
-        masked = rightRotate32_64(masked);
-        random = rightRotate32_64(random);
-        size -= 4;
-    }
-    if (size >= 2) {
-        masked ^= be_load_word16(data + size - 2);
-        masked = rightRotate16_64(masked);
-        random = rightRotate16_64(random);
-        size -= 2;
-    }
-    if (size > 0) {
-        masked ^= data[0];
-        masked = rightRotate8_64(masked);
-        random = rightRotate8_64(random);
+    unsigned posn;
+    for (posn = 0; posn < size; ++posn) {
+        masked ^= ((uint64_t)(data[posn])) << (posn * 8);
     }
 
     /* Slice the shares and store to the masked word */
@@ -724,8 +661,8 @@ void ascon_masked_word_x4_load_32
 {
     uint32_t random1a = ascon_trng_generate_32(trng);
     uint32_t random1b = ascon_trng_generate_32(trng);
-    uint32_t high = random1a ^ be_load_word32(data1);
-    uint32_t low  = random1b ^ be_load_word32(data2);
+    uint32_t high = random1a ^ le_load_word32(data2);
+    uint32_t low  = random1b ^ le_load_word32(data1);
     word->W[4] = ascon_trng_generate_32(trng); /* random2a */
     word->W[5] = ascon_trng_generate_32(trng); /* random2b */
     word->W[6] = ascon_trng_generate_32(trng); /* random3a */
@@ -763,8 +700,8 @@ void ascon_masked_word_x4_store
     ascon_combine(low1);
     ascon_combine(high3);
     ascon_combine(low3);
-    be_store_word32(data, high1 ^ high3);
-    be_store_word32(data + 4, low1 ^ low3);
+    le_store_word32(data + 4, high1 ^ high3);
+    le_store_word32(data, low1 ^ low3);
 }
 
 void ascon_masked_word_x4_store_partial
@@ -794,24 +731,12 @@ void ascon_masked_word_x4_store_partial
     /* Convert to 64-bit, unmask, and store the bytes */
     masked1 = (((uint64_t)high1) << 32) | low1;
     masked2 = (((uint64_t)high3) << 32) | low3;
-    if (size >= 4) {
-        masked1 = leftRotate32_64(masked1);
-        masked2 = leftRotate32_64(masked2);
-        be_store_word32(data, (uint32_t)(masked1 ^ masked2));
-        data += 4;
-        size -= 4;
-    }
-    if (size >= 2) {
-        masked1 = leftRotate16_64(masked1);
-        masked2 = leftRotate16_64(masked2);
-        be_store_word16(data, (uint16_t)(masked1 ^ masked2));
-        data += 2;
-        size -= 2;
-    }
-    if (size > 0) {
-        masked1 = leftRotate8_64(masked1);
-        masked2 = leftRotate8_64(masked2);
-        data[0] = (uint8_t)(masked1 ^ masked2);
+    masked1 ^= masked2;
+    while (size > 0) {
+        data[0] = (uint8_t)masked1;
+        masked1 >>= 8;
+        ++data;
+        --size;
     }
 }
 
@@ -847,7 +772,7 @@ void ascon_masked_word_x4_xor
 void ascon_masked_word_x4_replace
     (ascon_masked_word_t *dest, const ascon_masked_word_t *src, unsigned size)
 {
-    uint32_t mask1 = (~((uint32_t)0)) >> (size * 4U);
+    uint32_t mask1 = (~((uint32_t)0)) << (size * 4U);
     uint32_t mask2 = ~mask1;
     dest->W[0] = (dest->W[0] & mask1) | (src->W[0] & mask2);
     dest->W[1] = (dest->W[1] & mask1) | (src->W[1] & mask2);
