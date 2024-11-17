@@ -1055,7 +1055,7 @@ static int test_auth_inner
         for (inc = 1; inc <= msg->size; ADVANCE_INC(inc)) {
             if (alg->init_custom) {
                 (*(alg->init_custom))
-                    (state, key->data, key->size, custom, customlen, outlen);
+                    (state, key->data, key->size, custom, customlen);
             } else if (alg->init_fixed) {
                 (*(alg->init_fixed))(state, key->data, key->size, outlen);
             } else {
@@ -1086,7 +1086,7 @@ static int test_auth_inner
         for (inc = 1; inc <= outlen && alg->squeeze; ADVANCE_INC(inc)) {
             if (alg->init_custom) {
                 (*(alg->init_custom))
-                    (state, key->data, key->size, custom, customlen, outlen);
+                    (state, key->data, key->size, custom, customlen);
             } else if (alg->init_fixed) {
                 (*(alg->init_fixed))(state, key->data, key->size, outlen);
             } else {

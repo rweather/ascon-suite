@@ -24,6 +24,7 @@
 #define ASCON_KMAC_H
 
 #include <ascon/xof.h>
+#include <ascon/hash.h>
 
 /**
  * \file kmac.h
@@ -47,14 +48,14 @@ extern "C" {
 /**
  * \brief Default size of the output for ASCON-KMAC.
  */
-#define ASCON_KMAC_SIZE ASCON_HASH_SIZE
+#define ASCON_KMAC_SIZE ASCON_HASH256_SIZE
 
 /**
  * \brief State information for the ASCON-KMAC incremental mode.
  */
 typedef struct
 {
-    ascon_xof_state_t xof;  /**< Internal ASCON-XOF state */
+    ascon_xof128_state_t xof;  /**< Internal ASCON-XOF state */
 
 } ascon_kmac_state_t;
 
@@ -87,13 +88,12 @@ void ascon_kmac
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
  * \sa ascon_kmac_update(), ascon_kmac_squeeze()
  */
 void ascon_kmac_init
     (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+     const unsigned char *custom, size_t customlen);
 
 /**
  * \brief Re-initializes an incremental KMAC state using ASCON-XOF.
@@ -103,7 +103,6 @@ void ascon_kmac_init
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
  * This function is equivalent to calling ascon_kmac_free() and then
  * ascon_kmac_init().
@@ -112,7 +111,7 @@ void ascon_kmac_init
  */
 void ascon_kmac_reinit
     (ascon_kmac_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+     const unsigned char *custom, size_t customlen);
 
 /**
  * \brief Frees the ASCON-KMAC state and destroys any sensitive material.

@@ -28,12 +28,12 @@
 
 /* ASCON-HMAC */
 #define HMAC_ALG_NAME ascon_hmac
-#define HMAC_HASH_SIZE ASCON_HASH_SIZE
+#define HMAC_HASH_SIZE ASCON_HASH256_SIZE
 #define HMAC_BLOCK_SIZE 64
 #define HMAC_STATE ascon_hmac_state_t
-#define HMAC_HASH_INIT ascon_hash_init
-#define HMAC_HASH_REINIT ascon_hash_reinit
-#define HMAC_HASH_FREE ascon_hash_free
-#define HMAC_HASH_UPDATE ascon_hash_update
-#define HMAC_HASH_FINALIZE ascon_hash_finalize
+#define HMAC_HASH_INIT ascon_hash256_init
+#define HMAC_HASH_REINIT ascon_hash256_reinit
+#define HMAC_HASH_FREE ascon_hash256_free
+#define HMAC_HASH_UPDATE ascon_hash256_update
+#define HMAC_HASH_FINALIZE ascon_hash256_finalize
 #include "mac/ascon-hmac-common.h"

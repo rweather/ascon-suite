@@ -311,11 +311,10 @@ typedef void (*auth_init_fixed_t)
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  */
 typedef void (*auth_init_custom_t)
     (void *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+     const unsigned char *custom, size_t customlen);
 
 /**
  * \brief Returns the final tag value from an incremental HMAC operation.
@@ -449,9 +448,9 @@ typedef struct
 extern aead_cipher_t const ascon128a_cipher;
 
 /**
- * \brief Meta-information block for the ASCON-HASH algorithm.
+ * \brief Meta-information block for the Ascon-Hash256 algorithm.
  */
-extern aead_hash_algorithm_t const ascon_hash_algorithm;
+extern aead_hash_algorithm_t const ascon_hash256_algorithm;
 
 /**
  * \brief Meta-information block for the ASCON-XOF algorithm.

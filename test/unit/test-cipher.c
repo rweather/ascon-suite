@@ -54,28 +54,28 @@ int test_memcmp
 }
 
 /*
- * HMAC, HKDF, KMAC, and PBKDF2 use ASCON-HASH and ASCON-HASHA to
- * cross-check the actual code against simplified versions.
+ * HMAC, HKDF, KMAC, and PBKDF2 unit tests use Ascon-Hash256 and
+ * Ascon-XOF128 to cross-check the actual code against simplified versions.
  *
  * The problem is that if the hash is broken the tests will appear to
  * succeed because it is checking the broken hash against itself.
  *
- * This sanity check is used to make sure ASCON-HASH and ASCON-HASHA
+ * This sanity check is used to make sure the core hash functions
  * are basically working before falsely reporting that the modes work.
  */
 int hash_sanity_check(void)
 {
-    static unsigned char const hash_expected[ASCON_HASH_SIZE] = {
-        0xd3, 0x7f, 0xe9, 0xf1, 0xd1, 0x0d, 0xbc, 0xfa,
-        0xd8, 0x40, 0x8a, 0x68, 0x04, 0xdb, 0xe9, 0x11,
-        0x24, 0xa8, 0x91, 0x26, 0x93, 0x32, 0x2b, 0xb2,
-        0x3e, 0xc1, 0x70, 0x1e, 0x19, 0xe3, 0xfd, 0x51
+    static unsigned char const hash_expected[ASCON_HASH256_SIZE] = {
+        0x45, 0xAA, 0x03, 0x43, 0x1C, 0x3C, 0x82, 0x9B,
+        0x3B, 0x06, 0x6F, 0x33, 0xE8, 0x44, 0xB0, 0xCC,
+        0x4D, 0x20, 0xA4, 0x5A, 0xF9, 0x2D, 0x3D, 0xCF,
+        0xDF, 0x34, 0xF4, 0x0F, 0xC2, 0x09, 0x35, 0xCF
     };
-    unsigned char hash[ASCON_HASH_SIZE];
+    unsigned char hash[ASCON_HASH256_SIZE];
     int ok = 1;
     printf("Hash Sanity Check ...");
     fflush(stdout);
-    ascon_hash(hash, (const unsigned char *)"abc", 3);
+    ascon_hash256(hash, (const unsigned char *)"abc", 3);
     if (test_memcmp(hash, hash_expected, sizeof(hash)) != 0)
         ok = 0;
     if (!ok)

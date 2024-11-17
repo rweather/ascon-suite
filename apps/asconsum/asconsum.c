@@ -115,54 +115,54 @@ static void usage(const char *progname)
 }
 
 /* Hashes the contents of a file with ASCON-HASH */
-static int ascon_hash_file
-    (const char *filename, FILE *file, unsigned char hash[ASCON_HASH_SIZE])
+static int ascon_hash256_file
+    (const char *filename, FILE *file, unsigned char hash[ASCON_HASH256_SIZE])
 {
     unsigned char buffer[ASCON_BUFSIZ];
     int len, ok;
-    ascon_hash_state_t state;
-    ascon_hash_init(&state);
+    ascon_hash256_state_t state;
+    ascon_hash256_init(&state);
     while ((len = fread(buffer, 1, ASCON_BUFSIZ, file)) == ASCON_BUFSIZ) {
-        ascon_hash_update(&state, buffer, len);
+        ascon_hash256_update(&state, buffer, len);
     }
     ok = !ferror(file);
     if (!ok) {
         perror(filename);
     }
     if (len > 0) {
-        ascon_hash_update(&state, buffer, len);
+        ascon_hash256_update(&state, buffer, len);
     }
-    ascon_hash_finalize(&state, hash);
-    ascon_hash_free(&state);
+    ascon_hash256_finalize(&state, hash);
+    ascon_hash256_free(&state);
     return ok;
 }
 
 /* Hashes the contents of a file with ASCON-XOF */
-static int ascon_xof_file
-    (const char *filename, FILE *file, unsigned char hash[ASCON_HASH_SIZE])
+static int ascon_xof128_file
+    (const char *filename, FILE *file, unsigned char hash[ASCON_HASH256_SIZE])
 {
     unsigned char buffer[ASCON_BUFSIZ];
     int len, ok;
-    ascon_xof_state_t state;
-    ascon_xof_init(&state);
+    ascon_xof128_state_t state;
+    ascon_xof128_init(&state);
     while ((len = fread(buffer, 1, ASCON_BUFSIZ, file)) == ASCON_BUFSIZ) {
-        ascon_xof_absorb(&state, buffer, len);
+        ascon_xof128_absorb(&state, buffer, len);
     }
     ok = !ferror(file);
     if (!ok) {
         perror(filename);
     }
     if (len > 0) {
-        ascon_xof_absorb(&state, buffer, len);
+        ascon_xof128_absorb(&state, buffer, len);
     }
-    ascon_xof_squeeze(&state, hash, ASCON_HASH_SIZE);
-    ascon_xof_free(&state);
+    ascon_xof128_squeeze(&state, hash, ASCON_HASH256_SIZE);
+    ascon_xof128_free(&state);
     return ok;
 }
 
 static int hash_file(const char *filename, int algorithm)
 {
-    unsigned char hash[ASCON_HASH_SIZE] = {0};
+    unsigned char hash[ASCON_HASH256_SIZE] = {0};
     FILE *file;
     int ok;
 
@@ -176,9 +176,9 @@ static int hash_file(const char *filename, int algorithm)
 
     /* Hash the contents of the file with the selected algorithm */
     if (algorithm == ALG_ASCON_XOF)
-        ok = ascon_xof_file(filename, file, hash);
+        ok = ascon_xof128_file(filename, file, hash);
     else
-        ok = ascon_hash_file(filename, file, hash);
+        ok = ascon_hash256_file(filename, file, hash);
 
     /* Close the file */
     if (strcmp(filename, "-") != 0) {
@@ -188,7 +188,7 @@ static int hash_file(const char *filename, int algorithm)
     /* Print the hash value if no errors occurred */
     if (ok) {
         int posn;
-        for (posn = 0; posn < ASCON_HASH_SIZE; ++posn)
+        for (posn = 0; posn < ASCON_HASH256_SIZE; ++posn)
             printf("%02x", hash[posn]);
         printf("  %s\n", filename);
     }
@@ -211,8 +211,8 @@ static int check_file(const char *filename, int algorithm)
 {
     char line[ASCON_LINESIZ];
     size_t len, posn, hashlen;
-    unsigned char hash[ASCON_HASH_SIZE] = {0};
-    unsigned char hash2[ASCON_HASH_SIZE] = {0};
+    unsigned char hash[ASCON_HASH256_SIZE] = {0};
+    unsigned char hash2[ASCON_HASH256_SIZE] = {0};
     const char *check_filename;
     FILE *file;
     FILE *file2;
@@ -245,13 +245,13 @@ static int check_file(const char *filename, int algorithm)
         /* Parse the line into a hash value and a filename */
         hashlen = 0;
         posn = 0;
-        while (posn < len && hashlen < ASCON_HASH_SIZE &&
+        while (posn < len && hashlen < ASCON_HASH256_SIZE &&
                (hex1 = to_hex_digit(line[posn])) >= 0 &&
                (hex2 = to_hex_digit(line[posn + 1])) >= 0) {
             hash[hashlen++] = (unsigned char)(hex1 * 16 + hex2);
             posn += 2;
         }
-        if (line[posn] != ' ' || hashlen != ASCON_HASH_SIZE) {
+        if (line[posn] != ' ' || hashlen != ASCON_HASH256_SIZE) {
             /* Malformed input */
             ++format_errors;
             continue;
@@ -283,9 +283,9 @@ static int check_file(const char *filename, int algorithm)
             perror(check_filename);
             file_ok = 0;
         } else if (algorithm == ALG_ASCON_XOF) {
-            file_ok = ascon_xof_file(check_filename, file2, hash2);
+            file_ok = ascon_xof128_file(check_filename, file2, hash2);
         } else {
-            file_ok = ascon_hash_file(check_filename, file2, hash2);
+            file_ok = ascon_hash256_file(check_filename, file2, hash2);
         }
         if (file2 && strcmp(check_filename, "-") != 0) {
             fclose(file2);
@@ -293,7 +293,7 @@ static int check_file(const char *filename, int algorithm)
 
         /* Did the hashes match? */
         printf("%s: ", check_filename);
-        if (file_ok && !memcmp(hash, hash2, ASCON_HASH_SIZE)) {
+        if (file_ok && !memcmp(hash, hash2, ASCON_HASH256_SIZE)) {
             printf("OK\n");
         } else if (file_ok) {
             printf("FAILED\n");

@@ -22,16 +22,13 @@ check:
 
 generate: all
 
-.PHONY: iv-ascon-hash iv-ascon-hasha iv-ascon-xof iv-ascon-xofa
+.PHONY: iv-ascon-hash iv-ascon-xof
 
 iv-ascon-hash: all
-	@bin/geninit 00 40 0c 00 00 00 01 00
-
-iv-ascon-hasha: all
-	@bin/geninit 00 40 0c 04 00 00 01 00
+	@bin/geninit 02 00 cc 00 01 08 00 00
 
 iv-ascon-xof: all
-	@bin/geninit 00 40 0c 00 00 00 00 00
+	@bin/geninit 03 00 cc 00 00 08 00 00
 
-iv-ascon-xofa: all
-	@bin/geninit 00 40 0c 04 00 00 00 00
+iv-ascon-cxof: all
+	@bin/geninit 04 00 cc 00 00 08 00 00

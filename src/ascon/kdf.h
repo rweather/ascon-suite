@@ -39,7 +39,7 @@ extern "C" {
  */
 typedef struct
 {
-    ascon_xof_state_t state;  /**< Internal ASCON-XOF state */
+    ascon_xof128_state_t state;  /**< Internal ASCON-XOF state */
 
 } ascon_kdf_state_t;
 
@@ -68,13 +68,12 @@ void ascon_kdf
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
  * \sa ascon_kdf_update(), ascon_kdf_squeeze()
  */
 void ascon_kdf_init
     (ascon_kdf_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+     const unsigned char *custom, size_t customlen);
 
 /**
  * \brief Re-initializes an incremental ASCON-KDF state.
@@ -84,7 +83,6 @@ void ascon_kdf_init
  * \param keylen Number of bytes in the key.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
  * This function is equivalent to calling ascon_kdf_free() and then
  * ascon_kdf_init().
@@ -93,7 +91,7 @@ void ascon_kdf_init
  */
 void ascon_kdf_reinit
     (ascon_kdf_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+     const unsigned char *custom, size_t customlen);
 
 /**
  * \brief Frees the ASCON-KDF state and destroys any sensitive material.

@@ -73,7 +73,7 @@ static aead_mac_test_vector_t const testVectorNIST_2 = {
 
 typedef void (*aead_hash_init_custom_t)
     (void *state, const char *function_name,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+     const unsigned char *custom, size_t customlen);
 typedef void (*aead_hash_free_t)(void *state);
 typedef void (*aead_xof_absorb_t)
     (void *state, const unsigned char *in, size_t inlen);
@@ -91,13 +91,13 @@ typedef struct
 
 } aead_hash_algorithm_t;
 
-static aead_hash_algorithm_t const ascon_xof_algorithm = {
-    .state_size = sizeof(ascon_xof_state_t),
-    .hash_len = ASCON_HASH_SIZE,
-    .init = (aead_hash_init_custom_t)ascon_xof_init_custom,
-    .free = (aead_hash_free_t)ascon_xof_free,
-    .absorb = (aead_xof_absorb_t)ascon_xof_absorb,
-    .squeeze = (aead_xof_squeeze_t)ascon_xof_squeeze
+static aead_hash_algorithm_t const ascon_xof128_algorithm = {
+    .state_size = sizeof(ascon_xof128_state_t),
+    .hash_len = ASCON_HASH256_SIZE,
+    .init = (aead_hash_init_custom_t)ascon_cxof128_init_named,
+    .free = (aead_hash_free_t)ascon_xof128_free,
+    .absorb = (aead_xof_absorb_t)ascon_xof128_absorb,
+    .squeeze = (aead_xof_squeeze_t)ascon_xof128_squeeze
 };
 
 /* Simple implementation of KMAC based on a configurable XOF algorithm
@@ -117,7 +117,7 @@ static void simple_kmac
         exit(1);
 
     /* Initialize the XOF context for the KMAC function */
-    (*(alg->init))(state, "KMAC", custom, customlen, outlen);
+    (*(alg->init))(state, "KMAC256", custom, customlen);
 
     /* Absorb the key */
     (*(alg->absorb))(state, key, keylen);
@@ -140,7 +140,7 @@ typedef void (*kmac_allinone_t)
      unsigned char *out, size_t outlen);
 typedef void (*kmac_init_t)
     (void *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+     const unsigned char *custom, size_t customlen);
 typedef void (*kmac_free_t)(void *state);
 typedef void (*kmac_absorb_t)
     (void *state, const unsigned char *in, size_t inlen);
@@ -182,8 +182,7 @@ static void test_kmac_alg
     if (!state)
         exit(1);
     (*init)(state, test->key, test->key_len,
-            (const unsigned char *)(test->salt), strlen(test->salt),
-            test->output_len);
+            (const unsigned char *)(test->salt), strlen(test->salt));
     (*absorb)(state, test->input, test->input_len);
     (*squeeze)(state, out, test->output_len);
     (*free)(state);
@@ -208,7 +207,7 @@ int main(int argc, char *argv[])
     if (!hash_sanity_check())
         return 1;
 
-    test_kmac_alg("ASCON KMAC", &ascon_xof_algorithm,
+    test_kmac_alg("ASCON KMAC", &ascon_xof128_algorithm,
                   sizeof(ascon_kmac_state_t),
                   (kmac_allinone_t)ascon_kmac,
                   (kmac_init_t)ascon_kmac_init,
@@ -216,7 +215,7 @@ int main(int argc, char *argv[])
                   (kmac_absorb_t)ascon_kmac_absorb,
                   (kmac_squeeze_t)ascon_kmac_squeeze,
                   &testVectorNIST_1);
-    test_kmac_alg("ASCON KMAC", &ascon_xof_algorithm,
+    test_kmac_alg("ASCON KMAC", &ascon_xof128_algorithm,
                   sizeof(ascon_kmac_state_t),
                   (kmac_allinone_t)ascon_kmac,
                   (kmac_init_t)ascon_kmac_init,

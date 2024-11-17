@@ -69,12 +69,12 @@ static TestHMACVector const testVectorHMAC_3 = {
     "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
 };
 
-static HashFuncs const alg_ascon_hash = {
-    .state_size = sizeof(ascon_hash_state_t),
-    .init = (hash_init_t)ascon_hash_init,
-    .free = (hash_free_t)ascon_hash_free,
-    .update = (hash_update_t)ascon_hash_update,
-    .finalize = (hash_finalize_t)ascon_hash_finalize
+static HashFuncs const alg_ascon_hash256 = {
+    .state_size = sizeof(ascon_hash256_state_t),
+    .init = (hash_init_t)ascon_hash256_init,
+    .free = (hash_free_t)ascon_hash256_free,
+    .update = (hash_update_t)ascon_hash256_update,
+    .finalize = (hash_finalize_t)ascon_hash256_finalize
 };
 
 typedef void (*hmac_func_t)
@@ -175,11 +175,11 @@ int main(int argc, char *argv[])
         return 1;
 
     test_hmac_vector
-        (&alg_ascon_hash, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_1, 32, 64);
+        (&alg_ascon_hash256, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_1, 32, 64);
     test_hmac_vector
-        (&alg_ascon_hash, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_2, 32, 64);
+        (&alg_ascon_hash256, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_2, 32, 64);
     test_hmac_vector
-        (&alg_ascon_hash, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_3, 32, 64);
+        (&alg_ascon_hash256, "ASCON-HMAC", ascon_hmac, &testVectorHMAC_3, 32, 64);
 
     return test_exit_result;
 }

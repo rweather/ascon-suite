@@ -50,14 +50,14 @@ extern "C" {
 /**
  * \brief Default size of the output for ASCON-HMAC.
  */
-#define ASCON_HMAC_SIZE ASCON_HASH_SIZE
+#define ASCON_HMAC_SIZE ASCON_HASH256_SIZE
 
 /**
  * \brief State information for the ASCON-HMAC incremental mode.
  */
 typedef struct
 {
-    ascon_hash_state_t hash;    /**< Internal ASCON-HASH state */
+    ascon_hash256_state_t hash; /**< Internal ASCON-HASH state */
 
 } ascon_hmac_state_t;
 

@@ -47,7 +47,7 @@ static const aead_auth_algorithm_t *alg_auth = 0;
 
 /* State of the RNG for generating input vectors */
 static int rng_active = 0;
-static ascon_xof_state_t rng_state;
+static ascon_xof128_state_t rng_state;
 
 /**
  * \brief Initializes the pseudo random number generator.
@@ -57,10 +57,10 @@ static ascon_xof_state_t rng_state;
 static void rng_init(const char *seed)
 {
     rng_active = 1;
-    ascon_xof_init(&rng_state);
+    ascon_xof128_init(&rng_state);
     if (seed) {
         /* Absorb the user-supplied seed as-is */
-        ascon_xof_absorb(&rng_state, (unsigned char *)seed, strlen(seed));
+        ascon_xof128_absorb(&rng_state, (unsigned char *)seed, strlen(seed));
     } else {
         /* Hash the current time to produce a 32-bit seed value */
         unsigned char data[4];
@@ -69,20 +69,20 @@ static void rng_init(const char *seed)
 #if defined(CLOCK_REALTIME)
         struct timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
-        ascon_xof_absorb(&rng_state, (unsigned char *)&ts, sizeof(ts));
+        ascon_xof128_absorb(&rng_state, (unsigned char *)&ts, sizeof(ts));
 #else
         time_t t = time(0);
-        ascon_xof_absorb(&rng_state, (unsigned char *)&t, sizeof(t));
+        ascon_xof128_absorb(&rng_state, (unsigned char *)&t, sizeof(t));
 #endif
-        ascon_xof_squeeze(&rng_state, data, sizeof(data));
+        ascon_xof128_squeeze(&rng_state, data, sizeof(data));
         value = ((unsigned long)(data[0])) |
                (((unsigned long)(data[1])) << 8) |
                (((unsigned long)(data[2])) << 16) |
                (((unsigned long)(data[3])) << 24);
         snprintf(new_seed, sizeof(new_seed), "%lu", value);
         printf("SEED: %lu\n", value);
-        ascon_xof_reinit(&rng_state);
-        ascon_xof_absorb
+        ascon_xof128_reinit(&rng_state);
+        ascon_xof128_absorb
             (&rng_state, (unsigned char *)new_seed, strlen(new_seed));
     }
 }
@@ -97,7 +97,7 @@ static void rng_generate(unsigned char *data, unsigned size)
 {
     if (rng_active) {
         /* Squeeze more random data out of the Gimli state */
-        ascon_xof_squeeze(&rng_state, data, size);
+        ascon_xof128_squeeze(&rng_state, data, size);
     } else {
         /* No RNG, so always return 0 .. size-1 as the "random" data */
         unsigned index;

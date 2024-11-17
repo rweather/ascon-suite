@@ -82,10 +82,9 @@ typedef void (*pbkdf2_func_t)
 static void PRF(size_t block_size, const char *password, const char *salt,
                 uint32_t i, const unsigned char *in, unsigned char *out)
 {
-    ascon_xof_state_t state;
-    ascon_xof_init_custom
-        (&state, "PBKDF2", (const unsigned char *)password, strlen(password),
-         block_size);
+    ascon_xof128_state_t state;
+    ascon_cxof128_init_named
+        (&state, "PBKDF2", (const unsigned char *)password, strlen(password));
     if (salt) {
         size_t salt_len = strlen(salt);
         unsigned char temp[salt_len + 4];
@@ -94,12 +93,12 @@ static void PRF(size_t block_size, const char *password, const char *salt,
         temp[salt_len + 1] = (unsigned char)(i >> 16);
         temp[salt_len + 2] = (unsigned char)(i >> 8);
         temp[salt_len + 3] = (unsigned char)i;
-        ascon_xof_absorb(&state, temp, salt_len + 4);
+        ascon_xof128_absorb(&state, temp, salt_len + 4);
     } else {
-        ascon_xof_absorb(&state, in, block_size);
+        ascon_xof128_absorb(&state, in, block_size);
     }
-    ascon_xof_squeeze(&state, out, block_size);
-    ascon_xof_free(&state);
+    ascon_xof128_squeeze(&state, out, block_size);
+    ascon_xof128_free(&state);
 }
 static void F(size_t block_size, const char *password, const char *salt,
               uint32_t c, uint32_t i, unsigned char *out)

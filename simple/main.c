@@ -217,11 +217,11 @@ static void kat_aead(int with_nonce_masking)
             print_hex("PT", plaintext, index);
             print_hex("AD", ad, index2);
             if (with_nonce_masking) {
-                ascon_simple_encrypt
+                ascon_simple_nm_encrypt
                     (ciphertext, &clen, plaintext, index, ad, index2,
                      nonce, key);
             } else {
-                ascon_simple_nm_encrypt
+                ascon_simple_encrypt
                     (ciphertext, &clen, plaintext, index, ad, index2,
                      nonce, key);
             }

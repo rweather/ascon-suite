@@ -43,39 +43,39 @@
  * PRF(P, X) = ASCON-cXOF(X, 256, "PBKDF2", P)
  */
 static void ascon_pbkdf2_f
-    (ascon_xof_state_t *state, unsigned char *T, unsigned char *U,
+    (ascon_xof128_state_t *state, unsigned char *T, unsigned char *U,
      const unsigned char *salt, size_t saltlen,
      unsigned long count, unsigned long blocknum)
 {
-    ascon_xof_state_t state2;
+    ascon_xof128_state_t state2;
     unsigned char b[4];
     be_store_word32(b, blocknum);
-    ascon_xof_copy(&state2, state);
-    ascon_xof_absorb(&state2, salt, saltlen);
-    ascon_xof_absorb(&state2, b, sizeof(b));
-    ascon_xof_squeeze(&state2, T, ASCON_PBKDF2_SIZE);
+    ascon_xof128_copy(&state2, state);
+    ascon_xof128_absorb(&state2, salt, saltlen);
+    ascon_xof128_absorb(&state2, b, sizeof(b));
+    ascon_xof128_squeeze(&state2, T, ASCON_PBKDF2_SIZE);
 #if ASCON_PBKDF2_FREE_STATE
-    ascon_xof_free(&state2);
+    ascon_xof128_free(&state2);
 #endif
     if (count > 1) {
-        ascon_xof_copy(&state2, state);
-        ascon_xof_absorb(&state2, T, ASCON_PBKDF2_SIZE);
-        ascon_xof_squeeze(&state2, U, ASCON_PBKDF2_SIZE);
+        ascon_xof128_copy(&state2, state);
+        ascon_xof128_absorb(&state2, T, ASCON_PBKDF2_SIZE);
+        ascon_xof128_squeeze(&state2, U, ASCON_PBKDF2_SIZE);
 #if ASCON_PBKDF2_FREE_STATE
-        ascon_xof_free(&state2);
+        ascon_xof128_free(&state2);
 #endif
         lw_xor_block(T, U, ASCON_PBKDF2_SIZE);
         while (count > 2) {
-            ascon_xof_copy(&state2, state);
-            ascon_xof_absorb(&state2, U, ASCON_PBKDF2_SIZE);
-            ascon_xof_squeeze(&state2, U, ASCON_PBKDF2_SIZE);
-            ascon_xof_free(&state2);
+            ascon_xof128_copy(&state2, state);
+            ascon_xof128_absorb(&state2, U, ASCON_PBKDF2_SIZE);
+            ascon_xof128_squeeze(&state2, U, ASCON_PBKDF2_SIZE);
+            ascon_xof128_free(&state2);
             lw_xor_block(T, U, ASCON_PBKDF2_SIZE);
             --count;
         }
     }
 #if !ASCON_PBKDF2_FREE_STATE
-    ascon_xof_free(&state2);
+    ascon_xof128_free(&state2);
 #endif
 }
 
@@ -84,11 +84,10 @@ void ascon_pbkdf2
      const unsigned char *password, size_t passwordlen,
      const unsigned char *salt, size_t saltlen, unsigned long count)
 {
-    ascon_xof_state_t state;
+    ascon_xof128_state_t state;
     unsigned char U[ASCON_PBKDF2_SIZE];
     unsigned long blocknum = 1;
-    ascon_xof_init_custom
-        (&state, "PBKDF2", password, passwordlen, ASCON_PBKDF2_SIZE);
+    ascon_cxof128_init_named(&state, "PBKDF2", password, passwordlen);
     while (outlen > 0) {
         if (outlen >= ASCON_PBKDF2_SIZE) {
             ascon_pbkdf2_f(&state, out, U, salt, saltlen, count, blocknum);
@@ -103,6 +102,6 @@ void ascon_pbkdf2
         }
         ++blocknum;
     }
-    ascon_xof_free(&state);
+    ascon_xof128_free(&state);
     ascon_clean(U, sizeof(U));
 }

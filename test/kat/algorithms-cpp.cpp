@@ -220,18 +220,18 @@ int ascon128a_siv_decrypt_cpp
         (&cipher, m, mlen, c, clen, ad, adlen, npub, k);
 }
 
-void ascon_hash_cpp(unsigned char *out, const unsigned char *in, size_t inlen)
+void ascon_hash256_cpp(unsigned char *out, const unsigned char *in, size_t inlen)
 {
     // Test several methods for computing the digest.
     switch ((method++) % 3) {
     case 0:
         // All-in-one digest.
-        ascon::hash::digest(out, in, inlen);
+        ascon::hash256::digest(out, in, inlen);
         break;
 
     case 1: {
         // Use the class to compute the digest.
-        ascon::hash hash;
+        ascon::hash256 hash;
         hash.update(in, inlen);
         hash.finalize(out);
         break; }
@@ -240,78 +240,78 @@ void ascon_hash_cpp(unsigned char *out, const unsigned char *in, size_t inlen)
         // All-in-one digest using byte arrays.
         ascon::byte_array input(inlen);
         ascon::byte_array output;
-        ascon::hash hash;
+        ascon::hash256 hash;
         ::memcpy(input.data(), in, inlen);
         hash.update(input);
         output = hash.finalize();
-        ::memcpy(out, output.data(), ASCON_HASH_SIZE);
+        ::memcpy(out, output.data(), ASCON_HASH256_SIZE);
         break; }
     }
 }
 
-void ascon_hash_init_cpp(void *state)
+void ascon_hash256_init_cpp(void *state)
 {
-    *(reinterpret_cast<ascon::hash **>(state)) = new ascon::hash();
+    *(reinterpret_cast<ascon::hash256 **>(state)) = new ascon::hash256();
 }
 
-void ascon_hash_free_cpp(void *state)
+void ascon_hash256_free_cpp(void *state)
 {
-    delete *(reinterpret_cast<ascon::hash **>(state));
+    delete *(reinterpret_cast<ascon::hash256 **>(state));
 }
 
-void ascon_hash_update_cpp
+void ascon_hash256_update_cpp
     (void *state, const unsigned char *in, size_t inlen)
 {
-    (*(reinterpret_cast<ascon::hash **>(state)))->update(in, inlen);
+    (*(reinterpret_cast<ascon::hash256 **>(state)))->update(in, inlen);
 }
 
-void ascon_hash_finalize_cpp(void *state, unsigned char *out)
+void ascon_hash256_finalize_cpp(void *state, unsigned char *out)
 {
-    (*(reinterpret_cast<ascon::hash **>(state)))->finalize(out);
+    (*(reinterpret_cast<ascon::hash256 **>(state)))->finalize(out);
 }
 
-void ascon_xof_cpp(unsigned char *out, const unsigned char *in, size_t inlen)
+void ascon_xof128_cpp(unsigned char *out, const unsigned char *in, size_t inlen)
 {
     // Test several methods for computing the digest.
     switch ((method++) % 2) {
     case 0: {
         // Use the class to compute the digest.
-        ascon::xof xof;
+        ascon::xof128 xof;
         xof.absorb(in, inlen);
-        xof.squeeze(out, ASCON_HASH_SIZE);
+        xof.squeeze(out, ASCON_HASH256_SIZE);
         break; }
 
     case 1: {
         // All-in-one digest using byte arrays.
         ascon::byte_array input(inlen);
         ascon::byte_array output;
-        ascon::xof xof;
+        ascon::xof128 xof;
         ::memcpy(input.data(), in, inlen);
         xof.absorb(input);
-        output = xof.squeeze(ASCON_HASH_SIZE);
-        ::memcpy(out, output.data(), ASCON_HASH_SIZE);
+        output = xof.squeeze(ASCON_HASH256_SIZE);
+        ::memcpy(out, output.data(), ASCON_HASH256_SIZE);
         break; }
     }
 }
 
-void ascon_xof_init_cpp(void *state)
+void ascon_xof128_init_cpp(void *state)
 {
-    *(reinterpret_cast<ascon::xof **>(state)) = new ascon::xof();
+    *(reinterpret_cast<ascon::xof128 **>(state)) = new ascon::xof128();
 }
 
-void ascon_xof_free_cpp(void *state)
+void ascon_xof128_free_cpp(void *state)
 {
-    delete *(reinterpret_cast<ascon::xof **>(state));
+    delete *(reinterpret_cast<ascon::xof128 **>(state));
 }
 
-void ascon_xof_absorb_cpp(void *state, const unsigned char *in, size_t inlen)
+void ascon_xof128_absorb_cpp(void *state, const unsigned char *in, size_t inlen)
 {
-    (*(reinterpret_cast<ascon::xof **>(state)))->absorb(in, inlen);
+    (*(reinterpret_cast<ascon::xof128 **>(state)))->absorb(in, inlen);
 }
 
-void ascon_xof_squeeze_cpp(void *state, unsigned char *out, size_t outlen)
+void ascon_xof128_squeeze_cpp(void *state, unsigned char *out, size_t outlen)
 {
-    (*(reinterpret_cast<ascon::xof **>(state)))->squeeze(out, outlen);
+    (*(reinterpret_cast<ascon::xof128 **>(state)))->squeeze(out, outlen);
 }
 
 } // extern "C"

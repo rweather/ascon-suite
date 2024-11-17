@@ -48,11 +48,11 @@ static void ascon_permute(unsigned char state[40], uint8_t first_round)
         ROUND_CONSTANT(11)
     };
     uint64_t t0, t1, t2, t3, t4;
-    uint64_t x0 = be_load_word64(state);
-    uint64_t x1 = be_load_word64(state + 8);
-    uint64_t x2 = be_load_word64(state + 16);
-    uint64_t x3 = be_load_word64(state + 24);
-    uint64_t x4 = be_load_word64(state + 32);
+    uint64_t x0 = le_load_word64(state);
+    uint64_t x1 = le_load_word64(state + 8);
+    uint64_t x2 = le_load_word64(state + 16);
+    uint64_t x3 = le_load_word64(state + 24);
+    uint64_t x4 = le_load_word64(state + 32);
     x2 = ~x2;
     while (first_round < 12) {
         /* Add the round constant to the state */
@@ -81,11 +81,11 @@ static void ascon_permute(unsigned char state[40], uint8_t first_round)
         ++first_round;
     }
     x2 = ~x2;
-    be_store_word64(state,      x0);
-    be_store_word64(state +  8, x1);
-    be_store_word64(state + 16, x2);
-    be_store_word64(state + 24, x3);
-    be_store_word64(state + 32, x4);
+    le_store_word64(state,      x0);
+    le_store_word64(state +  8, x1);
+    le_store_word64(state + 16, x2);
+    le_store_word64(state + 24, x3);
+    le_store_word64(state + 32, x4);
 }
 
 /* http://programming.sirrida.de/perm_fn.html#bit_permute_step */
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
     printf("#if defined(ASCON_BACKEND_SLICED64)\n");
     printf("    static uint64_t const iv[5] = {\n");
     for (index = 0; index < 5; ++index) {
-        unsigned long long word = be_load_word64(state + index * 8);
+        unsigned long long word = le_load_word64(state + index * 8);
         if ((index % 2) == 0)
             printf("        ");
         printf("0x%016llxULL", word);
@@ -152,8 +152,8 @@ int main(int argc, char *argv[])
     printf("#elif defined(ASCON_BACKEND_SLICED32)\n");
     printf("    static uint32_t const iv[10] = {\n");
     for (index = 0; index < 5; ++index) {
-        uint32_t high = be_load_word32(state + index * 8);
-        uint32_t low  = be_load_word32(state + index * 8 + 4);
+        uint32_t high = le_load_word32(state + index * 8 + 4);
+        uint32_t low  = le_load_word32(state + index * 8);
         uint32_t new_high;
         uint32_t new_low;
         ascon_separate(high);

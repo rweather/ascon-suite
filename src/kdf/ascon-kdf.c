@@ -24,7 +24,6 @@
 #include <ascon/utility.h>
 #include "core/ascon-util.h"
 #include "core/ascon-util-snp.h"
-#include "hash/ascon-xof-internal.h"
 #include <string.h>
 
 void ascon_kdf
@@ -33,40 +32,40 @@ void ascon_kdf
      const unsigned char *custom, size_t customlen)
 {
     ascon_kdf_state_t state;
-    ascon_kdf_init(&state, key, keylen, custom, customlen, outlen);
-    ascon_xof_squeeze(&(state.state), out, outlen);
-    ascon_xof_free(&(state.state));
+    ascon_kdf_init(&state, key, keylen, custom, customlen);
+    ascon_xof128_squeeze(&(state.state), out, outlen);
+    ascon_xof128_free(&(state.state));
 }
 
 void ascon_kdf_init
     (ascon_kdf_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen, size_t outlen)
+     const unsigned char *custom, size_t customlen)
 {
-    ascon_xof_init_custom(&(state->state), "KDF", custom, customlen, outlen);
-    ascon_xof_absorb(&(state->state), key, keylen);
+    ascon_cxof128_init_named(&(state->state), "KDF", custom, customlen);
+    ascon_xof128_absorb(&(state->state), key, keylen);
 }
 
 void ascon_kdf_reinit
     (ascon_kdf_state_t *state, const unsigned char *key, size_t keylen,
-     const unsigned char *custom, size_t customlen, size_t outlen)
+     const unsigned char *custom, size_t customlen)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
         defined(ASCON_BACKEND_DIRECT_XOR)
-    ascon_kdf_init(state, key, keylen, custom, customlen, outlen);
+    ascon_kdf_init(state, key, keylen, custom, customlen);
 #else
     ascon_kdf_free(state);
-    ascon_kdf_init(state, key, keylen, custom, customlen, outlen);
+    ascon_kdf_init(state, key, keylen, custom, customlen);
 #endif
 }
 
 void ascon_kdf_free(ascon_kdf_state_t *state)
 {
     if (state)
-        ascon_xof_free(&(state->state));
+        ascon_xof128_free(&(state->state));
 }
 
 void ascon_kdf_squeeze
     (ascon_kdf_state_t *state, unsigned char *out, size_t outlen)
 {
-    ascon_xof_squeeze(&(state->state), out, outlen);
+    ascon_xof128_squeeze(&(state->state), out, outlen);
 }

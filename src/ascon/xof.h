@@ -25,7 +25,7 @@
 
 /**
  * \file xof.h
- * \brief ASCON-XOF and ASCON-XOFA extensible output functions (XOF's).
+ * \brief Ascon-XOF128 and Ascon-CXOF128 extensible output functions (XOF's).
  *
  * References: https://ascon.iaik.tugraz.at/
  */
@@ -37,19 +37,13 @@ extern "C" {
 #endif
 
 /**
- * \brief Size of the hash output for ASCON-HASH and the default hash
- * output size for ASCON-XOF.
+ * \brief Rate of absorbing and squeezing data for Ascon-XOF128 and
+ * Ascon-CXOF128.
  */
-#define ASCON_HASH_SIZE 32
+#define ASCON_XOF128_RATE 8
 
 /**
- * \brief Rate of absorbing and squeezing data for ASCON-XOF,
- * ASCON-XOFA, ASCON-HASH, and ASCON-HASHA.
- */
-#define ASCON_XOF_RATE 8
-
-/**
- * \brief State information for ASCON-XOF incremental mode.
+ * \brief State information for the Ascon-XOF128 incremental mode.
  */
 typedef struct
 {
@@ -57,10 +51,15 @@ typedef struct
     unsigned char count;    /**< Number of bytes in the current block */
     unsigned char mode;     /**< Hash mode: 0 for absorb, 1 for squeeze */
 
-} ascon_xof_state_t;
+} ascon_xof128_state_t;
 
 /**
- * \brief Hashes a block of input data with ASCON-XOF and generates a
+ * \brief State information for the Ascon-CXOF128 incremental mode.
+ */
+typedef ascon_xof128_state_t ascon_cxof128_state_t;
+
+/**
+ * \brief Hashes a block of input data with Ascon-XOF128 and generates a
  * fixed-length 32 byte output.
  *
  * \param out Buffer to receive the hash output which must be at least
@@ -68,138 +67,134 @@ typedef struct
  * \param in Points to the input data to be hashed.
  * \param inlen Length of the input data in bytes.
  *
- * Use ascon_xof_squeeze() instead if you need variable-length XOF ouutput.
+ * Use ascon_xof128_squeeze() instead if you need variable-length XOF ouutput.
  *
- * \sa ascon_xof_init(), ascon_xof_absorb(), ascon_xof_squeeze()
+ * \sa ascon_xof128_init(), ascon_xof128_absorb(), ascon_xof128_squeeze()
  */
-void ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen);
+void ascon_xof128(unsigned char *out, const unsigned char *in, size_t inlen);
 
 /**
- * \brief Initializes the state for an ASCON-XOF hashing operation.
+ * \brief Initializes the state for an Ascon-XOF128 hashing operation.
  *
  * \param state XOF state to be initialized.
  *
- * \sa ascon_xof_absorb(), ascon_xof_squeeze(), ascon_xof()
+ * \sa ascon_xof128_absorb(), ascon_xof128_squeeze(), ascon_xof128()
  */
-void ascon_xof_init(ascon_xof_state_t *state);
+void ascon_xof128_init(ascon_xof128_state_t *state);
 
 /**
- * \brief Initializes the state for an incremental ASCON-XOF operation,
- * with a fixed output length.
+ * \brief Initializes the state for an incremental Ascon-CXOF128 operation,
+ * with a customization string.
  *
  * \param state XOF state to be initialized.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
- *
- * In the ASCON standard, the output length is encoded as a bit counter
- * in a 32-bit word.  If \a outlen is greater than 536870911, it will be
- * replaced with zero to indicate arbitary-length output instead.
- *
- * \sa ascon_xof_init()
- */
-void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen);
-
-/**
- * \brief Initializes the state for an incremental ASCON-XOF operation,
- * with a named function, customization string, and output length.
- *
- * \param state XOF state to be initialized.
- * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
- * empty for no function name.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
- * In the ASCON standard, the output length is encoded as a bit counter
- * in a 32-bit word.  If \a outlen is greater than 536870911, it will be
- * replaced with zero to indicate arbitary-length output instead.
- *
- * This version of initialization is intended for building higher-level
- * functions like KMAC on top of ASCON-XOF.  The function name provides
- * domain separation between different functions.  The customization string
- * provides domain separation between different users of the same function.
- *
- * \sa ascon_xof_init()
+ * \sa ascon_xof128_init()
  */
-void ascon_xof_init_custom
-    (ascon_xof_state_t *state, const char *function_name,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+void ascon_cxof128_init
+    (ascon_xof128_state_t *state, const unsigned char *custom,
+     size_t customlen);
 
 /**
- * \brief Re-initializes the state for an ASCON-XOF hashing operation.
+ * \brief Initializes the state for an incremental Ascon-CXOF128 operation,
+ * with a named function and a customization string.
+ *
+ * \param state XOF state to be initialized.
+ * \param name Points to the NUL-terminated function name.  If NULL or the
+ * empty string, the function name will not be used.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ *
+ * \sa ascon_cxof128_init()
+ */
+void ascon_cxof128_init_named
+    (ascon_xof128_state_t *state, const char *name,
+     const unsigned char *custom, size_t customlen);
+
+/**
+ * \brief Re-initializes the state for an Ascon-XOF128 hashing operation.
  *
  * \param state XOF state to be re-initialized.
  *
- * This function is equivalent to calling ascon_xof_free() and then
- * ascon_xof_init() to restart the hashing process.
+ * This function is equivalent to calling ascon_xof128_free() and then
+ * ascon_xof128_init() to restart the hashing process.
  *
- * \sa ascon_xof_init()
+ * \sa ascon_xof128_init()
  */
-void ascon_xof_reinit(ascon_xof_state_t *state);
+void ascon_xof128_reinit(ascon_xof128_state_t *state);
 
 /**
- * \brief Re-initializes the state for an incremental ASCON-XOF operation,
- * with a fixed output length.
- *
- * \param state XOF state to be re-initialized.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
- *
- * This function is equivalent to calling ascon_xof_free() and then
- * ascon_xof_init_fixed() to restart the hashing process.
- *
- * \sa ascon_xof_init_fixed()
- */
-void ascon_xof_reinit_fixed(ascon_xof_state_t *state, size_t outlen);
-
-/**
- * \brief Re-nitializes the state for an incremental ASCON-XOF operation,
- * with a named function, customization string, and output length.
+ * \brief Re-nitializes the state for an incremental Ascon-CXOF128 operation,
+ * with a customization string.
  *
  * \param state XOF state to be initialized.
- * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
- * empty for no function name.
  * \param custom Points to the customization string.
  * \param customlen Number of bytes in the customization string.
- * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
  *
- * \sa ascon_xof_init_custom()
+ * \sa ascon_cxof128_init()
  */
-void ascon_xof_reinit_custom
-    (ascon_xof_state_t *state, const char *function_name,
-     const unsigned char *custom, size_t customlen, size_t outlen);
+void ascon_cxof128_reinit
+    (ascon_xof128_state_t *state, const unsigned char *custom,
+     size_t customlen);
 
 /**
- * \brief Frees the ASCON-XOF state and destroys any sensitive material.
+ * \brief Re-nitializes the state for an incremental Ascon-CXOF128 operation,
+ * with a named function as the customization string.
+ *
+ * \param state XOF state to be initialized.
+ * \param name Points to the NUL-terminated function name.  If NULL or the
+ * empty string, the function name will not be used.
+ * \param custom Points to the customization string.
+ * \param customlen Number of bytes in the customization string.
+ *
+ * \sa ascon_cxof128_init_named()
+ */
+void ascon_cxof128_reinit_named
+    (ascon_xof128_state_t *state, const char *name,
+     const unsigned char *custom, size_t customlen);
+
+/**
+ * \brief Frees the Ascon-XOF128 state and destroys any sensitive material.
  *
  * \param state XOF state to be freed.
  */
-void ascon_xof_free(ascon_xof_state_t *state);
+void ascon_xof128_free(ascon_xof128_state_t *state);
 
 /**
- * \brief Absorbs more input data into an ASCON-XOF state.
+ * \brief Absorbs more input data into an Ascon-XOF128 state.
  *
  * \param state XOF state to be updated.
  * \param in Points to the input data to be absorbed into the state.
  * \param inlen Length of the input data to be absorbed into the state.
  *
- * \sa ascon_xof_init(), ascon_xof_squeeze()
+ * \sa ascon_xof128_init(), ascon_xof128_squeeze()
  */
-void ascon_xof_absorb
-    (ascon_xof_state_t *state, const unsigned char *in, size_t inlen);
+void ascon_xof128_absorb
+    (ascon_xof128_state_t *state, const unsigned char *in, size_t inlen);
 
 /**
- * \brief Squeezes output data from an ASCON-XOF state.
+ * \brief Squeezes output data from an Ascon-XOF128 state.
  *
  * \param state XOF state to squeeze the output data from.
  * \param out Points to the output buffer to receive the squeezed data.
  * \param outlen Number of bytes of data to squeeze out of the state.
  *
- * \sa ascon_xof_init(), ascon_xof_update()
+ * \sa ascon_xof128_init(), ascon_xof128_update()
  */
-void ascon_xof_squeeze
-    (ascon_xof_state_t *state, unsigned char *out, size_t outlen);
+void ascon_xof128_squeeze
+    (ascon_xof128_state_t *state, unsigned char *out, size_t outlen);
 
 /**
- * \brief Absorbs enough zeroes into an ASCON-XOF state to pad the
+ * \brief Pads the current rate block with a 1 bit followed by 0 bits
+ * until the next rate block boundary is reached.
+ *
+ * \param state XOF state to pad.
+ */
+void ascon_xof128_pad(ascon_xof128_state_t *state);
+
+/**
+ * \brief Absorbs enough zeroes into an Ascon-XOF128 state to pad the
  * input to the next multiple of the block rate.
  *
  * \param state XOF state to pad.  Does nothing if the \a state is
@@ -208,10 +203,10 @@ void ascon_xof_squeeze
  * This function can avoid unnecessary XOR-with-zero operations
  * to save some time when padding is required.
  */
-void ascon_xof_pad(ascon_xof_state_t *state);
+void ascon_xof128_zero_pad(ascon_xof128_state_t *state);
 
 /**
- * \brief Clones a copy of an ASCON-XOF state.
+ * \brief Clones a copy of an Ascon-XOF128 state.
  *
  * \param dest Destination XOF state to copy into.
  * \param src Source XOF state to copy from.
@@ -220,7 +215,8 @@ void ascon_xof_pad(ascon_xof_state_t *state);
  * not previously have been initialized or it has already been freed.
  * The source must be already initialized.
  */
-void ascon_xof_copy(ascon_xof_state_t *dest, const ascon_xof_state_t *src);
+void ascon_xof128_copy
+    (ascon_xof128_state_t *dest, const ascon_xof128_state_t *src);
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -231,144 +227,113 @@ namespace ascon
 {
 
 /**
- * \brief ASCON-XOF with a specific output length.
+ * \brief Ascon-XOF128 extendable output function.
  *
- * This template takes the desired output length in bytes as a parameter.
- * For example, the following produces a result identical to the
- * ascon::hash class:
- *
- * \code
- * ascon::xof_with_output_length<32> hash;
- * unsigned char output[32];
- *
- * hash.absorb("Hello, World!");
- * hash.squeeze(output, sizeof(output));
- * \endcode
- *
- * The output length should be set to zero for arbitrary-length output.
- * The ascon::xof type provides a convenient alias for this use case:
+ * The following is an example of hashing a string followed by extracting
+ * 64 bytes of output:
  *
  * \code
- * ascon::xof x;
+ * ascon::xof128 x;
  * unsigned char output2[64];
  *
  * x.absorb("Hello, World!");
  * x.squeeze(output2, sizeof(output2));
  * \endcode
  */
-template<size_t outlen>
-class xof_with_output_length
+class xof128
 {
 public:
     /**
-     * \brief Constucts a new ASCON-XOF object.
+     * \brief Constucts a new Ascon-XOF128 object.
      *
      * After construction, the new object is ready to accept input
      * data with absorb().
      */
-    inline xof_with_output_length()
+    inline xof128()
     {
-        if (outlen == 0)
-            ::ascon_xof_init(&m_state);
-        else
-            ::ascon_xof_init_fixed(&m_state, outlen);
+        ::ascon_xof128_init(&m_state);
     }
 
     /**
-     * \brief Constructs a copy of another ASCON-XOF object.
+     * \brief Constructs a copy of another Ascon-XOF128 object.
      *
-     * \param other The other object to copy, which must have the same
-     * output length as this class.
+     * \param other The other object to copy.
      */
-    inline xof_with_output_length
-        (const ascon::xof_with_output_length<outlen> &other)
+    inline xof128(const ascon::xof128 &other)
     {
-        ::ascon_xof_copy(&m_state, &other.m_state);
+        ::ascon_xof128_copy(&m_state, &other.m_state);
     }
 
     /**
-     * \brief Constructs a new ASCON-XOF object with a named function and
-     * customization string.
+     * \brief Constructs a new Ascon-XOF128 object with a customization
+     * string in Ascon-CXOF128 mode.
      *
-     * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
-     * empty for no function name.
      * \param custom Points to the customization string.
      * \param customlen Number of bytes in the customization string.
      */
-    inline explicit xof_with_output_length
-        (const char *function_name, const unsigned char *custom = 0,
-         size_t customlen = 0)
+    inline xof128(const unsigned char *custom, size_t customlen)
     {
-        ::ascon_xof_init_custom
-            (&m_state, function_name, custom, customlen, outlen);
+        ::ascon_cxof128_init(&m_state, custom, customlen);
     }
 
     /**
-     * \brief Constructs a new ASCON-XOF object with a named function and
-     * customization string.
+     * \brief Constructs a new Ascon-XOF128 object with a customization
+     * string in Ascon-CXOF128 mode.
      *
-     * \param function_name Name of the function; e.g. "KMAC".  May be NULL or
-     * empty for no function name.
      * \param custom The customization string.
      */
-    inline xof_with_output_length
-        (const char *function_name, const ascon::byte_array &custom)
+    inline explicit xof128(const ascon::byte_array &custom)
     {
-        ::ascon_xof_init_custom
-            (&m_state, function_name, custom.data(), custom.size(), outlen);
+        ::ascon_cxof128_init(&m_state, custom.data(), custom.size());
     }
 
     /**
-     * \brief Destroys this ASCON-XOF object.
+     * \brief Destroys this Ascon-XOF128 object.
      */
-    inline ~xof_with_output_length()
+    inline ~xof128()
     {
-        ::ascon_xof_free(&m_state);
+        ::ascon_xof128_free(&m_state);
     }
 
     /**
-     * \brief Copies the state of another ASCON-XOF object into this one.
+     * \brief Copies the state of another Ascon-XOF128 object into this one.
      *
      * \param other The other object to copy, which must have the same
      * output length as this class.
      *
-     * \return A reference to this ASCON-XOF object.
+     * \return A reference to this Ascon-XOF128 object.
      */
-    inline xof_with_output_length<outlen> &operator=
-        (const ascon::xof_with_output_length<outlen> &other)
+    inline xof128 &operator=(const ascon::xof128 &other)
     {
         if (this != &other) {
-            ::ascon_xof_free(&m_state);
-            ::ascon_xof_copy(&m_state, &other.m_state);
+            ::ascon_xof128_free(&m_state);
+            ::ascon_xof128_copy(&m_state, &other.m_state);
         }
         return *this;
     }
 
     /**
-     * \brief Resets this ASCON-XOF object back to the initial state.
+     * \brief Resets this Ascon-XOF128 object back to the initial state.
      */
     inline void reset()
     {
-        if (outlen == 0)
-            ::ascon_xof_reinit(&m_state);
-        else
-            ::ascon_xof_reinit_fixed(&m_state, outlen);
+        ::ascon_xof128_reinit(&m_state);
     }
 
     /**
-     * \brief Absorbs more input data into this ASCON-XOF object.
+     * \brief Absorbs more input data into this Ascon-XOF128 object.
      *
      * \param data Points to the input data to be absorbed into the state.
      * \param len Length of the input data to be absorbed into the state.
      */
     inline void absorb(const unsigned char *data, size_t len)
     {
-        ::ascon_xof_absorb(&m_state, data, len);
+        ::ascon_xof128_absorb(&m_state, data, len);
     }
 
     /**
      * \brief Absorbs the contents of a NUL-terminated C string into
-     * this ASCON-XOF object.
+     * this Ascon-XOF128 object.
      *
      * \param str Points to the C string to absorb.
      *
@@ -378,35 +343,35 @@ public:
     inline void absorb(const char *str)
     {
         if (str) {
-            ::ascon_xof_absorb
+            ::ascon_xof128_absorb
                 (&m_state, reinterpret_cast<const unsigned char *>(str),
                  ::strlen(str));
         }
     }
 
     /**
-     * \brief Absorbs the contents of a byte array into this ASCON-XOF object.
+     * \brief Absorbs the contents of a byte array into this Ascon-XOF128 object.
      *
      * \param data Reference to the byte array to absorb.
      */
     inline void absorb(const ascon::byte_array& data)
     {
-        ::ascon_xof_absorb(&m_state, data.data(), data.size());
+        ::ascon_xof128_absorb(&m_state, data.data(), data.size());
     }
 
     /**
-     * \brief Squeezes output data from this ASCON-XOF object.
+     * \brief Squeezes output data from this Ascon-XOF128 object.
      *
      * \param data Points to the output buffer to receive the squeezed data.
      * \param len Number of bytes of data to squeeze out of the state.
      */
     inline void squeeze(unsigned char *data, size_t len)
     {
-        ::ascon_xof_squeeze(&m_state, data, len);
+        ::ascon_xof128_squeeze(&m_state, data, len);
     }
 
     /**
-     * \brief Squeezes data out of this ASCON-XOF object as a byte array.
+     * \brief Squeezes data out of this Ascon-XOF128 object as a byte array.
      *
      * \param len The number of bytes to squeeze out.
      *
@@ -415,12 +380,21 @@ public:
     ascon::byte_array squeeze(size_t len)
     {
         ascon::byte_array vec(len);
-        ::ascon_xof_squeeze(&m_state, vec.data(), len);
+        ::ascon_xof128_squeeze(&m_state, vec.data(), len);
         return vec;
     }
 
     /**
-     * \brief Absorbs enough zeroes into this ASCON-XOF object to pad the
+     * \brief Pads the current rate block with a 1 bit followed by 0 bits
+     * until the next rate block boundary is reached.
+     */
+    inline void pad()
+    {
+        ::ascon_xof128_pad(&m_state);
+    }
+
+    /**
+     * \brief Absorbs enough zeroes into this Ascon-XOF128 object to pad the
      * input to the next multiple of the block rate.
      *
      * Does nothing if the state is already aligned on a multiple of
@@ -429,36 +403,37 @@ public:
      * This function can avoid unnecessary XOR-with-zero operations
      * to save some time when padding is required.
      */
-    inline void pad()
+    inline void zero_pad()
     {
-        ::ascon_xof_pad(&m_state);
+        ::ascon_xof128_zero_pad(&m_state);
     }
 
     /**
-     * \brief Gets a reference to the C version of the ASCON-XOF state.
+     * \brief Gets a reference to the C version of the Ascon-XOF128 state.
      *
      * \return A reference to the state.
      */
-    inline ::ascon_xof_state_t *state() { return &m_state; }
+    inline ::ascon_xof128_state_t *state() { return &m_state; }
 
     /**
-     * \brief Gets a constant reference to the C version of the ASCON-XOF state.
+     * \brief Gets a constant reference to the C version of the
+     * Ascon-XOF128 state.
      *
      * \return A constant reference to the state.
      */
-    inline const ::ascon_xof_state_t *state() const { return &m_state; }
+    inline const ::ascon_xof128_state_t *state() const { return &m_state; }
 
 #if !defined(ARDUINO) && !defined(ASCON_NO_STL)
 
     /**
      * \brief Absorbs the contents of a standard C++ string into
-     * this ASCON-XOF object.
+     * this Ascon-XOF128 object.
      *
      * \param str Reference to the string to absorb.
      */
     inline void absorb(const std::string& str)
     {
-        ::ascon_xof_absorb
+        ::ascon_xof128_absorb
             (&m_state, reinterpret_cast<const unsigned char *>(str.data()),
              str.size());
     }
@@ -467,13 +442,13 @@ public:
 
     /**
      * \brief Absorbs the contents of an Arduino string object into
-     * this ASCON-XOF object.
+     * this Ascon-XOF128 object.
      *
      * \param str Reference to the string to absorb.
      */
     inline void absorb(const String& str)
     {
-        ::ascon_xof_absorb
+        ::ascon_xof128_absorb
             (&m_state, reinterpret_cast<const unsigned char *>(str.c_str()),
              str.length());
     }
@@ -481,24 +456,8 @@ public:
 #endif /* ARDUINO */
 
 private:
-    ::ascon_xof_state_t m_state; /**< Internal XOF state */
+    ::ascon_xof128_state_t m_state; /**< Internal XOF state */
 };
-
-/**
- * \brief ASCON-XOF object with arbitrary-length output.
- *
- * The following example runs ASCON-XOF over an input string and then
- * squeezes 64 bytes of output:
- *
- * \code
- * ascon::xof x;
- * unsigned char output2[64];
- *
- * x.absorb("Hello, World!");
- * x.squeeze(output2, sizeof(output2));
- * \endcode
- */
-typedef xof_with_output_length<0> xof;
 
 } /* namespace ascon */
 

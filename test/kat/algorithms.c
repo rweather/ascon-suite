@@ -44,49 +44,34 @@ aead_cipher_t const ascon128a_cipher = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-aead_hash_algorithm_t const ascon_hash_algorithm = {
-    "ASCON-HASH",
-    sizeof(ascon_hash_state_t),
-    ASCON_HASH_SIZE,
+aead_hash_algorithm_t const ascon_hash256_algorithm = {
+    "Ascon-Hash256",
+    sizeof(ascon_hash256_state_t),
+    ASCON_HASH256_SIZE,
     AEAD_FLAG_NONE,
-    ascon_hash,
-    (aead_hash_init_t)ascon_hash_init,
+    ascon_hash256,
+    (aead_hash_init_t)ascon_hash256_init,
     0, /* init_fixed */
-    (aead_hash_update_t)ascon_hash_update,
-    (aead_hash_finalize_t)ascon_hash_finalize,
+    (aead_hash_update_t)ascon_hash256_update,
+    (aead_hash_finalize_t)ascon_hash256_finalize,
     0, /* absorb */
     0, /* squeeze */
-    (aead_hash_free_t)ascon_hash_free
+    (aead_hash_free_t)ascon_hash256_free
 };
 
-aead_hash_algorithm_t const ascon_xof_algorithm = {
-    "ASCON-XOF",
-    sizeof(ascon_xof_state_t),
-    ASCON_HASH_SIZE,
+aead_hash_algorithm_t const ascon_xof128_algorithm = {
+    "Ascon-XOF128",
+    sizeof(ascon_xof128_state_t),
+    ASCON_HASH256_SIZE,
     AEAD_FLAG_NONE,
-    ascon_xof,
-    (aead_hash_init_t)ascon_xof_init,
+    ascon_xof128,
+    (aead_hash_init_t)ascon_xof128_init,
     0, /* init_fixed */
     0, /* update */
     0, /* finalize */
-    (aead_xof_absorb_t)ascon_xof_absorb,
-    (aead_xof_squeeze_t)ascon_xof_squeeze,
-    (aead_hash_free_t)ascon_xof_free
-};
-
-aead_hash_algorithm_t const ascon_xof_fixed_length_algorithm = {
-    "ASCON-XOF-fixed-length",
-    sizeof(ascon_xof_state_t),
-    ASCON_HASH_SIZE,
-    AEAD_FLAG_NONE,
-    ascon_xof,
-    (aead_hash_init_t)ascon_xof_init,
-    (aead_hash_init_fixed_t)ascon_xof_init_fixed,
-    0, /* update */
-    0, /* finalize */
-    (aead_xof_absorb_t)ascon_xof_absorb,
-    (aead_xof_squeeze_t)ascon_xof_squeeze,
-    (aead_hash_free_t)ascon_xof_free
+    (aead_xof_absorb_t)ascon_xof128_absorb,
+    (aead_xof_squeeze_t)ascon_xof128_squeeze,
+    (aead_hash_free_t)ascon_xof128_free
 };
 
 aead_cipher_t const ascon128a_siv_cipher = {
@@ -364,21 +349,21 @@ extern int ascon128a_siv_decrypt_cpp
      const unsigned char *npub,
      const unsigned char *k);
 
-extern void ascon_hash_cpp
+extern void ascon_hash256_cpp
     (unsigned char *out, const unsigned char *in, size_t inlen);
-extern void ascon_hash_init_cpp(void *state);
-extern void ascon_hash_free_cpp(void *state);
-extern void ascon_hash_update_cpp
+extern void ascon_hash256_init_cpp(void *state);
+extern void ascon_hash256_free_cpp(void *state);
+extern void ascon_hash256_update_cpp
     (void *state, const unsigned char *in, size_t inlen);
-extern void ascon_hash_finalize_cpp(void *state, unsigned char *out);
+extern void ascon_hash256_finalize_cpp(void *state, unsigned char *out);
 
-extern void ascon_xof_cpp
+extern void ascon_xof128_cpp
     (unsigned char *out, const unsigned char *in, size_t inlen);
-extern void ascon_xof_init_cpp(void *state);
-extern void ascon_xof_free_cpp(void *state);
-extern void ascon_xof_absorb_cpp
+extern void ascon_xof128_init_cpp(void *state);
+extern void ascon_xof128_free_cpp(void *state);
+extern void ascon_xof128_absorb_cpp
     (void *state, const unsigned char *in, size_t inlen);
-extern void ascon_xof_squeeze_cpp
+extern void ascon_xof128_squeeze_cpp
     (void *state, unsigned char *out, size_t outlen);
 
 aead_cipher_t const ascon128a_cpp_cipher = {
@@ -425,34 +410,34 @@ aead_cipher_t const ascon128a_siv_cpp_cipher = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-aead_hash_algorithm_t const ascon_hash_cpp_algorithm = {
-    "ASCON-HASH-cpp",
+aead_hash_algorithm_t const ascon_hash256_cpp_algorithm = {
+    "Ascon-Hash256-cpp",
     sizeof(void **),
-    ASCON_HASH_SIZE,
+    ASCON_HASH256_SIZE,
     AEAD_FLAG_NONE,
-    ascon_hash_cpp,
-    (aead_hash_init_t)ascon_hash_init_cpp,
+    ascon_hash256_cpp,
+    (aead_hash_init_t)ascon_hash256_init_cpp,
     0, /* init_fixed */
-    (aead_hash_update_t)ascon_hash_update_cpp,
-    (aead_hash_finalize_t)ascon_hash_finalize_cpp,
+    (aead_hash_update_t)ascon_hash256_update_cpp,
+    (aead_hash_finalize_t)ascon_hash256_finalize_cpp,
     0, /* absorb */
     0, /* squeeze */
-    (aead_hash_free_t)ascon_hash_free_cpp
+    (aead_hash_free_t)ascon_hash256_free_cpp
 };
 
-aead_hash_algorithm_t const ascon_xof_cpp_algorithm = {
-    "ASCON-XOF-cpp",
+aead_hash_algorithm_t const ascon_xof128_cpp_algorithm = {
+    "Ascon-XOF128-cpp",
     sizeof(void **),
-    ASCON_HASH_SIZE,
+    ASCON_HASH256_SIZE,
     AEAD_FLAG_NONE,
-    ascon_xof_cpp,
-    (aead_hash_init_t)ascon_xof_init_cpp,
+    ascon_xof128_cpp,
+    (aead_hash_init_t)ascon_xof128_init_cpp,
     0, /* init_fixed */
     0, /* update */
     0, /* finalize */
-    (aead_xof_absorb_t)ascon_xof_absorb_cpp,
-    (aead_xof_squeeze_t)ascon_xof_squeeze_cpp,
-    (aead_hash_free_t)ascon_xof_free_cpp
+    (aead_xof_absorb_t)ascon_xof128_absorb_cpp,
+    (aead_xof_squeeze_t)ascon_xof128_squeeze_cpp,
+    (aead_hash_free_t)ascon_xof128_free_cpp
 };
 
 /* List of all AEAD ciphers that we can run KAT tests for */
@@ -471,11 +456,10 @@ static const aead_cipher_t *const ciphers[] = {
 
 /* List of all hash algorithms that we can run KAT tests for */
 static const aead_hash_algorithm_t *const hashes[] = {
-    &ascon_hash_algorithm,
-    &ascon_xof_algorithm,
-    &ascon_xof_fixed_length_algorithm,
-    &ascon_hash_cpp_algorithm,
-    &ascon_xof_cpp_algorithm,
+    &ascon_hash256_algorithm,
+    &ascon_xof128_algorithm,
+    &ascon_hash256_cpp_algorithm,
+    &ascon_xof128_cpp_algorithm,
     0
 };
 

@@ -54,7 +54,7 @@ extern "C" {
 typedef struct
 {
     /** XOF state containing the accumulated SpongePRNG state */
-    ascon_xof_state_t xof;
+    ascon_xof128_state_t xof;
 
     /** Number of bytes that have been generated since the last re-seed */
     uint32_t counter;

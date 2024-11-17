@@ -21,43 +21,44 @@
  */
 
 #include <ascon/xof.h>
+#include <ascon/hash.h>
+#include "core/ascon-util.h"
 #include "core/ascon-util-snp.h"
-#include "hash/ascon-xof-internal.h"
 #include <string.h>
 
-void ascon_xof(unsigned char *out, const unsigned char *in, size_t inlen)
+void ascon_xof128(unsigned char *out, const unsigned char *in, size_t inlen)
 {
-    ascon_xof_state_t state;
-    ascon_xof_init(&state);
-    ascon_xof_absorb(&state, in, inlen);
-    ascon_xof_squeeze(&state, out, ASCON_HASH_SIZE);
-    ascon_xof_free(&state);
+    ascon_xof128_state_t state;
+    ascon_xof128_init(&state);
+    ascon_xof128_absorb(&state, in, inlen);
+    ascon_xof128_squeeze(&state, out, ASCON_HASH256_SIZE);
+    ascon_xof128_free(&state);
 }
 
-void ascon_xof_init(ascon_xof_state_t *state)
+void ascon_xof128_init(ascon_xof128_state_t *state)
 {
-    /* IV for ASCON-XOF after processing it with the permutation */
+    /* IV for Ascon-XOF128 after processing it with the permutation */
 #if defined(ASCON_BACKEND_SLICED64)
     static uint64_t const iv[5] = {
-        0xb57e273b814cd416ULL, 0x2b51042562ae2420ULL,
-        0x66a3a7768ddf2218ULL, 0x5aad0a7a8153650cULL,
-        0x4f3e0e32539493b6ULL
+        0xda82ce768d9447ebULL, 0xcc7ce6c75f1ef969ULL,
+        0xe7508fd780085631ULL, 0x0ee0ea53416b58ccULL,
+        0xe0547524db6f0bdeULL
     };
     memcpy(state->state.S, iv, sizeof(iv));
 #elif defined(ASCON_BACKEND_SLICED32)
     static uint32_t const iv[10] = {
-        0x7e351ae6, 0xc7578281, 0x1d238220, 0x70045f44,
-        0xa13e3f04, 0x5dd5ab52, 0xc30c1db2, 0x3e378142,
-        0xb624d656, 0x3735189d
+        0xc0ae36b9, 0xb9b5a81f, 0xaeabf6d9, 0xa6d933e6,
+        0xbc3f00e5, 0xd0b98214, 0x288d99ca, 0x3cf1072a,
+        0x8ef2db1e, 0xc044b73b
     };
     memcpy(state->state.W, iv, sizeof(iv));
 #else
     static uint8_t const iv[40] = {
-        0xb5, 0x7e, 0x27, 0x3b, 0x81, 0x4c, 0xd4, 0x16,
-        0x2b, 0x51, 0x04, 0x25, 0x62, 0xae, 0x24, 0x20,
-        0x66, 0xa3, 0xa7, 0x76, 0x8d, 0xdf, 0x22, 0x18,
-        0x5a, 0xad, 0x0a, 0x7a, 0x81, 0x53, 0x65, 0x0c,
-        0x4f, 0x3e, 0x0e, 0x32, 0x53, 0x94, 0x93, 0xb6
+        0xeb, 0x47, 0x94, 0x8d, 0x76, 0xce, 0x82, 0xda,
+        0x69, 0xf9, 0x1e, 0x5f, 0xc7, 0xe6, 0x7c, 0xcc,
+        0x31, 0x56, 0x08, 0x80, 0xd7, 0x8f, 0x50, 0xe7,
+        0xcc, 0x58, 0x6b, 0x41, 0x53, 0xea, 0xe0, 0x0e,
+        0xde, 0x0b, 0x6f, 0xdb, 0x24, 0x75, 0x54, 0xe0
     };
 #if defined(ASCON_BACKEND_DIRECT_XOR)
     memcpy(state->state.B, iv, sizeof(iv));
@@ -71,151 +72,109 @@ void ascon_xof_init(ascon_xof_state_t *state)
     state->mode = 0;
 }
 
-void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen)
+static void ascon_cxof128_absorb_custom_size
+    (ascon_xof128_state_t *state, size_t customlen)
 {
-#if !defined(__SIZEOF_SIZE_T__) || __SIZEOF_SIZE_T__ >= 4
-    if (outlen >= (((size_t)1) << 29))
-        outlen = 0; /* Too large, so switch to arbitrary-length output */
-#endif
-    if (outlen == 0U) {
-        /* Output length of zero is equivalent to regular XOF */
-        ascon_xof_init(state);
-    } else if (outlen == 32U) {
-        /* Output length of 32 is equivalent to ASCON-HASH */
+    unsigned char size[8];
+    le_store_word64(size, customlen * 8U);
+    ascon_xof128_absorb(state, size, sizeof(size));
+}
+
+void ascon_cxof128_init
+    (ascon_xof128_state_t *state, const unsigned char *custom, size_t customlen)
+{
+    /* IV for Ascon-CXOF128 after processing it with the permutation */
 #if defined(ASCON_BACKEND_SLICED64)
-        static uint64_t const iv[5] = {
-            0xee9398aadb67f03dULL, 0x8bb21831c60f1002ULL,
-            0xb48a92db98d5da62ULL, 0x43189921b8f8e3e8ULL,
-            0x348fa5c9d525e140ULL
-        };
-        memcpy(state->state.S, iv, sizeof(iv));
+    static uint64_t const iv[5] = {
+        0x675527c2a0e8de03ULL, 0x43d12d7dc0377bbcULL,
+        0xe9901dec426e81b5ULL, 0x2ab14907720780b6ULL,
+        0x8f3f1d02d432bc46ULL
+    };
+    memcpy(state->state.S, iv, sizeof(iv));
 #elif defined(ASCON_BACKEND_SLICED32)
-        static uint32_t const iv[10] = {
-            0xa540dbc7, 0xf9afb5c6, 0x1445a340, 0xbd249301,
-            0x604d4fc8, 0xcb9ba8b5, 0x94514c98, 0x12a4eede,
-            0x6339f398, 0x4bca84c0
-        };
-        memcpy(state->state.W, iv, sizeof(iv));
+    static uint32_t const iv[10] = {
+        0xbf3808e1, 0x5059ceb1, 0x9d3f87d6, 0x1866857e,
+        0x947a8a17, 0xe82e178c, 0x0593c306, 0x7c21518d,
+        0x3770e46a, 0xb72185e1
+    };
+    memcpy(state->state.W, iv, sizeof(iv));
 #else
-        static uint8_t const iv[40] = {
-            0xee, 0x93, 0x98, 0xaa, 0xdb, 0x67, 0xf0, 0x3d,
-            0x8b, 0xb2, 0x18, 0x31, 0xc6, 0x0f, 0x10, 0x02,
-            0xb4, 0x8a, 0x92, 0xdb, 0x98, 0xd5, 0xda, 0x62,
-            0x43, 0x18, 0x99, 0x21, 0xb8, 0xf8, 0xe3, 0xe8,
-            0x34, 0x8f, 0xa5, 0xc9, 0xd5, 0x25, 0xe1, 0x40
-        };
+    static uint8_t const iv[40] = {
+        0x03, 0xde, 0xe8, 0xa0, 0xc2, 0x27, 0x55, 0x67,
+        0xbc, 0x7b, 0x37, 0xc0, 0x7d, 0x2d, 0xd1, 0x43,
+        0xb5, 0x81, 0x6e, 0x42, 0xec, 0x1d, 0x90, 0xe9,
+        0xb6, 0x80, 0x07, 0x72, 0x07, 0x49, 0xb1, 0x2a,
+        0x46, 0xbc, 0x32, 0xd4, 0x02, 0x1d, 0x3f, 0x8f
+    };
 #if defined(ASCON_BACKEND_DIRECT_XOR)
-        memcpy(state->state.B, iv, sizeof(iv));
+    memcpy(state->state.B, iv, sizeof(iv));
 #else
-        ascon_init(&(state->state));
-        ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
-        ascon_release(&(state->state));
-#endif
-#endif
-        state->count = 0;
-        state->mode = 0;
-    } else {
-        /* For all other lengths, we need to run the permutation
-         * to get the initial block for the XOF process */
-        uint8_t iv[8];
-        ascon_init(&(state->state));
-        be_store_word64(iv, 0x00400c0000000000ULL | (outlen * 8UL));
-        ascon_overwrite_bytes(&(state->state), iv, 0, 8);
-        ascon_permute(&(state->state), 0);
-        ascon_release(&(state->state));
-        state->count = 0;
-        state->mode = 0;
-    }
-}
-
-void ascon_xof_absorb_custom
-    (ascon_xof_state_t *state, const unsigned char *custom, size_t customlen)
-{
-    if (customlen > 0) {
-        ascon_xof_absorb(state, custom, customlen);
-        ascon_acquire(&(state->state));
-        ascon_pad(&(state->state), state->count);
-        ascon_permute(&(state->state), 0);
-        ascon_separator(&(state->state));
-        ascon_release(&(state->state));
-        state->count = 0;
-    }
-}
-
-void ascon_xof_init_custom
-    (ascon_xof_state_t *state, const char *function_name,
-     const unsigned char *custom, size_t customlen, size_t outlen)
-{
-    /* Format the initial block with the function name and output length */
-    uint8_t temp[ASCON_HASH_SIZE];
-    size_t len = function_name ? strlen(function_name) : 0;
-#if !defined(__SIZEOF_SIZE_T__) || __SIZEOF_SIZE_T__ >= 4
-    if (outlen >= (((size_t)1) << 29))
-        outlen = 0; /* Too large, so switch to arbitrary-length output */
-#endif
-    if (len == 0) {
-        /* No function name specified */
-        memset(temp, 0, ASCON_HASH_SIZE);
-    } else if (len <= 32) {
-        /* Pad the function name with zeroes */
-        memcpy(temp, function_name, len);
-        memset(temp + len, 0, ASCON_HASH_SIZE - len);
-    } else {
-        /* Compute ASCON-HASH(function_name) */
-        ascon_xof_init_fixed(state, ASCON_HASH_SIZE);
-        ascon_xof_absorb(state, (const unsigned char *)function_name, len);
-        ascon_xof_squeeze(state, temp, ASCON_HASH_SIZE);
-        ascon_xof_free(state);
-    }
     ascon_init(&(state->state));
-    ascon_overwrite_bytes(&(state->state), temp, 8, ASCON_HASH_SIZE);
-    be_store_word64(temp, 0x00400c0000000000ULL | (outlen * 8UL));
-    ascon_overwrite_bytes(&(state->state), temp, 0, 8);
-    ascon_permute(&(state->state), 0);
+    ascon_overwrite_bytes(&(state->state), iv, sizeof(iv));
     ascon_release(&(state->state));
+#endif
+#endif
     state->count = 0;
     state->mode = 0;
 
     /* Absorb the customization string */
-    ascon_xof_absorb_custom(state, custom, customlen);
+    ascon_cxof128_absorb_custom_size(state, customlen);
+    ascon_xof128_absorb(state, custom, customlen);
+    ascon_xof128_pad(state);
 }
 
-void ascon_xof_reinit(ascon_xof_state_t *state)
+void ascon_cxof128_init_named
+    (ascon_xof128_state_t *state, const char *name,
+     const unsigned char *custom, size_t customlen)
+{
+    if (name && name[0] != '\0') {
+        ascon_cxof128_init(state, (const unsigned char *)name, strlen(name));
+        if (customlen > 0) {
+            ascon_xof128_absorb(state, custom, customlen);
+            ascon_xof128_pad(state);
+        }
+    } else {
+        ascon_cxof128_init(state, custom, customlen);
+    }
+}
+
+void ascon_xof128_reinit(ascon_xof128_state_t *state)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
         defined(ASCON_BACKEND_DIRECT_XOR)
-    ascon_xof_init(state);
+    ascon_xof128_init(state);
 #else
-    ascon_xof_free(state);
-    ascon_xof_init(state);
+    ascon_xof128_free(state);
+    ascon_xof128_init(state);
 #endif
 }
 
-void ascon_xof_reinit_fixed(ascon_xof_state_t *state, size_t outlen)
+void ascon_cxof128_reinit
+    (ascon_xof128_state_t *state, const unsigned char *custom, size_t customlen)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
         defined(ASCON_BACKEND_DIRECT_XOR)
-    ascon_xof_init_fixed(state, outlen);
+    ascon_cxof128_init(state, custom, customlen);
 #else
-    ascon_xof_free(state);
-    ascon_xof_init_fixed(state, outlen);
+    ascon_xof128_free(state);
+    ascon_cxof128_init(state, custom, customlen);
 #endif
 }
 
-void ascon_xof_reinit_custom
-    (ascon_xof_state_t *state, const char *function_name,
-     const unsigned char *custom, size_t customlen, size_t outlen)
+void ascon_cxof128_reinit_named
+    (ascon_xof128_state_t *state, const char *name,
+     const unsigned char *custom, size_t customlen)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
         defined(ASCON_BACKEND_DIRECT_XOR)
-    ascon_xof_init_custom(state, function_name, custom, customlen, outlen);
+    ascon_cxof128_init_named(state, name, custom, customlen);
 #else
-    ascon_xof_free(state);
-    ascon_xof_init_custom(state, function_name, custom, customlen, outlen);
+    ascon_xof128_free(state);
+    ascon_cxof128_init_named(state, name, custom, customlen);
 #endif
 }
 
-void ascon_xof_free(ascon_xof_state_t *state)
+void ascon_xof128_free(ascon_xof128_state_t *state)
 {
     if (state) {
         ascon_acquire(&(state->state));
@@ -225,8 +184,8 @@ void ascon_xof_free(ascon_xof_state_t *state)
     }
 }
 
-void ascon_xof_absorb
-    (ascon_xof_state_t *state, const unsigned char *in, size_t inlen)
+void ascon_xof128_absorb
+    (ascon_xof128_state_t *state, const unsigned char *in, size_t inlen)
 {
     unsigned temp;
 
@@ -242,7 +201,7 @@ void ascon_xof_absorb
 
     /* Handle the partial left-over block from last time */
     if (state->count) {
-        temp = ASCON_XOF_RATE - state->count;
+        temp = ASCON_XOF128_RATE - state->count;
         if (temp > inlen) {
             temp = (unsigned)inlen;
             ascon_absorb_partial(&(state->state), in, state->count, temp);
@@ -258,10 +217,10 @@ void ascon_xof_absorb
     }
 
     /* Process full blocks that are aligned at state->s.count == 0 */
-    while (inlen >= ASCON_XOF_RATE) {
+    while (inlen >= ASCON_XOF128_RATE) {
         ascon_absorb_8(&(state->state), in, 0);
-        in += ASCON_XOF_RATE;
-        inlen -= ASCON_XOF_RATE;
+        in += ASCON_XOF128_RATE;
+        inlen -= ASCON_XOF128_RATE;
         ascon_permute(&(state->state), 0);
     }
 
@@ -275,8 +234,8 @@ void ascon_xof_absorb
     ascon_release(&(state->state));
 }
 
-void ascon_xof_squeeze
-    (ascon_xof_state_t *state, unsigned char *out, size_t outlen)
+void ascon_xof128_squeeze
+    (ascon_xof128_state_t *state, unsigned char *out, size_t outlen)
 {
     unsigned temp;
 
@@ -292,7 +251,7 @@ void ascon_xof_squeeze
 
     /* Handle left-over partial blocks from last time */
     if (state->count) {
-        temp = ASCON_XOF_RATE - state->count;
+        temp = ASCON_XOF128_RATE - state->count;
         if (temp > outlen) {
             temp = (unsigned)outlen;
             ascon_squeeze_partial(&(state->state), out, state->count, temp);
@@ -307,11 +266,11 @@ void ascon_xof_squeeze
     }
 
     /* Handle full blocks */
-    while (outlen >= ASCON_XOF_RATE) {
+    while (outlen >= ASCON_XOF128_RATE) {
         ascon_permute(&(state->state), 0);
         ascon_squeeze_8(&(state->state), out, 0);
-        out += ASCON_XOF_RATE;
-        outlen -= ASCON_XOF_RATE;
+        out += ASCON_XOF128_RATE;
+        outlen -= ASCON_XOF128_RATE;
     }
 
     /* Handle the left-over block */
@@ -326,12 +285,29 @@ void ascon_xof_squeeze
     ascon_release(&(state->state));
 }
 
-void ascon_xof_pad(ascon_xof_state_t *state)
+void ascon_xof128_pad(ascon_xof128_state_t *state)
+{
+    if (state->mode) {
+        /* We were squeezing output, so re-enter the absorb phase
+         * which will implicitly align on a rate block boundary.
+         * The input data was already padded prior to squeezing. */
+        ascon_xof128_absorb(state, 0, 0);
+    } else {
+        /* Pad and invoke the permutation */
+        ascon_acquire(&(state->state));
+        ascon_pad(&(state->state), state->count);
+        ascon_permute(&(state->state), 0);
+        ascon_release(&(state->state));
+        state->count = 0;
+    }
+}
+
+void ascon_xof128_zero_pad(ascon_xof128_state_t *state)
 {
     if (state->mode) {
         /* We were squeezing output, so re-enter the absorb phase
          * which will implicitly align on a rate block boundary */
-        ascon_xof_absorb(state, 0, 0);
+        ascon_xof128_absorb(state, 0, 0);
     } else if (state->count != 0) {
         /* Not currently aligned, so invoke the permutation */
         ascon_acquire(&(state->state));
@@ -341,7 +317,8 @@ void ascon_xof_pad(ascon_xof_state_t *state)
     }
 }
 
-void ascon_xof_copy(ascon_xof_state_t *dest, const ascon_xof_state_t *src)
+void ascon_xof128_copy
+    (ascon_xof128_state_t *dest, const ascon_xof128_state_t *src)
 {
     if (dest != src) {
         ascon_init(&(dest->state));

@@ -24,39 +24,39 @@
 #include "core/ascon-util-snp.h"
 #include <string.h>
 
-void ascon_hash(unsigned char *out, const unsigned char *in, size_t inlen)
+void ascon_hash256(unsigned char *out, const unsigned char *in, size_t inlen)
 {
-    ascon_hash_state_t state;
-    ascon_hash_init(&state);
-    ascon_xof_absorb(&(state.xof), in, inlen);
-    ascon_xof_squeeze(&(state.xof), out, ASCON_HASH_SIZE);
-    ascon_xof_free(&(state.xof));
+    ascon_hash256_state_t state;
+    ascon_hash256_init(&state);
+    ascon_xof128_absorb(&(state.xof), in, inlen);
+    ascon_xof128_squeeze(&(state.xof), out, ASCON_HASH256_SIZE);
+    ascon_xof128_free(&(state.xof));
 }
 
-void ascon_hash_init(ascon_hash_state_t *state)
+void ascon_hash256_init(ascon_hash256_state_t *state)
 {
-    /* IV for ASCON-HASH after processing it with the permutation */
+    /* IV for Ascon-Hash256 after processing it with the permutation */
 #if defined(ASCON_BACKEND_SLICED64)
     static uint64_t const iv[5] = {
-        0xee9398aadb67f03dULL, 0x8bb21831c60f1002ULL,
-        0xb48a92db98d5da62ULL, 0x43189921b8f8e3e8ULL,
-        0x348fa5c9d525e140ULL
+        0x9b1e5494e934d681ULL, 0x4bc3a01e333751d2ULL,
+        0xae65396c6b34b81aULL, 0x3c7fd4a4d56a4db3ULL,
+        0x1a5c464906c5976dULL
     };
     memcpy(state->xof.state.S, iv, sizeof(iv));
 #elif defined(ASCON_BACKEND_SLICED32)
     static uint32_t const iv[10] = {
-        0xa540dbc7, 0xf9afb5c6, 0x1445a340, 0xbd249301,
-        0x604d4fc8, 0xcb9ba8b5, 0x94514c98, 0x12a4eede,
-        0x6339f398, 0x4bca84c0
+        0x56e696e1, 0xb308e498, 0x990657dc, 0x39c35509,
+        0x2b5a9644, 0xf46674e3, 0x6fe2f8b5, 0x678c872d,
+        0x4ea92b7b, 0x32121896
     };
     memcpy(state->xof.state.W, iv, sizeof(iv));
 #else
     static uint8_t const iv[40] = {
-        0xee, 0x93, 0x98, 0xaa, 0xdb, 0x67, 0xf0, 0x3d,
-        0x8b, 0xb2, 0x18, 0x31, 0xc6, 0x0f, 0x10, 0x02,
-        0xb4, 0x8a, 0x92, 0xdb, 0x98, 0xd5, 0xda, 0x62,
-        0x43, 0x18, 0x99, 0x21, 0xb8, 0xf8, 0xe3, 0xe8,
-        0x34, 0x8f, 0xa5, 0xc9, 0xd5, 0x25, 0xe1, 0x40
+        0x81, 0xd6, 0x34, 0xe9, 0x94, 0x54, 0x1e, 0x9b,
+        0xd2, 0x51, 0x37, 0x33, 0x1e, 0xa0, 0xc3, 0x4b,
+        0x1a, 0xb8, 0x34, 0x6b, 0x6c, 0x39, 0x65, 0xae,
+        0xb3, 0x4d, 0x6a, 0xd5, 0xa4, 0xd4, 0x7f, 0x3c,
+        0x6d, 0x97, 0xc5, 0x06, 0x49, 0x46, 0x5c, 0x1a
     };
 #if defined(ASCON_BACKEND_DIRECT_XOR)
     memcpy(state->xof.state.B, iv, sizeof(iv));
@@ -70,34 +70,35 @@ void ascon_hash_init(ascon_hash_state_t *state)
     state->xof.mode = 0;
 }
 
-void ascon_hash_reinit(ascon_hash_state_t *state)
+void ascon_hash256_reinit(ascon_hash256_state_t *state)
 {
 #if defined(ASCON_BACKEND_SLICED64) || defined(ASCON_BACKEND_SLICED32) || \
         defined(ASCON_BACKEND_DIRECT_XOR)
-    ascon_hash_init(state);
+    ascon_hash256_init(state);
 #else
-    ascon_hash_free(state);
-    ascon_hash_init(state);
+    ascon_hash256_free(state);
+    ascon_hash256_init(state);
 #endif
 }
 
-void ascon_hash_free(ascon_hash_state_t *state)
+void ascon_hash256_free(ascon_hash256_state_t *state)
 {
-    ascon_xof_free(&(state->xof));
+    ascon_xof128_free(&(state->xof));
 }
 
-void ascon_hash_update
-    (ascon_hash_state_t *state, const unsigned char *in, size_t inlen)
+void ascon_hash256_update
+    (ascon_hash256_state_t *state, const unsigned char *in, size_t inlen)
 {
-    ascon_xof_absorb(&(state->xof), in, inlen);
+    ascon_xof128_absorb(&(state->xof), in, inlen);
 }
 
-void ascon_hash_finalize(ascon_hash_state_t *state, unsigned char *out)
+void ascon_hash256_finalize(ascon_hash256_state_t *state, unsigned char *out)
 {
-    ascon_xof_squeeze(&(state->xof), out, ASCON_HASH_SIZE);
+    ascon_xof128_squeeze(&(state->xof), out, ASCON_HASH256_SIZE);
 }
 
-void ascon_hash_copy(ascon_hash_state_t *dest, const ascon_hash_state_t *src)
+void ascon_hash256_copy
+    (ascon_hash256_state_t *dest, const ascon_hash256_state_t *src)
 {
-    ascon_xof_copy(&(dest->xof), &(src->xof));
+    ascon_xof128_copy(&(dest->xof), &(src->xof));
 }

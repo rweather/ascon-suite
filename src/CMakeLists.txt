@@ -42,7 +42,6 @@ list(APPEND ASCON_SOURCES
     cplusplus/ascon-siv-cpp.cpp
     hash/ascon-hash.c
     hash/ascon-xof.c
-    hash/ascon-xof-internal.h
     isap/ascon-isap-128a.c
     isap/ascon-isap-common.h
     kdf/ascon-hkdf.c
