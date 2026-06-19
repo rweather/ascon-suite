@@ -1,0 +1,32 @@
+===============================================================
+ Ascon-128a (sw) vs AES-128-GCM (hw) -- ESP32 @ 240 MHz
+===============================================================
+Captura : Monitor Serial @ 115200. AES-128-GCM via mbedTLS
+          (bloco AES em hardware; GHASH em software no ESP32 classico).
+Latencia: minimo de ciclos (piso livre de interrupcao), 2000 iteracoes.
+
+--- Saida da placa ---
+=== Comparativo Ascon-128a (sw) vs AES-128-GCM (hw) ===
+CPU: 240 MHz
+
+Sanidade AES-GCM: OK (cifra/decifra/tag validam)
+
+[Memoria - heap por operacao]
+  Ascon-128a: delta heap 0 B (esperado 0)
+  AES-GCM: delta heap apos free 0 B | pico transitorio 0 B
+
+[Latencia de cifragem - minimo de ciclos]
+  16 B  Ascon: 6115 cic (~25.48 us)  |  AES-GCM: 8541 cic (~35.59 us)  |  razao AES/Ascon: 1.40
+  32 B  Ascon: 7212 cic (~30.05 us)  |  AES-GCM: 10650 cic (~44.38 us)  |  razao AES/Ascon: 1.48
+  64 B  Ascon: 9406 cic (~39.19 us)  |  AES-GCM: 14868 cic (~61.95 us)  |  razao AES/Ascon: 1.58
+
+>>> Comparativo concluido <<<
+
+--- Analise (custo por bloco de 16 B; ajuste linear exato) ---
+Ascon-128a : base ~5018 cic + ~1097 cic/bloco
+AES-128-GCM: base ~6432 cic + ~2109 cic/bloco
+=> O custo por bloco do AES-GCM (GHASH em software) e ~2x o do Ascon; por isso a
+   vantagem do Ascon cresce com o payload (razao 1.40 -> 1.48 -> 1.58).
+Memoria: ambos sem alocacao dinamica (heap 0). Estado Ascon = 80 B (Sec. 5.2.3).
+Ressalva: no ESP32 classico o GCM nao e 100% hardware (so o bloco AES); em chips
+com GCM em hardware (S2/S3/C3) o resultado do AES poderia ser melhor.
