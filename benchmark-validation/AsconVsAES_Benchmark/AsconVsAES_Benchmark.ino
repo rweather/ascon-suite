@@ -22,69 +22,100 @@
 #include "mbedtls/gcm.h"
 #include <string.h>
 
-#define MAXPT 64
+#define MAX_PLAINTEXT 64
 
 static uint8_t key[16];
-static uint8_t nonce[16];        // nonce do Ascon (16 B)
-static uint8_t iv[12];           // IV do GCM (12 B = 96 bits, caso nativo/rapido)
-static uint8_t pt[MAXPT];
-static uint8_t ct[MAXPT + 16];   // Ascon: ciphertext || tag
-static uint8_t aesOut[MAXPT];    // AES: ciphertext
-static uint8_t aesTag[16];       // AES: tag
+static uint8_t nonce[16];                          // nonce do Ascon (16 B)
+static uint8_t initializationVector[12];           // IV do GCM (12 B = 96 bits, caso nativo/rapido)
+static uint8_t plaintext[MAX_PLAINTEXT];
+static uint8_t ciphertext[MAX_PLAINTEXT + 16];     // Ascon: ciphertext || tag
+static uint8_t aesCiphertext[MAX_PLAINTEXT];       // AES: ciphertext
+static uint8_t aesTag[16];                         // AES: tag
 
-struct CycleStats { uint32_t min; uint32_t max; double mean; };
+struct CycleStatistics {
+  uint32_t minCycles;
+  uint32_t maxCycles;
+  double   meanCycles;
+};
 
-// Varia chave/nonce/iv/pt a cada iteracao (tamanho fixo).
-static void varyInputs(int it, size_t mlen)
+// Varia chave/nonce/IV/plaintext a cada iteracao (tamanho fixo).
+static void varyInputs(int iteration, size_t messageLength)
 {
-  for (int i = 0; i < 16; i++) { key[i] = (uint8_t)(it*31 + i*7 + 1); nonce[i] = (uint8_t)(it*17 + i*3); }
-  for (int i = 0; i < 12; i++) iv[i] = (uint8_t)(it*19 + i*5);
-  for (size_t i = 0; i < mlen; i++) pt[i] = (uint8_t)(it*13 + i*5);
+  for (int index = 0; index < 16; index++) {
+    key[index]   = (uint8_t)(iteration * 31 + index * 7 + 1);
+    nonce[index] = (uint8_t)(iteration * 17 + index * 3);
+  }
+  for (int index = 0; index < 12; index++)
+    initializationVector[index] = (uint8_t)(iteration * 19 + index * 5);
+  for (size_t index = 0; index < messageLength; index++)
+    plaintext[index] = (uint8_t)(iteration * 13 + index * 5);
 }
 
-static double cyclesToUs(double c) { return c / (double) getCpuFrequencyMhz(); }
+static double cyclesToMicroseconds(double cycles) { return cycles / (double) getCpuFrequencyMhz(); }
 
 // ----- Ascon-128a (software) -----
-static CycleStats benchAscon(size_t mlen, int iters)
+static CycleStatistics benchmarkAscon(size_t messageLength, int iterations)
 {
-  size_t clen = 0; uint32_t mn = 0xFFFFFFFFu, mx = 0; double sum = 0.0;
-  for (int it = 0; it < 16; it++) { varyInputs(it, mlen); ascon128a_aead_encrypt(ct, &clen, pt, mlen, NULL, 0, nonce, key); }
-  for (int it = 0; it < iters; it++) {
-    varyInputs(it, mlen);
-    uint32_t t0 = ESP.getCycleCount();
-    ascon128a_aead_encrypt(ct, &clen, pt, mlen, NULL, 0, nonce, key);
-    uint32_t t1 = ESP.getCycleCount();
-    uint32_t c = t1 - t0;
-    if (c < mn) mn = c; if (c > mx) mx = c; sum += (double) c;
+  size_t ciphertextLength = 0;
+  uint32_t minCycles = 0xFFFFFFFFu, maxCycles = 0;
+  double cycleSum = 0.0;
+  for (int iteration = 0; iteration < 16; iteration++) {
+    varyInputs(iteration, messageLength);
+    ascon128a_aead_encrypt(ciphertext, &ciphertextLength, plaintext, messageLength, NULL, 0, nonce, key);
   }
-  CycleStats s; s.min = mn; s.max = mx; s.mean = sum / iters; return s;
+  for (int iteration = 0; iteration < iterations; iteration++) {
+    varyInputs(iteration, messageLength);
+    uint32_t startCycles = ESP.getCycleCount();
+    ascon128a_aead_encrypt(ciphertext, &ciphertextLength, plaintext, messageLength, NULL, 0, nonce, key);
+    uint32_t endCycles = ESP.getCycleCount();
+    uint32_t cycles = endCycles - startCycles;
+    if (cycles < minCycles) minCycles = cycles;
+    if (cycles > maxCycles) maxCycles = cycles;
+    cycleSum += (double) cycles;
+  }
+  CycleStatistics stats;
+  stats.minCycles  = minCycles;
+  stats.maxCycles  = maxCycles;
+  stats.meanCycles = cycleSum / iterations;
+  return stats;
 }
 
 // ----- AES-128-GCM (mbedTLS; bloco AES por hardware no ESP32) -----
-static CycleStats benchAES(size_t mlen, int iters)
+static CycleStatistics benchmarkAES(size_t messageLength, int iterations)
 {
-  mbedtls_gcm_context gcm; mbedtls_gcm_init(&gcm);
-  mbedtls_gcm_setkey(&gcm, MBEDTLS_CIPHER_ID_AES, key, 128);  // chave fixada 1x (amortizada)
-  uint32_t mn = 0xFFFFFFFFu, mx = 0; double sum = 0.0;
-  for (int it = 0; it < 16; it++) { varyInputs(it, mlen); mbedtls_gcm_crypt_and_tag(&gcm, MBEDTLS_GCM_ENCRYPT, mlen, iv, 12, NULL, 0, pt, aesOut, 16, aesTag); }
-  for (int it = 0; it < iters; it++) {
-    varyInputs(it, mlen);
-    uint32_t t0 = ESP.getCycleCount();
-    mbedtls_gcm_crypt_and_tag(&gcm, MBEDTLS_GCM_ENCRYPT, mlen, iv, 12, NULL, 0, pt, aesOut, 16, aesTag);
-    uint32_t t1 = ESP.getCycleCount();
-    uint32_t c = t1 - t0;
-    if (c < mn) mn = c; if (c > mx) mx = c; sum += (double) c;
+  mbedtls_gcm_context gcmContext;
+  mbedtls_gcm_init(&gcmContext);
+  mbedtls_gcm_setkey(&gcmContext, MBEDTLS_CIPHER_ID_AES, key, 128);  // chave fixada 1x (amortizada)
+  uint32_t minCycles = 0xFFFFFFFFu, maxCycles = 0;
+  double cycleSum = 0.0;
+  for (int iteration = 0; iteration < 16; iteration++) {
+    varyInputs(iteration, messageLength);
+    mbedtls_gcm_crypt_and_tag(&gcmContext, MBEDTLS_GCM_ENCRYPT, messageLength, initializationVector, 12, NULL, 0, plaintext, aesCiphertext, 16, aesTag);
   }
-  mbedtls_gcm_free(&gcm);
-  CycleStats s; s.min = mn; s.max = mx; s.mean = sum / iters; return s;
+  for (int iteration = 0; iteration < iterations; iteration++) {
+    varyInputs(iteration, messageLength);
+    uint32_t startCycles = ESP.getCycleCount();
+    mbedtls_gcm_crypt_and_tag(&gcmContext, MBEDTLS_GCM_ENCRYPT, messageLength, initializationVector, 12, NULL, 0, plaintext, aesCiphertext, 16, aesTag);
+    uint32_t endCycles = ESP.getCycleCount();
+    uint32_t cycles = endCycles - startCycles;
+    if (cycles < minCycles) minCycles = cycles;
+    if (cycles > maxCycles) maxCycles = cycles;
+    cycleSum += (double) cycles;
+  }
+  mbedtls_gcm_free(&gcmContext);
+  CycleStatistics stats;
+  stats.minCycles  = minCycles;
+  stats.maxCycles  = maxCycles;
+  stats.meanCycles = cycleSum / iterations;
+  return stats;
 }
 
-static void printCompare(size_t mlen, CycleStats a, CycleStats e)
+static void printComparison(size_t messageLength, CycleStatistics asconStats, CycleStatistics aesStats)
 {
-  Serial.print("  "); Serial.print((unsigned) mlen); Serial.print(" B  ");
-  Serial.print("Ascon: "); Serial.print(a.min); Serial.print(" cic (~"); Serial.print(cyclesToUs(a.min), 2); Serial.print(" us)");
-  Serial.print("  |  AES-GCM: "); Serial.print(e.min); Serial.print(" cic (~"); Serial.print(cyclesToUs(e.min), 2); Serial.print(" us)");
-  Serial.print("  |  razao AES/Ascon: "); Serial.println((double) e.min / (double) a.min, 2);
+  Serial.print("  "); Serial.print((unsigned) messageLength); Serial.print(" B  ");
+  Serial.print("Ascon: "); Serial.print(asconStats.minCycles); Serial.print(" cic (~"); Serial.print(cyclesToMicroseconds(asconStats.minCycles), 2); Serial.print(" us)");
+  Serial.print("  |  AES-GCM: "); Serial.print(aesStats.minCycles); Serial.print(" cic (~"); Serial.print(cyclesToMicroseconds(aesStats.minCycles), 2); Serial.print(" us)");
+  Serial.print("  |  razao AES/Ascon: "); Serial.println((double) aesStats.minCycles / (double) asconStats.minCycles, 2);
 }
 
 void setup()
@@ -99,45 +130,47 @@ void setup()
   // ----- Sanidade: o caminho AES-GCM realmente cifra e a tag valida -----
   varyInputs(7, 32);
   {
-    mbedtls_gcm_context g; mbedtls_gcm_init(&g);
-    int e1 = mbedtls_gcm_setkey(&g, MBEDTLS_CIPHER_ID_AES, key, 128);
-    int e2 = mbedtls_gcm_crypt_and_tag(&g, MBEDTLS_GCM_ENCRYPT, 32, iv, 12, NULL, 0, pt, aesOut, 16, aesTag);
-    uint8_t dec[MAXPT];
-    int e3 = mbedtls_gcm_auth_decrypt(&g, 32, iv, 12, NULL, 0, aesTag, 16, aesOut, dec);
-    mbedtls_gcm_free(&g);
-    bool ok = (e1 == 0 && e2 == 0 && e3 == 0 && memcmp(dec, pt, 32) == 0);
-    Serial.print("Sanidade AES-GCM: "); Serial.println(ok ? "OK (cifra/decifra/tag validam)" : "FALHOU");
+    mbedtls_gcm_context gcmContext;
+    mbedtls_gcm_init(&gcmContext);
+    int setkeyResult  = mbedtls_gcm_setkey(&gcmContext, MBEDTLS_CIPHER_ID_AES, key, 128);
+    int encryptResult = mbedtls_gcm_crypt_and_tag(&gcmContext, MBEDTLS_GCM_ENCRYPT, 32, initializationVector, 12, NULL, 0, plaintext, aesCiphertext, 16, aesTag);
+    uint8_t decryptedOutput[MAX_PLAINTEXT];
+    int decryptResult = mbedtls_gcm_auth_decrypt(&gcmContext, 32, initializationVector, 12, NULL, 0, aesTag, 16, aesCiphertext, decryptedOutput);
+    mbedtls_gcm_free(&gcmContext);
+    bool sanityPassed = (setkeyResult == 0 && encryptResult == 0 && decryptResult == 0 && memcmp(decryptedOutput, plaintext, 32) == 0);
+    Serial.print("Sanidade AES-GCM: "); Serial.println(sanityPassed ? "OK (cifra/decifra/tag validam)" : "FALHOU");
   }
   Serial.println();
 
   // ----- Memoria: heap por operacao -----
   Serial.println("[Memoria - heap por operacao]");
   varyInputs(1, 16);
-  size_t clen = 0;
-  uint32_t a0 = ESP.getFreeHeap();
-  ascon128a_aead_encrypt(ct, &clen, pt, 16, NULL, 0, nonce, key);
-  uint32_t a1 = ESP.getFreeHeap();
-  Serial.print("  Ascon-128a: delta heap "); Serial.print((int32_t) a1 - (int32_t) a0); Serial.println(" B (esperado 0)");
+  size_t ciphertextLength = 0;
+  uint32_t heapBeforeAscon = ESP.getFreeHeap();
+  ascon128a_aead_encrypt(ciphertext, &ciphertextLength, plaintext, 16, NULL, 0, nonce, key);
+  uint32_t heapAfterAscon = ESP.getFreeHeap();
+  Serial.print("  Ascon-128a: delta heap "); Serial.print((int32_t) heapAfterAscon - (int32_t) heapBeforeAscon); Serial.println(" B (esperado 0)");
 
-  uint32_t h0 = ESP.getFreeHeap();
-  uint32_t m0 = ESP.getMinFreeHeap();
+  uint32_t heapBeforeAES    = ESP.getFreeHeap();
+  uint32_t minHeapBeforeAES = ESP.getMinFreeHeap();
   {
-    mbedtls_gcm_context g; mbedtls_gcm_init(&g);
-    mbedtls_gcm_setkey(&g, MBEDTLS_CIPHER_ID_AES, key, 128);
-    mbedtls_gcm_crypt_and_tag(&g, MBEDTLS_GCM_ENCRYPT, 16, iv, 12, NULL, 0, pt, aesOut, 16, aesTag);
-    mbedtls_gcm_free(&g);
+    mbedtls_gcm_context gcmContext;
+    mbedtls_gcm_init(&gcmContext);
+    mbedtls_gcm_setkey(&gcmContext, MBEDTLS_CIPHER_ID_AES, key, 128);
+    mbedtls_gcm_crypt_and_tag(&gcmContext, MBEDTLS_GCM_ENCRYPT, 16, initializationVector, 12, NULL, 0, plaintext, aesCiphertext, 16, aesTag);
+    mbedtls_gcm_free(&gcmContext);
   }
-  uint32_t h1 = ESP.getFreeHeap();
-  uint32_t m1 = ESP.getMinFreeHeap();
-  Serial.print("  AES-GCM: delta heap apos free "); Serial.print((int32_t) h1 - (int32_t) h0);
-  Serial.print(" B | pico transitorio "); Serial.print((int32_t) m0 - (int32_t) m1); Serial.println(" B");
+  uint32_t heapAfterAES    = ESP.getFreeHeap();
+  uint32_t minHeapAfterAES = ESP.getMinFreeHeap();
+  Serial.print("  AES-GCM: delta heap apos free "); Serial.print((int32_t) heapAfterAES - (int32_t) heapBeforeAES);
+  Serial.print(" B | pico transitorio "); Serial.print((int32_t) minHeapBeforeAES - (int32_t) minHeapAfterAES); Serial.println(" B");
   Serial.println();
 
   // ----- Latencia (minimo = piso livre de interrupcao) -----
   Serial.println("[Latencia de cifragem - minimo de ciclos]");
-  printCompare(16, benchAscon(16, 2000), benchAES(16, 2000));
-  printCompare(32, benchAscon(32, 2000), benchAES(32, 2000));
-  printCompare(64, benchAscon(64, 2000), benchAES(64, 2000));
+  printComparison(16, benchmarkAscon(16, 2000), benchmarkAES(16, 2000));
+  printComparison(32, benchmarkAscon(32, 2000), benchmarkAES(32, 2000));
+  printComparison(64, benchmarkAscon(64, 2000), benchmarkAES(64, 2000));
   Serial.println();
 
   Serial.println(">>> Comparativo concluido <<<");
@@ -147,19 +180,3 @@ void loop()
 {
   delay(1000);  // roda uma vez no setup(); cede o processador
 }
-
-=== Comparativo Ascon-128a (sw) vs AES-128-GCM (hw) ===
-CPU: 240 MHz
-
-Sanidade AES-GCM: OK (cifra/decifra/tag validam)
-
-[Memoria - heap por operacao]
-  Ascon-128a: delta heap 0 B (esperado 0)
-  AES-GCM: delta heap apos free 0 B | pico transitorio 0 B
-
-[Latencia de cifragem - minimo de ciclos]
-  16 B  Ascon: 6115 cic (~25.48 us)  |  AES-GCM: 8541 cic (~35.59 us)  |  razao AES/Ascon: 1.40
-  32 B  Ascon: 7212 cic (~30.05 us)  |  AES-GCM: 10650 cic (~44.38 us)  |  razao AES/Ascon: 1.48
-  64 B  Ascon: 9406 cic (~39.19 us)  |  AES-GCM: 14868 cic (~61.95 us)  |  razao AES/Ascon: 1.58
-
->>> Comparativo concluido <<<
