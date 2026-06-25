@@ -1,0 +1,83 @@
+\chapter{Introdução} \label{cap:introducao}
+
+A Internet das Coisas (IoT) é composta por dispositivos embarcados que desempenham funções específicas, atuando como sensores e controladores para uma variedade de aplicações tecnológicas produzidas hoje em dia, desde os aparelhos mais simples do cotidiano até processos industriais complexos. Com a evolução do hardware, os dispositivos IoT tornaram-se menores, mais rápidos, mais eficientes e com menor custo, o que levou a uma explosão do seu uso \cite{alfuqaha2015iot}.
+
+Contudo, um dos principais entraves para essa tecnologia decorre das limitações energéticas e computacionais desses dispositivos \cite{nistir8114}. Apesar da evolução vista nas últimas décadas, a IoT ainda enfrenta gargalos em processos que demandam alto poder computacional, devido à grande carga de processamento e ao elevado custo energético.
+
+Diante desse cenário, surgem questões de segurança que podem ser exploradas para invadir e comprometer o funcionamento da rede. Para resolver a questão da transmissão segura e eficiente, padrões como o ASCON, pela necessidade de se padronizar e produzir um conjunto de métodos criptográficos que sejam leves para uso em dispositivos com baixo consumo energético \cite{nist800232}. Em paralelo, para viabilizar a comunicação de longa distância com baixa energia, utiliza-se amplamente o protocolo LoRaWAN, que possui aplicações fundamentais em diversas áreas, desde a infraestrutura de cidades inteligentes e controle de tráfego até o monitoramento de desastres, agricultura de precisão e automação industrial com foco em manutenção preditiva. O grande problema enfrentado por esse protocolo, no entanto, é a 
+segurança da informação frente a ataques como jamming, replay attacks, 
+spoofing e denial of service \cite{hessel2023lorawan}. A vulnerabilidade a ataques podem causar disrupções críticas e prejuízos severos, tornando indispensável a aplicação de métodos robustos de prevenção. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Motivação}
+A necessidade de operar com baixo consumo energético eleva bastante a complexidade do uso de dispositivos IoT, uma vez que tentativas de mitigar esse problema podem resultar em simplificações que geram problemas de segurança \cite{nistir8114} \cite{hessel2023lorawan}. Diante disso, torna-se pertinente compreender a natureza desses ataques e suas formas de mitigação, além de estudar a eficiência e a eficácia de modelos de Machine Learning na detecção de intrusões e anomalias.
+
+Um desses problemas é a vulnerabilidade a ataques diretos, como ataques de negação de serviço (DDoS) ou Jamming, que podem esgotar a bateria do dispositivo ou impedir que a coleta de dados seja feita de maneira adequada \cite{hessel2023lorawan}. Outro grande desafio está na comunicação: é preciso garantir que a informação transmitida entre os dispositivos não possa ser interceptada nem modificada, assegurando a integridade, confidencialidade e autenticidade dos dados. Como os algoritmos de segurança comumente utilizados exigem um grande poder computacional, torna-se necessário buscar maneiras mais eficientes de proteger os dados durante a transmissão.
+
+
+O uso de \textit{Machine Learning} neste trabalho decorre da necessidade de 
+detectar anomalias em redes LoRaWAN a partir de padrões temporais e 
+comportamentais dos dados. Em contextos reais de IoT, abordagens baseadas 
+apenas em regras fixas ou limiares estáticos tendem a ser limitadas. O 
+comportamento normal pode variar conforme o contexto operacional (dispositivo, 
+gateway, ambiente) e evoluir ao longo do tempo, tornando limiares fixos 
+(ex: ``se RSSI < -120 dBm, alertar'') inadequados. Além disso, métodos 
+tradicionais apresentam dificuldade em capturar estruturas complexas em dados 
+sequenciais, tais como degradação gradual de equipamento ou padrões não 
+lineares de transmissão. Por outro lado, abordagens baseadas em aprendizado 
+conseguem modelar relações temporais, identificar desvios sutis e adaptar-se 
+dinamicamente à evolução do comportamento normal, mostrando-se mais adequadas 
+para este contexto \cite{chalapathy2019}.
+
+Por isso, a modelagem é realizada com base no comportamento esperado do dispositivo em suas circunstâncias normais de operação, buscando aprender padrões legítimos de funcionamento a partir dos dados observados. Nessa abordagem, desvios suficientemente relevantes em relação ao comportamento previamente aprendido são tratados como indícios de anomalia. Trata-se, portanto, de uma abordagem adaptativa, pois o modelo se ajusta ao perfil comportamental de cada nó monitorado. \cite{hayashi2022handsfree}.
+
+
+Assim, neste trabalho, \textit{Machine Learning} é tratado como um dos núcleos centrais da investigação. Seu papel não é apenas classificar dados, mas aprender perfis de operação, comparar abordagens de detecção e oferecer uma base experimental para uma etapa posterior de avaliação em borda. Essa decisão amplia o escopo da análise, permitindo estudar simultaneamente eficácia de detecção, robustez metodológica e viabilidade de implantação em borda.
+
+O padrão Ascon, por sua vez, foi selecionado como a primeira escolha como novo padrão da competição de criptografia leve do NIST \citeonline{nist_lwc_finalists} assim como a primeira escolha de criptografia leve da competição CAESAR \cite{caesar_submissions}. A relevância desse padrão se torna clara quando analisado seu baixo custo energético, rapidez, e confiabilidade, garantindo segurança para dados AEAD e ataques de canal colateral \cite{ascon_official}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Objetivos}
+O objetivo geral deste trabalho é implementar e avaliar um sistema de comunicação baseado no protocolo LoRaWAN, integrando a aplicação de modelos de \textit{Machine Learning} e o padrão de criptografia leve Ascon. A finalidade central é analisar o nível de segurança e a resiliência que a combinação dessas duas tecnologias pode oferecer ao ecossistema de Internet das Coisas (IoT).
+
+Para o alcance do objetivo geral, foram definidos os seguintes objetivos específicos:
+
+\begin{itemize}
+    \item Treinar e testar modelos de \textit{Machine Learning}, utilizando os \textit{datasets} selecionados, para atuar na identificação e mitigação de ameaças ativas, tais como \textit{jamming}, \textit{spoofing} e ataques de Negação de Serviço (DoS).
+    \item Implementar os algoritmos da família Ascon no nó sensor para estabelecer uma infraestrutura que garanta a privacidade, a autenticidade e a integridade dos dados transmitidos, com baixo custo computacional.
+    \item Desenvolver o protótipo do sistema integrando as camadas de comunicação (LoRaWAN), de detecção e criptografia.
+    \item Analisar o nível de segurança global oferecido pelo conjunto, validando a eficácia da solução proposta frente às restrições do hardware - em termos de consumo energético.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Justificativa}
+A relevância deste trabalho evidencia-se pelo papel central e pela rápida expansão dos dispositivos de Internet das Coisas (IoT) no cotidiano, com projeções indicando dezenas de bilhões de equipamentos conectados nos próximos anos \cite{pandey2025}. Propor uma metodologia que integra tecnologias e conceitos críticos como o protocolo de comunicação LoRaWAN, modelos de \textit{Machine Learning} e segurança criptográfica, e verificar a sua eficácia em cenários práticos, demonstra como a união dessas ferramentas pode alavancar a resiliência de sistemas reais, tornando-os cada vez mais robustos contra ameaças.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Organização do Trabalho}
+Para facilitar a leitura e a compreensão da pesquisa, este documento está estruturado da seguinte forma:
+
+O Capítulo \ref{cap:conceitos} apresenta os aspectos conceituais que fundamentam o projeto. Nele, são abordados o funcionamento do protocolo LoRaWAN e o paradigma da criptografia leve (\textit{Lightweight Cryptography}), detalhando o processo de padronização do NIST que elegeu a família Ascon, além de uma comparação com outras famílias de algoritmos. O capítulo também explora a base teórica de \textit{Machine Learning} voltada para a detecção de anomalias.
+
+O Capítulo \ref{cap:metodo} descreve o método do trabalho. Primeiramente, apresenta-se a 
+abordagem de elicitação de requisitos adotada, incluindo análise de 
+literatura, identificação de restrições de hardware e validação de 
+viabilidade técnica. Em seguida, são detalhados os datasets analisados e 
+selecionados para o modelo de Machine Learning, os procedimentos de 
+treinamento e avaliação, bem como a justificativa para a adoção da 
+biblioteca ascon-suite na implementação do padrão Ascon. O capítulo abrange 
+ainda as etapas de configuração do ambiente, implementação e métodos de teste.
+
+O Capítulo \ref{cap:especificacao} trata da especificação de requisitos do sistema, definindo as restrições computacionais, de memória e de consumo energético que o protótipo deve respeitar para operar na borda da rede.
+
+O Capítulo \ref{cap:desenvolvimento} é dedicado ao projeto e desenvolvimento. Nesta etapa, são descritas as tecnologias e ferramentas práticas utilizadas, a arquitetura montada, os testes realizados e a discussão dos resultados obtidos.
+
+Por fim, o Capítulo \ref{cap:consideracoes} apresenta as considerações finais, sumarizando as conclusões extraídas da pesquisa e apontando direcionamentos para futuras implementações e melhorias que podem surgir a partir deste trabalho.

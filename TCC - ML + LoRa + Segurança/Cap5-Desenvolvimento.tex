@@ -1,0 +1,197 @@
+\chapter{Desenvolvimento do Trabalho} \label{cap:desenvolvimento}
+\section{Atividades Previstas}
+
+\subsection{Implementação da infraestrutura}
+
+A implementação da infraestrutura corresponde à etapa inicial de desenvolvimento da solução proposta. Nessa fase, o objetivo é estabelecer a base de comunicação e persistência do sistema, permitindo integrar os nós de campo, o gateway e a camada de backend antes da incorporação dos mecanismos de segurança e análise.
+
+Inicialmente, a implementação deverá concentrar-se na comunicação entre os dispositivos de campo e o gateway, utilizando placas com suporte integrado a LoRa. Os nós serão responsáveis pela coleta dos dados de aplicação e pela transmissão de mensagens curtas, enquanto o gateway atuará como ponto de recepção e transição entre a rede de campo e a infraestrutura de aplicação.
+
+Após a recepção das mensagens, o gateway deverá organizar os dados recebidos, registrar metadados associados à comunicação e encaminhar essas informações ao backend por meio de conectividade Wi-Fi e requisições HTTP. No backend, será implementada uma API com mecanismo de autenticação, de modo a restringir o recebimento de dados a gateways autorizados.
+
+Além do encaminhamento das mensagens, essa etapa também deverá contemplar a persistência dos dados de aplicação e dos metadados de comunicação em banco de dados. Esse armazenamento é necessário para o acompanhamento do funcionamento do sistema e para dar suporte às etapas posteriores do trabalho, especialmente aquelas relacionadas à segurança e à análise do comportamento da rede.
+
+Por fim, a implementação da infraestrutura deverá prever um mecanismo básico de robustez para falhas temporárias de conectividade entre gateway e backend. Para isso, admite-se o uso de armazenamento local temporário no gateway, com reenvio posterior das mensagens quando a conexão for restabelecida. Com essa etapa, estabelece-se a base operacional mínima da solução, sobre a qual serão incorporadas, posteriormente, as camadas de criptografia leve e de aprendizado de máquina.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Segurança com Ascon}
+Para o desenvolvimento da camada de segurança com o padrão Ascon, o trabalho seguirá um roteiro de atividades práticas de implementação, validação e coleta de dados diretamente no hardware. As atividades previstas para essa frente de trabalho são:
+
+\begin{itemize}
+    \item \textbf{Integração da biblioteca:} Instalar e configurar a biblioteca \textit{ascon-suite} no ambiente do ESP32, criando o código necessário para conectar a criptografia com o envio de pacotes LoRaWAN.
+    
+    \item \textbf{Validação Matemática (KAT):} Rodar os testes oficiais (\textit{Known Answer Tests}) no computador para garantir que a biblioteca calcula as cifras corretamente. Depois, embarcar uma parte desses testes no próprio ESP32 para confirmar que não ocorreram erros durante a compilação para o microcontrolador.
+    
+    \item \textbf{Geração de Chaves:} Escrever o código para gerar as chaves criptográficas. Para isso, será usado o gerador de números aleatórios do hardware do ESP32 (TRNG) em conjunto com a função \textit{CTR\_DRBG} da biblioteca \textit{mbedTLS}, seguindo as recomendações oficiais do NIST.
+    
+    \item \textbf{Testes de Injeção de Falhas:} Criar um código de estresse que altere os pacotes de propósito (\textit{bit-flipping}). A ideia é corromper o texto cifrado, o cabeçalho LoRaWAN e a \textit{tag} de autenticação para provar que a função de descriptografia bloqueia a mensagem imediatamente.
+    
+    \item \textbf{Coleta de Métricas (Benchmarking):} Realizar as medições práticas de desempenho. Isso inclui contar os ciclos de \textit{clock} para o tempo de execução, monitorar os picos de memória (Heap e Stack) e medir o consumo de energia com o osciloscópio e o resistor \textit{shunt}.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Modelo de Machine Learning}
+
+O desenvolvimento da frente de aprendizado de máquina seguirá um conjunto de
+atividades voltadas à preparação dos dados, treinamento dos modelos e avaliação
+da capacidade de detecção de anomalias. O objetivo dessa etapa é construir uma
+base experimental consistente para comparar diferentes abordagens de regressão
+temporal aplicadas ao comportamento da rede LoRaWAN.
+
+As atividades previstas para essa frente de trabalho são:
+\begin{itemize}
+    \item \textbf{Preparação dos datasets:} Organizar os dados selecionados para a etapa de modelagem, com foco principal no dataset Tour Perret e uso complementar do dataset GUARD. Essa preparação incluirá harmonização de timestamps, tratamento de valores ausentes, extração dos atributos relevantes e organização das observações por dispositivo.
+
+    \item \textbf{Definição e seleção de variáveis:} Avaliar os atributos disponíveis nos datasets e selecionar o subconjunto de variáveis mais adequado para a modelagem temporal do comportamento normal da rede. Entre os candidatos principais estão RSSI, SNR, FCnt, \textit{inter-arrival time} e \textit{data rate}, considerando sua estabilidade temporal, disponibilidade e relevância para a identificação de desvios.
+
+    \item \textbf{Divisão temporal dos dados:} Separar os dados em conjuntos de treinamento (60\%), validação (20\%) e teste (20\%) por meio de uma divisão cronológica, preservando a ordem temporal das observações e evitando vazamento de informação futura para o treinamento dos modelos.
+
+    \item \textbf{Exploração e seleção de arquiteturas:} Implementar os modelos ARIMA, RNN e LSTM definidos na etapa metodológica do trabalho. Para cada modelo, será realizada uma exploração de hiperparâmetros e configurações arquiteturais com o objetivo de identificar combinações adequadas ao problema. A seleção de configurações será orientada por critérios de desempenho preditivo e simplicidade estrutural, priorizando modelos com menor complexidade quando o ganho de performance for marginal.
+
+    \item \textbf{Treinamento exclusivo em dados normais:} Todos os modelos serão treinados e validados exclusivamente com dados representativos da operação normal da rede (dataset Tour Perret), garantindo que o comportamento esperado seja aprendido sem contaminação por anomalias ou ataques.
+
+    \item \textbf{Avaliação da qualidade preditiva:} Comparar os modelos com base em métricas de erro de regressão (MAE e RMSE) no conjunto de teste, com o objetivo de verificar qual abordagem representa com maior fidelidade o comportamento esperado das variáveis monitoradas.
+
+    \item \textbf{Calibração de limiar de detecção:} Com base nos resíduos do conjunto de validação, será definido um critério de limiarização (baseado em desvio padrão ou percentis) para classificar observações como normais ou potencialmente anômalas.
+
+    \item \textbf{Avaliação da capacidade de detecção:} Analisar a performance de detecção dos modelos no conjunto de teste e também na aplicação aos dados do dataset GUARD, com o objetivo de verificar se os modelos conseguem identificar anomalias quando confrontados com padrões diferentes ou com ataques conhecidos. Será utilizada a métrica de teste de generalização para avaliar robustez.
+
+    \item \textbf{Análise de viabilidade para execução em borda:} Após a comparação entre os modelos, será realizada uma análise complementar da complexidade das soluções obtidas, considerando número de parâmetros, custo computacional e compatibilidade com uma eventual etapa futura de adaptação para TinyML.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Integração progressiva da solução}
+
+A implementação proposta neste trabalho foi organizada de forma progressiva, de modo que cada etapa estabeleça a base necessária para a etapa seguinte. Inicialmente, a prioridade está na consolidação da infraestrutura de comunicação e persistência, garantindo que os dados produzidos em campo possam ser recebidos, encaminhados, autenticados e armazenados de forma consistente.
+
+Sobre essa base, será incorporada a camada de segurança com o uso do padrão Ascon, com foco na proteção do payload gerado pelos nós de campo. Essa etapa permitirá avaliar a inserção dos mecanismos criptográficos sem alterar a organização principal da infraestrutura já estabelecida, preservando a separação entre comunicação, autenticação e persistência.
+
+Em seguida, a base de dados formada pela operação da infraestrutura será utilizada na etapa de análise por aprendizado de máquina. Nessa fase, tanto os dados de aplicação quanto os metadados de comunicação poderão ser explorados com o objetivo de apoiar a análise do comportamento da rede e a identificação de padrões associados a anomalias.
+
+Dessa forma, a proposta não trata infraestrutura, segurança e análise como frentes independentes, mas como partes complementares de uma mesma solução. A integração progressiva dessas camadas permite desenvolver o sistema com maior clareza, reduz a complexidade da implementação inicial e favorece a avaliação da arquitetura como um todo.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Resultados dos Testes da Camada de Segurança (Ascon)}
+
+Esta seção reúne os resultados dos testes de validação e avaliação da camada de segurança baseada no Ascon, seguindo a metodologia definida na Seção \ref{subsec:validacao-ascon}. Os resultados são incorporados de forma progressiva, à medida que cada etapa de teste é concluída.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Validação por \textit{Known Answer Tests} (KAT)}
+
+A validação funcional foi conduzida com os vetores oficiais do Ascon-128a (versão 1.2) distribuídos com a \textit{ascon-suite}. Inicialmente, a biblioteca foi compilada em um computador \textit{desktop} e submetida à execução exaustiva dos 1089 vetores de teste, nos quais cada combinação de chave, \textit{nonce}, dados associados e texto em claro deve produzir um texto cifrado e uma \textit{tag} de autenticação exatos.
+
+Todos os 1089 vetores foram processados com correspondência integral em relação às saídas esperadas, sem nenhuma falha. Como verificação adicional, os vetores foram regenerados a partir da própria implementação e comparados byte a byte com o arquivo de referência, resultando em arquivos idênticos. Por fim, a suíte de testes automatizados (\textit{CTest}) foi executada sobre as variantes em C, C++, \textit{SIV} e mascarada do algoritmo, com aprovação nos 14 casos avaliados. A Tabela~\ref{tab:kat_ascon128a} sintetiza esses resultados.
+
+\begin{table}[htb]
+\centering
+\caption{Resultado da validação por \textit{Known Answer Tests} do Ascon-128a}
+\label{tab:kat_ascon128a}
+\begin{tabular}{lrr}
+\hline
+\textbf{Verificação} & \textbf{Casos} & \textbf{Falhas} \\
+\hline
+Execução exaustiva (\textit{desktop})                  & 1089 vetores & 0 \\
+Regeneração \textit{vs.} referência                    & 1089 vetores & 0 \\
+Suíte \textit{CTest} (C, C++, \textit{SIV}, mascarada) & 14 testes    & 0 \\
+Execução na placa (ESP32, subconjunto)                 & 6 vetores    & 0 \\
+\hline
+\end{tabular}
+\legend{Fonte: elaborado pelos autores.}
+\end{table}
+
+Esses resultados comprovam que a implementação do Ascon-128a opera corretamente no ambiente de desenvolvimento, reproduzindo de forma exata os valores de referência do algoritmo.
+
+Confirmada a correção em \textit{desktop}, um subconjunto representativo dos vetores foi executado diretamente na placa ESP32, cobrindo os limites de processamento por blocos: entrada vazia, bloco parcial, bloco completo e múltiplos blocos, com e sem dados associados. Para cada vetor, verificaram-se tanto a cifração — comparando o resultado com o valor de referência — quanto a decifração, confirmando a recuperação do texto claro com a \textit{tag} validada. Os seis vetores foram reproduzidos com correspondência integral na placa, descartando divergências introduzidas pela compilação ou pela arquitetura do \textit{hardware} (Xtensa LX, \textit{little-endian}). Nessa execução, o estado interno do algoritmo (\texttt{ascon128a\_state\_t}) ocupou 80 bytes, valor retomado posteriormente na análise de memória.
+
+Os vetores utilizados e o registro completo das execuções, em \textit{desktop} e na placa, estão disponíveis no repositório do projeto, na pasta \texttt{kat-validation}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Validação dos Dados Associados (AEAD)}
+
+A propriedade de autenticação do modo AEAD foi avaliada na placa ESP32 por injeção intencional de falhas (\textit{bit-flipping}), simulando um ataque de \textit{Man-in-the-middle}. A partir de um pacote válido (texto claro de 28 bytes e dados associados de 26 bytes), cada bit das três frentes de adulteração — texto cifrado, dados associados e \textit{tag} de autenticação — foi invertido individualmente, e a mensagem resultante foi submetida à decifragem.
+
+Como controle, o pacote intacto foi decifrado com sucesso, recuperando o texto claro original. Já as 560 adulterações de um bit foram todas rejeitadas: a função de decifragem reconheceu a quebra de integridade e falhou imediatamente, sem entregar qualquer fragmento de texto claro. A Tabela~\ref{tab:aead_ascon128a} resume os resultados.
+
+\begin{table}[htb]
+\centering
+\caption{Rejeição de adulterações (\textit{bit-flipping}) no Ascon-128a}
+\label{tab:aead_ascon128a}
+\begin{tabular}{lrr}
+\hline
+\textbf{Frente de adulteração} & \textbf{Bits testados} & \textbf{Rejeições} \\
+\hline
+Texto cifrado (\textit{ciphertext}) & 224 & 224 \\
+Dados associados (AD)               & 208 & 208 \\
+\textit{Tag} de autenticação        & 128 & 128 \\
+\hline
+Total                               & 560 & 560 \\
+\hline
+\end{tabular}
+\legend{Fonte: elaborado pelos autores.}
+\end{table}
+
+Qualquer modificação na mensagem em trânsito — no \textit{payload}, nos metadados do cabeçalho ou na própria \textit{tag} — é detectada e rejeitada, garantindo a integridade e a autenticidade contra ataques de \textit{Man-in-the-middle}. O código de teste está no repositório, na pasta \texttt{aead-validation}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Consumo de Memória e Tempo de Execução}
+
+O custo de memória e de tempo do Ascon-128a foi medido diretamente na placa ESP32, a 240~MHz. Quanto à memória, a operação de cifragem não realiza nenhuma alocação dinâmica: o \textit{heap} livre permaneceu inalterado antes e depois da execução (delta de 0 bytes) e o estado interno do algoritmo (\texttt{ascon128a\_state\_t}) ocupa apenas 80 bytes. Em relação à memória de programa (\textit{Flash}), a inclusão da biblioteca acrescentou 7.048 bytes ao \textit{firmware} (294.352 bytes com a biblioteca contra 287.304 bytes sem ela), o equivalente a cerca de 6,9~KiB, ou 0,5\% da \textit{Flash} disponível.
+
+O tempo de execução foi obtido lendo o contador de ciclos da CPU, com as interrupções desabilitadas durante cada medição para eliminar o ruído de tratadores de interrupção. A Tabela~\ref{tab:tempo_ascon128a} apresenta o custo de cifragem para diferentes tamanhos de \textit{payload}. O tempo cresce de forma aproximadamente linear com o número de blocos de 128 bits, sobre uma base fixa de inicialização e finalização: cada bloco adicional acrescenta cerca de 1.100 ciclos.
+
+\begin{table}[htb]
+\centering
+\caption{Tempo de cifragem do Ascon-128a no ESP32 (240~MHz)}
+\label{tab:tempo_ascon128a}
+\begin{tabular}{rrr}
+\hline
+\textbf{Payload} & \textbf{Ciclos} & \textbf{Tempo ($\mu$s)} \\
+\hline
+16 bytes & 6.117 & 25,49 \\
+32 bytes & 7.214 & 30,06 \\
+64 bytes & 9.408 & 39,20 \\
+\hline
+\end{tabular}
+\legend{Fonte: elaborado pelos autores.}
+\end{table}
+
+Por fim, avaliou-se a resistência a ataques de canal colateral baseados em tempo. Ao executar 5.000 cifragens de 16 bytes com chaves e conteúdos distintos, porém de tamanho fixo, a variação relativa do número de ciclos foi de apenas 0,005\% (desvio padrão sobre a média) e o valor mínimo permaneceu invariante (6.117 ciclos), independentemente do conteúdo. Esse comportamento corrobora a propriedade de tempo constante do Ascon — decorrente de seu projeto sem ramificações ou acessos a tabelas dependentes de dados —, impedindo que um atacante infira fragmentos da chave ou da mensagem a partir do tempo de processamento do nó sensor.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Comparativo com AES-128-GCM}
+
+Para responder à questão central levantada na Seção 2.2.2 — se a migração para criptografia leve em software traz vantagem real frente ao acelerador de \textit{hardware} já presente nas placas comerciais —, comparou-se o Ascon-128a (software) com o AES-128-GCM (\textit{Galois/Counter Mode}) na mesma execução e sob as mesmas condições (ESP32 a 240~MHz). O AES-GCM foi avaliado por meio da biblioteca \textit{mbedTLS} do próprio \textit{core} do ESP32. Cabe ressaltar que, no ESP32 clássico, apenas o bloco AES é executado no acelerador de \textit{hardware}; a autenticação (GHASH) permanece em software, pois o GCM inteiramente em hardware só está disponível em variantes mais recentes (S2/S3/C3).
+
+Quanto à memória, ambos os algoritmos operaram sem qualquer alocação dinâmica (variação de \textit{heap} nula). Quanto ao tempo, mediu-se a latência de cifragem pelo número mínimo de ciclos de \textit{clock} (piso livre de interrupções) ao longo de 2.000 execuções. A Tabela~\ref{tab:comparativo_aes} apresenta os resultados.
+
+\begin{table}[htb]
+\centering
+\caption{Latência de cifragem: Ascon-128a (software) \textit{vs.} AES-128-GCM (hardware) no ESP32}
+\label{tab:comparativo_aes}
+\begin{tabular}{rrrr}
+\hline
+\textbf{Payload} & \textbf{Ascon-128a} & \textbf{AES-128-GCM} & \textbf{Razão} \\
+                 & \textbf{ciclos ($\mu$s)} & \textbf{ciclos ($\mu$s)} & \textbf{AES/Ascon} \\
+\hline
+16 bytes & 6.115 (25,5) & 8.541 (35,6)  & 1,40 \\
+32 bytes & 7.212 (30,1) & 10.650 (44,4) & 1,48 \\
+64 bytes & 9.406 (39,2) & 14.868 (62,0) & 1,58 \\
+\hline
+\end{tabular}
+\legend{Fonte: elaborado pelos autores.}
+\end{table}
+
+Em todos os tamanhos avaliados, o Ascon-128a em software foi mais rápido que o AES-128-GCM acelerado por \textit{hardware}, com vantagem entre 1,40 e 1,58 vez. Decompondo o custo, cada bloco de 128 bits acrescenta cerca de 1.097 ciclos no Ascon contra 2.109 ciclos no AES-GCM — aproximadamente o dobro. Esse custo por bloco mais elevado decorre do GHASH executado em software e explica por que a vantagem do Ascon aumenta com o tamanho do \textit{payload}. Para os pacotes pequenos típicos de redes LoRaWAN, portanto, a criptografia leve em software não apenas dispensa o acelerador de \textit{hardware} como o supera em latência, mantendo ainda a ausência de alocação dinâmica de memória.
+
+Ressalva-se que esse resultado se refere ao ESP32 clássico; em microcontroladores com suporte a GCM inteiramente em \textit{hardware}, a comparação poderia favorecer o AES-GCM. A avaliação de consumo energético dessa mesma comparação, descrita na Seção 3.4.4, complementará esta análise.
