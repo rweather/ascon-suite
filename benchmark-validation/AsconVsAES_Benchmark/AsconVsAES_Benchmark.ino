@@ -1,36 +1,16 @@
-/*
- * AsconVsAES_Benchmark -- Comparativo software x hardware (Cap. 2 / Secao 3.4.3).
- *
- *   Ascon-128a   : criptografia leve em SOFTWARE (biblioteca ascon-suite).
- *   AES-128-GCM  : via mbedTLS. No ESP32 classico, o BLOCO AES roda no
- *                  acelerador de HARDWARE, mas o GHASH (autenticacao) e em
- *                  software (o GCM em hardware so existe no S2/S3/C3).
- *
- * Mede, sob as MESMAS condicoes (mesma run, 240 MHz):
- *   - latencia de cifragem (ciclos de clock) em 16/32/64 B;
- *   - uso de heap por operacao.
- *
- * Metodologia da medicao de tempo: como o driver de AES por hardware adquire um
- * mutex (proibido dentro de secao critica), NAO desabilitamos interrupcoes aqui.
- * Para uma comparacao justa, reportamos o MINIMO de ciclos (piso livre de
- * interrupcao) de ambos, alem da media.
- *
- * APIs: ascon128a_aead_encrypt (ascon-suite, MIT) e mbedtls_gcm_* (mbedTLS).
- */
-
 #include <ASCON.h>
 #include "mbedtls/gcm.h"
 #include <string.h>
 
 #define MAX_PLAINTEXT 64
 
-static uint8_t key[16];
-static uint8_t nonce[16];                          // nonce do Ascon (16 B)
+static uint8_t key[ASCON128_KEY_SIZE];
+static uint8_t nonce[ASCON128_NONCE_SIZE];
 static uint8_t initializationVector[12];           // IV do GCM (12 B = 96 bits, caso nativo/rapido)
 static uint8_t plaintext[MAX_PLAINTEXT];
-static uint8_t ciphertext[MAX_PLAINTEXT + 16];     // Ascon: ciphertext || tag
-static uint8_t aesCiphertext[MAX_PLAINTEXT];       // AES: ciphertext
-static uint8_t aesTag[16];                         // AES: tag
+static uint8_t ciphertext[MAX_PLAINTEXT + ASCON128_TAG_SIZE];
+static uint8_t aesCiphertext[MAX_PLAINTEXT];
+static uint8_t aesTag[16];
 
 struct CycleStatistics {
   uint32_t minCycles;
@@ -38,17 +18,25 @@ struct CycleStatistics {
   double   meanCycles;
 };
 
-// Varia chave/nonce/IV/plaintext a cada iteracao (tamanho fixo).
+// Preenche um buffer de forma deterministica: varia por iteracao (desloca o
+// array inteiro) E por posicao (rampa entre os bytes). Nao e aleatoriedade real
+// -- so garante conteudo distinto a cada chamada, suficiente para o teste de
+// tempo constante. perIterationStep/perByteStep/offset sao coeficientes
+// arbitrarios (apenas != 0 e distintos por buffer).
+static void fillVarying(uint8_t *buffer, size_t length, int iteration,
+                        uint8_t perIterationStep, uint8_t perByteStep, uint8_t offset)
+{
+  for (size_t index = 0; index < length; index++)
+    buffer[index] = (uint8_t)(iteration * perIterationStep + index * perByteStep + offset);
+}
+
+// Varia key/nonce/IV/plaintext a cada iteracao (mesmo tamanho).
 static void varyInputs(int iteration, size_t messageLength)
 {
-  for (int index = 0; index < 16; index++) {
-    key[index]   = (uint8_t)(iteration * 31 + index * 7 + 1);
-    nonce[index] = (uint8_t)(iteration * 17 + index * 3);
-  }
-  for (int index = 0; index < 12; index++)
-    initializationVector[index] = (uint8_t)(iteration * 19 + index * 5);
-  for (size_t index = 0; index < messageLength; index++)
-    plaintext[index] = (uint8_t)(iteration * 13 + index * 5);
+  fillVarying(key,                  ASCON128_KEY_SIZE,            iteration, 31, 7, 1);
+  fillVarying(nonce,                ASCON128_NONCE_SIZE,          iteration, 17, 3, 0);
+  fillVarying(initializationVector, sizeof(initializationVector), iteration, 19, 5, 0);
+  fillVarying(plaintext,            messageLength,                iteration, 13, 5, 0);
 }
 
 static double cyclesToMicroseconds(double cycles) { return cycles / (double) getCpuFrequencyMhz(); }
@@ -59,24 +47,39 @@ static CycleStatistics benchmarkAscon(size_t messageLength, int iterations)
   size_t ciphertextLength = 0;
   uint32_t minCycles = 0xFFFFFFFFu, maxCycles = 0;
   double cycleSum = 0.0;
+
+  // aquecimento (estabiliza cache); nao contabilizado
   for (int iteration = 0; iteration < 16; iteration++) {
     varyInputs(iteration, messageLength);
     ascon128a_aead_encrypt(ciphertext, &ciphertextLength, plaintext, messageLength, NULL, 0, nonce, key);
   }
+
   for (int iteration = 0; iteration < iterations; iteration++) {
     varyInputs(iteration, messageLength);
+
     uint32_t startCycles = ESP.getCycleCount();
     ascon128a_aead_encrypt(ciphertext, &ciphertextLength, plaintext, messageLength, NULL, 0, nonce, key);
     uint32_t endCycles = ESP.getCycleCount();
+
     uint32_t cycles = endCycles - startCycles;
-    if (cycles < minCycles) minCycles = cycles;
-    if (cycles > maxCycles) maxCycles = cycles;
+
+    if (cycles < minCycles) {
+      minCycles = cycles;
+    }
+
+    if (cycles > maxCycles) {
+      maxCycles = cycles;
+    }
+
     cycleSum += (double) cycles;
   }
+
   CycleStatistics stats;
+
   stats.minCycles  = minCycles;
   stats.maxCycles  = maxCycles;
   stats.meanCycles = cycleSum / iterations;
+
   return stats;
 }
 
@@ -86,27 +89,44 @@ static CycleStatistics benchmarkAES(size_t messageLength, int iterations)
   mbedtls_gcm_context gcmContext;
   mbedtls_gcm_init(&gcmContext);
   mbedtls_gcm_setkey(&gcmContext, MBEDTLS_CIPHER_ID_AES, key, 128);  // chave fixada 1x (amortizada)
+
   uint32_t minCycles = 0xFFFFFFFFu, maxCycles = 0;
   double cycleSum = 0.0;
+
+  // aquecimento (estabiliza cache); nao contabilizado
   for (int iteration = 0; iteration < 16; iteration++) {
     varyInputs(iteration, messageLength);
     mbedtls_gcm_crypt_and_tag(&gcmContext, MBEDTLS_GCM_ENCRYPT, messageLength, initializationVector, 12, NULL, 0, plaintext, aesCiphertext, 16, aesTag);
   }
+
   for (int iteration = 0; iteration < iterations; iteration++) {
     varyInputs(iteration, messageLength);
+
     uint32_t startCycles = ESP.getCycleCount();
     mbedtls_gcm_crypt_and_tag(&gcmContext, MBEDTLS_GCM_ENCRYPT, messageLength, initializationVector, 12, NULL, 0, plaintext, aesCiphertext, 16, aesTag);
     uint32_t endCycles = ESP.getCycleCount();
+
     uint32_t cycles = endCycles - startCycles;
-    if (cycles < minCycles) minCycles = cycles;
-    if (cycles > maxCycles) maxCycles = cycles;
+
+    if (cycles < minCycles) {
+      minCycles = cycles;
+    }
+
+    if (cycles > maxCycles) {
+      maxCycles = cycles;
+    }
+
     cycleSum += (double) cycles;
   }
+
   mbedtls_gcm_free(&gcmContext);
+
   CycleStatistics stats;
+
   stats.minCycles  = minCycles;
   stats.maxCycles  = maxCycles;
   stats.meanCycles = cycleSum / iterations;
+
   return stats;
 }
 

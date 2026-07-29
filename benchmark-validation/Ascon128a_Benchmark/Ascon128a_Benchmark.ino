@@ -5,10 +5,10 @@
 
 #define MAX_PLAINTEXT 64
 
-static uint8_t key[16];
-static uint8_t nonce[16];
+static uint8_t key[ASCON128_KEY_SIZE];
+static uint8_t nonce[ASCON128_NONCE_SIZE];
 static uint8_t plaintext[MAX_PLAINTEXT];
-static uint8_t ciphertext[MAX_PLAINTEXT + 16];
+static uint8_t ciphertext[MAX_PLAINTEXT + ASCON128_TAG_SIZE];
 
 // spinlock para medir a cifragem com interrupcoes desabilitadas (sem ruido de ISR)
 static portMUX_TYPE benchmarkSpinlock = portMUX_INITIALIZER_UNLOCKED;
@@ -20,15 +20,20 @@ struct CycleStatistics {
   double   standardDeviation;
 };
 
-// Preenche key/nonce/plaintext com valores que mudam a cada iteracao (tamanho fixo).
+
+static void fillVarying(uint8_t *buffer, size_t length, int iteration,
+                        uint8_t perIterationStep, uint8_t perByteStep, uint8_t offset)
+{
+  for (size_t index = 0; index < length; index++)
+    buffer[index] = (uint8_t)(iteration * perIterationStep + index * perByteStep + offset);
+}
+
+
 static void varyInputs(int iteration, size_t messageLength)
 {
-  for (int index = 0; index < 16; index++) {
-    key[index]   = (uint8_t)(iteration * 31 + index * 7 + 1);
-    nonce[index] = (uint8_t)(iteration * 17 + index * 3);
-  }
-  for (size_t index = 0; index < messageLength; index++)
-    plaintext[index] = (uint8_t)(iteration * 13 + index * 5);
+  fillVarying(key,       ASCON128_KEY_SIZE,   iteration, 31, 7, 1);
+  fillVarying(nonce,     ASCON128_NONCE_SIZE, iteration, 17, 3, 0);
+  fillVarying(plaintext, messageLength,       iteration, 13, 5, 0);
 }
 
 // Mede ciclos da cifragem de 'messageLength' bytes ao longo de 'iterations'
@@ -47,24 +52,37 @@ static CycleStatistics benchmarkEncrypt(size_t messageLength, int iterations)
 
   for (int iteration = 0; iteration < iterations; iteration++) {
     varyInputs(iteration, messageLength);
+
     portENTER_CRITICAL(&benchmarkSpinlock);        // interrupcoes off: mede so a cifragem (sem ISR)
     uint32_t startCycles = ESP.getCycleCount();
     ascon128a_aead_encrypt(ciphertext, &ciphertextLength, plaintext, messageLength, NULL, 0, nonce, key);
     uint32_t endCycles = ESP.getCycleCount();
     portEXIT_CRITICAL(&benchmarkSpinlock);
+
     uint32_t cycles = endCycles - startCycles;     // subtracao uint32 trata o wrap do contador
-    if (cycles < minCycles) minCycles = cycles;
-    if (cycles > maxCycles) maxCycles = cycles;
+    
+    if (cycles < minCycles) {
+      minCycles = cycles;
+    }
+
+    if (cycles > maxCycles) {
+      maxCycles = cycles;
+    }
+
     cycleSum          += (double) cycles;
     cycleSumOfSquares += (double) cycles * (double) cycles;
   }
 
   CycleStatistics stats;
+
   stats.minCycles  = minCycles;
   stats.maxCycles  = maxCycles;
+
   stats.meanCycles = cycleSum / iterations;
+
   double variance = cycleSumOfSquares / iterations - stats.meanCycles * stats.meanCycles;
   stats.standardDeviation = variance > 0.0 ? sqrt(variance) : 0.0;
+  
   return stats;
 }
 
@@ -145,13 +163,9 @@ void setup()
   Serial.println();
 
   Serial.println(">>> Medicoes concluidas <<<");
-
-  // TODO (proximo incremento): medir AES-GCM via mbedTLS (mbedtls_gcm_*) com o
-  // acelerador de hardware do ESP32, reusando benchmarkEncrypt/printStatistics,
-  // para o comparativo software (Ascon) vs hardware (AES) do Cap. 2.
 }
 
 void loop()
 {
-  delay(1000);  // roda uma vez no setup(); cede o processador
+  delay(1000);
 }

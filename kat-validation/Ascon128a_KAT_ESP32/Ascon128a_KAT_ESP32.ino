@@ -1,21 +1,3 @@
-/*
- * Ascon128a_KAT_ESP32 -- Validacao on-device dos Known Answer Tests (KAT)
- * do Ascon-128a (variante v1.2 da competicao NIST LWC), no ESP32.
- *
- * Objetivo (Secao 3.4.1 do TCC): apos a validacao exaustiva em desktop,
- * confirmar na propria placa que a compilacao e a arquitetura (Xtensa LX,
- * little-endian) nao introduzem divergencias, usando um subconjunto
- * representativo dos vetores oficiais.
- *
- * Para cada vetor: (1) cifra e compara o resultado (ciphertext || tag) com
- * o valor esperado; (2) decifra o valor esperado e confirma a recuperacao
- * do texto claro com a tag validada.
- *
- * Os vetores foram extraidos do arquivo oficial ASCON-128a.txt; a estrutura
- * deste teste foi adaptada do exemplo Ascon128_Test da biblioteca ascon-suite
- * (Rhys Weatherley / Southern Storm Software, licenca MIT).
- */
-
 #include <ASCON.h>
 #include <string.h>
 
@@ -109,20 +91,29 @@ static bool runVector(const TestVector *vector)
                          vector->plaintext, vector->plaintextLength,
                          vector->associatedData, vector->associatedDataLength,
                          vector->nonce, vector->key);
+
   if (ciphertextLength != vector->expectedCiphertextLength ||
       memcmp(encryptOutput, vector->expectedCiphertext, vector->expectedCiphertextLength) != 0)
+  {
     return false;
+  }
 
   // (2) Decifra o valor esperado e confirma texto claro + tag valida.
   int decryptResult = ascon128a_aead_decrypt(decryptOutput, &messageLength,
                                              vector->expectedCiphertext, vector->expectedCiphertextLength,
                                              vector->associatedData, vector->associatedDataLength,
                                              vector->nonce, vector->key);
+                                             
   if (decryptResult < 0 || messageLength != vector->plaintextLength)
+  {
     return false;
+  }
+
   if (vector->plaintextLength &&
       memcmp(decryptOutput, vector->plaintext, vector->plaintextLength) != 0)
+  {
     return false;
+  }
 
   return true;
 }
@@ -149,8 +140,9 @@ void setup()
       Serial.println("OK");
       passedCount++;
     }
-    else
+    else {
       Serial.println("FALHOU");
+    }
   }
 
   Serial.println();
@@ -160,10 +152,12 @@ void setup()
   Serial.print((int) TEST_VECTOR_COUNT);
   Serial.println(" vetores passaram.");
 
-  if (passedCount == (int) TEST_VECTOR_COUNT)
+  if (passedCount == (int) TEST_VECTOR_COUNT) {
     Serial.println(">>> TODOS OS VETORES PASSARAM NA PLACA <<<");
-  else
+  }
+  else {
     Serial.println(">>> FALHA: divergencia na placa <<<");
+  }
 }
 
 void loop()
